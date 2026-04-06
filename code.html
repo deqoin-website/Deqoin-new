@@ -1,0 +1,664 @@
+<html class="scroll-smooth" lang="tr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>DEQOIN | ARCHITECTURAL STUDIO</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;700&amp;family=Manrope:wght@300;400;600;800&amp;family=Playfair+Display:wght@700;900&amp;family=Outfit:wght@300;600;800&amp;display=swap" rel="stylesheet"/>
+<!-- Material Icons -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+          tailwind.config = {
+            darkMode: "class",
+            theme: {
+              extend: {
+                colors: {
+                  "tertiary": "#665e4e",
+                  "primary-container": "#e5e2e1",
+                  "error-container": "#fe8983",
+                  "primary-fixed": "#e5e2e1",
+                  "on-tertiary": "#fff8f0",
+                  "surface-container-high": "#e4e9ea",
+                  "secondary-fixed-dim": "#f8cf83",
+                  "inverse-surface": "#0c0f0f",
+                  "on-tertiary-container": "#635b4b",
+                  "outline": "#757c7d",
+                  "primary": "#5f5e5e",
+                  "surface-container-lowest": "#ffffff",
+                  "tertiary-container": "#fef2dd",
+                  "background": "#f9f9f9",
+                  "tertiary-dim": "#5a5243",
+                  "surface": "#f9f9f9",
+                  "inverse-primary": "#ffffff",
+                  "surface-dim": "#d4dbdd",
+                  "surface-container": "#ebeeef",
+                  "inverse-on-surface": "#9c9d9d",
+                  "tertiary-fixed": "#fef2dd",
+                  "surface-container-highest": "#dde4e5",
+                  "surface-tint": "#5f5e5e",
+                  "on-tertiary-fixed": "#50493a",
+                  "outline-variant": "#adb3b4",
+                  "on-primary": "#faf7f6",
+                  "on-error": "#fff7f6",
+                  "secondary-container": "#ffdea5",
+                  "on-secondary-fixed-variant": "#745716",
+                  "on-secondary-container": "#694d0c",
+                  "on-primary-fixed-variant": "#5c5b5b",
+                  "tertiary-fixed-dim": "#f0e4cf",
+                  "on-surface": "#2d3435",
+                  "on-tertiary-fixed-variant": "#6d6555",
+                  "surface-bright": "#f9f9f9",
+                  "error-dim": "#4e0309",
+                  "on-surface-variant": "#5a6061",
+                  "on-primary-fixed": "#403f3f",
+                  "secondary-fixed": "#ffdea5",
+                  "secondary-dim": "#6b4e0e",
+                  "on-secondary": "#fff8f1",
+                  "on-secondary-fixed": "#543b00",
+                  "surface-container-low": "#f2f4f4",
+                  "surface-variant": "#dde4e5",
+                  "on-background": "#2d3435",
+                  "secondary": "#785a1a",
+                  "on-error-container": "#752121",
+                  "primary-dim": "#535252",
+                  "primary-fixed-dim": "#d6d4d3",
+                  "error": "#9f403d",
+                  "on-primary-container": "#525151"
+                },
+                fontFamily: {
+                  "headline": ["Noto Serif"],
+                  "body": ["Manrope"],
+                  "label": ["Manrope"],
+                  "display": ["Outfit"],
+                  "serif-alt": ["Playfair Display"]
+                },
+                borderRadius: {"DEFAULT": "0px", "lg": "0px", "xl": "0px", "full": "9999px"},
+              },
+            },
+          }
+        </script>
+<style>
+          .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 200, 'GRAD' 0, 'opsz' 24;
+          }
+          body {
+            font-family: 'Manrope', sans-serif;
+            background-color: #f9f9f9;
+            color: #2d3435;
+          }
+          .font-serif { font-family: 'Noto Serif', serif; }
+          .no-scrollbar::-webkit-scrollbar { display: none; }
+          .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+          .vertical-text {
+            writing-mode: vertical-rl;
+            text-orientation: mixed;
+          }
+          .display-condensed {
+            font-family: 'Outfit', sans-serif;
+            letter-spacing: -0.02em;
+            text-transform: uppercase;
+          }
+          /* Before-After Slider Styles */
+          .ba-slider {
+            position: relative;
+            overflow: hidden;
+            user-select: none;
+            touch-action: pan-y;
+          }
+          .ba-slider img {
+            display: block;
+            width: 100%;
+            height: auto;
+            pointer-events: none;
+          }
+          .ba-slider .before-img-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 50%;
+            overflow: hidden;
+            z-index: 10;
+          }
+          .ba-slider .before-img-container img {
+            width: auto;
+            height: 100%;
+            max-width: none;
+          }
+          .ba-slider .handle {
+            position: absolute;
+            left: 50%;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: white;
+            cursor: ew-resize;
+            z-index: 20;
+            transform: translateX(-50%);
+          }
+          .ba-slider .handle-button {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 44px;
+            height: 44px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 20px rgba(0,0,0,0.2);
+            z-index: 30;
+          }
+          /* Carousel styles */
+          .carousel-track {
+            display: flex;
+            transition: transform 1.2s cubic-bezier(0.65, 0, 0.35, 1);
+          }
+          .carousel-slide {
+            flex: 0 0 100%;
+            width: 100%;
+          }
+          /* Slow motion fade for hero slides */
+          .hero-slide {
+            opacity: 0;
+            transition: opacity 2s ease-in-out;
+            position: absolute;
+            inset: 0;
+          }
+          .hero-slide.active {
+            opacity: 1;
+            z-index: 10;
+          }
+        </style>
+</head>
+<body class="bg-background text-on-surface selection:bg-secondary selection:text-on-secondary">
+<!-- Transparent Header Over Slider -->
+<header class="fixed top-0 left-0 w-full z-50 transition-all duration-500 bg-transparent">
+<nav class="flex justify-between items-center px-6 md:px-12 h-20 w-full">
+<div class="flex items-center gap-6">
+<button class="group flex items-center gap-3">
+<span class="material-symbols-outlined text-white !font-medium text-2xl transition-transform group-hover:scale-110 drop-shadow-md">menu</span>
+</button>
+<button class="group">
+<span class="material-symbols-outlined text-white !font-medium text-2xl transition-transform group-hover:scale-110 drop-shadow-md">search</span>
+</button>
+</div>
+<div class="flex items-center gap-8">
+<div class="hidden md:flex items-center gap-10 font-sans uppercase tracking-[0.2em] text-[10px] font-bold text-white drop-shadow-sm">
+<a class="hover:text-neutral-300 transition-colors" href="#">Portfolyo</a>
+<a class="hover:text-neutral-300 transition-colors" href="#">İletişim</a>
+</div>
+<a class="block" href="/">
+<img alt="DEQOIN Logo" class="h-6 md:h-8 w-auto object-contain invert brightness-0" src="https://lh3.googleusercontent.com/aida/ADBb0uglCpgjo0Jhqr80X-NstrJswNCwpmV66jNEln-a_LA3UUIJJojPQdDBrCWMxK-9ZOU5RneKRxOPjn99RnI0iCsSWXMEeFG_bN1Uo9Z2unkbOIA9pHmgcbt1rNd4Mewq5Y-V_vBrYJMLn_9IP2oWMMIGfKJl6T85v_fXg9JwCXP7_AwzZYKUrspvLl1UkKOcC6Ugqb8f0L1LXt6-LR6Uxz6q9Oq9RhY09vGiTOeXcs2YS127dAB_GSUTC-4ziNFeAPahDJK9d55gDA"/>
+</a>
+</div>
+</nav>
+</header>
+<!-- Hero Slider Section -->
+<section class="relative h-screen w-full overflow-hidden bg-neutral-900" id="hero-slider">
+<!-- Slide 1: Video -->
+<div class="hero-slide active">
+<video autoplay="" class="w-full h-full object-cover" loop="" muted="" playsinline="">
+<source src="https://assets.mixkit.co/videos/preview/mixkit-modern-architecture-exterior-with-glass-and-concrete-40030-large.mp4" type="video/mp4"/>
+</video>
+<div class="absolute inset-0 bg-black/30"></div>
+</div>
+<!-- Slide 2: Video -->
+<div class="hero-slide">
+<video autoplay="" class="w-full h-full object-cover" loop="" muted="" playsinline="">
+<source src="https://assets.mixkit.co/videos/preview/mixkit-modern-building-exterior-with-glass-facade-and-blue-sky-40031-large.mp4" type="video/mp4"/>
+</video>
+<div class="absolute inset-0 bg-black/30"></div>
+</div>
+<!-- Slide 3: Video -->
+<div class="hero-slide">
+<video autoplay="" class="w-full h-full object-cover" loop="" muted="" playsinline="">
+<source src="https://assets.mixkit.co/videos/preview/mixkit-modern-apartment-building-exterior-with-glass-balconies-40033-large.mp4" type="video/mp4"/>
+</video>
+<div class="absolute inset-0 bg-black/30"></div>
+</div>
+<div class="relative z-20 h-full flex flex-col items-center justify-center px-8 text-center pointer-events-none">
+<button class="pointer-events-auto group relative overflow-hidden border border-[#A68966]/30 px-16 py-8 transition-all duration-700 hover:border-[#A68966] hover:shadow-[0_0_40px_rgba(166,137,102,0.15)]" style="background-color: #BF1F5A;">
+<div class="absolute inset-0 bg-gradient-to-tr from-[#A68966]/0 via-[#A68966]/5 to-[#A68966]/0 opacity-0 group-hover:opacity-100 transition-opacity duration-1000"></div>
+<div class="relative flex items-center gap-8">
+<span class="display-condensed text-black text-sm tracking-[0.4em] font-light uppercase">Randevu Talep Edi̇ni̇z</span>
+<span class="material-symbols-outlined text-black !text-xl group-hover:translate-x-3 transition-transform duration-500" style="font-variation-settings: 'FILL' 0, 'wght' 700, 'GRAD' 0, 'opsz' 24;">arrow_right_alt</span>
+</div>
+</button>
+</div>
+<div class="absolute bottom-12 right-12 z-20 flex gap-4">
+<button class="w-12 h-12 flex items-center justify-center border border-white/20 text-white hover:bg-white hover:text-black transition-colors" id="hero-prev">
+<span class="material-symbols-outlined">chevron_left</span>
+</button>
+<button class="w-12 h-12 flex items-center justify-center border border-white/20 text-white hover:bg-white hover:text-black transition-colors" id="hero-next">
+<span class="material-symbols-outlined">chevron_right</span>
+</button>
+</div>
+<div class="absolute bottom-12 left-12 z-20 flex items-center gap-6">
+<div class="flex flex-col">
+<span class="font-serif text-white text-3xl tracking-tighter" id="hero-count-curr">01</span>
+<div class="h-[1px] w-8 bg-white/30 my-1"></div>
+<span class="font-sans text-white/50 text-[10px] tracking-[0.3em] uppercase">03</span>
+</div>
+<div class="hidden md:block">
+<p class="text-white/40 font-sans text-[10px] tracking-[0.2em] uppercase vertical-text h-20">Mimari Vizyon</p>
+</div>
+</div>
+<div class="absolute bottom-0 left-0 w-full h-[2px] bg-white/10 z-30">
+<div class="h-full bg-white/60 transition-all duration-[8000ms] ease-linear shadow-[0_0_10px_rgba(255,255,255,0.3)]" id="hero-progress" style="width: 0%"></div>
+</div>
+</section>
+<!-- Powerful Service Cards Section -->
+<section class="py-0 bg-white">
+<div class="flex flex-col md:flex-row h-auto md:h-[90vh]">
+<!-- Card 1: Mimari -->
+<a class="group relative flex-1 overflow-hidden border-b md:border-b-0 md:border-r border-neutral-100 min-h-[400px]" href="/mimari">
+<img class="absolute inset-0 w-full h-full object-cover transition-transform duration-[2000ms] group-hover:scale-105" data-alt="Powerful brutalist architecture detail with sharp shadows." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDbQTBOayjmIt4JzHbORA9-NQOes7Uaoo4WrcuGAAwzEXJzUo0V4OeCDNGGyxzFDBzG1_DbgXDr5aROetwtqZ4iPhEiaV39HyWZ67_PbpZY6a2KYJHEC2_-3JaDiLZ_71qMkfLsbA991AHjCOdDh70fnYJ3lWy-tXN7nbh5DnUk-PZt4xV5nniOugFFMI4ACHWAkPu85H_YU43TPpuqCiveXM-RLOTvgub4LA47ECVZBRKJhuyDW83lyXynnNyLY1ieUH6-gh23YZs"/>
+<div class="absolute inset-0 bg-neutral-900/10 group-hover:bg-neutral-900/30 transition-colors duration-1000"></div>
+<div class="absolute inset-0 p-12 flex flex-col justify-end">
+<div class="flex items-end justify-between">
+<div>
+<h3 class="display-condensed text-white mb-4 tracking-[-0.04em] font-light md:text-8xl lg:text-5xl text-5xl uppercase">Mimari</h3>
+<div class="h-[1px] w-12 bg-white group-hover:w-24 transition-all duration-700"></div>
+</div>
+<span class="vertical-text font-label text-[10px] tracking-[0.6em] text-white/60 uppercase group-hover:text-white transition-colors">Structural Integrity</span>
+</div>
+</div>
+</a>
+<!-- Card 2: Tasarım -->
+<a class="group relative flex-1 overflow-hidden border-b md:border-b-0 md:border-r border-neutral-100 min-h-[400px]" href="/tasarim">
+<img class="absolute inset-0 w-full h-full object-cover transition-transform duration-[2000ms] group-hover:scale-105" data-alt="Refined interior design detail with marble and oak texture." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCVUCHLvB4gqKIu87ZlNcr3oZLDY1XgwMEMQcp-pzAUlFS1Nn-nmjan1oheeXLiJ94VJmZA_oBfMSPF7jZZuVG47cEkP7h1goKj5Y9WgqVshN-x4CHN0Cdm1zFfAK5KszWNO6pl8w1-gfW6Wb3njqQOsjkQ8-pCuF6dDd8ggmvjFL-N9m4Fe4Lj-pi8WbEEAKONv-Sz-Yl9wNOSPvazMnMZ5Gjdm2myTHVi_vIL4aoeENqkME8bn_RKrHn4r6XvpVXXxsRugi5gKPU"/>
+<div class="absolute inset-0 bg-neutral-900/10 group-hover:bg-neutral-900/30 transition-colors duration-1000"></div>
+<div class="absolute inset-0 p-12 flex flex-col justify-end">
+<div class="flex items-end justify-between">
+<div>
+<h3 class="display-condensed text-white mb-4 tracking-[-0.04em] font-light md:text-8xl lg:text-5xl text-5xl uppercase">Tasarım</h3>
+<div class="h-[1px] w-12 bg-white group-hover:w-24 transition-all duration-700"></div>
+</div>
+<span class="vertical-text font-label text-[10px] tracking-[0.6em] text-white/60 uppercase group-hover:text-white transition-colors">Aesthetic Soul</span>
+</div>
+</div>
+</a>
+<!-- Card 3: Uygulama -->
+<a class="group relative flex-1 overflow-hidden min-h-[400px]" href="/uygulama">
+<img class="absolute inset-0 w-full h-full object-cover transition-transform duration-[2000ms] group-hover:scale-105" data-alt="Construction precision detail, raw materials and refined finish." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBg-MKl4zF6vfhExOXkEX-PKVlktOgQYI9EevfKIIYXVJ2wtmRpvybiQLaOtQdeYc_lIPrntEOUrCatq_Efo6fw-z-0-6TilLvAsA4tcYK-QcbjqdetFT2T2EreDjugTzsElsUeoEqEM9i_daWDWBBOJXiZvrjMKWtS2z5I5ZuzOLXWozpZ8MroEnEj5yRtFuaubPctxfeO_ZAZ5E5Tawo9b6yB5w0pmG4_axQCW--XoR8nAAImAE_M5UpM2vFx3tuR2ePYvZ-VmaY"/>
+<div class="absolute inset-0 bg-neutral-900/10 group-hover:bg-neutral-900/30 transition-colors duration-1000"></div>
+<div class="absolute inset-0 p-12 flex flex-col justify-end">
+<div class="flex items-end justify-between">
+<div>
+<h3 class="display-condensed text-white mb-4 tracking-[-0.04em] font-light md:text-8xl lg:text-5xl text-5xl uppercase">Uygulama</h3>
+<div class="h-[1px] w-12 bg-white group-hover:w-24 transition-all duration-700"></div>
+</div>
+<span class="vertical-text font-label text-[10px] tracking-[0.6em] text-white/60 uppercase group-hover:text-white transition-colors">Precision Craft</span>
+</div>
+</div>
+</a>
+</div>
+</section>
+<!-- Redesigned Before-After Carousel Section -->
+<section class="bg-white overflow-hidden pt-20 md:pt-32 pb-10 md:pb-16" id="before-after-section">
+<div class="max-w-7xl mx-auto px-6 md:px-12">
+<div class="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-8">
+<div>
+<h2 class="display-condensed text-neutral-900 tracking-[-0.04em] font-light md:text-8xl lg:text-5xl text-5xl uppercase">Öncesi - Sonrası</h2>
+<div class="h-[1px] w-12 bg-neutral-900 mt-4"></div>
+</div>
+<!-- Carousel Controls -->
+<div class="flex items-center gap-6">
+<div class="flex items-center gap-3">
+<span class="font-serif text-neutral-900 text-xl tracking-tighter" id="carousel-current">01</span>
+<div class="w-12 h-[1px] bg-neutral-200 relative overflow-hidden">
+<div class="absolute left-0 top-0 h-full bg-neutral-900 w-0 transition-all duration-[5000ms] ease-linear" id="carousel-progress"></div>
+</div>
+<span class="font-sans text-neutral-400 text-[10px] tracking-[0.3em] uppercase" id="carousel-total">02</span>
+</div>
+<div class="flex gap-2">
+<button class="w-10 h-10 flex items-center justify-center border border-neutral-200 text-neutral-900 hover:bg-neutral-900 hover:text-white transition-all group" id="carousel-prev">
+<span class="material-symbols-outlined !text-xl group-active:scale-90">chevron_left</span>
+</button>
+<button class="w-10 h-10 flex items-center justify-center border border-neutral-200 text-neutral-900 hover:bg-neutral-900 hover:text-white transition-all group" id="carousel-next">
+<span class="material-symbols-outlined !text-xl group-active:scale-90">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Carousel Container -->
+<div class="relative w-full overflow-hidden" id="ba-carousel">
+<div class="carousel-track" id="carousel-track">
+<!-- Slide 1 -->
+<div class="carousel-slide px-1">
+<div class="relative w-full overflow-hidden ba-slider aspect-[4/3] md:aspect-video group" data-slider-id="1">
+<img alt="After State" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDb8oJUAbKO838Rur4GmMdhoZA52T9apeuU9wT1MD8aED3l4BUvMiWzCyCUvgmQ_hUnxgOfF8IiulBiI2jOUD_rMvhMhY5q4XF5oN3Orkq525thVCe6a7Qn84IkmcCKdp7RVHGwlMXKCQZWlSwoQRYqNQ54bsoQ6pAqtTv5QeYJjApl9fwBFVCYyWIR0fqefLofCqY7cPmi_F1xk7yjOVIZsTO7FKo0OjDyPcryEMVFbFFRsn19bmHoDjlgz-s838-TizdClIfaG6s"/>
+<div class="before-img-container" style="width: 50%;">
+<img alt="Before State" class="absolute top-0 left-0 w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDQ33Fr_mp_94UQUZyYOcRBRBK4SsC3hdWkie-fw6V2__i_B1h6AdSqBrcIxAAgXdz-v3B0bxiTC-ksADc_Szblsz7rQvFfbm-HT7bZ1XL4bsM_asUURcwntMziJsDYv2IG_IZ29E-x6Q-o8X94qQUEmwhhDhnCvzR73u_lPOfR2qgqCLbkcFE__mn9WB-1VfwW7H_DqV9DkwKYK7M0io-43LvxYatvgMsrwap-p4wEffe-ljtcBwrQlBdN4PP7Q0JGnYBjixX0YQ0"/>
+<div class="absolute bottom-6 left-6 z-30 bg-black/80 text-white px-4 py-2 text-[10px] tracking-[0.2em] font-bold uppercase">3D ÇALIŞMA</div>
+</div>
+<div class="absolute bottom-6 right-6 z-30 bg-black/80 text-white px-4 py-2 text-[10px] tracking-[0.2em] font-bold uppercase">UYGULAMA</div>
+<div class="handle" style="left: 50%;">
+<div class="handle-button">
+<span class="material-symbols-outlined text-neutral-900 !text-xl">unfold_more_double</span>
+</div>
+</div>
+</div>
+<div class="mt-8 flex justify-between items-start">
+<div>
+<h4 class="font-sans text-[11px] font-bold tracking-[0.2em] text-neutral-400 uppercase">ZIND NAABA HOTEL</h4>
+<p class="font-serif text-2xl text-neutral-900 mt-2">Executive Bedroom Suite</p>
+</div>
+<p class="vertical-text font-label text-[9px] tracking-[0.5em] text-neutral-300 uppercase">Project Ref: 2024-08</p>
+</div>
+</div>
+<!-- Slide 2 -->
+<div class="carousel-slide px-1">
+<div class="relative w-full overflow-hidden ba-slider aspect-[4/3] md:aspect-video group" data-slider-id="2">
+<img alt="After State" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA6ch6quj8NI1itL20E5PhIg-48fajZE_vr98u3teQ-X7iSPzBfAvJnkTJ3RuJVxc2gjJk51KmYZk9sWDTwAjNMVHOwiJPfJh3i0VYt8Cfzsf6cPXv8SRUsh66wCIyRnDgQLMJg2_1yHEHCnFIbIJoBzDcFEntZjDdLiFO8q1WvslXUxTqhQNEyc8D_USmsB4iizRnCFmQqpbt_btAIebK4vy_8mB0LYZXdZk9Mtj6xqQ8e91yqi86iYoLhuoh8fXoG0Gcgep-wrSw"/>
+<div class="before-img-container" style="width: 50%;">
+<img alt="Before State" class="absolute top-0 left-0 w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBg-MKl4zF6vfhExOXkEX-PKVlktOgQYI9EevfKIIYXVJ2wtmRpvybiQLaOtQdeYc_lIPrntEOUrCatq_Efo6fw-z-0-6TilLvAsA4tcYK-QcbjqdetFT2T2EreDjugTzsElsUeoEqEM9i_daWDWBBOJXiZvrjMKWtS2z5I5ZuzOLXWozpZ8MroEnEj5yRtFuaubPctxfeO_ZAZ5E5Tawo9b6yB5w0pmG4_axQCW--XoR8nAAImAE_M5UpM2vFx3tuR2ePYvZ-VmaY"/>
+<div class="absolute bottom-6 left-6 z-30 bg-black/80 text-white px-4 py-2 text-[10px] tracking-[0.2em] font-bold uppercase">MİMARİ TASLAK</div>
+</div>
+<div class="absolute bottom-6 right-6 z-30 bg-black/80 text-white px-4 py-2 text-[10px] tracking-[0.2em] font-bold uppercase">DIŞ CEPHE</div>
+<div class="handle" style="left: 50%;">
+<div class="handle-button">
+<span class="material-symbols-outlined text-neutral-900 !text-xl">unfold_more_double</span>
+</div>
+</div>
+</div>
+<div class="mt-8 flex justify-between items-start">
+<div>
+<h4 class="font-sans text-[11px] font-bold tracking-[0.2em] text-neutral-400 uppercase">SKYLINE RESIDENCE</h4>
+<p class="font-serif text-2xl text-neutral-900 mt-2">Geometric Facade Integration</p>
+</div>
+<p class="vertical-text font-label text-[9px] tracking-[0.5em] text-neutral-300 uppercase">Project Ref: 2024-12</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- PROJELER Section -->
+<section class="bg-white pt-10 md:pt-16 pb-20 md:pb-32" id="projeler">
+<div class="max-w-7xl mx-auto px-6 md:px-12 mb-16">
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-12">
+<div>
+<h2 class="display-condensed text-neutral-900 tracking-[-0.04em] font-light md:text-8xl lg:text-5xl text-5xl uppercase">PROJELER</h2>
+<div class="h-[1px] w-12 bg-neutral-900 mt-4"></div>
+</div>
+<!-- Minimalist Filter System -->
+<div class="flex items-center gap-8 md:gap-12 overflow-x-auto no-scrollbar pb-2">
+<button class="filter-btn group relative flex items-center gap-4 transition-all duration-300 active" data-filter="all">
+<span class="vertical-text font-label text-[9px] tracking-[0.5em] text-neutral-400 group-hover:text-neutral-900 uppercase transition-colors">Selection</span>
+<span class="font-sans text-[11px] font-bold tracking-[0.2em] text-neutral-400 group-hover:text-neutral-900 uppercase active-filter:text-neutral-900">HEPSİ</span>
+<div class="absolute -bottom-2 left-0 w-0 h-[1px] bg-neutral-900 transition-all duration-300 group-[.active]:w-full"></div>
+</button>
+<button class="filter-btn group relative flex items-center gap-4 transition-all duration-300" data-filter="mimari">
+<span class="vertical-text font-label text-[9px] tracking-[0.5em] text-neutral-400 group-hover:text-neutral-900 uppercase transition-colors">Structure</span>
+<span class="font-sans text-[11px] font-bold tracking-[0.2em] text-neutral-400 group-hover:text-neutral-900 uppercase">MİMARİ</span>
+<div class="absolute -bottom-2 left-0 w-0 h-[1px] bg-neutral-900 transition-all duration-300 group-[.active]:w-full"></div>
+</button>
+<button class="filter-btn group relative flex items-center gap-4 transition-all duration-300" data-filter="tasarim">
+<span class="vertical-text font-label text-[9px] tracking-[0.5em] text-neutral-400 group-hover:text-neutral-900 uppercase transition-colors">Aesthetic</span>
+<span class="font-sans text-[11px] font-bold tracking-[0.2em] text-neutral-400 group-hover:text-neutral-900 uppercase">TASARIM</span>
+<div class="absolute -bottom-2 left-0 w-0 h-[1px] bg-neutral-900 transition-all duration-300 group-[.active]:w-full"></div>
+</button>
+<button class="filter-btn group relative flex items-center gap-4 transition-all duration-300" data-filter="uygulama">
+<span class="vertical-text font-label text-[9px] tracking-[0.5em] text-neutral-400 group-hover:text-neutral-900 uppercase transition-colors">Precision</span>
+<span class="font-sans text-[11px] font-bold tracking-[0.2em] text-neutral-400 group-hover:text-neutral-900 uppercase">UYGULAMA</span>
+<div class="absolute -bottom-2 left-0 w-0 h-[1px] bg-neutral-900 transition-all duration-300 group-[.active]:w-full"></div>
+</button>
+</div>
+</div>
+</div>
+<div class="w-full">
+<div class="grid grid-cols-2 md:grid-cols-3 gap-0" id="project-grid">
+<!-- Project 1 -->
+<div class="project-item group relative aspect-[3/4] overflow-hidden bg-neutral-100" data-category="tasarim">
+<img alt="Project" class="absolute inset-0 w-full h-full object-cover grayscale transition-all duration-[1500ms] group-hover:grayscale-0 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDQ33Fr_mp_94UQUZyYOcRBRBK4SsC3hdWkie-fw6V2__i_B1h6AdSqBrcIxAAgXdz-v3B0bxiTC-ksADc_Szblsz7rQvFfbm-HT7bZ1XL4bsM_asUURcwntMziJsDYv2IG_IZ29E-x6Q-o8X94qQUEmwhhDhnCvzR73u_lPOfR2qgqCLbkcFE__mn9WB-1VfwW7H_DqV9DkwKYK7M0io-43LvxYatvgMsrwap-p4wEffe-ljtcBwrQlBdN4PP7Q0JGnYBjixX0YQ0"/>
+<div class="absolute inset-0 bg-black/30 group-hover:bg-black/10 transition-colors duration-1000"></div>
+<div class="absolute top-8 left-8 right-8 flex justify-between items-start z-10">
+<h4 class="font-sans text-[10px] font-bold tracking-[0.2em] text-white uppercase relative z-10">ZIND NAABA HOTEL</h4>
+</div>
+<div class="absolute bottom-8 left-8 z-10"><p class="vertical-text font-label text-[8px] tracking-[0.5em] text-white/60 uppercase">RESIDENT STUDY ROOM</p></div>
+</div>
+<!-- Project 2 -->
+<div class="project-item group relative aspect-[3/4] overflow-hidden bg-neutral-100" data-category="tasarim">
+<img alt="Project" class="absolute inset-0 w-full h-full object-cover grayscale transition-all duration-[1500ms] group-hover:grayscale-0 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDb8oJUAbKO838Rur4GmMdhoZA52T9apeuU9wT1MD8aED3l4BUvMiWzCyCUvgmQ_hUnxgOfF8IiulBiI2jOUD_rMvhMhY5q4XF5oN3Orkq525thVCe6a7Qn84IkmcCKdp7RVHGwlMXKCQZWlSwoQRYqNQ54bsoQ6pAqtTv5QeYJjApl9fwBFVCYyWIR0fqefLofCqY7cPmi_F1xk7yjOVIZsTO7FKo0OjDyPcryEMVFbFFRsn19bmHoDjlgz-s838-TizdClIfaG6s"/>
+<div class="absolute inset-0 bg-black/30 group-hover:bg-black/10 transition-colors duration-1000"></div>
+<div class="absolute top-8 left-8 right-8 flex justify-between items-start z-10">
+<h4 class="font-sans text-[10px] font-bold tracking-[0.2em] text-white uppercase relative z-10">ZIND NAABA HOTEL</h4>
+</div>
+<div class="absolute bottom-8 left-8 z-10"><p class="vertical-text font-label text-[8px] tracking-[0.5em] text-white/60 uppercase">RESIDENT BEDROOM</p></div>
+</div>
+<!-- Project 3 -->
+<div class="project-item group relative aspect-[3/4] overflow-hidden bg-neutral-100" data-category="mimari">
+<img alt="Project" class="absolute inset-0 w-full h-full object-cover grayscale transition-all duration-[1500ms] group-hover:grayscale-0 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA6ch6quj8NI1itL20E5PhIg-48fajZE_vr98u3teQ-X7iSPzBfAvJnkTJ3RuJVxc2gjJk51KmYZk9sWDTwAjNMVHOwiJPfJh3i0VYt8Cfzsf6cPXv8SRUsh66wCIyRnDgQLMJg2_1yHEHCnFIbIJoBzDcFEntZjDdLiFO8q1WvslXUxTqhQNEyc8D_USmsB4iizRnCFmQqpbt_btAIebK4vy_8mB0LYZXdZk9Mtj6xqQ8e91yqi86iYoLhuoh8fXoG0Gcgep-wrSw"/>
+<div class="absolute inset-0 bg-black/30 group-hover:bg-black/10 transition-colors duration-1000"></div>
+<div class="absolute top-8 left-8 right-8 flex justify-between items-start z-10">
+<h4 class="font-sans text-[10px] font-bold tracking-[0.2em] text-white uppercase relative z-10">ZIND NAABA HOTEL</h4>
+</div>
+<div class="absolute bottom-8 left-8 z-10"><p class="vertical-text font-label text-[8px] tracking-[0.5em] text-white/60 uppercase">RESIDENT LIVING ROOM</p></div>
+</div>
+<!-- Project 4 -->
+<div class="project-item group relative aspect-[3/4] overflow-hidden bg-neutral-100" data-category="uygulama">
+<img alt="Project" class="absolute inset-0 w-full h-full object-cover grayscale transition-all duration-[1500ms] group-hover:grayscale-0 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCVUCHLvB4gqKIu87ZlNcr3oZLDY1XgwMEMQcp-pzAUlFS1Nn-nmjan1oheeXLiJ94VJmZA_oBfMSPF7jZZuVG47cEkP7h1goKj5Y9WgqVshN-x4CHN0Cdm1zFfAK5KszWNO6pl8w1-gfW6Wb3njqQOsjkQ8-pCuF6dDd8ggmvjFL-N9m4Fe4Lj-pi8WbEEAKONv-Sz-Yl9wNOSPvazMnMZ5Gjdm2myTHVi_vIL4aoeENqkME8bn_RKrHn4r6XvpVXXxsRugi5gKPU"/>
+<div class="absolute inset-0 bg-black/30 group-hover:bg-black/10 transition-colors duration-1000"></div>
+<div class="absolute top-8 left-8 right-8 flex justify-between items-start z-10">
+<h4 class="font-sans text-[10px] font-bold tracking-[0.2em] text-white uppercase relative z-10">MARBLE ATRIUM</h4>
+</div>
+<div class="absolute bottom-8 left-8 z-10"><p class="vertical-text font-label text-[8px] tracking-[0.5em] text-white/60 uppercase">LUXURY FINISHINGS</p></div>
+</div>
+<!-- Project 5 -->
+<div class="project-item group relative aspect-[3/4] overflow-hidden bg-neutral-100" data-category="mimari">
+<img alt="Project" class="absolute inset-0 w-full h-full object-cover grayscale transition-all duration-[1500ms] group-hover:grayscale-0 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDbQTBOayjmIt4JzHbORA9-NQOes7Uaoo4WrcuGAAwzEXJzUo0V4OeCDNGGyxzFDBzG1_DbgXDr5aROetwtqZ4iPhEiaV39HyWZ67_PbpZY6a2KYJHEC2_-3JaDiLZ_71qMkfLsbA991AHjCOdDh70fnYJ3lWy-tXN7nbh5DnUk-PZt4xV5nniOugFFMI4ACHWAkPu85H_YU43TPpuqCiveXM-RLOTvgub4LA47ECVZBRKJhuyDW83lyXynnNyLY1ieUH6-gh23YZs"/>
+<div class="absolute inset-0 bg-black/30 group-hover:bg-black/10 transition-colors duration-1000"></div>
+<div class="absolute top-8 left-8 right-8 flex justify-between items-start z-10">
+<h4 class="font-sans text-[10px] font-bold tracking-[0.2em] text-white uppercase relative z-10">BRUTALIST VILLA</h4>
+</div>
+<div class="absolute bottom-8 left-8 z-10"><p class="vertical-text font-label text-[8px] tracking-[0.5em] text-white/60 uppercase">EXTERNAL ENVELOPE</p></div>
+</div>
+<!-- Project 6 -->
+<div class="project-item group relative aspect-[3/4] overflow-hidden bg-neutral-100" data-category="tasarim">
+<img alt="Project" class="absolute inset-0 w-full h-full object-cover grayscale transition-all duration-[1500ms] group-hover:grayscale-0 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBg-MKl4zF6vfhExOXkEX-PKVlktOgQYI9EevfKIIYXVJ2wtmRpvybiQLaOtQdeYc_lIPrntEOUrCatq_Efo6fw-z-0-6TilLvAsA4tcYK-QcbjqdetFT2T2EreDjugTzsElsUeoEqEM9i_daWDWBBOJXiZvrjMKWtS2z5I5ZuzOLXWozpZ8MroEnEj5yRtFuaubPctxfeO_ZAZ5E5Tawo9b6yB5w0pmG4_axQCW--XoR8nAAImAE_M5UpM2vFx3tuR2ePYvZ-VmaY"/>
+<div class="absolute inset-0 bg-black/30 group-hover:bg-black/10 transition-colors duration-1000"></div>
+<div class="absolute top-8 left-8 right-8 flex justify-between items-start z-10">
+<h4 class="font-sans text-[10px] font-bold tracking-[0.2em] text-white uppercase relative z-10">CRAFT STUDIO</h4>
+</div>
+<div class="absolute bottom-8 left-8 z-10"><p class="vertical-text font-label text-[8px] tracking-[0.5em] text-white/60 uppercase">WORKSPACE INTERIOR</p></div>
+</div>
+</div>
+</div>
+</section>
+<!-- About Us Section -->
+<section class="bg-white py-20 md:py-32" id="about-us">
+<div class="max-w-7xl mx-auto px-6 md:px-12">
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
+<!-- Text Content -->
+<div class="lg:col-span-7 order-2 lg:order-1">
+<div class="mb-12">
+<h2 class="display-condensed text-neutral-900 tracking-[-0.04em] font-light md:text-8xl lg:text-5xl text-5xl uppercase">GELENEKLERİN ötesinde.</h2>
+<div class="h-[1px] w-12 bg-neutral-900 mt-4"></div>
+</div>
+<div class="space-y-8 max-w-2xl">
+<div class="flex items-start gap-4">
+<span class="vertical-text font-label text-[9px] tracking-[0.5em] text-neutral-400 uppercase mt-2">Atölye Felsefesi</span>
+<div class="flex-1">
+<p class="font-body text-lg md:text-xl text-neutral-600 leading-relaxed font-light">
+                        Mimarlığın yaşayan bir varlık olduğu ilkesiyle kurulan DEQOIN, yapı mühendisliğinin soğuk hassasiyetini, kişiye özel iç mekanların sıcak ruhuyla birleştiriyor. Biz sadece ev inşa etmiyoruz; atmosferler kurguluyoruz. Her proje benzersiz bir monolittir; kimliğin ve zamansızlığın tekil, uyumlu bir ifadesidir.
+                      </p>
+</div>
+</div>
+<div class="pt-8">
+<a class="group relative inline-flex items-center gap-8 pb-4" href="#">
+<span class="font-sans text-[11px] font-bold tracking-[0.3em] text-neutral-900 uppercase">HİKAYEMİZİ KEŞFEDİN</span>
+<div class="flex items-center">
+<div class="w-12 h-[1px] bg-neutral-900 transition-all duration-500 group-hover:w-20"></div>
+<span class="material-symbols-outlined text-neutral-900 !text-lg -ml-1 group-hover:translate-x-2 transition-transform duration-500">arrow_right_alt</span>
+</div>
+</a>
+</div>
+</div>
+</div>
+<!-- Image Frame -->
+<div class="lg:col-span-5 order-1 lg:order-2">
+<div class="relative p-4 border border-neutral-100 group">
+<div class="overflow-hidden aspect-[4/5] md:aspect-square">
+<img alt="Atmospheric architectural interior" class="w-full h-full object-cover transition-transform duration-[3000ms] group-hover:scale-110" src="https://lh3.googleusercontent.com/aida/ADBb0ugyJwBEbhWP_ICZvYFAsw_1qZpzO774axc4nWH6sPTIPqFd9g23QoQO88lEhQij5zZYNdr5yqRxlIuG6GXNz7n_g-OkbeUYm7XdYrdZLenNf3ykQ-hlq3IXhwJ2UM3tSIM4MasVhnrj2Unm1101J_Rwx34MTl28uYNUIUtks6yYRhUIQLEmaHqCoXR6iLnFtHQidB_X6p6UmztI8MlaCgKC43L_FK3rjQlinNV0UuBQeAdcC-2fLGEoc5PEF4ReCTD2PI_KmLVkBw"/>
+</div>
+<!-- Decorative elements -->
+<div class="absolute -top-2 -right-2 w-12 h-12 border-t border-r border-neutral-300"></div>
+<div class="absolute -bottom-2 -left-2 w-12 h-12 border-b border-l border-neutral-300"></div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Hero Slider Logic (Smooth Slow Motion)
+            const heroSlides = document.querySelectorAll('.hero-slide');
+            const heroPrev = document.getElementById('hero-prev');
+            const heroNext = document.getElementById('hero-next');
+            const heroCurrLabel = document.getElementById('hero-count-curr');
+            const heroProgress = document.getElementById('hero-progress');
+            let heroIndex = 0;
+            const heroTotal = heroSlides.length;
+
+            const updateHero = (newIndex) => {
+                heroSlides[heroIndex].classList.remove('active');
+                heroIndex = (newIndex + heroTotal) % heroTotal;
+                heroSlides[heroIndex].classList.add('active');
+                heroCurrLabel.textContent = (heroIndex + 1).toString().padStart(2, '0');
+                
+                // Reset progress
+                heroProgress.style.transition = 'none';
+                heroProgress.style.width = '0%';
+                setTimeout(() => {
+                    heroProgress.style.transition = 'width 8000ms linear';
+                    heroProgress.style.width = '100%';
+                }, 50);
+            };
+
+            heroNext.addEventListener('click', () => updateHero(heroIndex + 1));
+            heroPrev.addEventListener('click', () => updateHero(heroIndex - 1));
+
+            // Auto-play hero
+            let heroInterval = setInterval(() => updateHero(heroIndex + 1), 8000);
+            updateHero(0); // Initial start
+
+            // Before-After Logic
+            const sliders = document.querySelectorAll('.ba-slider');
+            let isAnySliderDragging = false;
+            
+            const initSlider = (container) => {
+                const beforeImgContainer = container.querySelector('.before-img-container');
+                const beforeImg = beforeImgContainer.querySelector('img');
+                const handle = container.querySelector('.handle');
+                let isDragging = false;
+
+                const updateImageSize = () => {
+                    beforeImg.style.width = container.offsetWidth + 'px';
+                };
+                
+                window.addEventListener('resize', updateImageSize);
+                updateImageSize();
+
+                const moveSlider = (e) => {
+                    if (!isDragging) return;
+                    const rect = container.getBoundingClientRect();
+                    const x = (e.pageX || (e.touches ? e.touches[0].pageX : 0)) - rect.left;
+                    let position = (x / rect.width) * 100;
+                    if (position < 0) position = 0;
+                    if (position > 100) position = 100;
+                    handle.style.left = `${position}%`;
+                    beforeImgContainer.style.width = `${position}%`;
+                };
+
+                const startDragging = (e) => { 
+                    isDragging = true; 
+                    isAnySliderDragging = true;
+                    if (e.type === 'mousedown') moveSlider(e);
+                };
+                const stopDragging = () => { 
+                    isDragging = false; 
+                    isAnySliderDragging = false;
+                };
+
+                handle.addEventListener('mousedown', startDragging);
+                container.addEventListener('mousedown', startDragging);
+                window.addEventListener('mouseup', stopDragging);
+                window.addEventListener('mousemove', moveSlider);
+                
+                handle.addEventListener('touchstart', startDragging, {passive: true});
+                container.addEventListener('touchstart', startDragging, {passive: true});
+                window.addEventListener('touchend', stopDragging);
+                window.addEventListener('touchmove', moveSlider, {passive: true});
+            };
+
+            sliders.forEach(initSlider);
+
+            // Carousel Logic
+            const track = document.getElementById('carousel-track');
+            const slides = document.querySelectorAll('.carousel-slide');
+            const nextBtn = document.getElementById('carousel-next');
+            const prevBtn = document.getElementById('carousel-prev');
+            const currentLabel = document.getElementById('carousel-current');
+            const totalLabel = document.getElementById('carousel-total');
+            const progressBar = document.getElementById('carousel-progress');
+            
+            let currentSlide = 0;
+            const totalSlides = slides.length;
+            totalLabel.textContent = totalSlides.toString().padStart(2, '0');
+
+            const updateCarousel = () => {
+                track.style.transform = `translateX(-${currentSlide * 100}%)`;
+                currentLabel.textContent = (currentSlide + 1).toString().padStart(2, '0');
+                
+                progressBar.style.transition = 'none';
+                progressBar.style.width = '0%';
+                setTimeout(() => {
+                    progressBar.style.transition = 'width 5000ms linear';
+                    progressBar.style.width = '100%';
+                }, 50);
+            };
+
+            const nextSlide = () => {
+                currentSlide = (currentSlide + 1) % totalSlides;
+                updateCarousel();
+            };
+
+            const prevSlide = () => {
+                currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
+                updateCarousel();
+            };
+
+            nextBtn.addEventListener('click', nextSlide);
+            prevBtn.addEventListener('click', prevSlide);
+
+            // Auto-play Before-After
+            let autoPlayInterval = setInterval(() => {
+                if (!isAnySliderDragging) nextSlide();
+            }, 5000);
+
+            // Filtering Logic
+            const filterBtns = document.querySelectorAll('.filter-btn');
+            const projectItems = document.querySelectorAll('.project-item');
+
+            filterBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    filterBtns.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    const filter = btn.getAttribute('data-filter');
+                    projectItems.forEach(item => {
+                        if (filter === 'all' || item.getAttribute('data-category') === filter) {
+                            item.style.display = 'block';
+                        } else {
+                            item.style.display = 'none';
+                        }
+                    });
+                });
+            });
+        });
+    </script>
+</body></html>
