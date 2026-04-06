@@ -1,13 +1,14 @@
 "use client";
 
+import { use, useState, useRef, useEffect } from "react";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { materyalKategorileri } from "../../../data/materyal-studyo";
-import { useState, useRef, useEffect } from "react";
 import ConsultationModal from "../../../components/ConsultationModal";
 
-export default function MateryalKategoriPage({ params }: { params: { slug: string } }) {
-  const category = materyalKategorileri.find((c) => c.slug === params.slug);
+export default function MateryalKategoriPage({ params }: { params: Promise<{ slug: string }> }) {
+  const resolvedParams = use(params);
+  const category = materyalKategorileri.find((c) => c.slug === resolvedParams.slug);
   const [isConsultationOpen, setIsConsultationOpen] = useState(false);
   const heroRef = useRef<HTMLDivElement>(null);
 

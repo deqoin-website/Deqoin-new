@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, Suspense } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { projectsData } from "../../data/projects";
@@ -13,7 +13,7 @@ const categories = [
   { key: "restorasyon", title: "RESTORASYON" },
 ] as const;
 
-export default function AllProjects() {
+function GaleriContent() {
   const searchParams = useSearchParams();
   const materialParam = searchParams.get("material");
   
@@ -99,5 +99,13 @@ export default function AllProjects() {
         </div>
       </div>
     </main>
+  );
+}
+
+export default function AllProjects() {
+  return (
+    <Suspense fallback={<div style={{ minHeight: '100vh', background: '#0a0a0a' }}></div>}>
+      <GaleriContent />
+    </Suspense>
   );
 }

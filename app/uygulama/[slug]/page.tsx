@@ -2,12 +2,13 @@
 
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { uygulamaBirimleri } from "../../../data/uygulama-birimleri";
-import { useState, useRef, useEffect } from "react";
+import { use, useState, useRef, useEffect } from "react";
 import ConsultationModal from "../../../components/ConsultationModal";
+import { uygulamaBirimleri } from "../../../data/uygulama-birimleri";
 
-export default function UygulamaBirimiPage({ params }: { params: { slug: string } }) {
-  const unit = uygulamaBirimleri.find((u) => u.slug === params.slug);
+export default function UygulamaBirimiPage({ params }: { params: Promise<{ slug: string }> }) {
+  const resolvedParams = use(params);
+  const unit = uygulamaBirimleri.find((u) => u.slug === resolvedParams.slug);
   const [isConsultationOpen, setIsConsultationOpen] = useState(false);
   const heroRef = useRef<HTMLDivElement>(null);
 
