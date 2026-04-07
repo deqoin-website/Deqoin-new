@@ -246,15 +246,16 @@ export default function Page() {
 
         <div className="process-timeline">
           {[
-            { id: "01", title: "Randevu", detail: "Kusursuz sürecin ilk adımı." },
-            { id: "02", title: "Keşif", detail: "İhtiyaçların ve potansiyelin öngörülmesi." },
-            { id: "03", title: "Tasarım", detail: "Vizyonun ve mimari kimliğin kurgulanması." },
-            { id: "04", title: "Malzeme", detail: "Projeye özel premium donatıların entegrasyonu." },
-            { id: "05", title: "Uygulama", detail: "Tüm değerlerinizi ortaya koyan usta işi inşa süreci." }
+            { id: "01", icon: "calendar_today", title: "Randevu", detail: "Kusursuz sürecin ilk adımı." },
+            { id: "02", icon: "visibility", title: "Keşif", detail: "İhtiyaçların ve potansiyelin öngörülmesi." },
+            { id: "03", icon: "architecture", title: "Tasarım", detail: "Vizyonun ve mimari kimliğin kurgulanması." },
+            { id: "04", icon: "layers", title: "Malzeme", detail: "Projeye özel premium donatıların entegrasyonu." },
+            { id: "05", icon: "precision_manufacturing", title: "Uygulama", detail: "Tüm değerlerinizi ortaya koyan usta işi inşa süreci." }
           ].map((step, idx) => (
             <div key={idx} className="process-step">
               <div className="step-number">
-                <span>{step.id}</span>
+                <span className="material-symbols-outlined step-icon">{step.icon}</span>
+                <span className="step-id">{step.id}</span>
               </div>
               <div className="step-content">
                 <h3>{step.title}</h3>

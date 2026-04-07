@@ -2868,27 +2868,63 @@ video {
 }
 
 .step-number {
-  font-family: var(--font-headline), serif;
-  font-size: 1.5rem;
-  color: #cca883;
-  width: 4.5rem;
-  height: 4.5rem;
+  position: relative;
+  width: 5rem;
+  height: 5rem;
   background: #0a0a0a;
-  border: 1px solid rgba(204, 168, 131, 0.3);
+  border: 1px solid rgba(204, 168, 131, 0.2);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   margin: 0 auto 2.5rem;
-  transition: all 0.5s ease;
-  position: relative;
+  transition: all 0.7s cubic-bezier(0.19, 1, 0.22, 1);
+  z-index: 2;
 }
 
 .process-step:hover .step-number {
   background: #cca883;
-  color: #0a0a0a;
   border-color: #cca883;
-  box-shadow: 0 0 30px rgba(204, 168, 131, 0.2);
+  box-shadow: 0 15px 40px rgba(204, 168, 131, 0.15);
+}
+
+.step-icon {
+  font-family: 'Material Symbols Outlined';
+  font-size: 1.6rem !important;
+  color: #cca883;
+  font-variation-settings: 'wght' 100, 'opsz' 24; /* Hairline weight */
+  transition: all 0.7s cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+.step-id {
+  position: absolute;
+  top: -0.5rem;
+  right: -0.5rem;
+  font-family: var(--font-headline), serif;
+  font-size: 0.65rem;
+  color: #cca883;
+  background: #0f0f0f;
+  width: 1.8rem;
+  height: 1.8rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: 1px solid rgba(204, 168, 131, 0.3);
+  letter-spacing: 0;
+  transition: all 0.7s cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+.process-step:hover .step-icon {
+  color: #0a0a0a;
+  transform: scale(1.1);
+}
+
+.process-step:hover .step-id {
+  background: #fff;
+  color: #0a0a0a;
+  border-color: #fff;
+  transform: scale(1.1);
 }
 
 .step-content h3 {
