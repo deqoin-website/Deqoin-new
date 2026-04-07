@@ -271,11 +271,11 @@ export default function Page() {
           <div className="section-heading">
             <div>
               <span className="section-small-label" style={{ letterSpacing: "0.5em", color: "#cca883", fontSize: "0.75rem", marginBottom: "1rem", display: "block" }}>STUDIO SELECTION</span>
-              <h2 style={{ marginBottom: "0.5rem" }}>Design & Collection</h2>
+              <h2 style={{ marginBottom: "0.5rem", textTransform: "uppercase", color: "#000" }}>DESIGN & COLLECTION</h2>
               <span style={{ 
                 fontFamily: "var(--font-display), sans-serif", 
                 fontSize: "1.1rem", 
-                color: "rgba(255,255,255,0.5)", 
+                color: "rgba(0,0,0,0.5)", 
                 letterSpacing: "0.3em", 
                 textTransform: "uppercase",
                 display: "block",
@@ -283,7 +283,7 @@ export default function Page() {
               }}>
                 TASARIM VE KOLEKSİYON
               </span>
-              <div className="section-line" />
+              <div className="section-line" style={{ background: "#000" }} />
             </div>
           </div>
         </div>
