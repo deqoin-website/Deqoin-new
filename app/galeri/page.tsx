@@ -6,16 +6,16 @@ import { useSearchParams } from "next/navigation";
 import { projectsData } from "../../data/projects";
 
 const categories = [
-  { key: "all", title: "HEPSİ" },
-  { key: "konut", title: "KONUT" },
-  { key: "ticari", title: "TİCARİ" },
-  { key: "ic-mimari", title: "İÇ MİMARİ" },
-  { key: "restorasyon", title: "RESTORASYON" },
+  { key: "all", title: "HEPSİ", sideLabel: "Selection" },
+  { key: "konut", title: "KONUT", sideLabel: "Residential" },
+  { key: "ticari", title: "TİCARİ", sideLabel: "Commercial" },
+  { key: "ic-mimari", title: "İÇ MİMARİ", sideLabel: "Interiors" },
+  { key: "restorasyon", title: "RESTORASYON", sideLabel: "Revival" },
 ] as const;
 
 function GaleriContent() {
   const searchParams = useSearchParams();
-  const materialParam = searchParams.get("material");
+  const materialParam = searchParams?.get("material") ?? null;
   
   const [activeFilter, setActiveFilter] = useState<(typeof categories)[number]["key"]>("all");
   const [searchTerm, setSearchTerm] = useState("");
@@ -68,16 +68,21 @@ function GaleriContent() {
             />
           </div>
 
-          <div className="filter-bar" style={{ justifyContent: "center" }}>
+          <div className="filter-bar" style={{ justifyContent: "center", borderBottom: 'none' }}>
             {categories.map((filter) => (
               <button
                 key={filter.key}
                 type="button"
                 className={`filter-button ${activeFilter === filter.key ? "active" : ""}`}
                 onClick={() => setActiveFilter(filter.key)}
+                style={{ borderBottom: 'none' }}
               >
-                <span className="filter-border" style={{ borderColor: 'rgba(255,255,255,0.2)' }} />
-                <span className="filter-text" style={{ color: 'white' }}>{filter.title}</span>
+                <span className="vertical-text" style={{ fontSize: '0.55rem', color: activeFilter === filter.key ? '#fff' : 'rgba(255,255,255,0.4)', opacity: 1, letterSpacing: '0.4em' }}>
+                  {filter.sideLabel}
+                </span>
+                <span style={{ fontSize: '0.75rem', color: activeFilter === filter.key ? '#fff' : 'rgba(255,255,255,0.6)', letterSpacing: '0.25em', borderBottom: activeFilter === filter.key ? '1px solid #fff' : 'none', paddingBottom: '0.5rem' }}>
+                  {filter.title}
+                </span>
               </button>
             ))}
           </div>
