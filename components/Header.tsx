@@ -81,7 +81,7 @@ export default function Header() {
           <Link href="/faaliyet-alanlarimiz" onClick={() => setIsMenuOpen(false)}>Design & Collection</Link>
           <Link href="/galeri" onClick={() => setIsMenuOpen(false)}>Galeri</Link>
           <Link href="/hakkimizda" onClick={() => setIsMenuOpen(false)}>Hakkımızda</Link>
-          <Link href="/iletisim" onClick={() => setIsMenuOpen(false)}>İletişim</Link>
+          <Link href="/iletisim" onClick={() => setIsMenuOpen(false)}>Randevu Talep Et</Link>
         </nav>
         <div className="mobile-menu-footer">
           <span>DEQOIN ARCHITECTURAL STUDIO</span>
@@ -171,7 +171,7 @@ export default function Header() {
               <Link href="/faaliyet-alanlarimiz">Design & Collection</Link>
               <Link href="/galeri">Galeri</Link>
               <Link href="/hakkimizda">Hakkımızda</Link>
-              <Link href="/iletisim">İletişim</Link>
+              <Link href="/iletisim">Randevu Talep Et</Link>
             </div>
             <Link href="/" className="brand-mark">
               <img

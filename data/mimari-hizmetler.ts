@@ -1,11 +1,13 @@
 export interface MimariService {
   slug: string;
   title: string;
+  sideLabel: string;
   description: string;
   image: string;
-  sideLabel: string;
+  sliderImages?: string[]; // Optional custom slider images for sub-pages
   process: { title: string; desc: string }[];
   focusAreas: { title: string; icon: string; desc: string }[];
+  categories?: { label: string; value: string }[];
 }
 
 export const mimariServices: MimariService[] = [
@@ -15,6 +17,15 @@ export const mimariServices: MimariService[] = [
     sideLabel: "Structural Form",
     image: "/images/slider/mimari_slide.png",
     description: "Bir projenin gerçek değeri, henüz temeli atılmadan önce kağıt üzerindeki o ilk çizgilerle belirlenir. Mimarlık alanında sadece fiziksel bir dış kabuk değil; içinde barınacak hayatın tüm karakterini yansıtan gerçek bir yaşam alanı kurguluyoruz.\n\nVilla, özel konut, ticari alan veya ofis projelerinizde 'inşa etmek' ile 'yaşam alanı kurgulamak' arasındaki farkın mimari zeka olduğunu çok iyi biliyoruz. Projenizin yerleşim planından dış cephe kimliğine kadar tüm detayları; sizin henüz dile getirmediğiniz, belki de farkında dahi olmadığınız ihtiyaçlarınızı öngören bir profesyonellikle şekillendiriyoruz. Aslında neye ihtiyacınız olduğunu biliyor ve size tam olarak bu eksiksiz deneyimi sunuyoruz.\n\nProjenizin ana omurgasını oluşturmak ve size özel vizyonumuzu keşfetmek için randevu talep edebilirsiniz.",
+    categories: [
+      { label: "TÜM PROJELER", value: "ALL" },
+      { label: "LÜKS KONUT", value: "luks-konut" },
+      { label: "TİCARİ YAPI", value: "ticari-yapi" },
+      { label: "KARMA KULLANIM", value: "karma-kullanim" },
+      { label: "KURUMSAL ALAN", value: "kurumsal-alan" },
+      { label: "BUTİK OTEL", value: "butik-otel" },
+      { label: "KÜLTÜR YAPISI", value: "kultur-yapisi" },
+    ],
     process: [
       { title: "Konsept ve Keşif", desc: "İhtiyaçlarınızı ve arazinin ruhunu analiz ederek projenin ana fikrini ve karakterini oluşturuyoruz." },
       { title: "Form ve Kütle Etüdü", desc: "Yapının çevreyle olan diyaloğunu, ışık ve gölge oyunlarını rasyonel bir estetik düzlemde kurguluyoruz." },
@@ -33,6 +44,15 @@ export const mimariServices: MimariService[] = [
     sideLabel: "Interior Essence",
     image: "/images/about_interior.png",
     description: "İç Mimarlık disiplinini, bir binanın sadece dört duvarı veya dış kabuğu olarak değil; o kabuğun içindeki yaşamın gerçek karakteri ve ruhu olarak tanımlıyoruz. Villa, özel konut veya ticari alan projelerinizde, mekanın kurgusunu henüz uygulama başlamadan en ince detayına kadar dijital dünyada kusursuz görsel render çalışmalarımızla somutlaştırıyoruz.\n\nTasarım sürecimizde, sizin henüz kelimelere dökmediğiniz, belki de mekanın içine girdiğinizde eksikliğini hissedeceğiniz o ince detayları profesyonel bir öngörüyle planlıyoruz. Tasarımın sadece görsellikten ibaret olmadığını, bir yaşam kültürü olduğunu biliyor ve size bu eksiksiz deneyimi sunuyoruz.\n\nProjelerinizin iç mekan kimliğini belirlemek ve vizyoner render çalışmalarımızı incelemek için randevu talep edebilirsiniz.",
+    categories: [
+      { label: "TÜM PROJELER", value: "ALL" },
+      { label: "LÜKS KONUT & VİLLA", value: "luks-konut" },
+      { label: "REZİDANS & DAİRE", value: "rezidans" },
+      { label: "OFİS & ÇALIŞMA ALANI", value: "kurumsal-alan" },
+      { label: "OTEL & KONAKLAMA", value: "butik-otel" },
+      { label: "TİCARİ & SHOWROOM", value: "ticari-yapi" },
+      { label: "ÖZEL MOBİLYA TASARIMI", value: "mobilya-detay" },
+    ],
     process: [
       { title: "İç Mekan Kurgusu & Konsept", desc: "Mekanın ruhuna ve kullanım senaryolarına uygun, özgün bir konsept dili oluşturuyoruz." },
       { title: "Görselleştirme & Render", desc: "Henüz uygulama başlamadan, hayalinizdeki mekanı foto-gerçekçi renderlar ile dijital ortamda inşa ediyoruz." },
@@ -47,13 +67,20 @@ export const mimariServices: MimariService[] = [
   },
   {
     slug: "restorasyon",
-    title: "Restorasyon Mimarlığı",
+    title: "Restorasyon",
     sideLabel: "Heritage Revival",
     image: "/images/projects/gallery_1.png",
-    description: "Restorasyon Mimarlığı disiplinimizi, sıradan bir eski bina onarımı veya basit bir güçlendirme çalışmasının çok ötesinde konumlandırıyoruz. Bizim için her tarihi yapı; kaya ve taş otellerinin yeniden tasarlanmasından, köhne cephelerin modern birer mimari kimliğe dönüştürülmesine kadar uzanan bir dönüşüm yolculuğudur. Peri bacası formlarından ilham alan o kesintisiz, oval hatları ve heykelsi formları yapıya entegre ederek, geçmişin dokusunu bugünün lüks anlayışıyla yeniden kurguluyoruz.\n\nTarihi bir yapının aslında neye ihtiyacı olduğunu ve sizin o yapıda hissetmek istediğiniz ama henüz dile dökemediğiniz eksiklikleri çok iyi biliyoruz. Biz sadece bir yapıyı korumuyoruz; o yapıyı özgünlüğünden koparmadan, yaşayan ve nefes alan kusursuz bir yaşam alanına dönüştürüyoruz. Sizin profesyonel vizyonumuza olan ihtiyacınızın farkındayız ve bu dönüşümü en üst düzeyde gerçekleştiriyoruz.\n\nÖzel projelerinizin geleceğini şekillendirmek için randevu talep edebilirsiniz.",
+    description: "Restorasyon disiplinimizi, sıradan bir eski bina onarımı veya basit bir güçlendirme çalışmasının çok ötesinde konumlandırıyoruz. Bizim için her tarihi yapı; kaya ve taş otellerinin yeniden tasarlanmasından, köhne cephelerin modern birer mimari kimliğe dönüştürülmesine kadar uzanan bir dönüşüm yolculuğudur. Peri bacası formlarından ilham alan o kesintisiz, oval hatları ve heykelsi formları yapıya entegre ederek, geçmişin dokusunu bugünün lüks anlayışıyla yeniden kurguluyoruz.\n\nTarihi bir yapının aslında neye ihtiyacı olduğunu ve sizin o yapıda hissetmek istediğiniz ama henüz dile dökemediğiniz eksiklikleri çok iyi biliyoruz. Biz sadece bir yapıyı korumuyoruz; o yapıyı özgünlüğünden koparmadan, yaşayan ve nefes alan kusursuz bir yaşam alanına dönüştürüyoruz. Sizin profesyonel vizyonumuza olan ihtiyacınızın farkındayız ve bu dönüşümü en üst düzeyde gerçekleştiriyoruz.\n\nÖzel projelerinizin geleceğini şekillendirmek için randevu talep edebilirsiniz.",
+    categories: [
+      { label: "TÜM PROJELER", value: "ALL" },
+      { label: "BUTİK OTEL & KAYA", value: "butik-otel" },
+      { label: "TARİHİ KONUT", value: "luks-konut" },
+      { label: "CEPHE DÖNÜŞÜMÜ", value: "ticari-yapi" },
+      { label: "KÜLTÜR YAPISI", value: "kultur-yapisi" },
+    ],
     process: [
-      { title: "Tarihi Doku Analizi & Etüd", desc: "Yapının özgün kimliğini ve potansiyelini en ince ayrıntısına kadar analiz ederek yeni vizyonumuzu temellendiriyoruz." },
-      { title: "Cephe Dönüşüm Tasarımı", desc: "Karaktersizleşmiş cepheleri, modern ve lüks bir mimari kimlikle tamamen yeniden kurguluyoruz." },
+      { title: "Tarihi Doku Analizi & Etüd", desc: "Yapının özgün kimliğini and potansiyelini en ince ayrıntısına kadar analiz ederek yeni vizyonumuzu temellendiriyoruz." },
+      { title: "Cephe Dönüşüm Tasarımı", desc: "Karaktersizleşmiş cepheleri, modern ve lüks mimari kimlikle tamamen yeniden kurguluyoruz." },
       { title: "Oval & Heykelsi Formlar", desc: "Peri bacası formlarından ilham alan kesintisiz hatları ve kaya işçiliğini projeye entegre ediyoruz." },
       { title: "Yüksek Standartlı Uygulama", desc: "Tasarlanan formların sahada milimetrik hassasiyetle hayata geçmesini sağlıyoruz." },
     ],
@@ -65,10 +92,18 @@ export const mimariServices: MimariService[] = [
   },
   {
     slug: "peyzaj-mimarligi",
-    title: "Peyzaj Mimarlığı",
+    title: "Peyzaj",
     sideLabel: "Natural Integration",
     image: "/images/projects/gallery_2.png",
-    description: "Peyzaj Mimarlığı disiplinimizi, sıradan bir bahçe düzenlemesi veya ağaç dikim faaliyetinin çok ötesinde konumlandırıyoruz. Villa, ticari ve otel projelerinizdeki dış mekanları, yapının kendi mimari kimliğiyle bütünleşen, yaşayan ve nefes alan eksiksiz birer yaşam alanı olarak kurguluyoruz. Dış mekanı, yapının sadece çevresi değil, onun ayrılmaz bir parçası olarak görüyoruz.\n\nHenüz farkında dahi olmadığınız dış mekan ihtiyaçlarınızı profesyonel bir öngörüyle analiz ediyor ve yapıyla kusursuz uyum sağlayan o eksik parçayı projenize ekliyoruz. Sert peyzaj elemanlarından bitkisel kurguya kadar her detayı, fonksiyonellik ve estetik dengesini en üst seviyede tutarak planlıyoruz. Ne istediğinizi biliyor ve size taahhüt ettiğimiz bu yüksek standartlı dış mekan deneyimini somutlaştırıyoruz.\n\nDış mekan projelerinizi başlatmak ve vizyonumuzu yerinde keşfetmek için randevu talep edebilirsiniz.",
+    description: "Peyzaj disiplinimizi, sıradan bir bahçe düzenlemesi veya ağaç dikim faaliyetinin çok ötesinde konumlandırıyoruz. Villa, ticari ve otel projelerinizdeki dış mekanları, yapının kendi mimari kimliğiyle bütünleşen, yaşayan ve nefes alan eksiksiz birer yaşam alanı olarak kurguluyoruz. Dış mekanı, yapının sadece çevresi değil, onun ayrılmaz bir parçası olarak görüyoruz.\n\nHenüz farkında dahi olmadığınız dış mekan ihtiyaçlarınızı profesyonel bir öngörüyle analiz ediyor ve yapıyla kusursuz uyum sağlayan o eksik parçayı projenize ekliyoruz. Sert peyzaj elemanlarından bitkisel kurguya kadar her detayı, fonksiyonellik ve estetik dengesini en üst seviyede tutarak planlıyoruz. Ne istediğinizi biliyor ve size taahhüt ettiğimiz bu yüksek standartlı dış mekan deneyimini somutlaştırıyoruz.\n\nDış mekan projelerinizi başlatmak ve vizyonumuzu yerinde keşfetmek için randevu talep edebilirsiniz.",
+    categories: [
+      { label: "TÜM PROJELER", value: "ALL" },
+      { label: "VİLLA PEYZAJ TASARIMI", value: "luks-konut" },
+      { label: "OTEL & REZİDANS PEYZAJI", value: "butik-otel" },
+      { label: "TİCARİ & KAMUSAL ALANLAR", value: "ticari-yapi" },
+      { label: "SERT PEYZAJ & HAVUZ", value: "sert-peyzaj" },
+      { label: "DİKEY BAHÇE & TERAS", value: "dikey-bahce" },
+    ],
     process: [
       { title: "Topografik Analiz & Kurgu", desc: "Arazinin verilerini ve yapının formunu analiz ederek, dış mekanın ana omurgasını planlıyoruz." },
       { title: "Sert Peyzaj Tasarımı", desc: "Yürüyüş yolları, havuzlar ve sosyal donatıları, mimari dille uyumlu heykelsi bir yaklaşımla çözümlüyoruz." },
@@ -83,10 +118,19 @@ export const mimariServices: MimariService[] = [
   },
   {
     slug: "insaat-muhendisligi",
-    title: "İnşaat Mühendisliği",
+    title: "Mühendislik",
     sideLabel: "Structural Integrity",
     image: "/images/projects/gallery_3.png",
-    description: "İnşaat Mühendisliği disiplinimizi, sadece teknik bir hesaplama sürecinden öte, estetik mimariyi ayakta tutan mühendislik zekası olarak görüyoruz. Lüks konut, villa ve ticari yapı projelerinizde; kolon, kiriş ve taşıyıcı statik sistemleri, tasarımın ruhunu bozmadan en güvenli ve efektif formda kurguluyoruz. Mühendisliği, mimari vizyonun görünmez ama en güçlü omurgası olarak tanımlıyoruz.\n\nHenüz farkında dahi olmadığınız teknik ve yapısal ihtiyaçları projenin en başında öngörüyor, sarsılmaz bir güvenliği zamansız bir estetikle birleştirerek eksiksiz bir yaşam alanı kurguluyoruz. Statik çözümlerimizde geleneksel sınırları, modern mühendislik disiplinleri ve ileri düzey analiz yöntemleriyle genişletiyoruz. Projenizin teorideki kusursuzluğunu, pratikteki sağlamlıkla mühürlüyoruz.\n\nYapısal projelendirme adımlarını başlatmak ve statik vizyonumuzu keşfetmek için randevu talep edebilirsiniz.",
+    description: "Mühendislik disiplinimizi, sadece teknik bir hesaplama sürecinden öte, estetik mimariyi ayakta tutan mühendislik zekası olarak görüyoruz. Lüks konut, villa ve ticari yapı projelerinizde; kolon, kiriş ve taşıyıcı statik sistemleri, tasarımın ruhunu bozmadan en güvenli ve efektif formda kurguluyoruz. Mühendisliği, mimari vizyonun görünmez ama en güçlü omurgası olarak tanımlıyoruz.\n\nHenüz farkında dahi olmadığınız teknik ve yapısal ihtiyaçları projenin en başında öngörüyor, sarsılmaz bir güvenliği zamansız bir estetikle birleştirerek eksiksiz bir yaşam alanı kurguluyoruz. Statik çözümlerimizde geleneksel sınırları, modern mühendislik disiplinleri ve ileri düzey analiz yöntemleriyle genişletiyoruz. Projenizin teorideki kusursuzluğunu, pratikteki sağlamlıkla mühürlüyoruz.\n\nYapısal projelendirme adımlarını başlatmak ve statik vizyonumuzu keşfetmek için randevu talep edebilirsiniz.",
+    categories: [
+      { label: "TÜM PROJELER", value: "ALL" },
+      { label: "STATİK PROJELENDİRME", value: "statik-proje" },
+      { label: "BETONARME YAPILAR", value: "betonarme" },
+      { label: "ÇELİK YAPI TASARIMI", value: "celik-yapi" },
+      { label: "GÜÇLENDİRME & RESTORASYON", value: "guclendirme" },
+      { label: "ENDÜSTRİYEL YAPILAR", value: "endustriyel" },
+      { label: "ALT YAPI & DRENAJ", value: "altyapi" },
+    ],
     process: [
       { title: "Statik Analiz & Modelleme", desc: "Yapının yüklerini ve davranışını, en ileri düzey simülasyon yazılımlarıyla dijital ortamda kurguluyoruz." },
       { title: "Sistem Seçimi", desc: "Mimari forma en uygun taşıyıcı sistemi; güvenlik, ekonomi ve estetik dengesiyle belirliyoruz." },
@@ -101,10 +145,19 @@ export const mimariServices: MimariService[] = [
   },
   {
     slug: "elektrik-elektronik-muhendisligi",
-    title: "Elektrik, Elektronik ve Mekanik",
+    title: "Mekanik",
     sideLabel: "Smart Integration",
     image: "/images/projects/gallery_4.png",
-    description: "Elektrik, Elektronik ve Mekanik Mühendisliği disiplinimizi, basit bir teknik altyapı sürecinin ötesinde; lüks konut, villa ve ticari yapılarınızı akıllı, güvenli ve yaşayan bir sisteme dönüştüren teknolojik ve mekanik bir omurga olarak kurguluyoruz. Mühendisliği, mekanın ruhunu teknolojiyle birleştiren ve projeyi geleceğe taşıyan en kritik entegrasyon katmanı olarak görüyoruz.\n\nBelki de henüz farkında olmadığınız teknik ve teknolojik ihtiyaçları en başından öngörüyor, estetik bütünlüğü bozmadan yaşam alanlarına kusursuz bir mühendislik entegre ediyoruz. Akıllı ev otomasyonlarından enerji verimliliğine, iklimlendirme sistemlerinden güvenlik ağlarına kadar her detayı, sadece bugünün değil, yarının teknolojisini de kapsayacak şekilde planlıyoruz. Yaşam kalitenizi artıran bu görünmez ama hayati sistemleri, en yüksek mühendislik standartlarıyla somutlaştırıyoruz.\n\nProjelerinizin teknolojik ve mekanik adımlarını başlatmak ve mühendislik vizyonumuzu keşfetmek için randevu talep edebilirsiniz.",
+    description: "Mekanik Mühendisliği disiplinimizi, basit bir teknik altyapı sürecinin ötesinde; lüks konut, villa ve ticari yapılarınızı akıllı, güvenli ve yaşayan bir sisteme dönüştüren teknolojik ve mekanik bir omurga olarak kurguluyoruz. Mühendisliği, mekanın ruhunu teknolojiyle birleştiren and projeyi geleceğe taşıyan en kritik entegrasyon katmanı olarak görüyoruz.\n\nBelki de henüz farkında olmadığınız teknik ve teknolojik ihtiyaçları en başından öngörüyor, estetik bütünlüğü bozmadan yaşam alanlarına kusursuz bir mühendislik entegre ediyoruz. Akıllı ev otomasyonlarından enerji verimliliğine, iklimlendirme sistemlerinden güvenlik ağlarına kadar her detayı, sadece bugünün değil, yarının teknolojisini de kapsayacak şekilde planlıyoruz. Yaşam kalitenizi artıran bu görünmez ama hayati sistemleri, en yüksek mühendislik standartlarıyla somutlaştırıyoruz.\n\nProjelerinizin teknolojik ve mekanik adımlarını başlatmak ve mühendislik vizyonumuzu keşfetmek için randevu talep edebilirsiniz.",
+    categories: [
+      { label: "TÜM PROJELER", value: "ALL" },
+      { label: "AKILLI EV & OTOMASYON", value: "akilli-ev" },
+      { label: "ELEKTRİK ALTYAPI", value: "elektrik-altyapi" },
+      { label: "MEKANİK & İKLİMLENDİRME", value: "mekanik-iklimlendirme" },
+      { label: "AYDINLATMA TASARIMI", value: "aydinlatma" },
+      { label: "GÜVENLİK SİSTEMLERİ", value: "guvenlik" },
+      { label: "YENİLENEBİLİR ENERJİ", value: "enerji" },
+    ],
     process: [
       { title: "Teknolojik Altyapı Kurgusu", desc: "Projenin dijital ve mekanik ihtiyaçlarını, en son teknoloji trendlerini baz alarak projelendiriyoruz." },
       { title: "Sistem Entegrasyonu", desc: "Elektrik, iklimlendirme ve güvenlik sistemlerini, tek bir merkezden yönetilen akıllı bir ağ altında birleştiriyoruz." },
@@ -115,24 +168,6 @@ export const mimariServices: MimariService[] = [
       { title: "Akıllı Otomasyon", icon: "smart_toy", desc: "Yaşam alanlarınızı kullanıcı alışkanlıklarına göre şekillenen interaktif sistemlerle donatıyoruz." },
       { title: "Yüksek Konfor", icon: "air", desc: "İdeal iklimlendirme ve aydınlatma senaryolarıyla mekan konforunu en üst seviyeye taşıyoruz." },
       { title: "Teknik Güvenlik", icon: "gpp_good", desc: "En kritik altyapı sistemlerini, tavizsiz bir güvenlik ve yedekleme planıyla kurguluyoruz." },
-    ],
-  },
-  {
-    slug: "plan-proje",
-    title: "Plan ve Proje",
-    sideLabel: "Strategic Planning",
-    image: "/images/projects/gallery_1.png",
-    description: "Plan ve Proje disiplinimizi, sadece kağıt üzerindeki bir teknik çizim faaliyeti değil; lüks konut, villa ve ticari projelerinizin tüm kaderini belirleyen kritik bir keşif, taslak ve planlandırma süreci olarak kurguluyoruz. Her tasarımın, doğru yapılmış bir saha keşfi ve ihtiyaç analiziyle başladığını biliyor, projenin en sağlam temellerini bu aşamada atıyoruz.\n\nBelki de henüz farkında dahi olmadığınız mekansal ihtiyaçları ilk keşif anında öngörüyor, doğru bir planlama kurgusuyla eksiksiz bir yaşam alanı projelendiriyoruz. Fonksiyonelliği, yapısal zorunlulukları ve vizyoner tasarım hedeflerini tek bir potada eriterek; uygulanabilirliği yüksek, teknik kusursuzluğu tescilli yol haritaları hazırlıyoruz. Sürecin her adımını, projenin nihai başarısını garanti altına alacak bir titizlikle kurguluyoruz.\n\nProjelerinizin keşif ve projelendirme adımlarını başlatmak ve planlama vizyonumuzu keşfetmek için randevu talep edebilirsiniz.",
-    process: [
-      { title: "Saha Keşfi & Veri Toplama", desc: "Arazinin ve mevcut yapının fiziksel verilerini, en küçük detayı atlamadan yerinde analiz ediyoruz." },
-      { title: "İhtiyaç Programı Analizi", desc: "Müşteri beklentilerini ve projeden beklenen fonksiyonları, vizyoner bir bakış açısıyla kurguluyoruz." },
-      { title: "Taslak Yerleşim (Layout)", desc: "Mekansal akışı ve kütle dağılımını, en verimli ve estetik formda kağıda döküyoruz." },
-      { title: "Uygulama Projeleri", desc: "Taslak aşamasını, inşaatın her adımına rehberlik edecek teknik mükemmellikteki projelere dönüştürüyoruz." },
-    ],
-    focusAreas: [
-      { title: "Analitik Planlama", icon: "troubleshoot", desc: "Her projeyi, kendi özgün verileri ve ihtiyaçları doğrultusunda nokta atışı planlıyoruz." },
-      { title: "Fonksiyonel Akış", icon: "account_tree", desc: "Mekanlar arasındaki bağları, yaşam kalitesini artıracak bir sirkülasyon şemasıyla kurguluyoruz." },
-      { title: "Yasal Mevzuat Uyumu", icon: "gavel", desc: "Tüm planlama süreçlerini, yerel yönetmeliklere ve uluslararası standartlara tam uyumlu projelendiriyoruz." },
     ],
   },
 ];

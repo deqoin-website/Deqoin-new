@@ -1,8 +1,16 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import ConsultationModal from "../../components/ConsultationModal";
+
+const heroSlides = [
+  "/images/slider/mimari_slide.png",
+  "/images/projects/gallery_1.png",
+  "/images/slider/tasarim_slide.png",
+  "/images/projects/gallery_2.png",
+  "/images/slider/uygulama_slide.png",
+];
 
 const mimariSubCategories = [
   {
@@ -19,48 +27,72 @@ const mimariSubCategories = [
   },
   {
     href: "/mimari/restorasyon",
-    title: "Restorasyon Mimarlığı",
+    title: "Restorasyon",
     sideLabel: "Heritage Revival",
     image: "/images/projects/gallery_1.png",
   },
   {
     href: "/mimari/peyzaj-mimarligi",
-    title: "Peyzaj Mimarlığı",
+    title: "Peyzaj",
     sideLabel: "Natural Canvas",
     image: "/images/projects/gallery_2.png",
   },
   {
     href: "/mimari/insaat-muhendisligi",
-    title: "İnşaat Mühendisliği",
+    title: "Mühendislik",
     sideLabel: "Structural Strength",
     image: "/images/projects/gallery_1.png",
   },
   {
     href: "/mimari/elektrik-elektronik-muhendisligi",
-    title: "Elektrik ve Elektronik Mühendisliği",
+    title: "Mekanik",
     sideLabel: "Power & Logic",
     image: "/images/projects/gallery_2.png",
-  },
-  {
-    href: "/mimari/plan-proje",
-    title: "Plan ve Proje",
-    sideLabel: "Detail & Vision",
-    image: "/images/slider/mimari_slide.png",
   },
 ];
 
 export default function MimariPage() {
   const [isConsultationOpen, setIsConsultationOpen] = useState(false);
+  const [currentSlide, setCurrentSlide] = useState(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % heroSlides.length);
+    }, 5000);
+    return () => clearInterval(timer);
+  }, []);
 
   return (
-    <main className="site-shell project-detail-shell" style={{ paddingTop: "12rem" }}>
-      <section className="services-section" style={{ background: "transparent" }}>
-        <div style={{ padding: "0 2rem", marginBottom: "8rem", textAlign: "center" }}>
-          <h1 style={{ fontFamily: "var(--font-smooch), sans-serif", fontSize: "clamp(5rem, 15vw, 10rem)", fontWeight: 100, color: "#fff", letterSpacing: "0.1em", textTransform: "uppercase", margin: 0 }}>DESIGN STUDIO</h1>
-          <p style={{ fontFamily: "var(--font-display), sans-serif", fontSize: "1.4rem", letterSpacing: "0.5em", fontWeight: 300, color: "rgba(255,255,255,0.8)", textTransform: "uppercase", marginTop: "1rem" }}>
-            MİMARİ TASARIM
-          </p>
+    <main className="site-shell project-detail-shell">
+      {/* ── DYNAMIC BLURRED HERO ── */}
+      <section className="mimari-page-hero">
+        <div className="mimari-hero-slider">
+          {heroSlides.map((img: string, idx: number) => (
+            <div 
+              key={idx} 
+              className={`mimari-hero-slide ${idx === currentSlide ? 'active' : ''}`}
+              style={{ backgroundImage: `url(${img})` }}
+            />
+          ))}
         </div>
+        
+        {/* Glassmorphism Blur Overlay */}
+        <div className="mimari-hero-blur-overlay" />
+        <div className="mimari-hero-dark-overlay" />
+
+        <div className="mimari-hero-content-centric">
+          <span className="section-small-label" style={{ color: "#cca883", marginBottom: "1rem", display: "block" }}>
+            CREATIVE VISION
+          </span>
+          <h1 className="mimari-hero-title-main">DESIGN STUDIO</h1>
+          <p className="mimari-hero-sub-main">
+            MİMARİ TASARIMIN GELECEĞİNİ ŞEKİLLENDİRİYORUZ
+          </p>
+          <div className="mimari-hero-line" />
+        </div>
+      </section>
+
+      <section className="services-section" style={{ background: "transparent", paddingTop: "6rem" }}>
         
         <div className="services-grid">
           {mimariSubCategories.map((card) => (
@@ -93,10 +125,10 @@ export default function MimariPage() {
           <span className="section-small-label" style={{ color: "#cca883" }}>BİR SONRAKI ADIM</span>
           <h2 className="mimari-cta-title">Mimari Vizyonunuzu Gerçeğe Dönüştürelim</h2>
           <p className="mimari-cta-sub">
-            Hayalinizdeki projeyi uzman ekibimizle planlamak için ücretsiz danışmanlık randevusu alın.
+            Hayalinizdeki projeyi uzman ekibimizle planlamak için profesyonel randevu oluşturun.
           </p>
           <button type="button" className="hero-cta" onClick={() => setIsConsultationOpen(true)}>
-            <span className="hero-cta-text">ÜCRETSİZ DANIŞMANLIK AL</span>
+            <span className="hero-cta-text">RANDEVU TALEP ET</span>
             <div className="hero-cta-circle">
               <span className="material-symbols-outlined">arrow_right_alt</span>
             </div>

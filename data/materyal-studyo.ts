@@ -3,6 +3,8 @@ export interface MateryalKategori {
   title: string;
   sideLabel: string;
   image: string;
+  sliderImages?: string[];
+  categories?: { label: string; value: string }[];
   description: string;
   longDescription?: {
     title: string;
@@ -16,6 +18,20 @@ export const materyalKategorileri: MateryalKategori[] = [
     title: "Mobilya",
     sideLabel: "Bespoke Furniture",
     image: "https://lh3.googleusercontent.com/aida-public/AB6AXuCVUCHLvB4gqKIu87ZlNcr3oZLDY1XgwMEMQcp-pzAUlFS1Nn-nmjan1oheeXLiJ94VJmZA_oBfMSPF7jZZuVG47cEkP7h1goKj5Y9WgqVshN-x4CHN0Cdm1zFfAK5KszWNO6pl8w1-gfW6Wb3njqQOsjkQ8-pCuF6dDd8ggmvjFL-N9m4Fe4Lj-pi8WbEEAKONv-Sz-Yl9wNOSPvazMnMZ5Gjdm2myTHVi_vIL4aoeENqkME8bn_RKrHn4r6XvpVXXxsRugi5gKPU",
+    sliderImages: [
+      "https://lh3.googleusercontent.com/aida-public/AB6AXuCVUCHLvB4gqKIu87ZlNcr3oZLDY1XgwMEMQcp-pzAUlFS1Nn-nmjan1oheeXLiJ94VJmZA_oBfMSPF7jZZuVG47cEkP7h1goKj5Y9WgqVshN-x4CHN0Cdm1zFfAK5KszWNO6pl8w1-gfW6Wb3njqQOsjkQ8-pCuF6dDd8ggmvjFL-N9m4Fe4Lj-pi8WbEEAKONv-Sz-Yl9wNOSPvazMnMZ5Gjdm2myTHVi_vIL4aoeENqkME8bn_RKrHn4r6XvpVXXxsRugi5gKPU",
+      "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?q=80&w=2000&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?q=80&w=2000&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1524758631624-e2822e304c36?q=80&w=2000&auto=format&fit=crop"
+    ],
+    categories: [
+      { label: "SALON GRUBU", value: "salon-grubu" },
+      { label: "YATAK ODASI", value: "yatak-odasi" },
+      { label: "MUTFAK & YEMEK", value: "mutfak-yemek" },
+      { label: "OFİS MOBİLYASI", value: "ofis-mobilyasi" },
+      { label: "BANYO DETAY", value: "banyo-detay" },
+      { label: "AKSESUAR & DEKOR", value: "aksesuar-dekor" }
+    ],
     description: "Tasarlanan mekanın ruhuna uygun, malzeme ve formun kusursuz uyumuyla üretilen özel mobilya koleksiyonumuz.",
     longDescription: {
       title: "Mimari Vizyonla Entegre Mobilya Tasarımları",
@@ -31,6 +47,20 @@ export const materyalKategorileri: MateryalKategori[] = [
     title: "Aydınlatma",
     sideLabel: "Light Atmosphere",
     image: "https://images.unsplash.com/photo-1540932239986-30128078f3c5?q=80&w=2000&auto=format&fit=crop",
+    sliderImages: [
+      "https://images.unsplash.com/photo-1540932239986-30128078f3c5?q=80&w=2000&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1517430816045-df4b7de11d1d?q=80&w=2000&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1513506003901-1e6a229e2d15?q=80&w=2000&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1550989460-0adf9ea622e2?q=80&w=2000&auto=format&fit=crop"
+    ],
+    categories: [
+      { label: "DEKORATİF AYDINLATMA", value: "dekoratif" },
+      { label: "TEKNİK AYDINLATMA", value: "teknik" },
+      { label: "MİMARİ AYDINLATMA", value: "mimari-isik" },
+      { label: "DIŞ MEKAN & PEYZAJ", value: "dis-mekan" },
+      { label: "HEYKELSİ TASARIMLAR", value: "heykel-isik" },
+      { label: "OTOMASYON & KONTROL", value: "otomasyon" }
+    ],
     description: "Mekanın hiyerarşisini ve derinliğini yöneten, atmosferik ve heykelsi aydınlatma tasarımları.",
     longDescription: {
       title: "Mekanı Şekillendiren Aydınlatma Tasarımları",
@@ -46,6 +76,19 @@ export const materyalKategorileri: MateryalKategori[] = [
     title: "İtalyan Sıvalar ve Dekoratif Boyalar",
     sideLabel: "High-End Texture",
     image: "https://images.unsplash.com/photo-1517430816045-df4b7de11d1d?q=80&w=2000&auto=format&fit=crop",
+    sliderImages: [
+      "https://images.unsplash.com/photo-1517430816045-df4b7de11d1d?q=80&w=2000&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1518193005634-9343360b37cd?q=80&w=2000&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1533090161767-e6ffed986c88?q=80&w=2000&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1581417478175-a9ef18f210c1?q=80&w=2000&auto=format&fit=crop"
+    ],
+    categories: [
+      { label: "BETON DOKULU", value: "beton" },
+      { label: "METALİK YÜZEYLER", value: "metalik" },
+      { label: "KLASİK STUCCO", value: "stucco" },
+      { label: "TRAVERTEN & DOKU", value: "traverten" },
+      { label: "PAS & OKSİT", value: "pas-oksit" }
+    ],
     description: "Duvarları birer sanat eserine dönüştüren, dokulu ve derinlikli İtalyan sıva uygulamaları.",
     longDescription: {
       title: "Yüzeylerin Derinliği: İtalyan Sıvalar",
@@ -61,6 +104,19 @@ export const materyalKategorileri: MateryalKategori[] = [
     title: "Sanatsal Çalışmalar",
     sideLabel: "Creative Soul",
     image: "https://images.unsplash.com/photo-1513364776144-60967b0f800f?q=80&w=2000&auto=format&fit=crop",
+    sliderImages: [
+      "https://images.unsplash.com/photo-1513364776144-60967b0f800f?q=80&w=2000&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?q=80&w=2000&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1541963463532-d68292c34b19?q=80&w=2000&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1549490349-8643362247b5?q=80&w=2000&auto=format&fit=crop"
+    ],
+    categories: [
+      { label: "RESİM & TUVAL", value: "resim" },
+      { label: "HEYKEL & FORM", value: "heykel" },
+      { label: "RÖLYEF", value: "rolyef" },
+      { label: "ENSTALASYON", value: "enstalasyon" },
+      { label: "DİJİTAL SANAT", value: "dijital" }
+    ],
     description: "Projelerimize özel olarak kurgulanan resim, heykel ve enstalasyon gibi sanatsal dokunuşlar.",
     longDescription: {
       title: "Mekana Ruh Katan Sanatsal Dokunuşlar",
@@ -76,6 +132,19 @@ export const materyalKategorileri: MateryalKategori[] = [
     title: "Tuğla ve Taş",
     sideLabel: "Timeless Earth",
     image: "https://images.unsplash.com/photo-1534723328310-e82dad3ee43f?q=80&w=2000&auto=format&fit=crop",
+    sliderImages: [
+      "https://images.unsplash.com/photo-1534723328310-e82dad3ee43f?q=80&w=2000&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1524312015024-aa7f24097402?q=80&w=2000&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1505843513577-22bb7d21e455?q=80&w=2000&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1615529328331-f8917597711f?q=80&w=2000&auto=format&fit=crop"
+    ],
+    categories: [
+      { label: "DOĞAL TAŞ", value: "dogal-tas" },
+      { label: "ANTİK TUĞLA", value: "antik-tugla" },
+      { label: "KÜLTÜR TAŞI", value: "kultur-tasi" },
+      { label: "MERMER & GRANİT", value: "mermer" },
+      { label: "KAYRAK TAŞI", value: "kayrak" }
+    ],
     description: "Doğanın ham gücünü modern mimarlığa entegre eden, karakter sahibi tuğla ve doğal taş seçkilerimiz.",
     longDescription: {
       title: "Doğanın Ham Gücü: Tuğla ve Taş",

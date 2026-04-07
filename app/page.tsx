@@ -18,18 +18,21 @@ const heroSlides = [
   {
     image: "/images/slider/mimari_slide.png",
     title: "DESIGN STUDIO",
+    motto: "Estetik ve Fonksiyonun Mimari Uyumu",
     buttonText: "DESIGN STUDIO İÇİN RANDEVU TALEP EDİNİZ",
     caption: "Design Studio"
   },
   {
     image: "/images/slider/tasarim_slide.png",
     title: "MATERIAL STUDIO",
+    motto: "Dokunulabilir Lüks, Zamansız Detaylar",
     buttonText: "MATERIAL STUDIO İÇİN RANDEVU TALEP EDİNİZ",
     caption: "Material Studio"
   },
   {
     image: "/images/slider/uygulama_slide.png",
     title: "EXECUTION STUDIO",
+    motto: "Hayallerin Kusursuz İnşası",
     buttonText: "EXECUTION STUDIO İÇİN RANDEVU TALEP EDİNİZ",
     caption: "Execution Studio"
   }
@@ -67,21 +70,21 @@ const projects: ProjectItem[] = [
   {
     title: "ZIND NAABA HOTEL",
     label: "RESIDENT STUDY ROOM",
-    category: "ticari",
+    category: "ticari-yapi",
     image:
       "https://lh3.googleusercontent.com/aida-public/AB6AXuDQ33Fr_mp_94UQUZyYOcRBRBK4SsC3hdWkie-fw6V2__i_B1h6AdSqBrcIxAAgXdz-v3B0bxiTC-ksADc_Szblsz7rQvFfbm-HT7bZ1XL4bsM_asUURcwntMziJsDYv2IG_IZ29E-x6Q-o8X94qQUEmwhhDhnCvzR73u_lPOfR2qgqCLbkcFE__mn9WB-1VfwW7H_DqV9DkwKYK7M0io-43LvxYatvgMsrwap-p4wEffe-ljtcBwrQlBdN4PP7Q0JGnYBjixX0YQ0",
   },
   {
     title: "ZIND NAABA HOTEL",
     label: "RESIDENT BEDROOM",
-    category: "konut",
+    category: "luks-konut",
     image:
       "https://lh3.googleusercontent.com/aida-public/AB6AXuDb8oJUAbKO838Rur4GmMdhoZA52T9apeuU9wT1MD8aED3l4BUvMiWzCyCUvgmQ_hUnxgOfF8IiulBiI2jOUD_rMvhMhY5q4XF5oN3Orkq525thVCe6a7Qn84IkmcCKdp7RVHGwlMXKCQZWlSwoQRYqNQ54bsoQ6pAqtTv5QeYJjApl9fwBFVCYyWIR0fqefLofCqY7cPmi_F1xk7yjOVIZsTO7FKo0OjDyPcryEMVFbFFRsn19bmHoDjlgz-s838-TizdClIfaG6s",
   },
   {
     title: "ZIND NAABA HOTEL",
     label: "RESIDENT LIVING ROOM",
-    category: "konut",
+    category: "luks-konut",
     image:
       "https://lh3.googleusercontent.com/aida-public/AB6AXuA6ch6quj8NI1itL20E5PhIg-48fajZE_vr98u3teQ-X7iSPzBfAvJnkTJ3RuJVxc2gjJk51KmYZk9sWDTwAjNMVHOwiJPfJh3i0VYt8Cfzsf6cPXv8SRUsh66wCIyRnDgQLMJg2_1yHEHCnFIbIJoBzDcFEntZjDdLiFO8q1WvslXUxTqhQNEyc8D_USmsB4iizRnCFmQqpbt_btAIebK4vy_8mB0LYZXdZk9Mtj6xqQ8e91yqi86iYoLhuoh8fXoG0Gcgep-wrSw",
   },
@@ -95,14 +98,14 @@ const projects: ProjectItem[] = [
   {
     title: "BRUTALIST VILLA",
     label: "EXTERNAL ENVELOPE",
-    category: "konut",
+    category: "luks-konut",
     image:
       "https://lh3.googleusercontent.com/aida-public/AB6AXuDbQTBOayjmIt4JzHbORA9-NQOes7Uaoo4WrcuGAAwzEXJzUo0V4OeCDNGGyxzFDBzG1_DbgXDr5aROetwtqZ4iPhEiaV39HyWZ67_PbpZY6a2KYJHEC2_-3JaDiLZ_71qMkfLsbA991AHjCOdDh70fnYJ3lWy-tXN7nbh5DnUk-PZt4xV5nniOugFFMI4ACHWAkPu85H_YU43TPpuqCiveXM-RLOTvgub4LA47ECVZBRKJhuyDW83lyXynnNyLY1ieUH6-gh23YZs",
   },
   {
     title: "CRAFT STUDIO",
     label: "WORKSPACE INTERIOR",
-    category: "ticari",
+    category: "ticari-yapi",
     image:
       "https://lh3.googleusercontent.com/aida-public/AB6AXuBg-MKl4zF6vfhExOXkEX-PKVlktOgQYI9EevfKIIYXVJ2wtmRpvybiQLaOtQdeYc_lIPrntEOUrCatq_Efo6fw-z-0-6TilLvAsA4tcYK-QcbjqdetFT2T2EreDjugTzsElsUeoEqEM9i_daWDWBBOJXiZvrjMKWtS2z5I5ZuzOLXWozpZ8MroEnEj5yRtFuaubPctxfeO_ZAZ5E5Tawo9b6yB5w0pmG4_axQCW--XoR8nAAImAE_M5UpM2vFx3tuR2ePYvZ-VmaY",
   },
@@ -174,7 +177,7 @@ export default function Page() {
         <div className="hero-content" style={{ textAlign: "center", display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", gap: "3rem", height: "100%", width: "100%" }}>
           <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "1.5rem" }}>
             <span style={{ fontFamily: "var(--font-display), sans-serif", fontSize: "0.65rem", letterSpacing: "0.6em", fontWeight: 300, color: "rgba(255,255,255,0.8)", textTransform: "uppercase", paddingLeft: "0.6em" }}>
-              Bölüm {String(heroIndex + 1).padStart(2, '0')} &mdash; {heroSlides[heroIndex].caption}
+              {heroSlides[heroIndex].motto} &mdash; {heroSlides[heroIndex].caption}
             </span>
             <h1 style={{ 
               fontFamily: "var(--font-smooch), sans-serif", 
@@ -240,17 +243,17 @@ export default function Page() {
       <section className="process-section">
         <div className="process-header">
           <span className="section-small-label" style={{ letterSpacing: "0.5em", color: "#cca883", fontSize: "0.75rem", marginBottom: "1rem", display: "block" }}>PROFESYONEL İŞ AKIŞIMIZ</span>
-          <h2>Tasarım ve Keşif Sürecimiz</h2>
+          <h2>İş Akışı Sürecimiz</h2>
           <div className="section-line" />
         </div>
 
         <div className="process-timeline">
           {[
-            { id: "01", icon: "calendar_today", title: "Randevu", detail: "Kusursuz sürecin ilk adımı." },
-            { id: "02", icon: "visibility", title: "Keşif", detail: "İhtiyaçların ve potansiyelin öngörülmesi." },
-            { id: "03", icon: "architecture", title: "Tasarım", detail: "Vizyonun ve mimari kimliğin kurgulanması." },
-            { id: "04", icon: "layers", title: "Malzeme", detail: "Projeye özel premium donatıların entegrasyonu." },
-            { id: "05", icon: "precision_manufacturing", title: "Uygulama", detail: "Tüm değerlerinizi ortaya koyan usta işi inşa süreci." }
+            { id: "01", icon: "history_edu", title: "Randevu", detail: "Kusursuz sürecin ilk adımı." },
+            { id: "02", icon: "travel_explore", title: "Keşif", detail: "İhtiyaçların ve potansiyelin öngörülmesi." },
+            { id: "03", icon: "design_services", title: "Tasarım", detail: "Vizyonun ve mimari kimliğin kurgulanması." },
+            { id: "04", icon: "texture", title: "Malzeme", detail: "Projeye özel premium donatıların entegrasyonu." },
+            { id: "05", icon: "construction", title: "Uygulama", detail: "Tüm değerlerinizi ortaya koyan usta işi inşa süreci." }
           ].map((step, idx) => (
             <div key={idx} className="process-step">
               <div className="step-number">

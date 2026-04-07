@@ -35,8 +35,8 @@ export default function IletisimPage() {
           <div className={`cp-info-card ${isCardOpen ? 'card-visible' : ''}`}>
             <h4>NEVŞEHİR - <br /><span>TÜRKİYE</span></h4>
             <div className="cp-info-content">
+              <p>Randevu: randevu@deqoin.com</p>
               <p>Genel: info@deqoin.com</p>
-              <p>Danışma: bilgi@deqoin.com</p>
               <p>Galeri: proje@deqoin.com</p>
               <br />
               <p>350 Evler Mah. Ali Dirikoç Blv.</p>
@@ -49,8 +49,8 @@ export default function IletisimPage() {
         </div>
 
         <div className="contact-footer-title">
-          <div className="watermark">İletişim</div>
-          <h3>BİZİMLE İLETİŞİME GEÇİN</h3>
+          <div className="watermark">Randevu</div>
+          <h3>RANDEVU TALEP EDİN</h3>
         </div>
       </section>
 

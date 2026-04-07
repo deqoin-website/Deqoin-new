@@ -19,11 +19,11 @@ const footerNav = [
     ],
   },
   {
-    label: "İletişim",
+    label: "Randevu",
     links: [
-      { href: "/iletisim", text: "İletişim" },
+      { href: "/iletisim", text: "Randevu Talep Et" },
+      { href: "mailto:randevu@deqoin.com", text: "randevu@deqoin.com" },
       { href: "mailto:info@deqoin.com", text: "info@deqoin.com" },
-      { href: "mailto:proje@deqoin.com", text: "proje@deqoin.com" },
     ],
   },
 ];
@@ -42,7 +42,7 @@ export default function Footer() {
               Birlikte<br />bir şeyler yapalım.
             </h2>
             <Link href="/iletisim" className="footer-cta-btn hero-cta">
-              <span className="hero-cta-text">İLETİŞİME GEÇ</span>
+              <span className="hero-cta-text">RANDEVU TALEP ET</span>
               <div className="hero-cta-circle">
                 <span className="material-symbols-outlined">arrow_right_alt</span>
               </div>

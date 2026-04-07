@@ -62,6 +62,7 @@ export default function ConsultationModal({ isOpen, onClose }: ConsultationModal
     subCategory: "",
     note: "",
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -77,27 +78,44 @@ export default function ConsultationModal({ isOpen, onClose }: ConsultationModal
   const nextStep = () => setCurrentStep((prev) => Math.min(prev + 1, 3));
   const prevStep = () => setCurrentStep((prev) => Math.max(prev - 1, 1));
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (currentStep < 3) {
       nextStep();
     } else {
-      // Final Submit
-      alert(`Sayın ${formData.firstName} ${formData.lastName}, randevu talebiniz başarıyla alınmıştır. Ekibimiz en kısa sürede sizinle iletişime geçecektir.`);
-      onClose();
-      // Reset form
-      setCurrentStep(1);
-      setFormData({
-        firstName: "",
-        lastName: "",
-        email: "",
-        phone: "",
-        company: "",
-        city: "",
-        department: "",
-        subCategory: "",
-        note: "",
-      });
+      setIsSubmitting(true);
+      try {
+        const response = await fetch("/api/appointment", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(formData),
+        });
+
+        if (response.ok) {
+          alert(`Sayın ${formData.firstName} ${formData.lastName}, randevu talebiniz başarıyla alınmıştır. Talebiniz randevu@deqoin.com adresindeki ekibimize iletilmiştir. En kısa sürede profesyonel bir randevu planı için dönüş yapacaktır.`);
+          onClose();
+          // Reset form
+          setCurrentStep(1);
+          setFormData({
+            firstName: "",
+            lastName: "",
+            email: "",
+            phone: "",
+            company: "",
+            city: "",
+            department: "",
+            subCategory: "",
+            note: "",
+          });
+        } else {
+          alert("Talebiniz alınırken bir hata oluştu. Lütfen daha sonra tekrar deneyiniz.");
+        }
+      } catch (error) {
+        console.error("Submission error:", error);
+        alert("Bağlantı hatası oluştu. Lütfen internet bağlantınızı kontrol edip tekrar deneyiniz.");
+      } finally {
+        setIsSubmitting(false);
+      }
     }
   };
 
@@ -287,7 +305,7 @@ export default function ConsultationModal({ isOpen, onClose }: ConsultationModal
                 style={{ flex: 2 }}
               >
                 <span className="premium-btn-text">
-                  {currentStep === 3 ? "TALEBİ GÖNDER" : "DEVAM ET"}
+                  {isSubmitting ? "GÖNDERİLİYOR..." : (currentStep === 3 ? "TALEBİ GÖNDER" : "DEVAM ET")}
                 </span>
                 <span className="material-symbols-outlined premium-btn-icon">east</span>
               </button>
