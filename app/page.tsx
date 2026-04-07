@@ -236,6 +236,35 @@ export default function Page() {
         </div>
       </section>
 
+      {/* ── DESIGN & BUILD PROCESS SECTION ── */}
+      <section className="process-section">
+        <div className="process-header">
+          <span className="section-small-label" style={{ letterSpacing: "0.5em", color: "#cca883", fontSize: "0.75rem", marginBottom: "1rem", display: "block" }}>PROFESYONEL İŞ AKIŞIMIZ</span>
+          <h2>Tasarım ve Keşif Sürecimiz</h2>
+          <div className="section-line" />
+        </div>
+
+        <div className="process-timeline">
+          {[
+            { id: "01", title: "Randevu", detail: "Kusursuz sürecin ilk adımı." },
+            { id: "02", title: "Keşif", detail: "İhtiyaçların ve potansiyelin öngörülmesi." },
+            { id: "03", title: "Tasarım", detail: "Vizyonun ve mimari kimliğin kurgulanması." },
+            { id: "04", title: "Malzeme", detail: "Projeye özel premium donatıların entegrasyonu." },
+            { id: "05", title: "Uygulama", detail: "Tüm değerlerinizi ortaya koyan usta işi inşa süreci." }
+          ].map((step, idx) => (
+            <div key={idx} className="process-step">
+              <div className="step-number">
+                <span>{step.id}</span>
+              </div>
+              <div className="step-content">
+                <h3>{step.title}</h3>
+                <p>{step.detail}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
       <section className="services-section">
         <div className="section-inner" style={{ paddingBottom: "2rem" }}>
           <div className="section-heading">
