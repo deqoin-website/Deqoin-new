@@ -271,7 +271,18 @@ export default function Page() {
           <div className="section-heading">
             <div>
               <span className="section-small-label" style={{ letterSpacing: "0.5em", color: "#cca883", fontSize: "0.75rem", marginBottom: "1rem", display: "block" }}>STUDIO SELECTION</span>
-              <h2>Design & Collection</h2>
+              <h2 style={{ marginBottom: "0.5rem" }}>Design & Collection</h2>
+              <span style={{ 
+                fontFamily: "var(--font-display), sans-serif", 
+                fontSize: "1.1rem", 
+                color: "rgba(255,255,255,0.5)", 
+                letterSpacing: "0.3em", 
+                textTransform: "uppercase",
+                display: "block",
+                marginBottom: "1.5rem"
+              }}>
+                TASARIM VE KOLEKSİYON
+              </span>
               <div className="section-line" />
             </div>
           </div>
