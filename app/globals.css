@@ -883,7 +883,7 @@ video {
 
 .project-grid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(2, 1fr);
 }
 
 .project-card {
@@ -2760,7 +2760,25 @@ video {
   }
   
   .topbar-logo {
-    height: 1.4rem;
+    height: 2.25rem;
+  }
+  
+  .footer-logo {
+    height: 2.5rem;
+    margin-bottom: 2rem;
+  }
+
+  .project-card h4 {
+    top: 1rem;
+    left: 1rem;
+    font-size: 1rem;
+    letter-spacing: 0.1em;
+  }
+
+  .project-card p {
+    bottom: 1rem;
+    left: 1rem;
+    font-size: 0.45rem;
   }
   
   .topbar-actions {

@@ -33,6 +33,18 @@ const smooch = Smooch_Sans({
 export const metadata: Metadata = {
   title: "DEQOIN | Architectural Studio",
   description: "DEQOIN mimari, tasarim ve uygulama odakli kurumsal vitrin sitesi.",
+  icons: {
+    icon: [
+      {
+        url: "/favicon-light.png",
+        media: "(prefers-color-scheme: light)",
+      },
+      {
+        url: "/favicon-dark.png",
+        media: "(prefers-color-scheme: dark)",
+      },
+    ],
+  },
 };
 
 export default function RootLayout({

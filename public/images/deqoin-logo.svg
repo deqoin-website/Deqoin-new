@@ -1,24 +1,24 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 160" fill="none">
-  <!-- deqo — light/white letters -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 240" fill="none">
+  <!-- deqo — pure white for high visibility -->
   <text
-    x="0" y="130"
+    x="0" y="195"
     font-family="'Helvetica Neue', Helvetica, Arial, sans-serif"
-    font-size="148"
-    font-weight="300"
-    letter-spacing="-4"
-    fill="rgba(255,255,255,0.18)"
+    font-size="220"
+    font-weight="200"
+    letter-spacing="-10"
+    fill="#FFFFFF"
   >deqo</text>
 
-  <!-- "in" red block -->
-  <rect x="310" y="0" width="210" height="160" fill="#C8174A" rx="0"/>
+  <!-- "in" red block — aligned to the baseline -->
+  <rect x="540" y="0" width="220" height="240" fill="#BF1F5A" rx="0"/>
 
-  <!-- in — dark text on red -->
+  <!-- in — dark grey text for professional contrast -->
   <text
-    x="316" y="130"
+    x="555" y="195"
     font-family="'Helvetica Neue', Helvetica, Arial, sans-serif"
-    font-size="148"
-    font-weight="700"
-    letter-spacing="-4"
-    fill="#1a1a1a"
+    font-size="220"
+    font-weight="400"
+    letter-spacing="-10"
+    fill="#1A1A1A"
   >in</text>
 </svg>

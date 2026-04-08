@@ -175,7 +175,7 @@ export default function Header() {
             </div>
             <Link href="/" className="brand-mark">
               <img
-                src="/images/deqoin-logo.svg"
+                src="/images/logo-new.jpeg"
                 alt="DEQOIN Architectural Studio"
                 className="topbar-logo"
               />

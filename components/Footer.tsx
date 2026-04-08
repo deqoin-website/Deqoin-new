@@ -70,7 +70,7 @@ export default function Footer() {
         <div className="footer-brand">
           <Link href="/" aria-label="DEQOIN Ana Sayfa">
             <img
-              src="/images/deqoin-logo.svg"
+              src="/images/logo-new.jpeg"
               alt="DEQOIN"
               className="footer-logo"
             />

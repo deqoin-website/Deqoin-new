@@ -274,10 +274,13 @@ export default function ConsultationModal({ isOpen, onClose }: ConsultationModal
                 )}
 
                 <div className="form-group">
+                  <p style={{ fontSize: '0.85rem', color: 'rgba(255,255,255,0.6)', marginBottom: '1rem', fontFamily: 'var(--font-display)', letterSpacing: '0.1em' }}>
+                    HAYALİNİZDEKİ PROJEYİ BİZE ANLATIN
+                  </p>
                   <textarea
                     name="note"
                     className="consultation-input consultation-textarea"
-                    placeholder="Projenizden kısaca bahsedin..."
+                    placeholder="Fikirleriniz, beklentileriniz ve vizyonunuzdan bahsedin..."
                     value={formData.note}
                     onChange={handleInputChange}
                     required
