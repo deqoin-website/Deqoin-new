@@ -110,15 +110,9 @@ export default function Header() {
           <Link href="/faaliyet-alanlarimiz" onClick={() => setIsMenuOpen(false)}>Design & Collection</Link>
           <Link href="/galeri" onClick={() => setIsMenuOpen(false)}>Galeri</Link>
           <Link href="/hakkimizda" onClick={() => setIsMenuOpen(false)}>Hakkımızda</Link>
-          <button 
-            type="button" 
-            onClick={() => {
-              setIsMenuOpen(false);
-              setIsConsultationOpen(true);
-            }}
-          >
+          <Link href="/iletisim" onClick={() => setIsMenuOpen(false)}>
             İLETİŞİM
-          </button>
+          </Link>
         </nav>
         <div className="mobile-menu-footer">
           <span>DEQOIN ARCHITECTURAL STUDIO</span>
@@ -208,25 +202,9 @@ export default function Header() {
               <Link href="/faaliyet-alanlarimiz">Design & Collection</Link>
               <Link href="/galeri">Galeri</Link>
               <Link href="/hakkimizda">Hakkımızda</Link>
-              <button 
-                type="button"
-                className="topbar-nav-button"
-                style={{
-                  background: 'none',
-                  border: 'none',
-                  padding: 0,
-                  color: 'inherit',
-                  fontFamily: 'inherit',
-                  fontSize: 'inherit',
-                  fontWeight: 'inherit',
-                  textTransform: 'inherit',
-                  letterSpacing: 'inherit',
-                  cursor: 'pointer'
-                }}
-                onClick={() => setIsConsultationOpen(true)}
-              >
+              <Link href="/iletisim" className="topbar-nav-button">
                 İLETİŞİM
-              </button>
+              </Link>
             </div>
             <Link href="/" className="brand-mark">
               {logoUrl && (
