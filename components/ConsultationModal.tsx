@@ -325,10 +325,10 @@ export default function ConsultationModal({ isOpen, onClose }: ConsultationModal
                   type="button"
                   className="premium-all-btn"
                   onClick={prevStep}
-                  style={{ background: 'transparent', border: '1px solid rgba(255,255,255,0.2)', flex: 1 }}
+                  style={{ background: 'transparent', border: '1px solid rgba(255,255,255,0.2)', flex: 1, color: '#fff' }}
                 >
-                  <span className="material-symbols-outlined premium-btn-icon" style={{ marginLeft: 0, marginRight: '1rem', transform: 'rotate(180deg)' }}>east</span>
-                  <span className="premium-btn-text">GERİ</span>
+                  <span className="material-symbols-outlined premium-btn-icon" style={{ marginLeft: 0, marginRight: '1rem', transform: 'rotate(180deg)', color: '#fff' }}>east</span>
+                  <span className="premium-btn-text" style={{ color: '#fff' }}>GERİ</span>
                 </button>
               )}
               <button
