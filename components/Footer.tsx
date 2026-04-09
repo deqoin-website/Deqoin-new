@@ -1,4 +1,8 @@
+"use client";
+
+import { useState, useEffect } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 const footerNav = [
   {
@@ -29,7 +33,26 @@ const footerNav = [
 ];
 
 export default function Footer() {
+  const [logoUrl, setLogoUrl] = useState("/images/logo-new.jpeg");
+  const pathname = usePathname();
   const year = new Date().getFullYear();
+
+  useEffect(() => {
+    const fetchSettings = async () => {
+      try {
+        const res = await fetch('/api/settings');
+        const data = await res.json();
+        if (data.logoUrl) setLogoUrl(data.logoUrl);
+      } catch (err) {
+        console.error("Failed to fetch settings:", err);
+      }
+    };
+    fetchSettings();
+  }, []);
+
+  if (pathname.startsWith('/admin')) {
+    return null;
+  }
 
   return (
     <footer className="site-footer">
@@ -70,7 +93,7 @@ export default function Footer() {
         <div className="footer-brand">
           <Link href="/" aria-label="DEQOIN Ana Sayfa">
             <img
-              src="/images/logo-new.jpeg"
+              src={logoUrl}
               alt="DEQOIN"
               className="footer-logo"
             />

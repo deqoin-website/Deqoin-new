@@ -3,7 +3,6 @@
 import { useState, useMemo, Suspense } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { projectsData } from "../../data/projects";
 import ConsultationModal from "../../components/ConsultationModal";
 
 const categories = [
@@ -23,10 +22,28 @@ function GaleriContent() {
   const searchParams = useSearchParams();
   const materialParam = searchParams?.get("material") ?? null;
   
+  const [projectsData, setProjectsData] = useState<any[]>([]);
   const [activeFilter, setActiveFilter] = useState<(typeof categories)[number]["key"]>("all");
   const [searchTerm, setSearchTerm] = useState("");
   const [isConsultationOpen, setIsConsultationOpen] = useState(false);
   const [isMobileDrawerOpen, setIsMobileDrawerOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Fetch projects from MongoDB
+  useMemo(() => {
+    const fetchProjects = async () => {
+      try {
+        const res = await fetch('/api/projects');
+        const data = await res.json();
+        setProjectsData(data);
+      } catch (err) {
+        console.error("Failed to fetch projects:", err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchProjects();
+  }, []);
 
   const filteredProjects = useMemo(() => {
     let result = projectsData;
@@ -193,8 +210,10 @@ function GaleriContent() {
 
           {/* PROJECT GRID */}
           <div className="project-grid" style={{ marginTop: 0 }}>
-            {filteredProjects.length > 0 ? (
-              filteredProjects.map((project) => (
+            {isLoading ? (
+               <div style={{ textAlign: "center", padding: "10rem 0", gridColumn: '1/-1', color: '#cca883' }}>YÜKLENİYOR...</div>
+            ) : filteredProjects.length > 0 ? (
+               filteredProjects.map((project) => (
                 <Link href={`/galeri/${project.slug}`} className="project-card" key={project.slug}>
                   <img src={project.coverImage} alt={project.title} />
                   <div className="project-overlay" />

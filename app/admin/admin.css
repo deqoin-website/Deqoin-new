@@ -1,0 +1,229 @@
+/* ADMIN PANEL CORE STYLES */
+
+.admin-layout {
+  display: flex;
+  min-height: 100vh;
+  background: #0f0f0f;
+  color: #fff;
+  font-family: var(--font-body), sans-serif;
+}
+
+/* SIDEBAR */
+.admin-sidebar {
+  background: #141414;
+  border-right: 1px solid rgba(166, 137, 102, 0.1);
+  height: 100vh;
+  position: sticky;
+  top: 0;
+  display: flex;
+  flex-direction: column;
+  transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 100;
+}
+
+.admin-sidebar.open { width: 280px; }
+.admin-sidebar.closed { width: 80px; }
+
+.sidebar-header {
+  padding: 2rem 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+  margin-bottom: 2rem;
+}
+
+.admin-logo {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.admin-logo img {
+  width: 32px;
+  height: 32px;
+  background: #fff;
+  border-radius: 2px;
+}
+
+.admin-logo span {
+  font-family: var(--font-display), sans-serif;
+  font-size: 0.8rem;
+  letter-spacing: 0.2em;
+  color: #a68966;
+  white-space: nowrap;
+}
+
+.sidebar-toggle {
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.4);
+  cursor: pointer;
+  padding: 0.5rem;
+  transition: color 0.3s ease;
+}
+
+.sidebar-toggle:hover { color: #a68966; }
+
+.sidebar-nav {
+  flex: 1;
+  padding: 0 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  overflow-y: auto;
+}
+
+.sidebar-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.group-label {
+  font-size: 0.6rem;
+  letter-spacing: 0.2em;
+  color: rgba(166, 137, 102, 0.4);
+  font-weight: 700;
+  padding: 0 1rem;
+}
+
+.group-items {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  color: rgba(255, 255, 255, 0.5);
+  border-radius: 4px;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  position: relative;
+}
+
+.nav-item:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.nav-item.active {
+  color: #a68966;
+  background: rgba(166, 137, 102, 0.08);
+}
+
+.sub-items-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 0.5rem 0 0.5rem 3rem;
+  overflow: hidden;
+}
+
+.sub-nav-item {
+  display: block;
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 0.75rem;
+  padding: 0.6rem 0;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.sub-nav-item:hover { color: #fff; }
+.sub-nav-item.active { color: #a68966; }
+
+.nav-active-indicator {
+  position: absolute;
+  left: 0;
+  top: 20%;
+  bottom: 20%;
+  width: 3px;
+  background: #a68966;
+  border-radius: 0 4px 4px 0;
+}
+
+.sidebar-footer {
+  padding: 2rem 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.03);
+}
+
+.logout-btn {
+  width: 100%;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+}
+
+.logout-btn:hover {
+  color: #ff4d4d;
+  background: rgba(255, 77, 77, 0.05);
+}
+
+/* MAIN CONTENT */
+.admin-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.admin-top-bar {
+  height: 80px;
+  background: #121212;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 3rem;
+  position: sticky;
+  top: 0;
+  z-index: 90;
+}
+
+.page-info h1 {
+  font-family: var(--font-display), sans-serif;
+  font-size: 1.1rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.user-profile {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.user-profile span {
+  font-size: 0.85rem;
+  opacity: 0.6;
+}
+
+.avatar {
+  width: 36px;
+  height: 36px;
+  background: #a68966;
+  color: #080808;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  border-radius: 50%;
+}
+
+.admin-content-inner {
+  padding: 3rem;
+  max-width: 1400px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+@media (max-width: 768px) {
+  .admin-sidebar.open { width: 220px; }
+  .admin-sidebar.open span { display: block; font-size: 0.75rem; }
+  .admin-top-bar { padding: 0 1.5rem; }
+  .admin-content-inner { padding: 1.5rem; }
+}

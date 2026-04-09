@@ -122,14 +122,32 @@ const filters = [
 export default function Page() {
   const [heroIndex, setHeroIndex] = useState(0);
   const [isConsultationOpen, setIsConsultationOpen] = useState(false);
-  const [activeFilter, setActiveFilter] =
-    useState<(typeof filters)[number]["key"]>("all");
-  const [activeTeamFilter, setActiveTeamFilter] =
-    useState<(typeof teamFilters)[number]["key"]>("all");
+  const [activeFilter, setActiveFilter] = useState<(typeof filters)[number]["key"]>("all");
+  const [activeTeamFilter, setActiveTeamFilter] = useState<(typeof teamFilters)[number]["key"]>("all");
+  const [slides, setSlides] = useState(heroSlides);
 
   useEffect(() => {
+    const fetchSlides = async () => {
+      try {
+        const res = await fetch('/api/content?page=home');
+        const data = await res.json();
+        if (data.sections) {
+          const heroSection = data.sections.find((s: any) => s.id === 'hero');
+          if (heroSection?.content?.slides?.length > 0) {
+            setSlides(heroSection.content.slides);
+          }
+        }
+      } catch (err) {
+        console.error("Failed to fetch dynamic slides:", err);
+      }
+    };
+    fetchSlides();
+
     const interval = window.setInterval(() => {
-      setHeroIndex((current) => (current + 1) % heroSlides.length);
+      setSlides(current => {
+        setHeroIndex((idx) => (idx + 1) % current.length);
+        return current;
+      });
     }, 8000);
 
     return () => window.clearInterval(interval);
@@ -157,9 +175,9 @@ export default function Page() {
     <main className="site-shell">
 
       <section className="hero-section" id="hero-slider">
-        {heroSlides.map((slide, index) => (
+        {slides.map((slide, index) => (
           <div
-            key={slide.image}
+            key={slide.image + index}
             className={`hero-slide ${index === heroIndex ? "active" : ""}`}
             style={{
               backgroundImage: `url(${slide.image})`,
@@ -177,7 +195,7 @@ export default function Page() {
         <div className="hero-content" style={{ textAlign: "center", display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", gap: "3rem", height: "100%", width: "100%" }}>
           <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "1.5rem" }}>
             <span style={{ fontFamily: "var(--font-display), sans-serif", fontSize: "0.65rem", letterSpacing: "0.6em", fontWeight: 300, color: "rgba(255,255,255,0.8)", textTransform: "uppercase", paddingLeft: "0.6em" }}>
-              {heroSlides[heroIndex].motto} &mdash; {heroSlides[heroIndex].caption}
+              {slides[heroIndex]?.motto} &mdash; {slides[heroIndex]?.caption}
             </span>
             <h1 style={{ 
               fontFamily: "var(--font-smooch), sans-serif", 
@@ -192,7 +210,7 @@ export default function Page() {
               textShadow: "0 15px 50px rgba(0,0,0,0.9)",
               paddingLeft: "0.2em"
             }}>
-              {heroSlides[heroIndex].title}
+              {slides[heroIndex]?.title}
             </h1>
           </div>
           <button 
@@ -201,7 +219,7 @@ export default function Page() {
             type="button" 
             onClick={() => setIsConsultationOpen(true)}
           >
-            <span className="hero-cta-text">{heroSlides[heroIndex].buttonText}</span>
+            <span className="hero-cta-text">{slides[heroIndex]?.buttonText}</span>
             <div className="hero-cta-circle">
               <span className="material-symbols-outlined">arrow_right_alt</span>
             </div>
@@ -211,14 +229,14 @@ export default function Page() {
         <div className="hero-controls">
           <button
             type="button"
-            onClick={() => setHeroIndex((current) => (current - 1 + heroSlides.length) % heroSlides.length)}
+            onClick={() => setHeroIndex((current) => (current - 1 + slides.length) % slides.length)}
             aria-label="Previous hero slide"
           >
             <span className="material-symbols-outlined">chevron_left</span>
           </button>
           <button
             type="button"
-            onClick={() => setHeroIndex((current) => (current + 1) % heroSlides.length)}
+            onClick={() => setHeroIndex((current) => (current + 1) % slides.length)}
             aria-label="Next hero slide"
           >
             <span className="material-symbols-outlined">chevron_right</span>
@@ -229,9 +247,9 @@ export default function Page() {
           <div className="hero-count">
             <span>{String(heroIndex + 1).padStart(2, "0")}</span>
             <div />
-            <small>{String(heroSlides.length).padStart(2, "0")}</small>
+            <small>{String(slides.length).padStart(2, "0")}</small>
           </div>
-          <p className="vertical-text">{heroSlides[heroIndex].caption}</p>
+          <p className="vertical-text">{slides[heroIndex]?.caption}</p>
         </div>
 
         <div className="hero-progress">

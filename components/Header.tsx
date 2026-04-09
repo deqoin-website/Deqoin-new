@@ -13,6 +13,7 @@ export default function Header() {
   const [isConsultationOpen, setIsConsultationOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [isScrolled, setIsScrolled] = useState(false);
+  const [logoUrl, setLogoUrl] = useState("/images/logo-new.jpeg");
   const pathname = usePathname();
   const searchInputRef = useRef<HTMLInputElement>(null);
 
@@ -42,6 +43,20 @@ export default function Header() {
       setSearchQuery(""); // clear when closed
     }
   }, [isSearchOpen]);
+  
+  // Fetch site settings (logo)
+  useEffect(() => {
+    const fetchSettings = async () => {
+      try {
+        const res = await fetch('/api/settings');
+        const data = await res.json();
+        if (data.logoUrl) setLogoUrl(data.logoUrl);
+      } catch (err) {
+        console.error("Failed to fetch settings:", err);
+      }
+    };
+    fetchSettings();
+  }, []);
 
   // Close menus when route changes
   useEffect(() => {
@@ -69,6 +84,10 @@ export default function Header() {
 
     return { projects: filteredProjects, team: filteredTeam };
   }, [searchQuery]);
+
+  if (pathname.startsWith('/admin')) {
+    return null;
+  }
 
   return (
     <>
@@ -203,7 +222,7 @@ export default function Header() {
             </div>
             <Link href="/" className="brand-mark">
               <img
-                src="/images/logo-new.jpeg"
+                src={logoUrl}
                 alt="DEQOIN Architectural Studio"
                 className="topbar-logo"
               />
