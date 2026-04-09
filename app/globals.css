@@ -3710,6 +3710,33 @@ video {
    GALERI PAGE SPECIFIC OVERRIDES
    ========================================= */
 
+.galeri-header-section {
+  margin-bottom: 5rem;
+  text-align: center;
+}
+
+.galeri-title {
+  font-family: var(--font-smooch), sans-serif;
+  font-size: clamp(4rem, 12vw, 10rem);
+  font-weight: 100;
+  color: #fff;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  margin: 0;
+  opacity: 0.9;
+}
+
+.galeri-subtitle {
+  font-family: var(--font-display), sans-serif;
+  font-size: 0.75rem;
+  letter-spacing: 0.5em;
+  font-weight: 300;
+  color: rgba(255,255,255,0.5);
+  text-transform: uppercase;
+  margin-top: -1rem;
+  transition: all 0.3s ease;
+}
+
 .galeri-page .section-inner {
   max-width: 1560px; /* Slightly wider for immersive look */
   padding: 5rem 2rem;
@@ -3731,6 +3758,13 @@ video {
 }
 
 @media (max-width: 767px) {
+  .galeri-subtitle {
+     margin-top: 1rem; /* More spacing on mobile as requested */
+     font-size: 0.7rem;
+     letter-spacing: 0.35em;
+     opacity: 0.6;
+  }
+
   .galeri-page .section-inner {
     padding-left: 0;
     padding-right: 0;

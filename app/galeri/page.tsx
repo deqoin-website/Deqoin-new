@@ -63,9 +63,9 @@ function GaleriContent() {
       <div className="section-inner" style={{ paddingBottom: "6rem" }}>
         
         {/* HEADER SECTION */}
-        <div style={{ marginBottom: "5rem", textAlign: "center" }}>
-          <h1 style={{ fontFamily: "var(--font-smooch), sans-serif", fontSize: "clamp(4rem, 12vw, 10rem)", fontWeight: 100, color: "#fff", letterSpacing: "0.2em", textTransform: "uppercase", margin: 0, opacity: 0.9 }}>GALERİ</h1>
-          <p style={{ fontFamily: "var(--font-display), sans-serif", fontSize: "0.75rem", letterSpacing: "0.5em", fontWeight: 300, color: "rgba(255,255,255,0.5)", textTransform: "uppercase", marginTop: "-1rem" }}>
+        <div className="galeri-header-section">
+          <h1 className="galeri-title">GALERİ</h1>
+          <p className="galeri-subtitle">
             Tüm Çalışmalarımız & Portfolyo
           </p>
         </div>
