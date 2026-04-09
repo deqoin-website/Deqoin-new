@@ -57,12 +57,13 @@ export default function ConsultationModal({ isOpen, onClose }: ConsultationModal
     email: "",
     phone: "",
     company: "",
-    city: "",
+    city: "Nevşehir",
     department: "",
     subCategory: "",
     note: "",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -92,21 +93,8 @@ export default function ConsultationModal({ isOpen, onClose }: ConsultationModal
         });
 
         if (response.ok) {
-          alert(`Sayın ${formData.firstName} ${formData.lastName}, randevu talebiniz başarıyla alınmıştır. Talebiniz randevu@deqoin.com adresindeki ekibimize iletilmiştir. En kısa sürede profesyonel bir randevu planı için dönüş yapacaktır.`);
-          onClose();
-          // Reset form
-          setCurrentStep(1);
-          setFormData({
-            firstName: "",
-            lastName: "",
-            email: "",
-            phone: "",
-            company: "",
-            city: "",
-            department: "",
-            subCategory: "",
-            note: "",
-          });
+          setIsSuccess(true);
+          // 4 saniye sonra veya kapatınca resetlenebilir
         } else {
           alert("Talebiniz alınırken bir hata oluştu. Lütfen daha sonra tekrar deneyiniz.");
         }
@@ -129,7 +117,48 @@ export default function ConsultationModal({ isOpen, onClose }: ConsultationModal
         </button>
 
         <div className="consultation-content">
-          {/* STEP INDICATOR */}
+          {isSuccess ? (
+            <div className="success-view-container" style={{ textAlign: 'center', padding: '2rem 0' }}>
+              <div className="success-icon-wrap" style={{ marginBottom: '2rem' }}>
+                <div className="check-circle">
+                  <span className="material-symbols-outlined" style={{ fontSize: '4rem', color: '#fff' }}>check</span>
+                </div>
+              </div>
+              <h2 className="consultation-title" style={{ fontSize: '2.5rem', marginBottom: '1.5rem' }}>
+                Talebiniz Alındı
+              </h2>
+              <p className="consultation-subtitle" style={{ maxWidth: '400px', margin: '0 auto 2.5rem', lineHeight: '1.8' }}>
+                Sayın {formData.firstName} {formData.lastName}, randevu talebiniz başarıyla ekibimize iletildi. 
+                Profesyonel ekibimiz en kısa sürede sizinle iletişime geçecektir.
+              </p>
+              <button 
+                className="premium-all-btn submit-btn-invert" 
+                onClick={() => {
+                  onClose();
+                  setTimeout(() => {
+                    setIsSuccess(false);
+                    setCurrentStep(1);
+                    setFormData({
+                      firstName: "",
+                      lastName: "",
+                      email: "",
+                      phone: "",
+                      company: "",
+                      city: "Nevşehir",
+                      department: "",
+                      subCategory: "",
+                      note: "",
+                    });
+                  }, 500);
+                }}
+                style={{ margin: '0 auto', minWidth: '200px' }}
+              >
+                <span className="premium-btn-text">TEKRAR DÖN</span>
+              </button>
+            </div>
+          ) : (
+            <>
+              {/* STEP INDICATOR */}
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '3rem' }}>
             <div style={{ display: 'flex', gap: '0.5rem' }}>
               {[1, 2, 3].map((step) => (
@@ -314,6 +343,8 @@ export default function ConsultationModal({ isOpen, onClose }: ConsultationModal
               </button>
             </div>
           </form>
+          </>
+          )}
         </div>
       </div>
       
@@ -321,8 +352,39 @@ export default function ConsultationModal({ isOpen, onClose }: ConsultationModal
         .form-group-fade-in {
           animation: fadeIn 0.5s ease-out forwards;
         }
+        .success-view-container {
+          animation: slideUpFade 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        .check-circle {
+          width: 80px;
+          height: 80px;
+          border-radius: 50%;
+          background: rgba(255,255,255,0.1);
+          border: 1px solid rgba(255,255,255,0.2);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          margin: 0 auto;
+          position: relative;
+          overflow: hidden;
+        }
+        .check-circle::after {
+          content: "";
+          position: absolute;
+          inset: 0;
+          background: linear-gradient(45deg, transparent, rgba(255,255,255,0.2), transparent);
+          transform: translateX(-100%);
+          animation: shine 2s infinite;
+        }
+        @keyframes shine {
+          to { transform: translateX(100%); }
+        }
         @keyframes fadeIn {
           from { opacity: 0; transform: translateY(10px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes slideUpFade {
+          from { opacity: 0; transform: translateY(30px); }
           to { opacity: 1; transform: translateY(0); }
         }
       `}</style>
