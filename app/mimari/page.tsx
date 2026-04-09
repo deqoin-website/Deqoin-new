@@ -18,46 +18,80 @@ const mimariSubCategories = [
     title: "Mimarlık",
     sideLabel: "Structural Form",
     image: "/images/slider/mimari_slide.png",
+    slug: "mimarlik"
   },
   {
     href: "/mimari/ic-mimarlik",
     title: "İç Mimarlık",
     sideLabel: "Interior Essence",
     image: "/images/about_interior.png",
+    slug: "ic-mimarlik"
   },
   {
     href: "/mimari/restorasyon",
     title: "Restorasyon",
     sideLabel: "Heritage Revival",
     image: "/images/projects/gallery_1.png",
+    slug: "restorasyon"
   },
   {
     href: "/mimari/peyzaj-mimarligi",
     title: "Peyzaj",
     sideLabel: "Natural Canvas",
     image: "/images/projects/gallery_2.png",
+    slug: "peyzaj-mimarligi"
   },
   {
     href: "/mimari/insaat-muhendisligi",
     title: "Mühendislik",
     sideLabel: "Structural Strength",
     image: "/images/projects/gallery_1.png",
+    slug: "insaat-muhendisligi"
   },
   {
     href: "/mimari/elektrik-elektronik-muhendisligi",
     title: "Mekanik",
     sideLabel: "Power & Logic",
     image: "/images/projects/gallery_2.png",
+    slug: "elektrik-elektronik-muhendisligi"
   },
 ];
 
 export default function MimariPage() {
   const [isConsultationOpen, setIsConsultationOpen] = useState(false);
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [slides, setSlides] = useState(heroSlides);
+  const [categories, setCategories] = useState(mimariSubCategories);
+  const [pageInfo, setPageInfo] = useState({ title: 'DESIGN STUDIO', subtitle: 'MİMARİ TASARIMIN GELECEĞİNİ ŞEKİLLENDİRİYORUZ' });
 
   useEffect(() => {
+    const fetchContent = async () => {
+      try {
+        const res = await fetch('/api/content?page=mimari');
+        const data = await res.json();
+        if (data.sections) {
+          const hero = data.sections.find((s: any) => s.id === 'hero');
+          const cats = data.sections.find((s: any) => s.id === 'categories');
+          
+          if (hero) {
+            if (hero.slides?.length > 0) setSlides(hero.slides);
+            setPageInfo({ title: hero.title, subtitle: hero.subtitle });
+          }
+          if (cats?.items?.length > 0) {
+            setCategories(cats.items);
+          }
+        }
+      } catch (err) {
+        console.error("Failed to fetch mimari content:", err);
+      }
+    };
+    fetchContent();
+
     const timer = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % heroSlides.length);
+      setSlides(current => {
+        setCurrentSlide((prev) => (prev + 1) % current.length);
+        return current;
+      });
     }, 5000);
     return () => clearInterval(timer);
   }, []);
@@ -67,7 +101,7 @@ export default function MimariPage() {
       {/* ── DYNAMIC BLURRED HERO ── */}
       <section className="mimari-page-hero">
         <div className="mimari-hero-slider">
-          {heroSlides.map((img: string, idx: number) => (
+          {slides.map((img: string, idx: number) => (
             <div 
               key={idx} 
               className={`mimari-hero-slide ${idx === currentSlide ? 'active' : ''}`}
@@ -84,9 +118,9 @@ export default function MimariPage() {
           <span className="section-small-label" style={{ color: "#cca883", marginBottom: "1rem", display: "block" }}>
             CREATIVE VISION
           </span>
-          <h1 className="mimari-hero-title-main">DESIGN STUDIO</h1>
+          <h1 className="mimari-hero-title-main">{pageInfo.title}</h1>
           <p className="mimari-hero-sub-main">
-            MİMARİ TASARIMIN GELECEĞİNİ ŞEKİLLENDİRİYORUZ
+            {pageInfo.subtitle}
           </p>
           <div className="mimari-hero-line" />
         </div>
@@ -95,8 +129,8 @@ export default function MimariPage() {
       <section className="services-section" style={{ background: "transparent", paddingTop: "6rem" }}>
         
         <div className="services-grid">
-          {mimariSubCategories.map((card) => (
-            <Link key={card.title} href={card.href} className="service-card">
+          {categories.map((card) => (
+            <Link key={card.title} href={card.href || `/mimari/${card.slug}`} className="service-card">
               <img src={card.image} alt={card.title} />
               <div className="service-overlay" />
               <div className="service-copy">

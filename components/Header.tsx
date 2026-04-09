@@ -13,7 +13,7 @@ export default function Header() {
   const [isConsultationOpen, setIsConsultationOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [isScrolled, setIsScrolled] = useState(false);
-  const [logoUrl, setLogoUrl] = useState("/images/logo-new.jpeg");
+  const [logoUrl, setLogoUrl] = useState("");
   const pathname = usePathname();
   const searchInputRef = useRef<HTMLInputElement>(null);
 
@@ -46,11 +46,18 @@ export default function Header() {
   
   // Fetch site settings (logo)
   useEffect(() => {
+    // Check cache first
+    const cachedLogo = localStorage.getItem('deqoin_logo');
+    if (cachedLogo) setLogoUrl(cachedLogo);
+
     const fetchSettings = async () => {
       try {
         const res = await fetch('/api/settings');
         const data = await res.json();
-        if (data.logoUrl) setLogoUrl(data.logoUrl);
+        if (data.logoUrl) {
+          setLogoUrl(data.logoUrl);
+          localStorage.setItem('deqoin_logo', data.logoUrl);
+        }
       } catch (err) {
         console.error("Failed to fetch settings:", err);
       }

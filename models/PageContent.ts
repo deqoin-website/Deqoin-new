@@ -4,16 +4,25 @@ const PageContentSchema = new mongoose.Schema({
   page: { 
     type: String, 
     required: true, 
-    unique: true,
-    enum: ['home', 'about', 'services'] 
+    unique: true
   },
   title: String,
   sections: [
     {
       id: String,
       title: String,
+      subtitle: String,
+      description: String,
+      heroImage: String,
+      image: String,
+      slides: [mongoose.Schema.Types.Mixed],
+      gallery: [String],
+      items: [mongoose.Schema.Types.Mixed],
+      process: [mongoose.Schema.Types.Mixed],
+      focusAreas: [mongoose.Schema.Types.Mixed],
+      categories: [mongoose.Schema.Types.Mixed],
       content: mongoose.Schema.Types.Mixed,
-      type: { type: String, enum: ['text', 'image', 'hero', 'stats', 'list'] }
+      type: String
     }
   ],
   metadata: {
