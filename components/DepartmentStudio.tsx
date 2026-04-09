@@ -2,6 +2,7 @@
 
 import { useState, useMemo, useEffect } from "react";
 import { ProjectDetail, Category } from "../data/projects";
+import ConsultationModal from "./ConsultationModal";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -233,13 +234,12 @@ export default function DepartmentStudio({
                 </ul>
               </div>
               <div className="drawer-footer">
-                <Link 
-                  href="/iletisim" 
-                  className="hero-cta" 
-                  onClick={() => setIsMobileDrawerOpen(false)}
-                >
+                <button className="hero-cta" onClick={() => {
+                  setIsMobileDrawerOpen(false);
+                  setIsConsultationOpen(true);
+                }}>
                   <span className="hero-cta-text">RANDEVU TALEP ET</span>
-                </Link>
+                </button>
               </div>
             </motion.div>
           </>
@@ -270,9 +270,9 @@ export default function DepartmentStudio({
             <p style={{ fontSize: "0.8rem", color: "rgba(255,255,255,0.4)", lineHeight: "1.6", marginBottom: "2rem" }}>
               Projeniz için profesyonel bir yaklaşım mı arıyorsunuz? Uzman ekibimizle süreci hemen planlayın.
             </p>
-            <Link href="/iletisim" className="hero-cta">
+            <button className="hero-cta" onClick={() => setIsConsultationOpen(true)}>
               <span className="hero-cta-text">RANDEVU TALEP ET</span>
-            </Link>
+            </button>
           </div>
         </aside>
 
@@ -298,9 +298,9 @@ export default function DepartmentStudio({
                     <div className="story-block"><h5>TEKNİK DETAYLAR</h5><p>{project.techDetails}</p></div>
                   </div>
                   <div className="project-card-footer">
-                    <Link href="/iletisim" className="project-action-btn">
+                    <button className="project-action-btn" onClick={() => setIsConsultationOpen(true)}>
                       SÜRECİ BAŞLAT <span className="material-symbols-outlined">arrow_right_alt</span>
-                    </Link>
+                    </button>
                   </div>
                 </div>
               </div>
@@ -310,6 +310,11 @@ export default function DepartmentStudio({
           )}
         </div>
       </div>
+
+      <ConsultationModal 
+        isOpen={isConsultationOpen} 
+        onClose={() => setIsConsultationOpen(false)} 
+      />
 
 
       <style jsx>{`

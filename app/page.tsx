@@ -213,16 +213,17 @@ export default function Page() {
               {slides[heroIndex]?.title}
             </h1>
           </div>
-          <Link 
-            href="/iletisim"
+          <button 
             className="hero-cta" 
             style={{ marginTop: "1rem", position: "relative", zIndex: 100 }} 
+            type="button" 
+            onClick={() => setIsConsultationOpen(true)}
           >
             <span className="hero-cta-text">{slides[heroIndex]?.buttonText}</span>
             <div className="hero-cta-circle">
               <span className="material-symbols-outlined">arrow_right_alt</span>
             </div>
-          </Link>
+          </button>
         </div>
 
         <div className="hero-controls">
