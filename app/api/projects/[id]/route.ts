@@ -2,13 +2,18 @@ import { NextResponse } from "next/server";
 import connectToDatabase from "@/lib/mongodb";
 import Project from "@/models/Project";
 
+type RouteParams = {
+  params: Promise<{ id: string }>;
+};
+
 export async function GET(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: RouteParams
 ) {
   try {
+    const { id } = await params;
     await connectToDatabase();
-    const project = await Project.findById(params.id);
+    const project = await Project.findById(id);
     if (!project) return NextResponse.json({ error: "Project not found" }, { status: 404 });
     return NextResponse.json(project);
   } catch (error) {
@@ -18,12 +23,13 @@ export async function GET(
 
 export async function PATCH(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: RouteParams
 ) {
   try {
+    const { id } = await params;
     const body = await request.json();
     await connectToDatabase();
-    const project = await Project.findByIdAndUpdate(params.id, body, { new: true });
+    const project = await Project.findByIdAndUpdate(id, body, { new: true });
     if (!project) return NextResponse.json({ error: "Project not found" }, { status: 404 });
     return NextResponse.json(project);
   } catch (error) {
@@ -33,11 +39,12 @@ export async function PATCH(
 
 export async function DELETE(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: RouteParams
 ) {
   try {
+    const { id } = await params;
     await connectToDatabase();
-    const project = await Project.findByIdAndDelete(params.id);
+    const project = await Project.findByIdAndDelete(id);
     if (!project) return NextResponse.json({ error: "Project not found" }, { status: 404 });
     return NextResponse.json({ message: "Project deleted successfully" });
   } catch (error) {
