@@ -31,7 +31,7 @@ const smooch = Smooch_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "deqoin stüdyo",
+  title: " Deqoin I Design Studio ",
   description: "DEQOIN mimari, tasarim ve uygulama odakli kurumsal vitrin sitesi.",
   icons: {
     icon: "/favicon.png",

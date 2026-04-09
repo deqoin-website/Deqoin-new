@@ -143,8 +143,11 @@ video {
 }
 
 .topbar-logo {
-  height: 1.8rem;
+  height: auto;
+  max-height: 44px;
   width: auto;
+  object-fit: contain;
+  display: block;
 }
 
 .icon-button {
@@ -2508,13 +2511,7 @@ video {
    LOGO
    ============================================= */
 
-.topbar-logo {
-  height: 44px;
-  width: auto;
-  display: block;
-  object-fit: contain;
-  transition: opacity 0.3s ease;
-}
+/* Consistently handled by line 145 .topbar-logo */
 
 .topbar-logo:hover {
   opacity: 0.85;
@@ -2789,7 +2786,7 @@ video {
   }
   
   .topbar-logo {
-    height: 2.25rem;
+    max-height: 38px;
   }
   
   .footer-logo {
