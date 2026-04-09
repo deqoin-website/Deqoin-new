@@ -31,20 +31,20 @@ export default function IletisimPage() {
           >
             <div className="cp-pulse" />
           </button>
+        </div>
 
-          <div className={`cp-info-card ${isCardOpen ? 'card-visible' : ''}`}>
-            <h4>NEVŞEHİR - <br /><span>TÜRKİYE</span></h4>
-            <div className="cp-info-content">
-              <p>Randevu: randevu@deqoin.com</p>
-              <p>Genel: info@deqoin.com</p>
-              <p>Galeri: proje@deqoin.com</p>
-              <br />
-              <p>350 Evler Mah. Ali Dirikoç Blv.</p>
-              <p>Sena Apartmanı No: 13</p>
-              <p>İç Kapı No: Z01</p>
-              <br />
-              <p>Merkez / NEVŞEHİR</p>
-            </div>
+        <div className={`cp-info-card ${isCardOpen ? 'card-visible' : ''}`}>
+          <h4>NEVŞEHİR - <br /><span>TÜRKİYE</span></h4>
+          <div className="cp-info-content">
+            <p>Randevu: randevu@deqoin.com</p>
+            <p>Genel: info@deqoin.com</p>
+            <p>Galeri: proje@deqoin.com</p>
+            <br />
+            <p>350 Evler Mah. Ali Dirikoç Blv.</p>
+            <p>Sena Apartmanı No: 13</p>
+            <p>İç Kapı No: Z01</p>
+            <br />
+            <p>Merkez / NEVŞEHİR</p>
           </div>
         </div>
 
