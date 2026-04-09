@@ -59,7 +59,7 @@ function GaleriContent() {
   };
 
   return (
-    <main className="site-shell project-detail-shell" style={{ paddingTop: "8rem" }}>
+    <main className="site-shell project-detail-shell galeri-page" style={{ paddingTop: "8rem" }}>
       <div className="section-inner" style={{ paddingBottom: "6rem" }}>
         
         {/* HEADER SECTION */}
@@ -132,7 +132,7 @@ function GaleriContent() {
           </div>
         </div>
 
-        <div className="studio-main" style={{ display: 'grid', gridTemplateColumns: '250px 1fr', gap: '4rem', alignItems: 'start' }}>
+        <div className="studio-main">
           
           {/* SIDEBAR (DESKTOP) */}
           <aside className="studio-sidebar" style={{ position: 'sticky', top: '180px' }}>

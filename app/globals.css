@@ -3705,3 +3705,66 @@ video {
     min-height: 400px;
   }
 }
+
+/* =========================================
+   GALERI PAGE SPECIFIC OVERRIDES
+   ========================================= */
+
+.galeri-page .section-inner {
+  max-width: 1560px; /* Slightly wider for immersive look */
+  padding: 5rem 2rem;
+}
+
+.galeri-page .studio-main {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 4rem;
+  padding: 0; /* Let section-inner handle padding or override locally */
+  max-width: none; /* Already in section-inner */
+}
+
+@media (max-width: 1024px) {
+  .galeri-page .studio-main {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+}
+
+@media (max-width: 767px) {
+  .galeri-page .section-inner {
+    padding-left: 0;
+    padding-right: 0;
+    padding-top: 4rem;
+  }
+  
+  .galeri-page .studio-main {
+    padding: 0;
+    gap: 0;
+  }
+
+  .galeri-page .project-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 0 !important;
+  }
+
+  /* Keep header and search container padded on mobile */
+  .galeri-page .section-inner > div:first-child,
+  .galeri-page .studio-search-container {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+}
+
+@media (min-width: 1025px) {
+  .galeri-page .project-grid {
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 1.5rem; /* Slightly tighter gaps for premium feel */
+  }
+  
+  /* Balanced layout for desktop */
+  .galeri-page .section-inner {
+    padding-left: 5vw;
+    padding-right: 5vw;
+  }
+}
+
