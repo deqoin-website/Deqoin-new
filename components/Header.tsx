@@ -5,10 +5,12 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { projectsData } from "../data/projects";
 import { teamMembers } from "../data/team";
+import ConsultationModal from "./ConsultationModal";
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [isConsultationOpen, setIsConsultationOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [isScrolled, setIsScrolled] = useState(false);
   const pathname = usePathname();
@@ -81,7 +83,15 @@ export default function Header() {
           <Link href="/faaliyet-alanlarimiz" onClick={() => setIsMenuOpen(false)}>Design & Collection</Link>
           <Link href="/galeri" onClick={() => setIsMenuOpen(false)}>Galeri</Link>
           <Link href="/hakkimizda" onClick={() => setIsMenuOpen(false)}>Hakkımızda</Link>
-          <Link href="/iletisim" onClick={() => setIsMenuOpen(false)}>Randevu Talep Et</Link>
+          <button 
+            type="button" 
+            onClick={() => {
+              setIsMenuOpen(false);
+              setIsConsultationOpen(true);
+            }}
+          >
+            Randevu Talep Et
+          </button>
         </nav>
         <div className="mobile-menu-footer">
           <span>DEQOIN ARCHITECTURAL STUDIO</span>
@@ -171,7 +181,25 @@ export default function Header() {
               <Link href="/faaliyet-alanlarimiz">Design & Collection</Link>
               <Link href="/galeri">Galeri</Link>
               <Link href="/hakkimizda">Hakkımızda</Link>
-              <Link href="/iletisim">Randevu Talep Et</Link>
+              <button 
+                type="button"
+                className="topbar-nav-button"
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  padding: 0,
+                  color: 'inherit',
+                  fontFamily: 'inherit',
+                  fontSize: 'inherit',
+                  fontWeight: 'inherit',
+                  textTransform: 'inherit',
+                  letterSpacing: 'inherit',
+                  cursor: 'pointer'
+                }}
+                onClick={() => setIsConsultationOpen(true)}
+              >
+                Randevu Talep Et
+              </button>
             </div>
             <Link href="/" className="brand-mark">
               <img
@@ -183,6 +211,10 @@ export default function Header() {
           </div>
         </nav>
       </header>
+      <ConsultationModal 
+        isOpen={isConsultationOpen} 
+        onClose={() => setIsConsultationOpen(false)} 
+      />
     </>
   );
 }
