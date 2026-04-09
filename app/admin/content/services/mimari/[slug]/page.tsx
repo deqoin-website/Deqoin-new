@@ -9,7 +9,7 @@ import {
   Loader2,
   ChevronLeft,
   ImageIcon,
-  LayoutText,
+  FileText,
   Workflow,
   Target,
   Filter
@@ -134,7 +134,7 @@ export default function ServiceDetailEditor({ params }: { params: Promise<{ slug
         {/* HERO & DESCRIPTION */}
         <section className="section-card">
           <div className="section-title">
-            <LayoutText size={20} />
+            <FileText size={20} />
             <h2>Vizyon & Giriş</h2>
           </div>
           <div className="hero-edit-area">

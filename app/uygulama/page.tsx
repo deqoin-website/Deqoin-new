@@ -3,11 +3,30 @@
 import { useRef, useEffect, useState } from "react";
 import Link from "next/link";
 import ConsultationModal from "../../components/ConsultationModal";
-import { uygulamaBirimleri } from "../../data/uygulama-birimleri";
+import { Loader2 } from "lucide-react";
 
 export default function UygulamaPage() {
+  const [content, setContent] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState(true);
   const [isConsultationOpen, setIsConsultationOpen] = useState(false);
   const heroRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const fetchContent = async () => {
+      try {
+        const res = await fetch('/api/content?page=execution');
+        const data = await res.json();
+        if (data && data.sections) {
+          setContent(data);
+        }
+      } catch (err) {
+        console.error("Failed to fetch execution content:", err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchContent();
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -20,6 +39,17 @@ export default function UygulamaPage() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  if (isLoading) {
+    return (
+      <div className="site-shell" style={{ height: '60vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <Loader2 className="animate-spin" size={48} color="#a68966" />
+      </div>
+    );
+  }
+
+  const heroSection = content?.sections?.find((s: any) => s.id === 'hero');
+  const catSection = content?.sections?.find((s: any) => s.id === 'categories');
+
   return (
     <main className="site-shell project-detail-shell" style={{ background: "#0a0a0a" }}>
 
@@ -27,16 +57,16 @@ export default function UygulamaPage() {
       <section className="mimari-hero">
         <div className="mimari-hero-bg" ref={heroRef}>
           <img
-            src="https://lh3.googleusercontent.com/aida-public/AB6AXuBg-MKl4zF6vfhExOXkEX-PKVlktOgQYI9EevfKIIYXVJ2wtmRpvybiQLaOtQdeYc_lIPrntEOUrCatq_Efo6fw-z-0-6TilLvAsA4tcYK-QcbjqdetFT2T2EreDjugTzsElsUeoEqEM9i_daWDWBBOJXiZvrjMKWtS2z5I5ZuzOLXWozpZ8MroEnEj5yRtFuaubPctxfeO_ZAZ5E5Tawo9b6yB5w0pmG4_axQCW--XoR8nAAImAE_M5UpM2vFx3tuR2ePYvZ-VmaY"
+            src={heroSection?.slides?.[0] || "https://lh3.googleusercontent.com/aida-public/AB6AXuBg-MKl4zF6vfhExOXkEX-PKVlktOgQYI9EevfKIIYXVJ2wtmRpvybiQLaOtQdeYc_lIPrntEOUrCatq_Efo6fw-z-0-6TilLvAsA4tcYK-QcbjqdetFT2T2EreDjugTzsElsUeoEqEM9i_daWDWBBOJXiZvrjMKWtS2z5I5ZuzOLXWozpZ8MroEnEj5yRtFuaubPctxfeO_ZAZ5E5Tawo9b6yB5w0pmG4_axQCW--XoR8nAAImAE_M5UpM2vFx3tuR2ePYvZ-VmaY"}
             alt="DEQOIN Uygulama Departmanı"
           />
         </div>
         <div className="mimari-hero-overlay" />
         <div className="mimari-hero-content">
           <span className="mimari-hero-tag">Hizmet — 03 / 03</span>
-          <h1 className="mimari-hero-title">EXECUTION STUDIO</h1>
+          <h1 className="mimari-hero-title">{heroSection?.title || 'EXECUTION STUDIO'}</h1>
           <p className="mimari-hero-sub" style={{ fontSize: "1.6rem", letterSpacing: "0.5em", color: "rgba(255,255,255,0.8)", marginBottom: "3rem" }}>
-            UYGULAMA HİZMETLERİ
+            {heroSection?.subtitle || 'UYGULAMA HİZMETLERİ'}
           </p>
           <p className="mimari-hero-sub">
             Kusursuz Bir Bitiş İçin Teknik Ve Sanatsal Kadro.<br />
@@ -44,7 +74,7 @@ export default function UygulamaPage() {
           </p>
           <div className="mimari-hero-actions">
             <button type="button" className="hero-cta" onClick={() => setIsConsultationOpen(true)}>
-              <span className="hero-cta-text">RANDEVU TALEP EDİNİZ</span>
+              <span className="hero-cta-text">İLETİŞİM</span>
               <div className="hero-cta-circle">
                 <span className="material-symbols-outlined">arrow_right_alt</span>
               </div>
@@ -81,7 +111,7 @@ export default function UygulamaPage() {
       {/* SERVICE GRID */}
       <section className="services-section" style={{ background: "transparent", padding: "0" }}>
         <div className="services-grid">
-          {uygulamaBirimleri.map((card) => (
+          {(catSection?.items || []).map((card: any) => (
             <Link key={card.title} href={`/uygulama/${card.slug}`} className="service-card">
               <img src={card.image} alt={card.title} />
               <div className="service-overlay" />
@@ -114,10 +144,10 @@ export default function UygulamaPage() {
           <span className="section-small-label" style={{ color: "#cca883" }}>BİR SONRAKI ADIM</span>
           <h2 className="mimari-cta-title">Kusursuz Uygulama İçin Başlayalım</h2>
           <p className="mimari-cta-sub">
-            Projenizin her aşamasında şeffaflık ve teknik mükemmellik için randevu talep edin.
+            Projenizin her aşamasında şeffaflık ve teknik mükemmellik için iletişim kurun.
           </p>
           <button type="button" className="hero-cta" onClick={() => setIsConsultationOpen(true)}>
-            <span className="hero-cta-text">RANDEVU TALEP EDİNİZ</span>
+            <span className="hero-cta-text">İLETİŞİM</span>
             <div className="hero-cta-circle">
               <span className="material-symbols-outlined">arrow_right_alt</span>
             </div>

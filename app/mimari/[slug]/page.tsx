@@ -50,19 +50,25 @@ export default function MimariDetail({ params }: { params: Promise<ServiceParams
   // Prefer DB content (sections[0]), fallback to static service data
   const title = content?.title || service?.title || slug;
   const subtitle = content?.subtitle || service?.sideLabel || "";
+  const description = content?.description || service?.description || "";
   const heroImage = content?.heroImage || service?.image || "";
   const gallery = content?.gallery || service?.sliderImages || [];
   const categories = content?.categories || service?.categories || [];
+  const process = content?.process || (service as any)?.process || [];
+  const focusAreas = content?.focusAreas || (service as any)?.focusAreas || [];
 
   return (
     <main className="site-shell">
       <DepartmentStudio 
         title={title.toUpperCase()}
         subtitle={subtitle.toUpperCase()}
+        description={description}
         heroImage={heroImage}
         images={gallery}
         projects={projectsData}
         categories={categories}
+        process={process}
+        focusAreas={focusAreas}
       />
     </main>
   );
