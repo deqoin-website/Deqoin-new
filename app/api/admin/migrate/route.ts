@@ -15,6 +15,9 @@ export async function POST() {
     
     // We'll use the collection directly to bypass Mongoose validation issues
     const db = mongoose.connection.db;
+    if (!db) {
+      return NextResponse.json({ error: "Database connection failed" }, { status: 500 });
+    }
     const contents = db.collection('pagecontents');
     
     let importedCount = 0;
