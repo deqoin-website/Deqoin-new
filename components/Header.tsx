@@ -116,7 +116,7 @@ export default function Header() {
               setIsConsultationOpen(true);
             }}
           >
-            Randevu Talep Et
+            İLETİŞİM
           </button>
         </nav>
         <div className="mobile-menu-footer">
@@ -224,7 +224,7 @@ export default function Header() {
                 }}
                 onClick={() => setIsConsultationOpen(true)}
               >
-                Randevu Talep Et
+                İLETİŞİM
               </button>
             </div>
             <Link href="/" className="brand-mark">
