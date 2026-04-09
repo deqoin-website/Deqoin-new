@@ -1453,9 +1453,25 @@ video {
 @media (max-width: 767px) {
   .search-overlay-content {
     padding: 6rem 1.5rem 3rem;
+    align-items: center; /* Center horizontally */
+  }
+  .search-input-wrapper {
+    justify-content: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
   }
   .search-icon-massive {
-    margin-right: 1rem;
+    margin-right: 0.8rem;
+    font-size: 1.8rem;
+  }
+  .huge-search-input {
+    flex: 0 1 auto; /* Don't force full width if not needed */
+    text-align: center;
+    font-size: 2.2rem;
+    width: auto;
+  }
+  .results-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
   }
 }
 

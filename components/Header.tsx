@@ -14,6 +14,7 @@ export default function Header() {
   const [searchQuery, setSearchQuery] = useState("");
   const [isScrolled, setIsScrolled] = useState(false);
   const [logoUrl, setLogoUrl] = useState("");
+  const [isLogoLoaded, setIsLogoLoaded] = useState(false);
   const pathname = usePathname();
   const searchInputRef = useRef<HTMLInputElement>(null);
 
@@ -228,11 +229,18 @@ export default function Header() {
               </button>
             </div>
             <Link href="/" className="brand-mark">
-              <img
-                src={logoUrl}
-                alt="DEQOIN Architectural Studio"
-                className="topbar-logo"
-              />
+              {logoUrl && (
+                <img
+                  src={logoUrl}
+                  alt="DEQOIN Architectural Studio"
+                  className="topbar-logo"
+                  onLoad={() => setIsLogoLoaded(true)}
+                  style={{ 
+                    opacity: isLogoLoaded ? 1 : 0,
+                    transition: 'opacity 0.4s ease-in-out'
+                  }}
+                />
+              )}
             </Link>
           </div>
         </nav>
