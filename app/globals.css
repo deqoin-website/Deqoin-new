@@ -552,6 +552,11 @@ video {
   text-shadow: 0 1px 10px rgba(0, 0, 0, 0.28);
 }
 
+.swipe-appointment-label.is-dark {
+  color: #101010;
+  text-shadow: none;
+}
+
 .swipe-appointment-handle {
   position: absolute;
   inset: 4px auto 4px 4px;
@@ -597,8 +602,17 @@ video {
   gap: 0.55rem;
 }
 
+.swipe-appointment-hint.is-dark {
+  color: rgba(16, 16, 16, 0.7);
+  text-shadow: none;
+}
+
 .swipe-appointment-hint-text {
   opacity: 0.9;
+}
+
+.swipe-appointment-hint.is-dark .swipe-appointment-hint-text {
+  opacity: 0.92;
 }
 
 .swipe-appointment-hint-arrow {
@@ -608,6 +622,10 @@ video {
   opacity: 0.55;
   animation: hintArrowNudge 1.3s ease-in-out infinite;
   transform-origin: left center;
+}
+
+.swipe-appointment-hint.is-dark .swipe-appointment-hint-arrow {
+  opacity: 0.7;
 }
 
 .swipe-appointment-button.compact .swipe-appointment-label {
@@ -645,6 +663,10 @@ video {
     letter-spacing: 0.3em;
     color: rgba(255, 255, 255, 0.9);
     padding-left: 0.7rem;
+  }
+
+  .swipe-appointment-hint.is-dark {
+    color: rgba(16, 16, 16, 0.74);
   }
 
   .swipe-appointment-hint-arrow {

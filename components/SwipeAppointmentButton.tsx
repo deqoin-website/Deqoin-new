@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, useMotionValue, useTransform, animate } from "framer-motion";
+import { animate, motion, useMotionValue, useMotionValueEvent, useTransform } from "framer-motion";
 import { useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
 
 type SwipeAppointmentButtonProps = {
@@ -22,11 +22,16 @@ export default function SwipeAppointmentButton({
   const trackRef = useRef<HTMLButtonElement | null>(null);
   const x = useMotionValue(0);
   const [trackWidth, setTrackWidth] = useState(0);
+  const [isFilled, setIsFilled] = useState(false);
   const maxTravel = useMemo(
     () => Math.max(0, trackWidth - HANDLE_SIZE - TRACK_PADDING * 2),
     [trackWidth],
   );
   const fillWidth = useTransform(x, (value) => Math.min(trackWidth, value + HANDLE_SIZE + TRACK_PADDING * 2));
+
+  useMotionValueEvent(x, "change", (latest) => {
+    setIsFilled(maxTravel > 0 && latest > maxTravel * 0.42);
+  });
 
   useEffect(() => {
     if (!trackRef.current) return;
@@ -76,7 +81,7 @@ export default function SwipeAppointmentButton({
         style={{ minWidth: compact ? "min(100%, 460px)" : undefined }}
       >
         <motion.div className="swipe-appointment-fill" style={{ width: fillWidth }} />
-        <span className="swipe-appointment-label">RANDEVU TALEP EDİNİZ</span>
+        <span className={`swipe-appointment-label ${isFilled ? "is-dark" : ""}`}>RANDEVU TALEP EDİNİZ</span>
         <motion.div
           className="swipe-appointment-handle"
           style={{ x }}
@@ -90,7 +95,7 @@ export default function SwipeAppointmentButton({
           <span className="material-symbols-outlined">event_available</span>
         </motion.div>
       </button>
-      <span className="swipe-appointment-hint">
+      <span className={`swipe-appointment-hint ${isFilled ? "is-dark" : ""}`}>
         <span className="swipe-appointment-hint-text">KAYDIRINIZ</span>
         <span className="swipe-appointment-hint-arrow" aria-hidden="true">→</span>
       </span>
