@@ -1683,8 +1683,8 @@ video {
   }
 
   .team-mobile-slider {
-    max-width: min(40rem, 84vw);
-    margin: 1.25rem auto 0;
+    max-width: min(34rem, 80vw);
+    margin: 1rem auto 0;
   }
 
   .team-home-mobile-slider {
@@ -1700,21 +1700,21 @@ video {
   }
 
   .team-card-info {
-    padding: 0.7rem 0.75rem 0.8rem;
+    padding: 0.55rem 0.65rem 0.7rem;
   }
 
   .team-card-copy h3 {
-    font-size: clamp(0.9rem, 1vw, 1.25rem);
+    font-size: clamp(0.8rem, 0.9vw, 1rem);
   }
 
   .team-card-badge {
-    top: 0.6rem;
-    right: 0.6rem;
-    padding: 0.45rem 0.7rem;
+    top: 0.5rem;
+    right: 0.5rem;
+    padding: 0.35rem 0.55rem;
   }
 
   .team-mobile-slider-top {
-    gap: 0.65rem;
+    gap: 0.5rem;
   }
 
   .team-mobile-progress {
