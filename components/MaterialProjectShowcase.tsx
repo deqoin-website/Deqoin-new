@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import { Category, ProjectDetail } from "../data/projects";
 import ConsultationModal from "./ConsultationModal";
+import SwipeAppointmentButton from "./SwipeAppointmentButton";
 
 type MaterialProjectShowcaseProps = {
   materialSlug?: string;
@@ -160,18 +161,12 @@ export default function MaterialProjectShowcase({
 
         <div className="drawer-footer">
           <p>Bu uzmanlık birimini kendi projenizde doğru senaryoyla kurgulamak için ekibimizle görüşün.</p>
-          <button
-            className="hero-cta appointment-cta"
-            onClick={() => {
+          <SwipeAppointmentButton
+            onActivate={() => {
               setIsMobileDrawerOpen(false);
               setIsConsultationOpen(true);
             }}
-          >
-            <span className="hero-cta-text">RANDEVU TALEP EDİNİZ</span>
-            <div className="hero-cta-circle">
-              <span className="material-symbols-outlined">event_available</span>
-            </div>
-          </button>
+          />
         </div>
       </div>
 
@@ -199,12 +194,7 @@ export default function MaterialProjectShowcase({
               {materialTitle}, proje tipine göre farklı teknik ve atmosferik roller üstlenir. Size uygun
               uygulama senaryosunu birlikte netleştirelim.
             </p>
-            <button className="hero-cta appointment-cta" onClick={() => setIsConsultationOpen(true)}>
-              <span className="hero-cta-text">RANDEVU TALEP EDİNİZ</span>
-              <div className="hero-cta-circle">
-                <span className="material-symbols-outlined">event_available</span>
-              </div>
-            </button>
+            <SwipeAppointmentButton onActivate={() => setIsConsultationOpen(true)} />
           </div>
         </aside>
 

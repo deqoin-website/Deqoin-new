@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import ConsultationModal from "./ConsultationModal";
 import MaterialProjectShowcase from "./MaterialProjectShowcase";
+import SwipeAppointmentButton from "./SwipeAppointmentButton";
 import { MateryalKategori } from "../data/materyal-studyo";
 import { projectsData } from "../data/projects";
 
@@ -52,12 +53,7 @@ export default function MaterialCategoryClient({ category }: MaterialCategoryCli
           <div className="studio-hero-line" />
           
           <div className="mimari-hero-actions" style={{ justifyContent: "center", marginTop: "3rem" }}>
-            <button type="button" className="hero-cta appointment-cta" onClick={() => setIsConsultationOpen(true)}>
-              <span className="hero-cta-text">RANDEVU TALEP EDİNİZ</span>
-              <div className="hero-cta-circle">
-                <span className="material-symbols-outlined">event_available</span>
-              </div>
-            </button>
+            <SwipeAppointmentButton onActivate={() => setIsConsultationOpen(true)} />
             <Link href={`/galeri?material=${category.slug}`} className="mimari-ghost-btn">
               <span>Galeriyi İncele</span>
               <span className="material-symbols-outlined">east</span>
@@ -97,12 +93,7 @@ export default function MaterialCategoryClient({ category }: MaterialCategoryCli
             </div>
 
             <div style={{ marginTop: "4rem" }}>
-              <button type="button" className="hero-cta appointment-cta" onClick={() => setIsConsultationOpen(true)}>
-                <span className="hero-cta-text">RANDEVU TALEP EDİNİZ</span>
-                <div className="hero-cta-circle">
-                  <span className="material-symbols-outlined">event_available</span>
-                </div>
-              </button>
+              <SwipeAppointmentButton onActivate={() => setIsConsultationOpen(true)} />
             </div>
           </div>
         </div>

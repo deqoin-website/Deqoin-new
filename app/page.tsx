@@ -5,6 +5,7 @@ import Link from "next/link";
 import { projectsData, Category } from "../data/projects";
 import { teamFilters, teamMembers } from "../data/team";
 import ConsultationModal from "../components/ConsultationModal";
+import SwipeAppointmentButton from "../components/SwipeAppointmentButton";
 
 
 type ProjectItem = {
@@ -213,17 +214,10 @@ export default function Page() {
               {slides[heroIndex]?.title}
             </h1>
           </div>
-          <button 
-            className="hero-cta appointment-cta" 
-            style={{ marginTop: "1rem", position: "relative", zIndex: 100 }} 
-            type="button" 
-            onClick={() => setIsConsultationOpen(true)}
-          >
-            <span className="hero-cta-text">{slides[heroIndex]?.buttonText}</span>
-            <div className="hero-cta-circle">
-              <span className="material-symbols-outlined">event_available</span>
-            </div>
-          </button>
+          <SwipeAppointmentButton
+            onActivate={() => setIsConsultationOpen(true)}
+            style={{ marginTop: "1rem", position: "relative", zIndex: 100 }}
+          />
         </div>
 
         <div className="hero-controls">

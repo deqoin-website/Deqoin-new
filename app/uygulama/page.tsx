@@ -4,6 +4,7 @@ import { useRef, useEffect, useState } from "react";
 import Link from "next/link";
 import ConsultationModal from "../../components/ConsultationModal";
 import { Loader2 } from "lucide-react";
+import SwipeAppointmentButton from "../../components/SwipeAppointmentButton";
 
 export default function UygulamaPage() {
   const [content, setContent] = useState<any>(null);
@@ -73,12 +74,7 @@ export default function UygulamaPage() {
             Gerçeğe Dönüştürmek Sadece Bir İnşaat Değil, Sanattır.
           </p>
           <div className="mimari-hero-actions">
-            <button type="button" className="hero-cta appointment-cta" onClick={() => setIsConsultationOpen(true)}>
-              <span className="hero-cta-text">İLETİŞİM</span>
-              <div className="hero-cta-circle">
-                <span className="material-symbols-outlined">event_available</span>
-              </div>
-            </button>
+            <SwipeAppointmentButton onActivate={() => setIsConsultationOpen(true)} />
           </div>
         </div>
         <div className="mimari-hero-scroll-hint">
@@ -146,12 +142,7 @@ export default function UygulamaPage() {
           <p className="mimari-cta-sub">
             Projenizin her aşamasında şeffaflık ve teknik mükemmellik için iletişim kurun.
           </p>
-          <button type="button" className="hero-cta appointment-cta" onClick={() => setIsConsultationOpen(true)}>
-            <span className="hero-cta-text">İLETİŞİM</span>
-            <div className="hero-cta-circle">
-              <span className="material-symbols-outlined">event_available</span>
-            </div>
-          </button>
+          <SwipeAppointmentButton onActivate={() => setIsConsultationOpen(true)} />
         </div>
       </section>
 

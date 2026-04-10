@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import ConsultationModal from "../../components/ConsultationModal";
+import SwipeAppointmentButton from "../../components/SwipeAppointmentButton";
 
 const heroSlides = [
   "/images/slider/mimari_slide.png",
@@ -161,12 +162,7 @@ export default function MimariPage() {
           <p className="mimari-cta-sub">
             Hayalinizdeki projeyi uzman ekibimizle planlamak için profesyonel randevu oluşturun.
           </p>
-          <button type="button" className="hero-cta appointment-cta" onClick={() => setIsConsultationOpen(true)}>
-            <span className="hero-cta-text">RANDEVU TALEP EDİNİZ</span>
-            <div className="hero-cta-circle">
-              <span className="material-symbols-outlined">event_available</span>
-            </div>
-          </button>
+          <SwipeAppointmentButton onActivate={() => setIsConsultationOpen(true)} />
         </div>
       </section>
 

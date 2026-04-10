@@ -4,6 +4,7 @@ import { useState, useMemo, Suspense } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import ConsultationModal from "../../components/ConsultationModal";
+import SwipeAppointmentButton from "../../components/SwipeAppointmentButton";
 
 const categories = [
   { key: "all", title: "HEPSİ", sideLabel: "Selection" },
@@ -137,15 +138,12 @@ function GaleriContent() {
 
           <div className="drawer-footer">
             <p>Uzman ekibimizle profesyonel sürecinizi hemen planlayın.</p>
-            <button className="hero-cta appointment-cta" onClick={() => {
-              setIsMobileDrawerOpen(false);
-              setIsConsultationOpen(true);
-            }}>
-              <span className="hero-cta-text">RANDEVU TALEP EDİNİZ</span>
-              <div className="hero-cta-circle">
-                <span className="material-symbols-outlined">event_available</span>
-              </div>
-            </button>
+            <SwipeAppointmentButton
+              onActivate={() => {
+                setIsMobileDrawerOpen(false);
+                setIsConsultationOpen(true);
+              }}
+            />
           </div>
         </div>
 
@@ -195,16 +193,11 @@ function GaleriContent() {
               <p style={{ fontSize: "0.75rem", color: "rgba(255,255,255,0.4)", lineHeight: "1.8", marginBottom: "2rem", letterSpacing: '0.05em' }}>
                 Hayalinizdeki projeyi uzman ekibimizle planlamak için profesyonel randevu oluşturun.
               </p>
-              <button 
-                className="hero-cta appointment-cta" 
-                onClick={() => setIsConsultationOpen(true)}
-                style={{ scale: '0.8', transformOrigin: 'left' }}
-              >
-                <span className="hero-cta-text">RANDEVU TALEP EDİNİZ</span>
-                <div className="hero-cta-circle">
-                  <span className="material-symbols-outlined">event_available</span>
-                </div>
-              </button>
+              <SwipeAppointmentButton
+                onActivate={() => setIsConsultationOpen(true)}
+                compact
+                style={{ transformOrigin: 'left' }}
+              />
             </div>
           </aside>
 

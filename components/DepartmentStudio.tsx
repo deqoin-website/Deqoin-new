@@ -3,6 +3,7 @@
 import { useState, useMemo, useEffect } from "react";
 import { ProjectDetail, Category } from "../data/projects";
 import ConsultationModal from "./ConsultationModal";
+import SwipeAppointmentButton from "./SwipeAppointmentButton";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -234,15 +235,10 @@ export default function DepartmentStudio({
                 </ul>
               </div>
               <div className="drawer-footer">
-                <button className="hero-cta appointment-cta" onClick={() => {
+                <SwipeAppointmentButton onActivate={() => {
                   setIsMobileDrawerOpen(false);
                   setIsConsultationOpen(true);
-                }}>
-                  <span className="hero-cta-text">RANDEVU TALEP EDİNİZ</span>
-                  <div className="hero-cta-circle">
-                    <span className="material-symbols-outlined">event_available</span>
-                  </div>
-                </button>
+                }} />
               </div>
             </motion.div>
           </>
@@ -273,12 +269,7 @@ export default function DepartmentStudio({
             <p style={{ fontSize: "0.8rem", color: "rgba(255,255,255,0.4)", lineHeight: "1.6", marginBottom: "2rem" }}>
               Projeniz için profesyonel bir yaklaşım mı arıyorsunuz? Uzman ekibimizle süreci hemen planlayın.
             </p>
-            <button className="hero-cta appointment-cta" onClick={() => setIsConsultationOpen(true)}>
-              <span className="hero-cta-text">RANDEVU TALEP EDİNİZ</span>
-              <div className="hero-cta-circle">
-                <span className="material-symbols-outlined">event_available</span>
-              </div>
-            </button>
+            <SwipeAppointmentButton onActivate={() => setIsConsultationOpen(true)} compact />
           </div>
         </aside>
 
