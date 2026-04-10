@@ -212,6 +212,7 @@ export default function AdminLoginPage() {
           grid-template-columns: 1fr 1fr;
           max-width: 1200px;
           width: 100%;
+          max-height: 90vh;
           background: rgba(18, 18, 18, 0.6);
           backdrop-filter: blur(20px);
           border: 1px solid rgba(166, 137, 102, 0.2);
@@ -534,6 +535,7 @@ export default function AdminLoginPage() {
           .login-container {
             grid-template-columns: 1fr;
             max-width: 500px;
+            max-height: none;
           }
 
           .login-branding {
@@ -556,6 +558,7 @@ export default function AdminLoginPage() {
 
           .login-container {
             border-radius: 16px;
+            max-width: 100%;
           }
 
           .login-form-section {
