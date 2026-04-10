@@ -90,7 +90,10 @@ export default function SwipeAppointmentButton({
           <span className="material-symbols-outlined">event_available</span>
         </motion.div>
       </button>
-      <span className="swipe-appointment-hint">KAYDIRINIZ</span>
+      <span className="swipe-appointment-hint">
+        <span className="swipe-appointment-hint-text">KAYDIRINIZ</span>
+        <span className="swipe-appointment-hint-arrow" aria-hidden="true">→</span>
+      </span>
     </div>
   );
 }

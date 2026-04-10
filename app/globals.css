@@ -588,6 +588,22 @@ video {
   padding-left: 0.95rem;
   user-select: none;
   text-shadow: 0 1px 6px rgba(0, 0, 0, 0.16);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+.swipe-appointment-hint-text {
+  opacity: 0.9;
+}
+
+.swipe-appointment-hint-arrow {
+  display: inline-block;
+  font-size: 0.7rem;
+  line-height: 1;
+  opacity: 0.55;
+  animation: hintArrowNudge 1.3s ease-in-out infinite;
+  transform-origin: left center;
 }
 
 .swipe-appointment-button.compact .swipe-appointment-label {
@@ -614,6 +630,21 @@ video {
   .swipe-appointment-hint {
     font-size: 0.56rem;
     letter-spacing: 0.3em;
+  }
+
+  .swipe-appointment-hint-arrow {
+    font-size: 0.62rem;
+  }
+}
+
+@keyframes hintArrowNudge {
+  0%, 100% {
+    transform: translateX(0);
+    opacity: 0.45;
+  }
+  50% {
+    transform: translateX(4px);
+    opacity: 0.8;
   }
 }
 
