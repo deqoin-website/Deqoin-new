@@ -1562,38 +1562,43 @@ video {
 
 .team-card-copy h3 {
   margin: 0;
-  font-family: var(--font-headline), serif;
-  font-size: clamp(2rem, 3vw, 3.6rem);
-  line-height: 0.94;
+  font-family: var(--font-smooch), sans-serif;
+  font-size: clamp(2.8rem, 5vw, 5rem);
+  font-style: normal;
+  font-weight: 100;
+  line-height: 0.84;
   color: #fff;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
   text-wrap: balance;
 }
 
 .team-card-copy p {
   margin: 0;
-  font-size: 0.58rem;
-  letter-spacing: 0.5em;
+  font-family: var(--font-display), sans-serif;
+  font-size: 0.62rem;
+  letter-spacing: 0.42em;
   text-transform: uppercase;
   color: rgba(255, 255, 255, 0.68);
 }
 
 .team-card-footer {
   display: inline-flex;
-  align-items: center;
-  gap: 0.8rem;
+  align-items: flex-end;
+  gap: 0.9rem;
   color: #fff;
 }
 
 .team-card-index {
   font-family: var(--font-headline), serif;
-  font-size: 0.88rem;
-  letter-spacing: 0.18em;
+  font-size: 1rem;
+  letter-spacing: 0.22em;
   color: #cca883;
+  line-height: 1;
 }
 
 .team-card-footer .material-symbols-outlined {
-  font-size: 1.1rem;
+  font-size: 1.2rem;
   color: rgba(255, 255, 255, 0.75);
 }
 
@@ -1725,11 +1730,17 @@ video {
   }
 
   .team-card-info {
-    padding: 0.55rem 0.65rem 0.7rem;
+    padding: 0.7rem 0.7rem 0.8rem;
   }
 
   .team-card-copy h3 {
-    font-size: clamp(1rem, 1.2vw, 1.4rem);
+    font-size: clamp(1.35rem, 2.2vw, 2rem);
+    line-height: 0.9;
+  }
+
+  .team-card-copy p {
+    font-size: 0.48rem;
+    letter-spacing: 0.34em;
   }
 
   .team-card-badge {
