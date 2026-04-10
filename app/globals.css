@@ -1637,11 +1637,13 @@ video {
   }
 
   .project-slider-progress {
-    left: 0;
-    right: 0;
-    top: -0.95rem;
+    left: 0.9rem;
+    right: 0.9rem;
+    top: 0.75rem;
+    height: 3px;
     border-radius: 999px;
     opacity: 0.9;
+    z-index: 6;
   }
 
   .project-slide-copy {
