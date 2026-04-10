@@ -1683,8 +1683,8 @@ video {
   }
 
   .team-mobile-slider {
-    max-width: 78rem;
-    margin: 3rem auto 0;
+    max-width: 64rem;
+    margin: 2.25rem auto 0;
   }
 
   .team-home-mobile-slider {
@@ -1692,7 +1692,7 @@ video {
   }
 
   .team-mobile-card {
-    max-width: 72rem;
+    max-width: 64rem;
   }
 
   .team-card-img {
@@ -1700,20 +1700,20 @@ video {
   }
 
   .team-card-info {
-    padding: 1.25rem 1.3rem 1.4rem;
+    padding: 1.05rem 1.1rem 1.15rem;
   }
 
   .team-card-copy h3 {
-    font-size: clamp(1.5rem, 2vw, 2.4rem);
+    font-size: clamp(1.25rem, 1.6vw, 2rem);
   }
 
   .team-card-badge {
-    top: 0.9rem;
-    right: 0.9rem;
+    top: 0.8rem;
+    right: 0.8rem;
   }
 
   .team-mobile-slider-top {
-    gap: 1.25rem;
+    gap: 1rem;
   }
 
   .team-mobile-progress {
