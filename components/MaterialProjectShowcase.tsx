@@ -161,13 +161,13 @@ export default function MaterialProjectShowcase({
         <div className="drawer-footer">
           <p>Bu uzmanlık birimini kendi projenizde doğru senaryoyla kurgulamak için ekibimizle görüşün.</p>
           <button
-            className="hero-cta"
+            className="hero-cta appointment-cta"
             onClick={() => {
               setIsMobileDrawerOpen(false);
               setIsConsultationOpen(true);
             }}
           >
-            <span className="hero-cta-text">RANDEVU TALEP ET</span>
+            <span className="hero-cta-text">RANDEVU TALEP EDİNİZ</span>
             <div className="hero-cta-circle">
               <span className="material-symbols-outlined">event_available</span>
             </div>
@@ -199,8 +199,8 @@ export default function MaterialProjectShowcase({
               {materialTitle}, proje tipine göre farklı teknik ve atmosferik roller üstlenir. Size uygun
               uygulama senaryosunu birlikte netleştirelim.
             </p>
-            <button className="hero-cta" onClick={() => setIsConsultationOpen(true)}>
-              <span className="hero-cta-text">RANDEVU TALEP ET</span>
+            <button className="hero-cta appointment-cta" onClick={() => setIsConsultationOpen(true)}>
+              <span className="hero-cta-text">RANDEVU TALEP EDİNİZ</span>
               <div className="hero-cta-circle">
                 <span className="material-symbols-outlined">event_available</span>
               </div>

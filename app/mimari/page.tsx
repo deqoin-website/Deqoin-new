@@ -161,10 +161,10 @@ export default function MimariPage() {
           <p className="mimari-cta-sub">
             Hayalinizdeki projeyi uzman ekibimizle planlamak için profesyonel randevu oluşturun.
           </p>
-          <button type="button" className="hero-cta" onClick={() => setIsConsultationOpen(true)}>
-            <span className="hero-cta-text">RANDEVU TALEP ET</span>
+          <button type="button" className="hero-cta appointment-cta" onClick={() => setIsConsultationOpen(true)}>
+            <span className="hero-cta-text">RANDEVU TALEP EDİNİZ</span>
             <div className="hero-cta-circle">
-              <span className="material-symbols-outlined">arrow_right_alt</span>
+              <span className="material-symbols-outlined">event_available</span>
             </div>
           </button>
         </div>

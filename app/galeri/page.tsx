@@ -137,11 +137,11 @@ function GaleriContent() {
 
           <div className="drawer-footer">
             <p>Uzman ekibimizle profesyonel sürecinizi hemen planlayın.</p>
-            <button className="hero-cta" onClick={() => {
+            <button className="hero-cta appointment-cta" onClick={() => {
               setIsMobileDrawerOpen(false);
               setIsConsultationOpen(true);
             }}>
-              <span className="hero-cta-text">RANDEVU TALEP ET</span>
+              <span className="hero-cta-text">RANDEVU TALEP EDİNİZ</span>
               <div className="hero-cta-circle">
                 <span className="material-symbols-outlined">event_available</span>
               </div>
@@ -196,13 +196,13 @@ function GaleriContent() {
                 Hayalinizdeki projeyi uzman ekibimizle planlamak için profesyonel randevu oluşturun.
               </p>
               <button 
-                className="hero-cta" 
+                className="hero-cta appointment-cta" 
                 onClick={() => setIsConsultationOpen(true)}
                 style={{ scale: '0.8', transformOrigin: 'left' }}
               >
-                <span className="hero-cta-text">TALEBİ BAŞLAT</span>
+                <span className="hero-cta-text">RANDEVU TALEP EDİNİZ</span>
                 <div className="hero-cta-circle">
-                  <span className="material-symbols-outlined">arrow_right_alt</span>
+                  <span className="material-symbols-outlined">event_available</span>
                 </div>
               </button>
             </div>
@@ -246,4 +246,3 @@ export default function AllProjects() {
     </Suspense>
   );
 }
-

@@ -52,10 +52,10 @@ export default function ExecutionCategoryClient({ unit }: ExecutionCategoryClien
           <div className="studio-hero-line" />
           
           <div className="mimari-hero-actions" style={{ justifyContent: "center", marginTop: "3rem" }}>
-            <button type="button" className="hero-cta" onClick={() => setIsConsultationOpen(true)}>
+            <button type="button" className="hero-cta appointment-cta" onClick={() => setIsConsultationOpen(true)}>
               <span className="hero-cta-text">RANDEVU TALEP EDİNİZ</span>
               <div className="hero-cta-circle">
-                <span className="material-symbols-outlined">arrow_right_alt</span>
+                <span className="material-symbols-outlined">event_available</span>
               </div>
             </button>
             <Link href={`/galeri`} className="mimari-ghost-btn">
@@ -90,10 +90,10 @@ export default function ExecutionCategoryClient({ unit }: ExecutionCategoryClien
             </div>
 
             <div style={{ marginTop: "4rem" }}>
-              <button type="button" className="hero-cta" onClick={() => setIsConsultationOpen(true)}>
+              <button type="button" className="hero-cta appointment-cta" onClick={() => setIsConsultationOpen(true)}>
                 <span className="hero-cta-text">RANDEVU TALEP EDİNİZ</span>
                 <div className="hero-cta-circle">
-                  <span className="material-symbols-outlined">arrow_right_alt</span>
+                  <span className="material-symbols-outlined">event_available</span>
                 </div>
               </button>
             </div>

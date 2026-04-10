@@ -19,21 +19,21 @@ const heroSlides = [
     image: "/images/slider/mimari_slide.png",
     title: "DESIGN STUDIO",
     motto: "Estetik ve Fonksiyonun Mimari Uyumu",
-    buttonText: "DESIGN STUDIO İÇİN RANDEVU TALEP EDİNİZ",
+    buttonText: "RANDEVU TALEP EDİNİZ",
     caption: "Design Studio"
   },
   {
     image: "/images/slider/tasarim_slide.png",
     title: "MATERIAL STUDIO",
     motto: "Dokunulabilir Lüks, Zamansız Detaylar",
-    buttonText: "MATERIAL STUDIO İÇİN RANDEVU TALEP EDİNİZ",
+    buttonText: "RANDEVU TALEP EDİNİZ",
     caption: "Material Studio"
   },
   {
     image: "/images/slider/uygulama_slide.png",
     title: "EXECUTION STUDIO",
     motto: "Hayallerin Kusursuz İnşası",
-    buttonText: "EXECUTION STUDIO İÇİN RANDEVU TALEP EDİNİZ",
+    buttonText: "RANDEVU TALEP EDİNİZ",
     caption: "Execution Studio"
   }
 ];
@@ -214,14 +214,14 @@ export default function Page() {
             </h1>
           </div>
           <button 
-            className="hero-cta" 
+            className="hero-cta appointment-cta" 
             style={{ marginTop: "1rem", position: "relative", zIndex: 100 }} 
             type="button" 
             onClick={() => setIsConsultationOpen(true)}
           >
             <span className="hero-cta-text">{slides[heroIndex]?.buttonText}</span>
             <div className="hero-cta-circle">
-              <span className="material-symbols-outlined">arrow_right_alt</span>
+              <span className="material-symbols-outlined">event_available</span>
             </div>
           </button>
         </div>

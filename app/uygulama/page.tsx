@@ -73,10 +73,10 @@ export default function UygulamaPage() {
             Gerçeğe Dönüştürmek Sadece Bir İnşaat Değil, Sanattır.
           </p>
           <div className="mimari-hero-actions">
-            <button type="button" className="hero-cta" onClick={() => setIsConsultationOpen(true)}>
+            <button type="button" className="hero-cta appointment-cta" onClick={() => setIsConsultationOpen(true)}>
               <span className="hero-cta-text">İLETİŞİM</span>
               <div className="hero-cta-circle">
-                <span className="material-symbols-outlined">arrow_right_alt</span>
+                <span className="material-symbols-outlined">event_available</span>
               </div>
             </button>
           </div>
@@ -146,10 +146,10 @@ export default function UygulamaPage() {
           <p className="mimari-cta-sub">
             Projenizin her aşamasında şeffaflık ve teknik mükemmellik için iletişim kurun.
           </p>
-          <button type="button" className="hero-cta" onClick={() => setIsConsultationOpen(true)}>
+          <button type="button" className="hero-cta appointment-cta" onClick={() => setIsConsultationOpen(true)}>
             <span className="hero-cta-text">İLETİŞİM</span>
             <div className="hero-cta-circle">
-              <span className="material-symbols-outlined">arrow_right_alt</span>
+              <span className="material-symbols-outlined">event_available</span>
             </div>
           </button>
         </div>
