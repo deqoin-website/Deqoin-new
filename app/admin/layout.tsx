@@ -73,9 +73,17 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const allSubItems = allItems.flatMap(i => i.subItems || []);
   const currentPathItem = allItems.find(item => item.path === pathname) || allSubItems.find(s => s.path === pathname);
 
-  const handleLogout = () => {
-    // In a real app, clear cookie here
-    router.push('/admin/login');
+  const handleLogout = async () => {
+    try {
+      const res = await fetch('/api/admin/logout', { method: 'POST' });
+      if (res.ok) {
+        router.push('/admin/login');
+      }
+    } catch (err) {
+      console.error("Logout error:", err);
+      // Fallback
+      router.push('/admin/login');
+    }
   };
 
   // Hide Sidebar on Login page
