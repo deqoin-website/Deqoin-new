@@ -539,9 +539,12 @@ video {
 }
 
 .swipe-appointment-label {
-  position: relative;
+  position: absolute;
+  left: 50%;
+  top: 50%;
   z-index: 1;
-  margin-left: 78px;
+  transform: translate(-50%, -50%);
+  margin-left: 0;
   color: #ffffff;
   font-family: var(--font-display), sans-serif;
   font-size: 0.76rem;
@@ -653,7 +656,8 @@ video {
   }
 
   .swipe-appointment-label {
-    margin-left: 72px;
+    left: 50%;
+    top: 50%;
     font-size: 0.68rem;
     letter-spacing: 0.26em;
   }
