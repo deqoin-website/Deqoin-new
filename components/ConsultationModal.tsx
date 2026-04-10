@@ -410,12 +410,12 @@ export default function ConsultationModal({ isOpen, onClose }: ConsultationModal
                     <button
                       type="submit"
                       className="premium-all-btn submit-btn-invert"
-                      style={{ flex: 2, justifyContent: "space-between" }}
+                      style={{ flex: 2, justifyContent: "flex-end", gap: "0.9rem" }}
                     >
+                      <span className="material-symbols-outlined premium-btn-icon">east</span>
                       <span className="premium-btn-text">
                         {isSubmitting ? "GÖNDERİLİYOR..." : (currentStep === 3 ? "TALEBİ GÖNDER" : "DEVAM ET")}
                       </span>
-                      <span className="material-symbols-outlined premium-btn-icon">east</span>
                     </button>
                   </div>
                 </form>
