@@ -616,27 +616,31 @@ video {
     width: calc(100vw - 0.35rem);
     max-width: 100%;
     height: 64px;
+    border-radius: 999px;
   }
 
   .swipe-appointment-handle {
-    width: 56px;
-    height: 56px;
+    width: 52px;
+    height: 52px;
+    inset: 6px auto 6px 6px;
+    border-radius: 50%;
   }
 
   .swipe-appointment-label {
-    margin-left: 76px;
-    font-size: 0.7rem;
+    margin-left: 72px;
+    font-size: 0.68rem;
+    letter-spacing: 0.26em;
   }
 
   .swipe-appointment-hint {
-    font-size: 0.62rem;
-    letter-spacing: 0.34em;
-    color: rgba(255, 255, 255, 0.92);
-    padding-left: 0.65rem;
+    font-size: 0.6rem;
+    letter-spacing: 0.3em;
+    color: rgba(255, 255, 255, 0.9);
+    padding-left: 0.7rem;
   }
 
   .swipe-appointment-hint-arrow {
-    font-size: 0.62rem;
+    font-size: 0.58rem;
   }
 }
 
