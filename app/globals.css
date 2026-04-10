@@ -1618,7 +1618,7 @@ video {
 }
 
 .team-title-counter {
-  margin-top: 0.65rem;
+  margin-top: 0.35rem;
 }
 
 @keyframes progressFill {
@@ -1684,7 +1684,7 @@ video {
 
   .team-mobile-slider {
     max-width: min(34rem, 80vw);
-    margin: 1rem auto 0;
+    margin: 0.65rem auto 0;
   }
 
   .team-home-mobile-slider {
@@ -1754,11 +1754,11 @@ video {
   }
 
   .team-title-counter {
-    margin-top: 0.45rem;
+    margin-top: 0.2rem;
   }
 
   .team-home-mobile-slider {
-    margin-top: 2rem;
+    margin-top: 1.25rem;
   }
 
   .section-heading.projects-heading {
