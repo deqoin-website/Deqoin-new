@@ -166,6 +166,9 @@ export default function Page() {
     return teamMembers.filter((item) => item.category === activeTeamFilter);
   }, [activeTeamFilter]);
 
+  const currentProject = filteredProjects[projectIndex];
+  const currentTeamMember = filteredTeam[teamSlideIndex];
+
   const heroProgressStyle = {
     width: "100%",
     animation: "progressFill 8s linear infinite",
@@ -563,22 +566,24 @@ export default function Page() {
                 }}
                 transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
               >
-                <Link href={`/galeri/${filteredProjects[projectIndex]?.slug}`} className="project-card project-card-full">
+                <Link href={`/galeri/${currentProject?.slug ?? ""}`} className="project-card project-card-full">
                   <motion.div
                     className="project-slide-parallax"
-                    style={{ backgroundImage: `url(${filteredProjects[projectIndex]?.coverImage})` }}
+                    style={currentProject?.coverImage ? { backgroundImage: `url(${currentProject.coverImage})` } : undefined}
                     initial={{ scale: 1.08, x: projectDirection >= 0 ? -30 : 30 }}
                     animate={{ scale: 1.16, x: 0 }}
                     exit={{ scale: 1.08, x: projectDirection >= 0 ? 30 : -30 }}
                     transition={{ duration: 0.75, ease: [0.16, 1, 0.3, 1] }}
                   />
-                  <img src={filteredProjects[projectIndex]?.coverImage} alt={filteredProjects[projectIndex]?.title} />
+                  {currentProject?.coverImage ? (
+                    <img src={currentProject.coverImage} alt={currentProject.title} />
+                  ) : null}
                   <div className="project-overlay" />
                   <div className="project-slide-glow" />
                   <div className="project-slide-copy">
-                    <span className="vertical-text">{filteredProjects[projectIndex]?.label}</span>
+                    <span className="vertical-text">{currentProject?.label}</span>
                     <div>
-                      <h4>{filteredProjects[projectIndex]?.title}</h4>
+                      <h4>{currentProject?.title}</h4>
                       <p>PROJE DETAYI</p>
                     </div>
                   </div>
@@ -682,16 +687,18 @@ export default function Page() {
                 }}
                 transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
               >
-                <Link href="/departman-ekipleri" className="team-card-gallery team-mobile-card">
+                <Link href={currentTeamMember ? "/departman-ekipleri" : "#"} className="team-card-gallery team-mobile-card">
                   <div className="team-card-img">
-                    <img src={filteredTeam[teamSlideIndex]?.image} alt={filteredTeam[teamSlideIndex]?.name} />
+                    {currentTeamMember?.image ? (
+                      <img src={currentTeamMember.image} alt={currentTeamMember.name} />
+                    ) : null}
                     <div className="team-overlay" />
-                    <div className="team-card-badge">{filteredTeam[teamSlideIndex]?.role}</div>
+                    <div className="team-card-badge">{currentTeamMember?.role}</div>
                   </div>
                   <div className="team-card-info">
                     <div className="team-card-copy">
-                      <h3>{filteredTeam[teamSlideIndex]?.name}</h3>
-                      <p>{filteredTeam[teamSlideIndex]?.role}</p>
+                      <h3>{currentTeamMember?.name}</h3>
+                      <p>{currentTeamMember?.role}</p>
                     </div>
                     <div className="team-card-footer">
                       <span className="team-card-index">{String(teamSlideIndex + 1).padStart(2, "0")}</span>

@@ -791,19 +791,22 @@ video {
   left: 3rem;
   bottom: 3rem;
   display: flex;
-  align-items: flex-end;
-  gap: 1.5rem;
+  align-items: flex-start;
+  gap: 1.25rem;
   color: white;
+  max-width: 18rem;
 }
 
 .hero-count {
   display: flex;
   flex-direction: column;
+  flex-shrink: 0;
 }
 
 .hero-count span {
   font-family: var(--font-headline), serif;
-  font-size: 2rem;
+  font-size: clamp(1.6rem, 2vw, 2rem);
+  line-height: 0.95;
 }
 
 .hero-count div {
@@ -814,17 +817,22 @@ video {
 }
 
 .hero-count small {
+  display: block;
   letter-spacing: 0.3em;
   color: rgba(255, 255, 255, 0.5);
   font-size: 0.65rem;
+  line-height: 1.2;
 }
 
 .hero-meta p {
-  height: 5rem;
+  height: 5.2rem;
   letter-spacing: 0.2em;
   font-size: 0.65rem;
   text-transform: uppercase;
   color: rgba(255, 255, 255, 0.4);
+  line-height: 1.1;
+  margin: 0;
+  padding-top: 0.1rem;
 }
 
 .hero-progress {
@@ -1775,10 +1783,21 @@ video {
   .hero-meta {
     left: 1rem;
     bottom: 1rem;
+    gap: 1rem;
+    max-width: 15rem;
   }
 
   .hero-meta p {
     display: none;
+  }
+
+  .hero-count span {
+    font-size: 1.5rem;
+  }
+
+  .hero-count small {
+    font-size: 0.58rem;
+    letter-spacing: 0.28em;
   }
 
   .hero-cta {
