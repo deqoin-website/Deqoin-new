@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { motion, useDragControls } from "framer-motion";
 
 interface ConsultationModalProps {
   isOpen: boolean;
@@ -50,6 +51,10 @@ const departments = [
 ];
 
 export default function ConsultationModal({ isOpen, onClose }: ConsultationModalProps) {
+  const [shouldRender, setShouldRender] = useState(isOpen);
+  const [isVisible, setIsVisible] = useState(false);
+  const dragControls = useDragControls();
+  const sheetRef = useRef<HTMLDivElement | null>(null);
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState({
     firstName: "",
@@ -65,6 +70,55 @@ export default function ConsultationModal({ isOpen, onClose }: ConsultationModal
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
 
+  useEffect(() => {
+    if (isOpen) {
+      setShouldRender(true);
+      requestAnimationFrame(() => setIsVisible(true));
+      document.body.style.overflow = "hidden";
+      return;
+    }
+
+    setIsVisible(false);
+    document.body.style.overflow = "";
+
+    const timeout = window.setTimeout(() => {
+      setShouldRender(false);
+    }, 450);
+
+    return () => window.clearTimeout(timeout);
+  }, [isOpen]);
+
+  useEffect(() => {
+    if (!shouldRender) {
+      return;
+    }
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        onClose();
+      }
+    };
+
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [onClose, shouldRender]);
+
+  const resetFormState = () => {
+    setIsSuccess(false);
+    setCurrentStep(1);
+    setFormData({
+      firstName: "",
+      lastName: "",
+      email: "",
+      phone: "",
+      company: "",
+      city: "Nevşehir",
+      department: "",
+      subCategory: "",
+      note: "",
+    });
+  };
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => {
@@ -78,6 +132,18 @@ export default function ConsultationModal({ isOpen, onClose }: ConsultationModal
 
   const nextStep = () => setCurrentStep((prev) => Math.min(prev + 1, 3));
   const prevStep = () => setCurrentStep((prev) => Math.max(prev - 1, 1));
+  const handleDragEnd = (_: unknown, info: { offset: { y: number }; velocity: { y: number } }) => {
+    const shouldClose = info.offset.y > 120 || info.velocity.y > 900;
+
+    if (shouldClose) {
+      onClose();
+      return;
+    }
+
+    if (sheetRef.current) {
+      sheetRef.current.style.transform = "translateY(0) scale(1)";
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -107,11 +173,36 @@ export default function ConsultationModal({ isOpen, onClose }: ConsultationModal
     }
   };
 
-  if (!isOpen) return null;
+  if (!shouldRender) return null;
 
   return (
-    <div className={`consultation-overlay-master ${isOpen ? "open" : ""}`}>
-      <div className="consultation-overlay-wrapper" style={{ maxWidth: '700px' }}>
+    <div
+      className={`consultation-overlay-master ${isVisible ? "open" : ""}`}
+      onClick={onClose}
+      aria-hidden={!isVisible}
+    >
+      <motion.div
+        ref={sheetRef}
+        className="consultation-overlay-wrapper"
+        style={{ maxWidth: "700px" }}
+        onClick={(event) => event.stopPropagation()}
+        role="dialog"
+        aria-modal="true"
+        aria-label="Randevu talep formu"
+        drag="y"
+        dragControls={dragControls}
+        dragListener={false}
+        dragConstraints={{ top: 0, bottom: 240 }}
+        dragElastic={0.12}
+        dragMomentum={false}
+        onDragEnd={handleDragEnd}
+      >
+        <button
+          type="button"
+          className="consultation-sheet-grabber"
+          aria-label="Formu aşağı kaydırarak kapat"
+          onPointerDown={(event) => dragControls.start(event)}
+        />
         <button className="icon-button close-button" type="button" onClick={onClose} aria-label="Kapat">
           <span className="material-symbols-outlined">close</span>
         </button>
@@ -135,21 +226,7 @@ export default function ConsultationModal({ isOpen, onClose }: ConsultationModal
                 className="premium-all-btn submit-btn-invert" 
                 onClick={() => {
                   onClose();
-                  setTimeout(() => {
-                    setIsSuccess(false);
-                    setCurrentStep(1);
-                    setFormData({
-                      firstName: "",
-                      lastName: "",
-                      email: "",
-                      phone: "",
-                      company: "",
-                      city: "Nevşehir",
-                      department: "",
-                      subCategory: "",
-                      note: "",
-                    });
-                  }, 500);
+                  setTimeout(resetFormState, 500);
                 }}
                 style={{ margin: '0 auto', minWidth: '200px' }}
               >
@@ -346,7 +423,7 @@ export default function ConsultationModal({ isOpen, onClose }: ConsultationModal
           </>
           )}
         </div>
-      </div>
+      </motion.div>
       
       <style jsx>{`
         .form-group-fade-in {
