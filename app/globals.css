@@ -1218,7 +1218,7 @@ video {
   position: relative;
   overflow: hidden;
   border-radius: 2rem;
-  min-height: min(78vh, 52rem);
+  min-height: min(72vh, 48rem);
 }
 
 .project-slider-progress {
@@ -1240,6 +1240,10 @@ video {
   background: linear-gradient(90deg, rgba(204, 168, 131, 0.1), rgba(204, 168, 131, 0.95), rgba(255, 255, 255, 0.65));
 }
 
+.project-slider-mobile-ui {
+  display: none;
+}
+
 .project-slide {
   min-height: inherit;
   cursor: grab;
@@ -1258,7 +1262,7 @@ video {
 .project-card-full {
   display: block;
   width: 100%;
-  min-height: min(78vh, 52rem);
+  min-height: min(72vh, 48rem);
 }
 
 .project-card img,
@@ -1312,7 +1316,7 @@ video {
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
-  padding: clamp(1.5rem, 4vw, 4rem);
+  padding: clamp(1.25rem, 3vw, 3rem);
   gap: 2rem;
 }
 
@@ -1585,7 +1589,7 @@ video {
   }
 
   .project-slider-window {
-    min-height: 80vh;
+    min-height: 72vh;
   }
 
   .about-grid {
@@ -1603,6 +1607,113 @@ video {
 }
 
 @media (max-width: 767px) {
+  .section-heading.projects-heading {
+    gap: 1rem;
+  }
+
+  .project-slider-controls {
+    display: none;
+  }
+
+  .project-slider-mobile-ui {
+    position: absolute;
+    inset: auto 0 0 0;
+    z-index: 5;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 1rem;
+    pointer-events: none;
+  }
+
+  .project-slider-mobile-counter {
+    pointer-events: auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1rem;
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    background: rgba(10, 10, 10, 0.35);
+    backdrop-filter: blur(18px) saturate(1.4);
+    -webkit-backdrop-filter: blur(18px) saturate(1.4);
+    border-radius: 999px;
+    color: #fff;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.22);
+  }
+
+  .project-slider-mobile-counter span {
+    font-family: var(--font-headline), serif;
+    font-size: 1rem;
+    letter-spacing: 0.18em;
+  }
+
+  .project-slider-mobile-counter small {
+    font-size: 0.55rem;
+    letter-spacing: 0.28em;
+    color: rgba(255, 255, 255, 0.65);
+  }
+
+  .project-slider-mobile-arrows {
+    pointer-events: auto;
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+  }
+
+  .project-slider-mobile-arrows button {
+    width: 3.1rem;
+    height: 3.1rem;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.12);
+    color: #fff;
+    display: grid;
+    place-items: center;
+    backdrop-filter: blur(18px) saturate(1.4);
+    -webkit-backdrop-filter: blur(18px) saturate(1.4);
+    box-shadow: 0 18px 36px rgba(0, 0, 0, 0.24);
+    transition: transform 0.25s ease, background 0.25s ease, border-color 0.25s ease;
+  }
+
+  .project-slider-mobile-arrows button:hover,
+  .project-slider-mobile-arrows button:active {
+    transform: scale(0.96);
+    background: rgba(255, 255, 255, 0.18);
+    border-color: rgba(255, 255, 255, 0.36);
+  }
+
+  .project-slider-mobile-arrows .material-symbols-outlined {
+    font-size: 1.1rem;
+  }
+
+  .project-slider-progress {
+    left: 1rem;
+    right: 1rem;
+    top: 1rem;
+    border-radius: 999px;
+    opacity: 0.9;
+  }
+
+  .project-slide-copy {
+    padding: 1rem;
+    align-items: flex-end;
+  }
+
+  .project-slide-copy > div {
+    max-width: 16rem;
+    gap: 0.45rem;
+  }
+
+  .project-slide-copy h4 {
+    font-size: clamp(1.2rem, 7vw, 2.1rem);
+  }
+
+  .project-slide-copy p {
+    font-size: 0.46rem;
+    letter-spacing: 0.32em;
+  }
+
   .hero-controls {
     right: 1rem;
     bottom: 1rem;
@@ -4322,7 +4433,7 @@ video {
 
 @media (min-width: 1025px) {
   .galeri-page .project-slider-window {
-    min-height: 78vh;
+    min-height: 72vh;
   }
   
   /* Balanced layout for desktop */
