@@ -458,20 +458,6 @@ export default function Page() {
             onTouchEnd={handleProjectTouchEnd}
             onWheel={handleProjectWheel}
           >
-            <div className="project-slider-mobile-ui" aria-hidden="true">
-              <div className="project-slider-mobile-counter">
-                <span>{String(projectIndex + 1).padStart(2, "0")}</span>
-                <small>/{String(filteredProjects.length).padStart(2, "0")}</small>
-              </div>
-              <div className="project-slider-mobile-arrows">
-                <button type="button" onClick={() => navigateProject(-1)} aria-label="Önceki proje">
-                  <span className="material-symbols-outlined">arrow_back</span>
-                </button>
-                <button type="button" onClick={() => navigateProject(1)} aria-label="Sonraki proje">
-                  <span className="material-symbols-outlined">arrow_forward</span>
-                </button>
-              </div>
-            </div>
             <div className="project-slider-progress" aria-hidden="true">
               <motion.span
                 key={projectProgressKey}
@@ -480,6 +466,18 @@ export default function Page() {
                 animate={{ scaleX: 1 }}
                 transition={{ duration: 7, ease: "linear" }}
               />
+            </div>
+            <div className="project-slider-frame-ui" aria-hidden="true">
+              <div className="project-slider-frame-counter">
+                <span>{String(projectIndex + 1).padStart(2, "0")}</span>
+                <small>/{String(filteredProjects.length).padStart(2, "0")}</small>
+              </div>
+              <button type="button" className="project-slider-frame-arrow left" onClick={() => navigateProject(-1)} aria-label="Önceki proje">
+                <span className="material-symbols-outlined">arrow_back</span>
+              </button>
+              <button type="button" className="project-slider-frame-arrow right" onClick={() => navigateProject(1)} aria-label="Sonraki proje">
+                <span className="material-symbols-outlined">arrow_forward</span>
+              </button>
             </div>
             <AnimatePresence mode="wait" initial={false}>
               <motion.div
