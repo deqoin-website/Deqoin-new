@@ -1555,16 +1555,17 @@ video {
 .team-card-copy h3 {
   margin: 0;
   font-family: var(--font-headline), serif;
-  font-size: clamp(1.8rem, 2.6vw, 3rem);
-  line-height: 0.92;
+  font-size: clamp(2rem, 3vw, 3.6rem);
+  line-height: 0.94;
   color: #fff;
   letter-spacing: 0.02em;
+  text-wrap: balance;
 }
 
 .team-card-copy p {
   margin: 0;
-  font-size: 0.54rem;
-  letter-spacing: 0.38em;
+  font-size: 0.58rem;
+  letter-spacing: 0.5em;
   text-transform: uppercase;
   color: rgba(255, 255, 255, 0.68);
 }
@@ -1592,6 +1593,11 @@ video {
   display: grid;
   gap: 1rem;
   margin-top: 2.5rem;
+  position: relative;
+}
+
+.team-slider-arrow {
+  display: none;
 }
 
 @keyframes progressFill {
@@ -1660,8 +1666,46 @@ video {
     margin: 0.65rem auto 0;
   }
 
+  .team-slider-arrow {
+    display: none;
+  }
+
   .team-home-mobile-slider {
     grid-template-columns: minmax(0, 1fr);
+  }
+
+  .team-slider-arrow {
+    display: grid;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 8;
+    width: 3rem;
+    height: 3rem;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    background: rgba(255, 255, 255, 0.08);
+    color: #fff;
+    place-items: center;
+    backdrop-filter: blur(18px) saturate(1.45);
+    -webkit-backdrop-filter: blur(18px) saturate(1.45);
+    box-shadow: 0 16px 32px rgba(0, 0, 0, 0.2);
+    transition: transform 0.25s ease, background 0.25s ease, border-color 0.25s ease;
+  }
+
+  .team-slider-arrow:hover,
+  .team-slider-arrow:active {
+    transform: translateY(-50%) scale(0.96);
+    background: rgba(255, 255, 255, 0.14);
+    border-color: rgba(255, 255, 255, 0.28);
+  }
+
+  .team-slider-arrow-left {
+    left: -1.1rem;
+  }
+
+  .team-slider-arrow-right {
+    right: -1.1rem;
   }
 
   .team-mobile-card {
@@ -1677,7 +1721,7 @@ video {
   }
 
   .team-card-copy h3 {
-    font-size: clamp(0.8rem, 0.9vw, 1rem);
+    font-size: clamp(1rem, 1.2vw, 1.4rem);
   }
 
   .team-card-badge {
@@ -1698,6 +1742,10 @@ video {
 
   .team-home-mobile-slider {
     margin-top: 1.25rem;
+  }
+
+  .team-slider-arrow {
+    display: none;
   }
 
   .project-slide-copy {

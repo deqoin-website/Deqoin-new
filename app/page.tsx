@@ -642,21 +642,14 @@ export default function Page() {
               <h2>Departman Ekipleri</h2>
               <div className="section-line" />
             </div>
-            <div className="filter-bar">
-              {teamFilters.map((filter) => (
-                <button
-                  key={filter.key}
-                  type="button"
-                  className={`filter-button ${activeTeamFilter === filter.key ? "active" : ""}`}
-                  onClick={() => setActiveTeamFilter(filter.key)}
-                >
-                  <span className="filter-border" />
-                  <span className="filter-text">{filter.title}</span>
-                </button>
-              ))}
-            </div>
           </div>
           <div className="team-mobile-slider team-home-mobile-slider" onTouchStart={handleTeamTouchStart} onTouchEnd={handleTeamTouchEnd} onWheel={handleTeamWheel}>
+            <button type="button" className="team-slider-arrow team-slider-arrow-left" onClick={() => navigateTeamSlide(-1)} aria-label="Önceki ekip">
+              <span className="material-symbols-outlined">arrow_back</span>
+            </button>
+            <button type="button" className="team-slider-arrow team-slider-arrow-right" onClick={() => navigateTeamSlide(1)} aria-label="Sonraki ekip">
+              <span className="material-symbols-outlined">arrow_forward</span>
+            </button>
             <AnimatePresence mode="wait" initial={false}>
               <motion.div
                 key={filteredTeam[teamSlideIndex]?.id}
