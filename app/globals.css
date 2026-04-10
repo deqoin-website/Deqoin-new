@@ -509,6 +509,22 @@ video {
   -webkit-backdrop-filter: blur(18px) saturate(140%);
 }
 
+.swipe-appointment-stack {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.65rem;
+}
+
+.swipe-appointment-stack.compact {
+  transform: scale(0.82);
+  transform-origin: left center;
+}
+
+.swipe-appointment-stack.compact .swipe-appointment-hint {
+  margin-left: 0.4rem;
+}
+
 .swipe-appointment-button.compact {
   transform: scale(0.82);
   transform-origin: left center;
@@ -526,13 +542,14 @@ video {
   position: relative;
   z-index: 1;
   margin-left: 78px;
-  color: #171717;
+  color: #ffffff;
   font-family: var(--font-display), sans-serif;
   font-size: 0.76rem;
   letter-spacing: 0.28em;
   text-transform: uppercase;
   white-space: nowrap;
   pointer-events: none;
+  text-shadow: 0 1px 10px rgba(0, 0, 0, 0.28);
 }
 
 .swipe-appointment-handle {
@@ -561,6 +578,17 @@ video {
   font-size: 1.3rem;
 }
 
+.swipe-appointment-hint {
+  color: rgba(255, 255, 255, 0.78);
+  font-family: var(--font-display), sans-serif;
+  font-size: 0.56rem;
+  letter-spacing: 0.42em;
+  text-transform: uppercase;
+  padding-left: 0.95rem;
+  user-select: none;
+  text-shadow: 0 1px 10px rgba(0, 0, 0, 0.3);
+}
+
 .swipe-appointment-button.compact .swipe-appointment-label {
   font-size: 0.7rem;
   letter-spacing: 0.24em;
@@ -580,6 +608,11 @@ video {
   .swipe-appointment-label {
     margin-left: 74px;
     font-size: 0.68rem;
+  }
+
+  .swipe-appointment-hint {
+    font-size: 0.5rem;
+    letter-spacing: 0.36em;
   }
 }
 

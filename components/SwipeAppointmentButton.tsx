@@ -66,27 +66,30 @@ export default function SwipeAppointmentButton({
   };
 
   return (
-    <button
-      ref={trackRef}
-      type="button"
-      className={`swipe-appointment-button ${compact ? "compact" : ""} ${className}`.trim()}
-      style={style}
-      aria-label="Randevu talep ediniz"
-    >
-      <motion.div className="swipe-appointment-fill" style={{ width: fillWidth }} />
-      <span className="swipe-appointment-label">RANDEVU TALEP EDİNİZ</span>
-      <motion.div
-        className="swipe-appointment-handle"
-        style={{ x }}
-        drag="x"
-        dragConstraints={{ left: 0, right: maxTravel }}
-        dragElastic={0.06}
-        dragMomentum={false}
-        onDragEnd={handleDragEnd}
-        onClick={(event) => event.stopPropagation()}
+    <div className={`swipe-appointment-stack ${compact ? "compact" : ""} ${className}`.trim()} style={style}>
+      <button
+        ref={trackRef}
+        type="button"
+        className="swipe-appointment-button"
+        onClick={onActivate}
+        aria-label="Randevu talep ediniz"
       >
-        <span className="material-symbols-outlined">event_available</span>
-      </motion.div>
-    </button>
+        <motion.div className="swipe-appointment-fill" style={{ width: fillWidth }} />
+        <span className="swipe-appointment-label">RANDEVU TALEP EDİNİZ</span>
+        <motion.div
+          className="swipe-appointment-handle"
+          style={{ x }}
+          drag="x"
+          dragConstraints={{ left: 0, right: maxTravel }}
+          dragElastic={0.06}
+          dragMomentum={false}
+          onDragEnd={handleDragEnd}
+          onClick={(event) => event.stopPropagation()}
+        >
+          <span className="material-symbols-outlined">event_available</span>
+        </motion.div>
+      </button>
+      <span className="swipe-appointment-hint">KAYDIRINIZ</span>
+    </div>
   );
 }
