@@ -1531,27 +1531,11 @@ video {
   filter: grayscale(0);
 }
 
-.team-card-badge {
-  position: absolute;
-  top: 1rem;
-  right: 1rem;
-  z-index: 2;
-  padding: 0.55rem 0.9rem;
-  background: rgba(10, 10, 10, 0.8);
-  color: #cca883;
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  font-size: 0.52rem;
-  letter-spacing: 0.26em;
-  text-transform: uppercase;
-}
-
 .team-card-info {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: center;
-  gap: 1rem;
+  gap: 0.9rem;
   padding: 1.4rem 1.45rem 1.55rem;
 }
 
@@ -1559,10 +1543,11 @@ video {
   writing-mode: vertical-rl;
   transform: rotate(180deg);
   justify-self: start;
-  align-self: center;
+  align-self: start;
+  margin-top: 0.15rem;
   font-family: var(--font-display), sans-serif;
-  font-size: 0.62rem;
-  letter-spacing: 0.45em;
+  font-size: 0.76rem;
+  letter-spacing: 0.42em;
   text-transform: uppercase;
   color: rgba(255, 255, 255, 0.66);
   padding-left: 0.1rem;
@@ -1576,10 +1561,10 @@ video {
 .team-card-copy h3 {
   margin: 0;
   font-family: var(--font-smooch), sans-serif;
-  font-size: clamp(2.8rem, 5vw, 5rem);
+  font-size: clamp(2.35rem, 4.35vw, 4.25rem);
   font-style: normal;
   font-weight: 100;
-  line-height: 0.84;
+  line-height: 0.88;
   color: #fff;
   letter-spacing: 0.18em;
   text-transform: uppercase;
@@ -1739,23 +1724,18 @@ video {
 
   .team-card-info {
     padding: 0.7rem 0.7rem 0.8rem;
-    gap: 0.75rem;
+    gap: 0.65rem;
   }
 
   .team-card-role-vertical {
-    font-size: 0.5rem;
-    letter-spacing: 0.34em;
+    font-size: 0.58rem;
+    letter-spacing: 0.32em;
+    margin-top: 0.05rem;
   }
 
   .team-card-copy h3 {
-    font-size: clamp(1.35rem, 2.2vw, 2rem);
-    line-height: 0.9;
-  }
-
-  .team-card-badge {
-    top: 0.5rem;
-    right: 0.5rem;
-    padding: 0.35rem 0.55rem;
+    font-size: clamp(1.2rem, 2vw, 1.8rem);
+    line-height: 0.92;
   }
 
   .team-mobile-card {

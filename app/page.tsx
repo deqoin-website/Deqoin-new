@@ -693,7 +693,6 @@ export default function Page() {
                       <img src={currentTeamMember.image} alt={currentTeamMember.name} />
                     ) : null}
                     <div className="team-overlay" />
-                    <div className="team-card-badge">{currentTeamMember?.role}</div>
                   </div>
                   <div className="team-card-info">
                     <span className="team-card-role-vertical">{currentTeamMember?.role}</span>
