@@ -292,7 +292,6 @@ export default function Page() {
       {/* ── DESIGN & BUILD PROCESS SECTION ── */}
       <section className="process-section">
         <div className="process-header">
-          <span className="section-small-label" style={{ letterSpacing: "0.5em", color: "#cca883", fontSize: "0.75rem", marginBottom: "1rem", display: "block" }}>İŞ AKIŞI</span>
           <h2>İŞ AKIŞI</h2>
           <div className="section-line" />
         </div>
