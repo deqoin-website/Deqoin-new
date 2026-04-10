@@ -57,21 +57,6 @@ video {
   overflow-x: hidden;
 }
 
-.reel-feed {
-  scroll-snap-type: y proximity;
-  scroll-behavior: smooth;
-}
-
-.hero-section,
-.reel-section {
-  scroll-snap-align: start;
-  scroll-snap-stop: always;
-}
-
-.reel-section {
-  position: relative;
-}
-
 .topbar {
   position: fixed;
   inset: 0 0 auto;
@@ -284,10 +269,6 @@ video {
   user-select: none;
   cursor: grab;
   overflow: hidden;
-}
-
-.reel-feed .hero-section {
-  min-height: 100svh;
 }
 
 .hero-slide {
@@ -875,20 +856,6 @@ video {
 .about-section,
 .team-section {
   background: var(--surface);
-}
-
-.reel-feed .process-section,
-.reel-feed .services-section,
-.reel-feed .projects-section,
-.reel-feed .about-section,
-.reel-feed .team-section {
-  min-height: 100svh;
-  display: flex;
-  align-items: center;
-}
-
-.reel-feed .section-inner {
-  width: 100%;
 }
 
 .services-grid {
@@ -1851,15 +1818,6 @@ video {
   .section-inner {
     padding-left: 1.25rem;
     padding-right: 1.25rem;
-  }
-
-  .reel-feed .hero-section,
-  .reel-feed .process-section,
-  .reel-feed .services-section,
-  .reel-feed .projects-section,
-  .reel-feed .about-section,
-  .reel-feed .team-section {
-    min-height: 100dvh;
   }
 
   .about-label-row {
