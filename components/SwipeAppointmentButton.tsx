@@ -73,7 +73,7 @@ export default function SwipeAppointmentButton({
         className="swipe-appointment-button"
         onClick={onActivate}
         aria-label="Randevu talep ediniz"
-        style={{ minWidth: compact ? "340px" : undefined }}
+        style={{ minWidth: compact ? "min(100%, 460px)" : undefined }}
       >
         <motion.div className="swipe-appointment-fill" style={{ width: fillWidth }} />
         <span className="swipe-appointment-label">RANDEVU TALEP EDİNİZ</span>
