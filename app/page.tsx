@@ -320,7 +320,7 @@ export default function Page() {
 
 
   return (
-    <main className="site-shell">
+    <main className="site-shell reel-feed">
 
       <section
         className="hero-section"
@@ -404,7 +404,7 @@ export default function Page() {
       </section>
 
       {/* ── DESIGN & BUILD PROCESS SECTION ── */}
-      <section className="process-section">
+      <section className="process-section reel-section">
         <div className="process-header">
           <h2>İŞ AKIŞI</h2>
           <div className="section-line" />
@@ -432,7 +432,7 @@ export default function Page() {
         </div>
       </section>
 
-      <section className="services-section">
+      <section className="services-section reel-section">
         <div className="section-inner" style={{ paddingBottom: "2rem" }}>
           <div className="section-heading">
             <div>
@@ -478,7 +478,7 @@ export default function Page() {
       </section>
 
 
-      <section className="projects-section" id="galeri">
+      <section className="projects-section reel-section" id="galeri">
         <div className="section-inner">
           <div className="section-heading projects-heading">
             <div>
@@ -601,7 +601,7 @@ export default function Page() {
         </div>
       </section>
 
-      <section className="about-section" id="about-us">
+      <section className="about-section reel-section" id="about-us">
         <div className="section-inner about-grid">
           <div className="about-copy">
             <div>
@@ -640,7 +640,7 @@ export default function Page() {
         </div>
       </section>
 
-      <section className="team-section" id="departman-ekipleri">
+      <section className="team-section reel-section" id="departman-ekipleri">
         <div className="section-inner">
           <div className="section-heading projects-heading">
             <div>
