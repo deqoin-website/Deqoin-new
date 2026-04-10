@@ -464,7 +464,7 @@ export default function Page() {
                 className="project-slider-progress-fill"
                 initial={{ scaleX: 0 }}
                 animate={{ scaleX: 1 }}
-                transition={{ duration: 7, ease: "linear" }}
+                transition={{ duration: 4.8, ease: "linear" }}
               />
             </div>
             <div className="project-slider-frame-ui" aria-hidden="true">
@@ -472,12 +472,6 @@ export default function Page() {
                 <span>{String(projectIndex + 1).padStart(2, "0")}</span>
                 <small>/{String(filteredProjects.length).padStart(2, "0")}</small>
               </div>
-              <button type="button" className="project-slider-frame-arrow left" onClick={() => navigateProject(-1)} aria-label="Önceki proje">
-                <span className="material-symbols-outlined">arrow_back</span>
-              </button>
-              <button type="button" className="project-slider-frame-arrow right" onClick={() => navigateProject(1)} aria-label="Sonraki proje">
-                <span className="material-symbols-outlined">arrow_forward</span>
-              </button>
             </div>
             <AnimatePresence mode="wait" initial={false}>
               <motion.div
@@ -509,7 +503,7 @@ export default function Page() {
                   scale: 0.98,
                   filter: "blur(10px) saturate(0.85)",
                 }}
-                transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+                transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
               >
                 <Link href={`/galeri/${filteredProjects[projectIndex]?.slug}`} className="project-card project-card-full">
                   <motion.div
@@ -518,7 +512,7 @@ export default function Page() {
                     initial={{ scale: 1.08, x: projectDirection >= 0 ? -30 : 30 }}
                     animate={{ scale: 1.16, x: 0 }}
                     exit={{ scale: 1.08, x: projectDirection >= 0 ? 30 : -30 }}
-                    transition={{ duration: 1.1, ease: [0.16, 1, 0.3, 1] }}
+                    transition={{ duration: 0.75, ease: [0.16, 1, 0.3, 1] }}
                   />
                   <img src={filteredProjects[projectIndex]?.coverImage} alt={filteredProjects[projectIndex]?.title} />
                   <div className="project-overlay" />
