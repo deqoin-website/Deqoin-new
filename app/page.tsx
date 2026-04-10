@@ -121,7 +121,6 @@ export default function Page() {
   const [projectProgressKey, setProjectProgressKey] = useState(0);
   const [teamSlideIndex, setTeamSlideIndex] = useState(0);
   const [teamSlideDirection, setTeamSlideDirection] = useState(1);
-  const [teamProgressKey, setTeamProgressKey] = useState(0);
   const heroTouchStartX = useRef<number | null>(null);
   const heroTouchStartY = useRef<number | null>(null);
   const projectTouchStartX = useRef<number | null>(null);
@@ -195,7 +194,6 @@ export default function Page() {
     const interval = window.setInterval(() => {
       setTeamSlideDirection(1);
       setTeamSlideIndex((current) => (current + 1) % filteredTeam.length);
-      setTeamProgressKey((current) => current + 1);
     }, 5000);
 
     return () => window.clearInterval(interval);
@@ -264,7 +262,6 @@ export default function Page() {
     if (filteredTeam.length === 0) return;
     setTeamSlideDirection(direction);
     setTeamSlideIndex((current) => (current + direction + filteredTeam.length) % filteredTeam.length);
-    setTeamProgressKey((current) => current + 1);
   };
 
   const handleTeamTouchStart = (event: React.TouchEvent<HTMLElement>) => {
@@ -643,10 +640,6 @@ export default function Page() {
           <div className="section-heading projects-heading">
             <div>
               <h2>Departman Ekipleri</h2>
-              <div className="project-title-counter team-title-counter">
-                <span>{String(teamSlideIndex + 1).padStart(2, "0")}</span>
-                <small>/{String(filteredTeam.length).padStart(2, "0")}</small>
-              </div>
               <div className="section-line" />
             </div>
             <div className="filter-bar">
@@ -664,21 +657,6 @@ export default function Page() {
             </div>
           </div>
           <div className="team-mobile-slider team-home-mobile-slider" onTouchStart={handleTeamTouchStart} onTouchEnd={handleTeamTouchEnd} onWheel={handleTeamWheel}>
-            <div className="team-mobile-slider-top">
-              <div className="team-mobile-counter">
-                <span>{String(teamSlideIndex + 1).padStart(2, "0")}</span>
-                <small>/{String(filteredTeam.length).padStart(2, "0")}</small>
-              </div>
-              <div className="team-mobile-progress" aria-hidden="true">
-                <motion.span
-                  key={teamProgressKey}
-                  className="team-mobile-progress-fill"
-                  initial={{ scaleX: 0 }}
-                  animate={{ scaleX: 1 }}
-                  transition={{ duration: 5, ease: "linear" }}
-                />
-              </div>
-            </div>
             <AnimatePresence mode="wait" initial={false}>
               <motion.div
                 key={filteredTeam[teamSlideIndex]?.id}
