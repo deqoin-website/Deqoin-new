@@ -696,9 +696,9 @@ export default function Page() {
                     <div className="team-card-badge">{currentTeamMember?.role}</div>
                   </div>
                   <div className="team-card-info">
+                    <span className="team-card-role-vertical">{currentTeamMember?.role}</span>
                     <div className="team-card-copy">
                       <h3>{currentTeamMember?.name}</h3>
-                      <p>{currentTeamMember?.role}</p>
                     </div>
                     <div className="team-card-footer">
                       <span className="team-card-index">{String(teamSlideIndex + 1).padStart(2, "0")}</span>
