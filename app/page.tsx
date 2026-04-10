@@ -119,11 +119,17 @@ export default function Page() {
   const [projectIndex, setProjectIndex] = useState(0);
   const [projectDirection, setProjectDirection] = useState(1);
   const [projectProgressKey, setProjectProgressKey] = useState(0);
+  const [teamSlideIndex, setTeamSlideIndex] = useState(0);
+  const [teamSlideDirection, setTeamSlideDirection] = useState(1);
+  const [teamProgressKey, setTeamProgressKey] = useState(0);
   const heroTouchStartX = useRef<number | null>(null);
   const heroTouchStartY = useRef<number | null>(null);
   const projectTouchStartX = useRef<number | null>(null);
   const projectTouchStartY = useRef<number | null>(null);
+  const teamTouchStartX = useRef<number | null>(null);
+  const teamTouchStartY = useRef<number | null>(null);
   const projectWheelLockRef = useRef(false);
+  const teamWheelLockRef = useRef(false);
 
   useEffect(() => {
     const fetchSlides = async () => {
@@ -177,6 +183,23 @@ export default function Page() {
 
     return () => window.clearInterval(interval);
   }, [filteredProjects.length]);
+
+  useEffect(() => {
+    if (filteredTeam.length === 0) return;
+    setTeamSlideIndex(0);
+  }, [activeTeamFilter, filteredTeam.length]);
+
+  useEffect(() => {
+    if (filteredTeam.length === 0) return;
+
+    const interval = window.setInterval(() => {
+      setTeamSlideDirection(1);
+      setTeamSlideIndex((current) => (current + 1) % filteredTeam.length);
+      setTeamProgressKey((current) => current + 1);
+    }, 5000);
+
+    return () => window.clearInterval(interval);
+  }, [filteredTeam.length]);
 
   const navigateHero = (direction: number) => {
     if (slides.length === 0) return;
@@ -235,6 +258,46 @@ export default function Page() {
 
     if (Math.abs(deltaX) < 50 || Math.abs(deltaX) < Math.abs(deltaY)) return;
     navigateProject(deltaX < 0 ? 1 : -1);
+  };
+
+  const navigateTeamSlide = (direction: number) => {
+    if (filteredTeam.length === 0) return;
+    setTeamSlideDirection(direction);
+    setTeamSlideIndex((current) => (current + direction + filteredTeam.length) % filteredTeam.length);
+    setTeamProgressKey((current) => current + 1);
+  };
+
+  const handleTeamTouchStart = (event: React.TouchEvent<HTMLElement>) => {
+    const touch = event.touches[0];
+    teamTouchStartX.current = touch.clientX;
+    teamTouchStartY.current = touch.clientY;
+  };
+
+  const handleTeamTouchEnd = (event: React.TouchEvent<HTMLElement>) => {
+    const startX = teamTouchStartX.current;
+    const startY = teamTouchStartY.current;
+    teamTouchStartX.current = null;
+    teamTouchStartY.current = null;
+    if (startX == null || startY == null) return;
+    const touch = event.changedTouches[0];
+    const deltaX = touch.clientX - startX;
+    const deltaY = touch.clientY - startY;
+    if (Math.abs(deltaX) < 50 || Math.abs(deltaX) < Math.abs(deltaY)) return;
+    navigateTeamSlide(deltaX < 0 ? 1 : -1);
+  };
+
+  const handleTeamWheel = (event: React.WheelEvent<HTMLElement>) => {
+    if (teamWheelLockRef.current || filteredTeam.length === 0) return;
+    if (Math.abs(event.deltaY) < 20 && Math.abs(event.deltaX) < 20) return;
+    const direction = Math.abs(event.deltaY) > Math.abs(event.deltaX)
+      ? Math.sign(event.deltaY)
+      : Math.sign(event.deltaX);
+    if (direction === 0) return;
+    teamWheelLockRef.current = true;
+    navigateTeamSlide(direction > 0 ? 1 : -1);
+    window.setTimeout(() => {
+      teamWheelLockRef.current = false;
+    }, 850);
   };
 
   const handleProjectWheel = (event: React.WheelEvent<HTMLElement>) => {
@@ -580,6 +643,10 @@ export default function Page() {
           <div className="section-heading projects-heading">
             <div>
               <h2>Departman Ekipleri</h2>
+              <div className="project-title-counter team-title-counter">
+                <span>{String(teamSlideIndex + 1).padStart(2, "0")}</span>
+                <small>/{String(filteredTeam.length).padStart(2, "0")}</small>
+              </div>
               <div className="section-line" />
             </div>
             <div className="filter-bar">
@@ -596,19 +663,73 @@ export default function Page() {
               ))}
             </div>
           </div>
-          <div className="team-grid">
-            {filteredTeam.map((member) => (
-              <div className="team-member" key={member.id}>
-                <div className="team-image-wrapper">
-                  <img src={member.image} alt={member.role} />
-                  <div className="team-overlay"></div>
-                </div>
-                <div className="team-info">
-                  <h3>{member.name}</h3>
-                  <span className="vertical-text">{member.role}</span>
-                </div>
+          <div className="team-mobile-slider team-home-mobile-slider" onTouchStart={handleTeamTouchStart} onTouchEnd={handleTeamTouchEnd} onWheel={handleTeamWheel}>
+            <div className="team-mobile-slider-top">
+              <div className="team-mobile-counter">
+                <span>{String(teamSlideIndex + 1).padStart(2, "0")}</span>
+                <small>/{String(filteredTeam.length).padStart(2, "0")}</small>
               </div>
-            ))}
+              <div className="team-mobile-progress" aria-hidden="true">
+                <motion.span
+                  key={teamProgressKey}
+                  className="team-mobile-progress-fill"
+                  initial={{ scaleX: 0 }}
+                  animate={{ scaleX: 1 }}
+                  transition={{ duration: 5, ease: "linear" }}
+                />
+              </div>
+            </div>
+            <AnimatePresence mode="wait" initial={false}>
+              <motion.div
+                key={filteredTeam[teamSlideIndex]?.id}
+                className="team-mobile-slide"
+                drag="x"
+                dragConstraints={{ left: 0, right: 0 }}
+                dragElastic={0.12}
+                onDragEnd={(_, info) => {
+                  const threshold = 60;
+                  if (info.offset.x < -threshold) navigateTeamSlide(1);
+                  if (info.offset.x > threshold) navigateTeamSlide(-1);
+                }}
+                initial={{
+                  opacity: 0,
+                  x: teamSlideDirection >= 0 ? 100 : -100,
+                  scale: 1.05,
+                  filter: "blur(10px) saturate(0.9)",
+                }}
+                animate={{
+                  opacity: 1,
+                  x: 0,
+                  scale: 1,
+                  filter: "blur(0px) saturate(1)",
+                }}
+                exit={{
+                  opacity: 0,
+                  x: teamSlideDirection >= 0 ? -100 : 100,
+                  scale: 0.98,
+                  filter: "blur(8px) saturate(0.9)",
+                }}
+                transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
+              >
+                <Link href="/departman-ekipleri" className="team-card-gallery team-mobile-card">
+                  <div className="team-card-img">
+                    <img src={filteredTeam[teamSlideIndex]?.image} alt={filteredTeam[teamSlideIndex]?.name} />
+                    <div className="team-overlay" />
+                    <div className="team-card-badge">{filteredTeam[teamSlideIndex]?.role}</div>
+                  </div>
+                  <div className="team-card-info">
+                    <div className="team-card-copy">
+                      <h3>{filteredTeam[teamSlideIndex]?.name}</h3>
+                      <p>{filteredTeam[teamSlideIndex]?.role}</p>
+                    </div>
+                    <div className="team-card-footer">
+                      <span className="team-card-index">{String(teamSlideIndex + 1).padStart(2, "0")}</span>
+                      <span className="material-symbols-outlined">arrow_outward</span>
+                    </div>
+                  </div>
+                </Link>
+              </motion.div>
+            </AnimatePresence>
           </div>
 
           <div style={{ display: "flex", justifyContent: "center", marginTop: "5rem" }}>
