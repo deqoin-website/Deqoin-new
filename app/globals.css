@@ -2002,7 +2002,7 @@ video {
   transition:
     transform 0.65s cubic-bezier(0.16, 1, 0.3, 1),
     box-shadow 0.65s cubic-bezier(0.16, 1, 0.3, 1);
-  border-radius: 28px 28px 0 0;
+  border-radius: 28px;
   box-shadow:
     0 40px 120px rgba(0, 0, 0, 0.55),
     inset 0 1px 0 rgba(255, 255, 255, 0.12);
