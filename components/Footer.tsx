@@ -69,7 +69,7 @@ export default function Footer() {
           <div className="footer-cta-block">
             <span className="footer-cta-label">Bir Projeniz mi Var?</span>
             <h2 className="footer-cta-title">
-              Birlikte<br />bir şeyler yapalım.
+              Şimdi<br />tasarlayalım.
             </h2>
             <Link href="/iletisim" className="footer-cta-btn hero-cta">
               <span className="hero-cta-text">RANDEVU TALEP ET</span>
