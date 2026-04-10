@@ -646,7 +646,7 @@ video {
 
 @media (max-width: 767px) {
   .swipe-appointment-button {
-    width: calc(100vw - 1rem);
+    width: calc(100vw - 1.8rem);
     max-width: 100%;
     height: 64px;
     border-radius: 999px;
