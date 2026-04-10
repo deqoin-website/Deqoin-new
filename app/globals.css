@@ -3248,7 +3248,7 @@ video {
    ============================================= */
 .process-section {
   background: #0a0a0a;
-  padding: 10rem 2rem;
+  padding: 7rem 2rem 8.5rem;
   color: #fff;
   border-top: 1px solid rgba(255, 255, 255, 0.05);
   position: relative;
@@ -3257,7 +3257,7 @@ video {
 
 .process-header {
   text-align: center;
-  margin-bottom: 8rem;
+  margin-bottom: 5.25rem;
 }
 
 .process-header h2 {
@@ -3267,7 +3267,7 @@ video {
   text-transform: uppercase;
   letter-spacing: 0.1em;
   line-height: 0.9;
-  margin-bottom: 1.5rem;
+  margin-bottom: 0.5rem;
 }
 
 .process-header .section-line {
