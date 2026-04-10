@@ -158,7 +158,7 @@ export default function AdminProjects() {
           {projects.map((project: any) => (
             <motion.div layout key={project._id} className="project-admin-card">
               <div className="card-img">
-                <img src={project.coverImage} alt={project.title} />
+                {project.coverImage && <img src={project.coverImage} alt={project.title} />}
                 <div className="card-overlay">
                    <button onClick={() => openEditModal(project)} className="action-icn"><Edit3 size={18} /></button>
                    <button onClick={() => handleDelete(project._id)} className="action-icn delete"><Trash2 size={18} /></button>
@@ -235,7 +235,7 @@ export default function AdminProjects() {
                     <div className="gallery-previews">
                       {formData.gallery.map((url, i) => (
                         <div key={i} className="gallery-item">
-                           <img src={url} alt="Gallery" />
+                           {url && <img src={url} alt="Gallery" />}
                            <button type="button" onClick={() => setFormData({...formData, gallery: formData.gallery.filter((_, idx)=>idx!==i)})}><X size={12}/></button>
                         </div>
                       ))}

@@ -56,7 +56,7 @@ export default function AdminLoginPage() {
         >
           <div className="branding-content">
             <div className="brand-logo">
-              <img src="/images/logo-new.jpeg" alt="DEQOIN" />
+              <img src="/images/logo-new.jpeg" alt="DEQOIN" onError={(e) => e.currentTarget.style.display = 'none'} />
             </div>
             <h1 className="brand-title">DEQOIN</h1>
             <p className="brand-subtitle">Architectural Studio</p>
@@ -210,8 +210,9 @@ export default function AdminLoginPage() {
         .login-container {
           display: grid;
           grid-template-columns: 1fr 1fr;
-          max-width: 1200px;
           width: 100%;
+          max-width: 1400px;
+          min-height: 600px;
           max-height: 90vh;
           background: rgba(18, 18, 18, 0.6);
           backdrop-filter: blur(20px);
@@ -232,6 +233,7 @@ export default function AdminLoginPage() {
           justify-content: center;
           position: relative;
           border-right: 1px solid rgba(166, 137, 102, 0.1);
+          min-height: 600px;
         }
 
         .branding-content {
@@ -310,11 +312,13 @@ export default function AdminLoginPage() {
           align-items: center;
           justify-content: center;
           background: rgba(18, 18, 18, 0.4);
+          min-height: 600px;
+          width: 100%;
         }
 
         .form-wrapper {
           width: 100%;
-          max-width: 420px;
+          max-width: 480px;
         }
 
         .form-header {
@@ -509,9 +513,24 @@ export default function AdminLoginPage() {
         }
 
         /* Responsive Design */
+        @media (max-width: 1200px) {
+          .login-container {
+            max-width: 95%;
+            margin: 0 auto;
+          }
+
+          .login-branding {
+            padding: 3rem 2rem;
+          }
+
+          .login-form-section {
+            padding: 3rem 2rem;
+          }
+        }
+
         @media (max-width: 1024px) {
           .login-container {
-            max-width: 900px;
+            max-width: 90%;
           }
 
           .login-branding {
@@ -532,10 +551,15 @@ export default function AdminLoginPage() {
         }
 
         @media (max-width: 768px) {
+          .admin-login-new {
+            padding: 1rem;
+          }
+
           .login-container {
             grid-template-columns: 1fr;
-            max-width: 500px;
+            max-width: 100%;
             max-height: none;
+            min-height: auto;
           }
 
           .login-branding {
@@ -544,6 +568,7 @@ export default function AdminLoginPage() {
 
           .login-form-section {
             padding: 3rem 2rem;
+            min-height: auto;
           }
 
           .form-header {

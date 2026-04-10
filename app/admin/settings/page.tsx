@@ -92,8 +92,10 @@ export default function SettingsPage() {
             <div className="logo-display">
               {uploadLoading ? (
                 <div className="logo-loader"><Loader2 className="animate-spin" size={32} /></div>
-              ) : (
+              ) : settings.logoUrl && settings.logoUrl.trim() !== '' ? (
                 <img src={settings.logoUrl} alt="Logo Preview" />
+              ) : (
+                <div className="logo-placeholder"><Camera size={32} /></div>
               )}
             </div>
             <div className="logo-actions">

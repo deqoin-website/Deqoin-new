@@ -152,7 +152,7 @@ export default function Header() {
                   {searchResults.projects.map(p => (
                     <Link href={`/galeri/${p.slug}`} key={`proj-${p.slug}`} className="search-result-card" onClick={() => setIsSearchOpen(false)}>
                       <div className="result-img-wrap">
-                        <img src={p.coverImage} alt={p.title} />
+                        {p.coverImage && <img src={p.coverImage} alt={p.title} />}
                       </div>
                       <div className="result-info">
                         <h4>{p.title}</h4>
@@ -171,7 +171,7 @@ export default function Header() {
                   {searchResults.team.map(t => (
                     <Link href={`/departman-ekipleri`} key={`team-${t.id}`} className="search-result-card" onClick={() => setIsSearchOpen(false)}>
                       <div className="result-img-wrap team-style">
-                        <img src={t.image} alt={t.name} />
+                        {t.image && <img src={t.image} alt={t.name} />}
                       </div>
                       <div className="result-info">
                         <h4>{t.name}</h4>
@@ -207,7 +207,7 @@ export default function Header() {
               </Link>
             </div>
             <Link href="/" className="brand-mark">
-              {logoUrl && (
+              {logoUrl && logoUrl.trim() !== '' && (
                 <img
                   src={logoUrl}
                   alt="DEQOIN Architectural Studio"
