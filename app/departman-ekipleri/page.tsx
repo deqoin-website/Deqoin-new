@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
+import Link from "next/link";
 import { teamFilters, teamMembers } from "../../data/team";
 
 export default function OurTeam() {
@@ -38,23 +39,25 @@ export default function OurTeam() {
           </div>
         </div>
 
-        <div className="team-grid">
-          {filteredTeam.map((member) => (
-            <article className="team-member" key={member.id}>
-              <div className="team-image-wrap">
+        <div className="team-grid team-grid-gallery">
+          {filteredTeam.map((member, idx) => (
+            <Link href="/departman-ekipleri" className="team-member team-card-gallery" key={member.id}>
+              <div className="team-card-img">
                 <img src={member.image} alt={member.name} />
                 <div className="team-overlay" />
+                <div className="team-card-badge">{member.role}</div>
               </div>
-              <div className="team-info">
-                <div className="team-desc">
-                  <h4>{member.name}</h4>
+              <div className="team-card-info">
+                <div className="team-card-copy">
+                  <h3>{member.name}</h3>
                   <p>{member.role}</p>
                 </div>
-                <div className="team-social">
-                  <span className="material-symbols-outlined">link</span>
+                <div className="team-card-footer">
+                  <span className="team-card-index">{String(idx + 1).padStart(2, "0")}</span>
+                  <span className="material-symbols-outlined">arrow_outward</span>
                 </div>
               </div>
-            </article>
+            </Link>
           ))}
         </div>
       </div>
