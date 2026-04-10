@@ -1244,7 +1244,7 @@ video {
   display: inline-flex;
   align-items: baseline;
   gap: 0.45rem;
-  margin-top: 0.85rem;
+  margin-top: 1.25rem;
   color: #9a9a9a;
 }
 
@@ -1626,6 +1626,10 @@ video {
 @media (max-width: 767px) {
   .section-heading.projects-heading {
     gap: 1rem;
+  }
+
+  .project-title-counter {
+    margin-top: 1.5rem;
   }
 
   .project-slider-controls {
