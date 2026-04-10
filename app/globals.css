@@ -1168,19 +1168,102 @@ video {
   background: var(--text);
 }
 
-.project-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
+.project-slider-controls {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.project-slider-counter {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+}
+
+.project-slider-counter span {
+  font-family: var(--font-headline), serif;
+  font-size: 1.6rem;
+}
+
+.project-slider-counter small {
+  font-size: 0.68rem;
+  letter-spacing: 0.3em;
+  color: #9a9a9a;
+}
+
+.project-slider-dots {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.project-slider-dot {
+  width: 0.7rem;
+  height: 0.7rem;
+  border-radius: 999px;
+  border: 0;
+  background: rgba(255, 255, 255, 0.22);
+  cursor: pointer;
+  transition: transform 0.35s ease, background 0.35s ease, width 0.35s ease;
+}
+
+.project-slider-dot.active {
+  width: 2rem;
+  background: var(--text);
+}
+
+.project-slider-window {
+  position: relative;
+  overflow: hidden;
+  border-radius: 2rem;
+  min-height: min(78vh, 52rem);
+}
+
+.project-slider-progress {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 4;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+}
+
+.project-slider-progress-fill {
+  display: block;
+  width: 100%;
+  height: 100%;
+  transform-origin: left center;
+  background: linear-gradient(90deg, rgba(204, 168, 131, 0.1), rgba(204, 168, 131, 0.95), rgba(255, 255, 255, 0.65));
+}
+
+.project-slide {
+  min-height: inherit;
+  cursor: grab;
+}
+
+.project-slide:active {
+  cursor: grabbing;
 }
 
 .project-card {
   position: relative;
-  aspect-ratio: 3 / 4;
+  aspect-ratio: auto;
   overflow: hidden;
 }
 
+.project-card-full {
+  display: block;
+  width: 100%;
+  min-height: min(78vh, 52rem);
+}
+
 .project-card img,
-.project-overlay {
+.project-overlay,
+.project-slide-glow {
   position: absolute;
   inset: 0;
   width: 100%;
@@ -1189,8 +1272,18 @@ video {
 
 .project-card img {
   object-fit: cover;
-  filter: grayscale(1);
-  transition: transform 1.5s ease, filter 1.5s ease;
+  filter: grayscale(1) contrast(1.05);
+  transition: transform 1.8s ease, filter 1.8s ease;
+}
+
+.project-slide-parallax {
+  position: absolute;
+  inset: -8%;
+  background-size: cover;
+  background-position: center;
+  filter: blur(12px) saturate(1.15) brightness(0.72);
+  opacity: 0.42;
+  transform-origin: center;
 }
 
 .project-card:hover img {
@@ -1199,7 +1292,17 @@ video {
 }
 
 .project-overlay {
-  background: rgba(0, 0, 0, 0.25);
+  background:
+    linear-gradient(180deg, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0.58) 100%),
+    linear-gradient(90deg, rgba(0, 0, 0, 0.58) 0%, rgba(0, 0, 0, 0.05) 55%, rgba(0, 0, 0, 0.45) 100%);
+}
+
+.project-slide-glow {
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 20% 25%, rgba(255, 255, 255, 0.12), transparent 30%),
+    radial-gradient(circle at 80% 80%, rgba(204, 168, 131, 0.18), transparent 28%);
+  mix-blend-mode: screen;
 }
 
 .project-card h4,
@@ -1210,19 +1313,44 @@ video {
 }
 
 .project-card h4 {
-  top: 2rem;
-  left: 2rem;
-  right: 2rem;
+  margin: 0;
+  font-size: clamp(2rem, 4vw, 4.8rem);
+  line-height: 0.95;
+  letter-spacing: 0.02em;
 }
 
 .project-card p {
-  bottom: 2rem;
-  left: 2rem;
   margin: 0;
-  font-size: 0.5rem;
+  font-size: 0.58rem;
   letter-spacing: 0.5em;
   text-transform: uppercase;
   color: rgba(255, 255, 255, 0.7);
+}
+
+.project-slide-copy {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  padding: clamp(1.5rem, 4vw, 4rem);
+  gap: 2rem;
+}
+
+.project-slide-copy .vertical-text {
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.project-slide-copy > div {
+  display: grid;
+  gap: 0.9rem;
+  max-width: 34rem;
+}
+
+@keyframes projectProgressFill {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
 }
 
 .about-grid {
@@ -1458,8 +1586,8 @@ video {
     aspect-ratio: 16 / 9;
   }
 
-  .project-grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+  .project-slider-window {
+    min-height: 80vh;
   }
 
   .about-grid {
@@ -4181,9 +4309,9 @@ video {
     gap: 0;
   }
 
-  .galeri-page .project-grid {
-    grid-template-columns: repeat(2, 1fr) !important;
-    gap: 0 !important;
+  .galeri-page .project-slider-window {
+    min-height: 72vh;
+    border-radius: 1.25rem;
   }
 
   /* Keep header and search container padded on mobile */
@@ -4195,9 +4323,8 @@ video {
 }
 
 @media (min-width: 1025px) {
-  .galeri-page .project-grid {
-    grid-template-columns: repeat(3, 1fr) !important;
-    gap: 1.5rem; /* Slightly tighter gaps for premium feel */
+  .galeri-page .project-slider-window {
+    min-height: 78vh;
   }
   
   /* Balanced layout for desktop */

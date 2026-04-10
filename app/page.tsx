@@ -110,23 +110,20 @@ const projects: ProjectItem[] = [
   },
 ];
 
-const filters = [
-  { key: "all", title: "HEPSİ", sideLabel: "Selection" },
-  { key: "konut", title: "KONUT", sideLabel: "Residential" },
-  { key: "ticari", title: "TİCARİ", sideLabel: "Commercial" },
-  { key: "ic-mimari", title: "İÇ MİMARİ", sideLabel: "Interiors" },
-  { key: "restorasyon", title: "RESTORASYON", sideLabel: "Revival" },
-] as const;
-
 export default function Page() {
   const [heroIndex, setHeroIndex] = useState(0);
   const [heroDirection, setHeroDirection] = useState(0);
   const [isConsultationOpen, setIsConsultationOpen] = useState(false);
-  const [activeFilter, setActiveFilter] = useState<(typeof filters)[number]["key"]>("all");
   const [activeTeamFilter, setActiveTeamFilter] = useState<(typeof teamFilters)[number]["key"]>("all");
   const [slides, setSlides] = useState(heroSlides);
+  const [projectIndex, setProjectIndex] = useState(0);
+  const [projectDirection, setProjectDirection] = useState(1);
+  const [projectProgressKey, setProjectProgressKey] = useState(0);
   const heroTouchStartX = useRef<number | null>(null);
   const heroTouchStartY = useRef<number | null>(null);
+  const projectTouchStartX = useRef<number | null>(null);
+  const projectTouchStartY = useRef<number | null>(null);
+  const projectWheelLockRef = useRef(false);
 
   useEffect(() => {
     const fetchSlides = async () => {
@@ -157,10 +154,7 @@ export default function Page() {
 
 
 
-  const filteredProjects = useMemo(() => {
-    if (activeFilter === "all") return projectsData;
-    return projectsData.filter((project) => project.category === activeFilter);
-  }, [activeFilter]);
+  const filteredProjects = useMemo(() => projectsData, []);
 
   const filteredTeam = useMemo(() => {
     if (activeTeamFilter === "all") return teamMembers;
@@ -171,6 +165,18 @@ export default function Page() {
     width: "100%",
     animation: "progressFill 8s linear infinite",
   };
+
+  useEffect(() => {
+    if (filteredProjects.length === 0) return;
+
+    const interval = window.setInterval(() => {
+      setProjectDirection(1);
+      setProjectIndex((current) => (current + 1) % filteredProjects.length);
+      setProjectProgressKey((current) => current + 1);
+    }, 7000);
+
+    return () => window.clearInterval(interval);
+  }, [filteredProjects.length]);
 
   const navigateHero = (direction: number) => {
     if (slides.length === 0) return;
@@ -199,6 +205,54 @@ export default function Page() {
 
     if (Math.abs(deltaX) < 50 || Math.abs(deltaX) < Math.abs(deltaY)) return;
     navigateHero(deltaX < 0 ? 1 : -1);
+  };
+
+  const navigateProject = (direction: number) => {
+    if (filteredProjects.length === 0) return;
+    setProjectDirection(direction);
+    setProjectIndex((current) => (current + direction + filteredProjects.length) % filteredProjects.length);
+    setProjectProgressKey((current) => current + 1);
+  };
+
+  const handleProjectTouchStart = (event: React.TouchEvent<HTMLElement>) => {
+    const touch = event.touches[0];
+    projectTouchStartX.current = touch.clientX;
+    projectTouchStartY.current = touch.clientY;
+  };
+
+  const handleProjectTouchEnd = (event: React.TouchEvent<HTMLElement>) => {
+    const startX = projectTouchStartX.current;
+    const startY = projectTouchStartY.current;
+
+    projectTouchStartX.current = null;
+    projectTouchStartY.current = null;
+
+    if (startX == null || startY == null) return;
+
+    const touch = event.changedTouches[0];
+    const deltaX = touch.clientX - startX;
+    const deltaY = touch.clientY - startY;
+
+    if (Math.abs(deltaX) < 50 || Math.abs(deltaX) < Math.abs(deltaY)) return;
+    navigateProject(deltaX < 0 ? 1 : -1);
+  };
+
+  const handleProjectWheel = (event: React.WheelEvent<HTMLElement>) => {
+    if (projectWheelLockRef.current || filteredProjects.length === 0) return;
+    if (Math.abs(event.deltaY) < 20 && Math.abs(event.deltaX) < 20) return;
+
+    const direction = Math.abs(event.deltaY) > Math.abs(event.deltaX)
+      ? Math.sign(event.deltaY)
+      : Math.sign(event.deltaX);
+
+    if (direction === 0) return;
+
+    projectWheelLockRef.current = true;
+    navigateProject(direction > 0 ? 1 : -1);
+
+    window.setTimeout(() => {
+      projectWheelLockRef.current = false;
+    }, 900);
   };
 
 
@@ -368,30 +422,105 @@ export default function Page() {
               <h2>Galeri</h2>
               <div className="section-line" />
             </div>
-            <div className="filter-bar">
-              {filters.map((filter) => (
-                <button
-                  key={filter.key}
-                  type="button"
-                  className={`filter-button ${activeFilter === filter.key ? "active" : ""}`}
-                  onClick={() => setActiveFilter(filter.key)}
-                >
-                  <span className="vertical-text">{filter.sideLabel}</span>
-                  <span>{filter.title}</span>
+            <div className="project-slider-controls">
+              <div className="project-slider-counter">
+                <span>{String(projectIndex + 1).padStart(2, "0")}</span>
+                <small>{String(filteredProjects.length).padStart(2, "0")}</small>
+              </div>
+              <div className="project-slider-dots" aria-label="Proje slider göstergeleri">
+                {filteredProjects.map((project, idx) => (
+                  <button
+                    key={project.slug}
+                    type="button"
+                    className={`project-slider-dot ${idx === projectIndex ? "active" : ""}`}
+                    onClick={() => {
+                      setProjectDirection(idx > projectIndex ? 1 : -1);
+                      setProjectIndex(idx);
+                    }}
+                    aria-label={`${project.title} projesine git`}
+                  />
+                ))}
+              </div>
+              <div className="carousel-buttons project-slider-arrows">
+                <button type="button" onClick={() => navigateProject(-1)} aria-label="Önceki proje">
+                  <span className="material-symbols-outlined">arrow_back</span>
                 </button>
-              ))}
+                <button type="button" onClick={() => navigateProject(1)} aria-label="Sonraki proje">
+                  <span className="material-symbols-outlined">arrow_forward</span>
+                </button>
+              </div>
             </div>
           </div>
 
-          <div className="project-grid">
-            {filteredProjects.map((project) => (
-              <Link href={`/galeri/${project.slug}`} className="project-card" key={`${project.title}-${project.label}`}>
-                <img src={project.coverImage} alt={project.title} />
-                <div className="project-overlay" />
-                <h4>{project.title}</h4>
-                <p className="vertical-text">{project.label}</p>
-              </Link>
-            ))}
+          <div
+            className="project-slider-window"
+            onTouchStart={handleProjectTouchStart}
+            onTouchEnd={handleProjectTouchEnd}
+            onWheel={handleProjectWheel}
+          >
+            <div className="project-slider-progress" aria-hidden="true">
+              <motion.span
+                key={projectProgressKey}
+                className="project-slider-progress-fill"
+                initial={{ scaleX: 0 }}
+                animate={{ scaleX: 1 }}
+                transition={{ duration: 7, ease: "linear" }}
+              />
+            </div>
+            <AnimatePresence mode="wait" initial={false}>
+              <motion.div
+                key={filteredProjects[projectIndex]?.slug}
+                className="project-slide"
+                drag="x"
+                dragConstraints={{ left: 0, right: 0 }}
+                dragElastic={0.12}
+                onDragEnd={(_, info) => {
+                  const threshold = 60;
+                  if (info.offset.x < -threshold) navigateProject(1);
+                  if (info.offset.x > threshold) navigateProject(-1);
+                }}
+                initial={{
+                  opacity: 0,
+                  x: projectDirection >= 0 ? 120 : -120,
+                  scale: 1.08,
+                  filter: "blur(16px) saturate(0.8)",
+                }}
+                animate={{
+                  opacity: 1,
+                  x: 0,
+                  scale: 1,
+                  filter: "blur(0px) saturate(1)",
+                }}
+                exit={{
+                  opacity: 0,
+                  x: projectDirection >= 0 ? -120 : 120,
+                  scale: 0.98,
+                  filter: "blur(10px) saturate(0.85)",
+                }}
+                transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+              >
+                <Link href={`/galeri/${filteredProjects[projectIndex]?.slug}`} className="project-card project-card-full">
+                  <motion.div
+                    className="project-slide-parallax"
+                    style={{ backgroundImage: `url(${filteredProjects[projectIndex]?.coverImage})` }}
+                    initial={{ scale: 1.08, x: projectDirection >= 0 ? -30 : 30 }}
+                    animate={{ scale: 1.16, x: 0 }}
+                    exit={{ scale: 1.08, x: projectDirection >= 0 ? 30 : -30 }}
+                    transition={{ duration: 1.1, ease: [0.16, 1, 0.3, 1] }}
+                  />
+                  <img src={filteredProjects[projectIndex]?.coverImage} alt={filteredProjects[projectIndex]?.title} />
+                  <div className="project-overlay" />
+                  <div className="project-slide-glow" />
+                  <div className="project-slide-copy">
+                    <span className="vertical-text">{filteredProjects[projectIndex]?.label}</span>
+                    <div>
+                      <h4>{filteredProjects[projectIndex]?.title}</h4>
+                      <p>PROJE DETAYI</p>
+                    </div>
+                  </div>
+                </Link>
+              </motion.div>
+            </AnimatePresence>
           </div>
 
           <div style={{ display: "flex", justifyContent: "center", marginTop: "5rem" }}>
