@@ -3261,11 +3261,12 @@ video {
 }
 
 .process-header h2 {
-  font-family: var(--font-display), sans-serif;
-  font-size: clamp(2.5rem, 6vw, 4.5rem);
-  font-weight: 200;
+  font-family: var(--font-smooch), sans-serif;
+  font-size: clamp(4rem, 10vw, 8rem);
+  font-weight: 100;
   text-transform: uppercase;
-  letter-spacing: 0.15em;
+  letter-spacing: 0.1em;
+  line-height: 0.9;
   margin-bottom: 1.5rem;
 }
 
