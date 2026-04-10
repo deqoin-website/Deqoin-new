@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Lock, User, ArrowRight, Shield, Eye, EyeOff } from 'lucide-react';
+import { Lock, User, ArrowRight, Eye, EyeOff } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 export default function AdminLoginPage() {
@@ -38,122 +38,105 @@ export default function AdminLoginPage() {
   };
 
   return (
-    <div className="admin-login-new">
-      {/* Animated Background */}
-      <div className="login-background">
-        <div className="bg-gradient-1"></div>
-        <div className="bg-gradient-2"></div>
-        <div className="bg-grid"></div>
+    <div className="admin-login-page">
+      {/* Background */}
+      <div className="page-background">
+        <div className="bg-gradient"></div>
+        <div className="bg-pattern"></div>
       </div>
 
-      <div className="login-container">
-        {/* Left Side - Branding */}
+      {/* Login Container */}
+      <div className="login-wrapper">
         <motion.div 
-          initial={{ opacity: 0, x: -50 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-          className="login-branding"
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }}
+          className="login-box"
         >
-          <div className="branding-content">
-            <div className="brand-logo">
+          {/* Header */}
+          <div className="login-header-section">
+            <div className="logo-container">
               <img src="/images/logo-new.jpeg" alt="DEQOIN" onError={(e) => e.currentTarget.style.display = 'none'} />
             </div>
-            <h1 className="brand-title">DEQOIN</h1>
-            <p className="brand-subtitle">Architectural Studio</p>
-            <div className="brand-divider"></div>
-            <p className="brand-description">
-              Yönetim paneline hoş geldiniz.
-              <br />
-              Projelerinizi ve içeriklerinizi buradan yönetin.
-            </p>
-            <div className="brand-features">
-              <div className="feature-item">
-                <Shield size={20} />
-                <span>Güvenli Erişim</span>
-              </div>
-            </div>
+            <h1 className="page-title">DEQOIN</h1>
+            <p className="page-subtitle">Yönetim Paneli</p>
+            <div className="title-underline"></div>
           </div>
-        </motion.div>
 
-        {/* Right Side - Login Form */}
-        <motion.div 
-          initial={{ opacity: 0, x: 50 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
-          className="login-form-section"
-        >
-          <div className="form-wrapper">
-            <div className="form-header">
-              <h2>Giriş Yap</h2>
-              <p>Hesabınıza erişmek için bilgilerinizi girin</p>
+          {/* Form */}
+          <form onSubmit={handleLogin} className="login-form">
+            <div className="form-field">
+              <label className="field-label">Kullanıcı Adı</label>
+              <div className="input-container">
+                <User className="field-icon" size={18} />
+                <input 
+                  type="text" 
+                  value={username} 
+                  onChange={(e) => setUsername(e.target.value)}
+                  placeholder="Kullanıcı adınızı girin"
+                  className="text-input"
+                  autoComplete="username"
+                  required 
+                />
+              </div>
             </div>
 
-            <form onSubmit={handleLogin} className="login-form-new">
-              <div className="form-group">
-                <label className="form-label">Kullanıcı Adı</label>
-                <div className="input-wrapper">
-                  <User size={18} className="input-icon" />
-                  <input 
-                    type="text" 
-                    value={username} 
-                    onChange={(e) => setUsername(e.target.value)}
-                    placeholder="Kullanıcı adınızı girin"
-                    className="form-input"
-                    required 
-                  />
-                </div>
-              </div>
-
-              <div className="form-group">
-                <label className="form-label">Şifre</label>
-                <div className="input-wrapper">
-                  <Lock size={18} className="input-icon" />
-                  <input 
-                    type={showPassword ? "text" : "password"} 
-                    value={password} 
-                    onChange={(e) => setPassword(e.target.value)}
-                    placeholder="Şifrenizi girin"
-                    className="form-input"
-                    required 
-                  />
-                  <button
-                    type="button"
-                    className="password-toggle"
-                    onClick={() => setShowPassword(!showPassword)}
-                  >
-                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-                  </button>
-                </div>
-              </div>
-
-              {error && (
-                <motion.div 
-                  initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="error-message"
+            <div className="form-field">
+              <label className="field-label">Şifre</label>
+              <div className="input-container">
+                <Lock className="field-icon" size={18} />
+                <input 
+                  type={showPassword ? "text" : "password"} 
+                  value={password} 
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="Şifrenizi girin"
+                  className="text-input"
+                  autoComplete="current-password"
+                  required 
+                />
+                <button
+                  type="button"
+                  className="visibility-toggle"
+                  onClick={() => setShowPassword(!showPassword)}
+                  aria-label={showPassword ? "Hide password" : "Show password"}
                 >
-                  {error}
-                </motion.div>
-              )}
-
-              <button type="submit" disabled={isLoading} className="submit-button">
-                <span className="btn-text">
-                  {isLoading ? 'Giriş Yapılıyor...' : 'Giriş Yap'}
-                </span>
-                {!isLoading && <ArrowRight size={18} className="btn-icon" />}
-                {isLoading && <span className="loading-spinner"></span>}
-              </button>
-            </form>
-
-            <div className="form-footer">
-              <p>&copy; 2024 DEQOIN. Tüm hakları saklıdır.</p>
+                  {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                </button>
+              </div>
             </div>
+
+            {error && (
+              <motion.div 
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                className="error-alert"
+              >
+                {error}
+              </motion.div>
+            )}
+
+            <button 
+              type="submit" 
+              disabled={isLoading} 
+              className="login-button"
+            >
+              <span className="button-label">
+                {isLoading ? 'Giriş Yapılıyor...' : 'Giriş Yap'}
+              </span>
+              {!isLoading && <ArrowRight className="button-arrow" size={18} />}
+              {isLoading && <span className="spinner"></span>}
+            </button>
+          </form>
+
+          {/* Footer */}
+          <div className="login-footer">
+            <p>&copy; 2024 DEQOIN Architectural Studio</p>
           </div>
         </motion.div>
       </div>
 
       <style jsx>{`
-        .admin-login-new {
+        .admin-login-page {
           min-height: 100vh;
           min-height: 100dvh;
           display: flex;
@@ -162,294 +145,228 @@ export default function AdminLoginPage() {
           background: #0a0a0a;
           position: relative;
           overflow: hidden;
-          padding: 1rem;
+          padding: 20px;
         }
 
-        /* Background Effects */
-        .login-background {
+        /* Background */
+        .page-background {
+          position: fixed;
+          inset: 0;
+          z-index: 0;
+        }
+
+        .bg-gradient {
           position: absolute;
           inset: 0;
-          overflow: hidden;
+          background: 
+            radial-gradient(ellipse at 20% 50%, rgba(166, 137, 102, 0.08) 0%, transparent 50%),
+            radial-gradient(ellipse at 80% 50%, rgba(166, 137, 102, 0.06) 0%, transparent 50%),
+            radial-gradient(ellipse at 50% 0%, rgba(166, 137, 102, 0.04) 0%, transparent 60%);
         }
 
-        .bg-gradient-1 {
-          position: absolute;
-          top: -50%;
-          right: -20%;
-          width: 80%;
-          height: 120%;
-          background: radial-gradient(circle, rgba(166, 137, 102, 0.15) 0%, transparent 70%);
-          animation: float 20s ease-in-out infinite;
-        }
-
-        .bg-gradient-2 {
-          position: absolute;
-          bottom: -50%;
-          left: -20%;
-          width: 80%;
-          height: 120%;
-          background: radial-gradient(circle, rgba(166, 137, 102, 0.1) 0%, transparent 70%);
-          animation: float 25s ease-in-out infinite reverse;
-        }
-
-        .bg-grid {
+        .bg-pattern {
           position: absolute;
           inset: 0;
           background-image: 
-            linear-gradient(rgba(166, 137, 102, 0.03) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(166, 137, 102, 0.03) 1px, transparent 1px);
-          background-size: 50px 50px;
+            linear-gradient(rgba(166, 137, 102, 0.02) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(166, 137, 102, 0.02) 1px, transparent 1px);
+          background-size: 60px 60px;
         }
 
-        @keyframes float {
-          0%, 100% { transform: translate(0, 0) scale(1); }
-          50% { transform: translate(30px, -30px) scale(1.1); }
-        }
-
-        /* Main Container */
-        .login-container {
-          display: grid;
-          grid-template-columns: 1fr 1fr;
-          width: 100%;
-          max-width: 1400px;
-          min-height: 600px;
-          max-height: 90vh;
-          background: rgba(18, 18, 18, 0.6);
-          backdrop-filter: blur(20px);
-          border: 1px solid rgba(166, 137, 102, 0.2);
-          border-radius: 24px;
-          overflow: hidden;
+        /* Wrapper */
+        .login-wrapper {
           position: relative;
-          z-index: 10;
-          box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+          z-index: 1;
+          width: 100%;
+          display: flex;
+          justify-content: center;
+          align-items: center;
         }
 
-        /* Left Branding Section */
-        .login-branding {
-          background: linear-gradient(135deg, rgba(166, 137, 102, 0.1) 0%, rgba(18, 18, 18, 0.8) 100%);
-          padding: 4rem 3rem;
+        /* Login Box */
+        .login-box {
+          width: 100%;
+          max-width: 420px;
+          background: rgba(20, 20, 20, 0.95);
+          backdrop-filter: blur(20px);
+          border: 1px solid rgba(166, 137, 102, 0.15);
+          border-radius: 16px;
+          padding: 48px 40px;
+          box-shadow: 
+            0 20px 60px rgba(0, 0, 0, 0.5),
+            0 0 0 1px rgba(166, 137, 102, 0.1);
+        }
+
+        /* Header Section */
+        .login-header-section {
+          text-align: center;
+          margin-bottom: 40px;
+        }
+
+        .logo-container {
+          width: 72px;
+          height: 72px;
+          margin: 0 auto 20px;
+          background: #ffffff;
+          border-radius: 12px;
+          padding: 10px;
           display: flex;
           align-items: center;
           justify-content: center;
-          position: relative;
-          border-right: 1px solid rgba(166, 137, 102, 0.1);
-          min-height: 600px;
+          box-shadow: 0 8px 24px rgba(166, 137, 102, 0.25);
         }
 
-        .branding-content {
-          text-align: center;
-          color: #fff;
-        }
-
-        .brand-logo {
-          width: 100px;
-          height: 100px;
-          margin: 0 auto 2rem;
-          background: #fff;
-          padding: 1rem;
-          border-radius: 16px;
-          box-shadow: 0 10px 30px rgba(166, 137, 102, 0.3);
-        }
-
-        .brand-logo img {
+        .logo-container img {
           width: 100%;
           height: 100%;
           object-fit: contain;
         }
 
-        .brand-title {
+        .page-title {
           font-family: var(--font-display), sans-serif;
-          font-size: 2.5rem;
+          font-size: 28px;
           font-weight: 700;
           letter-spacing: 0.3em;
           color: #a68966;
-          margin-bottom: 0.5rem;
+          margin: 0 0 8px 0;
         }
 
-        .brand-subtitle {
-          font-size: 1rem;
-          letter-spacing: 0.2em;
-          opacity: 0.6;
-          margin-bottom: 2rem;
+        .page-subtitle {
+          font-size: 13px;
+          font-weight: 500;
+          letter-spacing: 0.15em;
+          color: rgba(255, 255, 255, 0.5);
+          margin: 0 0 16px 0;
+          text-transform: uppercase;
         }
 
-        .brand-divider {
-          width: 60px;
+        .title-underline {
+          width: 50px;
           height: 2px;
           background: linear-gradient(90deg, transparent, #a68966, transparent);
-          margin: 0 auto 2rem;
+          margin: 0 auto;
         }
 
-        .brand-description {
-          font-size: 0.95rem;
-          line-height: 1.8;
-          opacity: 0.7;
-          margin-bottom: 2.5rem;
-        }
-
-        .brand-features {
-          display: flex;
-          justify-content: center;
-          gap: 1.5rem;
-        }
-
-        .feature-item {
-          display: flex;
-          align-items: center;
-          gap: 0.5rem;
-          padding: 0.75rem 1.25rem;
-          background: rgba(166, 137, 102, 0.1);
-          border: 1px solid rgba(166, 137, 102, 0.2);
-          border-radius: 12px;
-          font-size: 0.85rem;
-          color: #a68966;
-        }
-
-        /* Right Form Section */
-        .login-form-section {
-          padding: 4rem 3rem;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          background: rgba(18, 18, 18, 0.4);
-          min-height: 600px;
-          width: 100%;
-        }
-
-        .form-wrapper {
-          width: 100%;
-          max-width: 480px;
-        }
-
-        .form-header {
-          margin-bottom: 3rem;
-        }
-
-        .form-header h2 {
-          font-family: var(--font-display), sans-serif;
-          font-size: 2rem;
-          font-weight: 700;
-          color: #fff;
-          margin-bottom: 0.75rem;
-          letter-spacing: 0.05em;
-        }
-
-        .form-header p {
-          font-size: 0.9rem;
-          opacity: 0.5;
-          line-height: 1.6;
-        }
-
-        /* Form Styles */
-        .login-form-new {
+        /* Form */
+        .login-form {
           display: flex;
           flex-direction: column;
-          gap: 1.75rem;
+          gap: 24px;
         }
 
-        .form-group {
+        .form-field {
           display: flex;
           flex-direction: column;
-          gap: 0.75rem;
+          gap: 8px;
         }
 
-        .form-label {
-          font-size: 0.75rem;
+        .field-label {
+          font-size: 11px;
           font-weight: 600;
-          text-transform: uppercase;
           letter-spacing: 0.1em;
-          color: #fff;
-          opacity: 0.7;
+          text-transform: uppercase;
+          color: rgba(255, 255, 255, 0.6);
         }
 
-        .input-wrapper {
+        .input-container {
           position: relative;
           display: flex;
           align-items: center;
         }
 
-        .input-icon {
+        .field-icon {
           position: absolute;
-          left: 1.25rem;
+          left: 14px;
           color: #a68966;
           opacity: 0.5;
           pointer-events: none;
         }
 
-        .form-input {
+        .text-input {
           width: 100%;
-          background: rgba(255, 255, 255, 0.04);
-          border: 1px solid rgba(255, 255, 255, 0.1);
-          padding: 1.1rem 1.25rem 1.1rem 3.25rem;
-          color: #fff;
-          font-size: 0.95rem;
-          transition: all 0.3s ease;
-          border-radius: 12px;
+          height: 52px;
+          padding: 0 48px 0 44px;
+          background: rgba(255, 255, 255, 0.03);
+          border: 1px solid rgba(255, 255, 255, 0.08);
+          border-radius: 10px;
+          color: #ffffff;
+          font-size: 14px;
+          font-family: inherit;
+          transition: all 0.2s ease;
           box-sizing: border-box;
         }
 
-        .form-input:focus {
-          background: rgba(255, 255, 255, 0.06);
-          border-color: rgba(166, 137, 102, 0.5);
+        .text-input::placeholder {
+          color: rgba(255, 255, 255, 0.25);
+        }
+
+        .text-input:hover {
+          background: rgba(255, 255, 255, 0.04);
+          border-color: rgba(255, 255, 255, 0.12);
+        }
+
+        .text-input:focus {
           outline: none;
-          box-shadow: 0 0 0 3px rgba(166, 137, 102, 0.1);
+          background: rgba(255, 255, 255, 0.05);
+          border-color: rgba(166, 137, 102, 0.4);
+          box-shadow: 0 0 0 3px rgba(166, 137, 102, 0.08);
         }
 
-        .form-input::placeholder {
-          color: rgba(255, 255, 255, 0.3);
-        }
-
-        .password-toggle {
+        .visibility-toggle {
           position: absolute;
-          right: 1.25rem;
+          right: 14px;
           background: none;
           border: none;
           color: #a68966;
           opacity: 0.5;
           cursor: pointer;
-          transition: opacity 0.3s ease;
+          padding: 4px;
           display: flex;
           align-items: center;
           justify-content: center;
+          transition: opacity 0.2s ease;
         }
 
-        .password-toggle:hover {
+        .visibility-toggle:hover {
           opacity: 0.8;
         }
 
-        .error-message {
-          color: #ff6b6b;
-          font-size: 0.85rem;
+        /* Error */
+        .error-alert {
+          padding: 12px 16px;
+          background: rgba(239, 68, 68, 0.1);
+          border: 1px solid rgba(239, 68, 68, 0.2);
+          border-radius: 8px;
+          color: #fca5a5;
+          font-size: 13px;
+          line-height: 1.5;
           text-align: center;
-          background: rgba(255, 107, 107, 0.1);
-          padding: 1rem;
-          border-radius: 12px;
-          border: 1px solid rgba(255, 107, 107, 0.2);
         }
 
-        .submit-button {
-          margin-top: 1rem;
-          background: linear-gradient(135deg, #a68966 0%, #c2a785 100%);
-          color: #0a0a0a;
+        /* Button */
+        .login-button {
+          margin-top: 8px;
+          height: 52px;
+          background: linear-gradient(135deg, #a68966 0%, #b89a76 100%);
           border: none;
-          padding: 1.2rem;
+          border-radius: 10px;
+          color: #0a0a0a;
           font-family: var(--font-display), sans-serif;
+          font-size: 13px;
           font-weight: 700;
-          font-size: 0.85rem;
-          text-transform: uppercase;
           letter-spacing: 0.15em;
+          text-transform: uppercase;
           cursor: pointer;
           display: flex;
           align-items: center;
           justify-content: center;
-          gap: 0.75rem;
-          transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-          border-radius: 12px;
+          gap: 10px;
+          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
           position: relative;
           overflow: hidden;
         }
 
-        .submit-button::before {
+        .login-button::before {
           content: '';
           position: absolute;
           top: 0;
@@ -460,228 +377,203 @@ export default function AdminLoginPage() {
           transition: left 0.5s ease;
         }
 
-        .submit-button:hover:not(:disabled)::before {
+        .login-button:hover:not(:disabled)::before {
           left: 100%;
         }
 
-        .submit-button:hover:not(:disabled) {
+        .login-button:hover:not(:disabled) {
           transform: translateY(-2px);
-          box-shadow: 0 15px 35px rgba(166, 137, 102, 0.3);
+          box-shadow: 0 12px 28px rgba(166, 137, 102, 0.35);
+          background: linear-gradient(135deg, #b89a76 0%, #c4a785 100%);
         }
 
-        .submit-button:active:not(:disabled) {
+        .login-button:active:not(:disabled) {
           transform: translateY(0);
         }
 
-        .submit-button:disabled {
+        .login-button:disabled {
           opacity: 0.6;
           cursor: not-allowed;
         }
 
-        .btn-icon {
-          transition: transform 0.3s ease;
+        .button-arrow {
+          transition: transform 0.2s ease;
         }
 
-        .submit-button:hover:not(:disabled) .btn-icon {
+        .login-button:hover:not(:disabled) .button-arrow {
           transform: translateX(4px);
         }
 
-        .loading-spinner {
+        .spinner {
           width: 18px;
           height: 18px;
           border: 2px solid rgba(10, 10, 10, 0.3);
           border-top-color: #0a0a0a;
           border-radius: 50%;
-          animation: spin 0.6s linear infinite;
+          animation: rotate 0.6s linear infinite;
         }
 
-        @keyframes spin {
+        @keyframes rotate {
           to { transform: rotate(360deg); }
         }
 
-        .form-footer {
-          margin-top: 3rem;
+        /* Footer */
+        .login-footer {
+          margin-top: 32px;
+          padding-top: 24px;
+          border-top: 1px solid rgba(255, 255, 255, 0.06);
           text-align: center;
-          padding-top: 2rem;
-          border-top: 1px solid rgba(255, 255, 255, 0.08);
         }
 
-        .form-footer p {
-          font-size: 0.75rem;
-          opacity: 0.4;
+        .login-footer p {
+          font-size: 11px;
+          color: rgba(255, 255, 255, 0.3);
           letter-spacing: 0.05em;
+          margin: 0;
         }
 
-        /* Responsive Design */
-        @media (max-width: 1200px) {
-          .login-container {
-            max-width: 95%;
-            margin: 0 auto;
-          }
-
-          .login-branding {
-            padding: 3rem 2rem;
-          }
-
-          .login-form-section {
-            padding: 3rem 2rem;
-          }
-        }
-
-        @media (max-width: 1024px) {
-          .login-container {
-            max-width: 90%;
-          }
-
-          .login-branding {
-            padding: 3rem 2rem;
-          }
-
-          .login-form-section {
-            padding: 3rem 2rem;
-          }
-
-          .brand-title {
-            font-size: 2rem;
-          }
-
-          .form-header h2 {
-            font-size: 1.75rem;
-          }
-        }
-
+        /* Responsive - Tablet */
         @media (max-width: 768px) {
-          .admin-login-new {
-            padding: 1rem;
+          .admin-login-page {
+            padding: 24px;
           }
 
-          .login-container {
-            grid-template-columns: 1fr;
-            max-width: 100%;
-            max-height: none;
-            min-height: auto;
+          .login-box {
+            max-width: 400px;
+            padding: 40px 32px;
           }
 
-          .login-branding {
-            display: none;
-          }
-
-          .login-form-section {
-            padding: 3rem 2rem;
-            min-height: auto;
-          }
-
-          .form-header {
-            text-align: center;
+          .page-title {
+            font-size: 26px;
           }
         }
 
+        /* Responsive - Mobile */
         @media (max-width: 640px) {
-          .admin-login-new {
-            padding: 0.75rem;
+          .admin-login-page {
+            padding: 16px;
           }
 
-          .login-container {
-            border-radius: 16px;
+          .login-box {
             max-width: 100%;
+            padding: 36px 28px;
+            border-radius: 14px;
           }
 
-          .login-form-section {
-            padding: 2.5rem 1.5rem;
+          .login-header-section {
+            margin-bottom: 32px;
           }
 
-          .form-header h2 {
-            font-size: 1.5rem;
+          .logo-container {
+            width: 64px;
+            height: 64px;
+            margin-bottom: 16px;
           }
 
-          .form-header p {
-            font-size: 0.85rem;
+          .page-title {
+            font-size: 24px;
           }
 
-          .form-input {
-            padding: 1rem 1rem 1rem 3rem;
-            font-size: 0.9rem;
+          .page-subtitle {
+            font-size: 12px;
           }
 
-          .submit-button {
-            padding: 1.1rem;
-            font-size: 0.8rem;
+          .form-field {
+            gap: 6px;
+          }
+
+          .text-input {
+            height: 48px;
+            font-size: 14px;
+          }
+
+          .login-button {
+            height: 48px;
+            font-size: 12px;
           }
         }
 
+        /* Responsive - Small Mobile */
         @media (max-width: 480px) {
-          .admin-login-new {
-            padding: 0.5rem;
+          .admin-login-page {
+            padding: 12px;
           }
 
-          .login-container {
+          .login-box {
+            padding: 32px 24px;
             border-radius: 12px;
           }
 
-          .login-form-section {
-            padding: 2rem 1.25rem;
+          .logo-container {
+            width: 60px;
+            height: 60px;
           }
 
-          .form-header {
-            margin-bottom: 2rem;
+          .page-title {
+            font-size: 22px;
+            letter-spacing: 0.25em;
           }
 
-          .form-header h2 {
-            font-size: 1.35rem;
+          .page-subtitle {
+            font-size: 11px;
           }
 
-          .login-form-new {
-            gap: 1.5rem;
+          .login-form {
+            gap: 20px;
           }
 
-          .form-label {
-            font-size: 0.7rem;
+          .text-input {
+            height: 46px;
+            padding: 0 44px 0 40px;
+            font-size: 13px;
           }
 
-          .form-input {
-            padding: 0.95rem 0.95rem 0.95rem 2.75rem;
-            font-size: 0.85rem;
-            border-radius: 10px;
+          .field-icon {
+            left: 12px;
           }
 
-          .input-icon {
-            left: 1rem;
-            size: 16px;
+          .visibility-toggle {
+            right: 12px;
           }
 
-          .password-toggle {
-            right: 1rem;
+          .login-button {
+            height: 46px;
+            font-size: 12px;
           }
 
-          .submit-button {
-            padding: 1rem;
-            font-size: 0.75rem;
-            border-radius: 10px;
-          }
-
-          .error-message {
-            font-size: 0.8rem;
-            padding: 0.85rem;
+          .login-footer {
+            margin-top: 28px;
+            padding-top: 20px;
           }
         }
 
+        /* Responsive - Extra Small */
         @media (max-width: 360px) {
-          .login-form-section {
-            padding: 1.5rem 1rem;
+          .admin-login-page {
+            padding: 8px;
           }
 
-          .form-header h2 {
-            font-size: 1.25rem;
+          .login-box {
+            padding: 28px 20px;
           }
 
-          .form-input {
-            padding: 0.9rem 0.9rem 0.9rem 2.5rem;
-            font-size: 0.8rem;
+          .logo-container {
+            width: 56px;
+            height: 56px;
           }
 
-          .submit-button {
-            padding: 0.9rem;
-            font-size: 0.7rem;
+          .page-title {
+            font-size: 20px;
+          }
+
+          .text-input {
+            height: 44px;
+            padding: 0 40px 0 38px;
+            font-size: 13px;
+          }
+
+          .login-button {
+            height: 44px;
           }
         }
       `}</style>
