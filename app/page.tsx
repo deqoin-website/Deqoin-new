@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
+import { AnimatePresence, motion } from "framer-motion";
 import { projectsData, Category } from "../data/projects";
 import { teamFilters, teamMembers } from "../data/team";
 import ConsultationModal from "../components/ConsultationModal";
@@ -122,10 +123,13 @@ const filters = [
 
 export default function Page() {
   const [heroIndex, setHeroIndex] = useState(0);
+  const [heroDirection, setHeroDirection] = useState(0);
   const [isConsultationOpen, setIsConsultationOpen] = useState(false);
   const [activeFilter, setActiveFilter] = useState<(typeof filters)[number]["key"]>("all");
   const [activeTeamFilter, setActiveTeamFilter] = useState<(typeof teamFilters)[number]["key"]>("all");
   const [slides, setSlides] = useState(heroSlides);
+  const heroTouchStartX = useRef<number | null>(null);
+  const heroTouchStartY = useRef<number | null>(null);
 
   useEffect(() => {
     const fetchSlides = async () => {
@@ -171,27 +175,78 @@ export default function Page() {
     animation: "progressFill 8s linear infinite",
   };
 
+  const navigateHero = (direction: number) => {
+    if (slides.length === 0) return;
+    setHeroDirection(direction);
+    setHeroIndex((current) => (current + direction + slides.length) % slides.length);
+  };
+
+  const handleHeroTouchStart = (event: React.TouchEvent<HTMLElement>) => {
+    const touch = event.touches[0];
+    heroTouchStartX.current = touch.clientX;
+    heroTouchStartY.current = touch.clientY;
+  };
+
+  const handleHeroTouchEnd = (event: React.TouchEvent<HTMLElement>) => {
+    const startX = heroTouchStartX.current;
+    const startY = heroTouchStartY.current;
+
+    heroTouchStartX.current = null;
+    heroTouchStartY.current = null;
+
+    if (startX == null || startY == null) return;
+
+    const touch = event.changedTouches[0];
+    const deltaX = touch.clientX - startX;
+    const deltaY = touch.clientY - startY;
+
+    if (Math.abs(deltaX) < 50 || Math.abs(deltaX) < Math.abs(deltaY)) return;
+    navigateHero(deltaX < 0 ? 1 : -1);
+  };
+
 
   return (
     <main className="site-shell">
 
-      <section className="hero-section" id="hero-slider">
-        {slides.map((slide, index) => (
-          <div
-            key={slide.image + index}
-            className={`hero-slide ${index === heroIndex ? "active" : ""}`}
+      <section
+        className="hero-section"
+        id="hero-slider"
+        onTouchStart={handleHeroTouchStart}
+        onTouchEnd={handleHeroTouchEnd}
+      >
+        <AnimatePresence mode="wait" initial={false}>
+          <motion.div
+            key={heroIndex}
+            className="hero-slide active"
+            initial={{
+              opacity: 0,
+              x: heroDirection >= 0 ? 90 : -90,
+              scale: 1.08,
+              filter: "blur(12px) brightness(0.45)",
+            }}
+            animate={{
+              opacity: 1,
+              x: 0,
+              scale: 1.05,
+              filter: "blur(6px) brightness(0.6)",
+            }}
+            exit={{
+              opacity: 0,
+              x: heroDirection >= 0 ? -90 : 90,
+              scale: 1.08,
+              filter: "blur(12px) brightness(0.45)",
+            }}
+            transition={{ duration: 0.75, ease: [0.16, 1, 0.3, 1] }}
             style={{
-              backgroundImage: `url(${slide.image})`,
+              backgroundImage: `url(${slides[heroIndex]?.image})`,
               backgroundSize: "cover",
               backgroundPosition: "center",
               backgroundRepeat: "no-repeat",
-              filter: "blur(6px) brightness(0.6)",
-              transform: "scale(1.05)"
             }}
           >
             <div className="hero-overlay" />
-          </div>
-        ))}
+          </motion.div>
+        </AnimatePresence>
 
         <div className="hero-content" style={{ textAlign: "center", display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", gap: "3rem", height: "100%", width: "100%" }}>
           <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "1.5rem" }}>
@@ -218,23 +273,6 @@ export default function Page() {
             onActivate={() => setIsConsultationOpen(true)}
             style={{ marginTop: "1rem", position: "relative", zIndex: 100 }}
           />
-        </div>
-
-        <div className="hero-controls">
-          <button
-            type="button"
-            onClick={() => setHeroIndex((current) => (current - 1 + slides.length) % slides.length)}
-            aria-label="Previous hero slide"
-          >
-            <span className="material-symbols-outlined">chevron_left</span>
-          </button>
-          <button
-            type="button"
-            onClick={() => setHeroIndex((current) => (current + 1) % slides.length)}
-            aria-label="Next hero slide"
-          >
-            <span className="material-symbols-outlined">chevron_right</span>
-          </button>
         </div>
 
         <div className="hero-meta">

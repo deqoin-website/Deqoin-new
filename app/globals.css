@@ -265,6 +265,10 @@ video {
   position: relative;
   min-height: 100vh;
   background: #111;
+  touch-action: pan-y;
+  user-select: none;
+  cursor: grab;
+  overflow: hidden;
 }
 
 .hero-slide {
@@ -277,6 +281,10 @@ video {
 .hero-slide.active {
   opacity: 1;
   z-index: 1;
+}
+
+.hero-slide.active {
+  will-change: transform, opacity, filter;
 }
 
 .hero-video,
