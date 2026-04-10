@@ -1240,8 +1240,25 @@ video {
   background: linear-gradient(90deg, rgba(204, 168, 131, 0.1), rgba(204, 168, 131, 0.95), rgba(255, 255, 255, 0.65));
 }
 
-.project-slider-frame-ui {
-  display: none;
+.project-title-counter {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.45rem;
+  margin-top: 0.85rem;
+  color: #9a9a9a;
+}
+
+.project-title-counter span {
+  font-family: var(--font-headline), serif;
+  font-size: 1rem;
+  letter-spacing: 0.18em;
+  color: var(--text);
+}
+
+.project-title-counter small {
+  font-size: 0.55rem;
+  letter-spacing: 0.28em;
+  color: rgba(255, 255, 255, 0.62);
 }
 
 .project-slide {
@@ -1621,44 +1638,6 @@ video {
     top: -0.95rem;
     border-radius: 999px;
     opacity: 0.9;
-  }
-
-  .project-slider-frame-ui {
-    display: block;
-    position: absolute;
-    inset: 0;
-    z-index: 5;
-    pointer-events: none;
-  }
-
-  .project-slider-frame-counter {
-    position: absolute;
-    top: -2.2rem;
-    left: 0.35rem;
-    display: inline-flex;
-    align-items: baseline;
-    gap: 0.45rem;
-    padding: 0.62rem 0.9rem;
-    border: 1px solid rgba(255, 255, 255, 0.16);
-    background: rgba(10, 10, 10, 0.28);
-    backdrop-filter: blur(18px) saturate(1.5);
-    -webkit-backdrop-filter: blur(18px) saturate(1.5);
-    border-radius: 999px;
-    color: #fff;
-    box-shadow: 0 20px 42px rgba(0, 0, 0, 0.22);
-    pointer-events: auto;
-  }
-
-  .project-slider-frame-counter span {
-    font-family: var(--font-headline), serif;
-    font-size: 1rem;
-    letter-spacing: 0.18em;
-  }
-
-  .project-slider-frame-counter small {
-    font-size: 0.55rem;
-    letter-spacing: 0.28em;
-    color: rgba(255, 255, 255, 0.62);
   }
 
   .project-slide-copy {

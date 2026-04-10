@@ -420,6 +420,10 @@ export default function Page() {
           <div className="section-heading projects-heading">
             <div>
               <h2>Galeri</h2>
+              <div className="project-title-counter">
+                <span>{String(projectIndex + 1).padStart(2, "0")}</span>
+                <small>/{String(filteredProjects.length).padStart(2, "0")}</small>
+              </div>
               <div className="section-line" />
             </div>
             <div className="project-slider-controls">
@@ -466,12 +470,6 @@ export default function Page() {
                 animate={{ scaleX: 1 }}
                 transition={{ duration: 4.8, ease: "linear" }}
               />
-            </div>
-            <div className="project-slider-frame-ui" aria-hidden="true">
-              <div className="project-slider-frame-counter">
-                <span>{String(projectIndex + 1).padStart(2, "0")}</span>
-                <small>/{String(filteredProjects.length).padStart(2, "0")}</small>
-              </div>
             </div>
             <AnimatePresence mode="wait" initial={false}>
               <motion.div
