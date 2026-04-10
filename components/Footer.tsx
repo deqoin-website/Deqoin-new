@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import ConsultationModal from "./ConsultationModal";
 
 const footerNav = [
   {
@@ -34,6 +35,7 @@ const footerNav = [
 
 export default function Footer() {
   const [logoUrl, setLogoUrl] = useState("");
+  const [isConsultationOpen, setIsConsultationOpen] = useState(false);
   const pathname = usePathname();
   const year = new Date().getFullYear();
 
@@ -71,12 +73,16 @@ export default function Footer() {
             <h2 className="footer-cta-title">
               Şimdi<br />tasarlayalım.
             </h2>
-            <Link href="/iletisim" className="footer-cta-btn hero-cta">
+            <button
+              type="button"
+              className="footer-cta-btn hero-cta"
+              onClick={() => setIsConsultationOpen(true)}
+            >
               <span className="hero-cta-text">RANDEVU TALEP ET</span>
               <div className="hero-cta-circle">
                 <span className="material-symbols-outlined">arrow_right_alt</span>
               </div>
-            </Link>
+            </button>
           </div>
 
           <div className="footer-address-block">
@@ -157,6 +163,11 @@ export default function Footer() {
           Nevşehir, Türkiye — Est. 2014
         </span>
       </div>
+
+      <ConsultationModal
+        isOpen={isConsultationOpen}
+        onClose={() => setIsConsultationOpen(false)}
+      />
     </footer>
   );
 }
