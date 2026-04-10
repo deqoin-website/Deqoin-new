@@ -1531,23 +1531,37 @@ video {
   filter: grayscale(0);
 }
 
-.team-card-info {
+.team-card-content {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
   display: grid;
   grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: center;
   gap: 0.9rem;
-  padding: 1.4rem 1.45rem 1.55rem;
+  padding: 1.1rem 1.25rem 1.15rem;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.team-card-content::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.26) 100%);
+  z-index: -1;
 }
 
 .team-card-role-vertical {
   writing-mode: vertical-rl;
   transform: rotate(180deg);
   justify-self: start;
-  align-self: start;
-  margin-top: 0.15rem;
+  align-self: end;
+  margin-top: 0;
   font-family: var(--font-display), sans-serif;
-  font-size: 0.76rem;
-  letter-spacing: 0.42em;
+  font-size: 0.7rem;
+  letter-spacing: 0.38em;
   text-transform: uppercase;
   color: rgba(255, 255, 255, 0.66);
   padding-left: 0.1rem;
@@ -1561,12 +1575,12 @@ video {
 .team-card-copy h3 {
   margin: 0;
   font-family: var(--font-smooch), sans-serif;
-  font-size: clamp(2.35rem, 4.35vw, 4.25rem);
+  font-size: clamp(2rem, 3.8vw, 3.75rem);
   font-style: normal;
   font-weight: 100;
-  line-height: 0.88;
+  line-height: 0.86;
   color: #fff;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
   text-wrap: balance;
 }
@@ -1578,14 +1592,14 @@ video {
 .team-card-footer {
   display: inline-flex;
   align-items: flex-end;
-  gap: 0.9rem;
+  gap: 0.75rem;
   color: #fff;
 }
 
 .team-card-index {
   font-family: var(--font-headline), serif;
-  font-size: 1rem;
-  letter-spacing: 0.22em;
+  font-size: 0.95rem;
+  letter-spacing: 0.18em;
   color: #cca883;
   line-height: 1;
 }
@@ -1722,20 +1736,14 @@ video {
     aspect-ratio: 4 / 5;
   }
 
-  .team-card-info {
-    padding: 0.7rem 0.7rem 0.8rem;
-    gap: 0.65rem;
-  }
-
   .team-card-role-vertical {
-    font-size: 0.58rem;
-    letter-spacing: 0.32em;
-    margin-top: 0.05rem;
+    font-size: 0.56rem;
+    letter-spacing: 0.3em;
   }
 
   .team-card-copy h3 {
-    font-size: clamp(1.2rem, 2vw, 1.8rem);
-    line-height: 0.92;
+    font-size: clamp(1.15rem, 2vw, 1.7rem);
+    line-height: 0.9;
   }
 
   .team-mobile-card {

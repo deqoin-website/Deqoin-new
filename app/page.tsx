@@ -693,15 +693,15 @@ export default function Page() {
                       <img src={currentTeamMember.image} alt={currentTeamMember.name} />
                     ) : null}
                     <div className="team-overlay" />
-                  </div>
-                  <div className="team-card-info">
-                    <span className="team-card-role-vertical">{currentTeamMember?.role}</span>
-                    <div className="team-card-copy">
-                      <h3>{currentTeamMember?.name}</h3>
-                    </div>
-                    <div className="team-card-footer">
-                      <span className="team-card-index">{String(teamSlideIndex + 1).padStart(2, "0")}</span>
-                      <span className="material-symbols-outlined">arrow_outward</span>
+                    <div className="team-card-content">
+                      <span className="team-card-role-vertical">{currentTeamMember?.role}</span>
+                      <div className="team-card-copy">
+                        <h3>{currentTeamMember?.name}</h3>
+                      </div>
+                      <div className="team-card-footer">
+                        <span className="team-card-index">{String(teamSlideIndex + 1).padStart(2, "0")}</span>
+                        <span className="material-symbols-outlined">arrow_outward</span>
+                      </div>
                     </div>
                   </div>
                 </Link>
