@@ -1924,6 +1924,19 @@ video {
   }
 }
 
+@media (min-width: 1025px) {
+  .project-slide-copy .vertical-text {
+    font-size: clamp(1.8rem, 2.15vw, 3rem);
+    letter-spacing: 0.42em;
+    left: clamp(0.9rem, 1.6vw, 1.6rem);
+    top: clamp(0.9rem, 1.6vw, 1.6rem);
+  }
+
+  .project-slide-copy > div {
+    max-width: min(60vw, 34rem);
+  }
+}
+
 /* =========================================
    PREMIUM BUTTON STYLES
    ========================================= */
