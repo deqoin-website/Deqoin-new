@@ -863,6 +863,18 @@ video {
   grid-template-columns: 1fr;
 }
 
+.material-studio-collection-inner {
+  max-width: none;
+  width: 100%;
+  padding-left: clamp(1.5rem, 3vw, 4rem);
+  padding-right: clamp(1.5rem, 3vw, 4rem);
+}
+
+.material-studio-grid {
+  grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+  gap: 0;
+}
+
 .service-card {
   position: relative;
   min-height: 25rem;
@@ -1675,6 +1687,10 @@ video {
 
   .services-grid {
     grid-template-columns: repeat(3, 1fr);
+  }
+
+  .material-studio-grid {
+    grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
   }
 
   .service-card {
@@ -4262,9 +4278,14 @@ video {
   margin-top: 3rem;
 }
 
-.material-studio-main {
-  padding-top: 0;
-}
+  .material-studio-main {
+    padding-top: 0;
+  }
+
+  .material-studio-collection-inner {
+    padding-left: 0;
+    padding-right: 0;
+  }
 
 .material-showcase-footer-note {
   font-size: 0.6rem;

@@ -120,8 +120,8 @@ export default function MateryalStudyo() {
         </div>
       </section>
 
-      <section className="services-section" style={{ background: "transparent", paddingTop: "0" }}>
-        <div className="section-inner" style={{ paddingTop: "0" }}>
+      <section className="services-section material-studio-collection" style={{ background: "transparent", paddingTop: "0" }}>
+        <div className="section-inner material-studio-collection-inner" style={{ paddingTop: "0" }}>
           <div className="section-heading projects-heading">
             <div>
               <span className="section-small-label" style={{ color: "#cca883", marginBottom: "1rem", display: "block" }}>CATEGORY SELECTION</span>
@@ -131,7 +131,7 @@ export default function MateryalStudyo() {
 
           </div>
 
-          <div className="services-grid">
+          <div className="services-grid material-studio-grid">
             {materialCategories.map((card) => (
               <Link key={card.slug} href={`/materyal-studyo/${card.slug}`} className="service-card">
                 <img src={card.image} alt={card.title} />
