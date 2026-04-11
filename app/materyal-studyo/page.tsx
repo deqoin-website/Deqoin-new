@@ -133,6 +133,9 @@ export default function MateryalStudyo() {
               ]).map((paragraph: string, index: number) => (
                 <p key={index} style={{ marginBottom: "2rem" }}>{paragraph}</p>
               ))}
+              <p style={{ marginBottom: 0, color: "#cca883", fontSize: "0.85rem", letterSpacing: "0.08em", lineHeight: "1.8" }}>
+                Sergilenen bu ürünler ve malzemeler yalnızca özel projeleriniz ve tasarımlarınız için kullanılacak olup, kesinlikle perakende satışı yapılmayacaktır.
+              </p>
             </div>
 
             <div style={{ marginTop: "4rem" }}>
