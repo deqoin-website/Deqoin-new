@@ -483,10 +483,6 @@ export default function Page() {
           <div className="section-heading projects-heading">
             <div>
               <h2>Galeri</h2>
-              <div className="project-title-counter">
-                <span>{String(projectIndex + 1).padStart(2, "0")}</span>
-                <small>/{String(filteredProjects.length).padStart(2, "0")}</small>
-              </div>
               <div className="section-line" />
             </div>
             <div className="project-slider-controls">

@@ -1225,7 +1225,7 @@ video {
 .project-slider-window {
   position: relative;
   overflow: hidden;
-  border-radius: 2rem;
+  border-radius: 0;
   min-height: min(74vh, 50rem);
 }
 
@@ -1288,6 +1288,7 @@ video {
   display: block;
   width: 100%;
   min-height: min(74vh, 50rem);
+  border-radius: 0;
 }
 
 .project-card img,
@@ -1798,6 +1799,31 @@ video {
     letter-spacing: 0.3em;
     font-size: 0.48rem;
     opacity: 0.8;
+  }
+
+  .project-title-counter {
+    display: none;
+  }
+
+  .project-slider-controls {
+    width: 100%;
+    justify-content: space-between;
+    gap: 0.6rem;
+    flex-wrap: nowrap;
+  }
+
+  .project-slider-counter {
+    order: 1;
+    gap: 0.45rem;
+  }
+
+  .project-slider-dots {
+    display: none;
+  }
+
+  .carousel-buttons.project-slider-arrows {
+    order: 2;
+    margin-left: auto;
   }
 
   .hero-controls {
