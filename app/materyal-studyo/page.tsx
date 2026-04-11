@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import ConsultationModal from "../../components/ConsultationModal";
 import { Loader2 } from "lucide-react";
@@ -11,21 +11,10 @@ const materialCategories = materyalKategorileri.filter((item) =>
   ["mobilya", "aydinlatma", "italyan-sivalar", "sanatsal-calismalar", "tugla-ve-tas"].includes(item.slug)
 );
 
-const categoryFilters = [
-  { label: "TÜMÜ", value: "all" },
-  { label: "Mobilya", value: "mobilya" },
-  { label: "Aydınlatma", value: "aydinlatma" },
-  { label: "İtalyan Sıvalar", value: "italyan-sivalar" },
-  { label: "Sanatsal Çalışmalar", value: "sanatsal-calismalar" },
-  { label: "Tuğla ve Taş", value: "tugla-ve-tas" },
-] as const;
-
 export default function MateryalStudyo() {
   const [content, setContent] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isConsultationOpen, setIsConsultationOpen] = useState(false);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [activeFilter, setActiveFilter] = useState<(typeof categoryFilters)[number]["value"]>("all");
   const heroRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -53,20 +42,6 @@ export default function MateryalStudyo() {
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
-
-  const visibleCards = useMemo(() => {
-    const q = searchTerm.trim().toLowerCase();
-    return materialCategories.filter((card) => {
-      const matchesFilter = activeFilter === "all" || card.slug === activeFilter;
-      const matchesSearch =
-        q === "" ||
-        [card.title, card.sideLabel, card.description, ...(card.categories?.map((c) => c.label) || [])]
-          .join(" ")
-          .toLowerCase()
-          .includes(q);
-      return matchesFilter && matchesSearch;
-    });
-  }, [activeFilter, searchTerm]);
 
   if (isLoading) {
     return (
@@ -145,24 +120,6 @@ export default function MateryalStudyo() {
         </div>
       </section>
 
-      <div className="studio-search-container material-studio-search">
-        <div className="studio-search-bar">
-          <span className="material-symbols-outlined">search</span>
-          <input
-            type="text"
-            placeholder="Malzeme veya kategori ara..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-        </div>
-
-        <button className="mobile-filter-toggle" onClick={() => setActiveFilter("all")}>
-          <span className="material-symbols-outlined">tune</span>
-          FİLTRELE
-          {activeFilter !== "all" && <span className="active-dot" />}
-        </button>
-      </div>
-
       <section className="services-section" style={{ background: "transparent", paddingTop: "0" }}>
         <div className="section-inner" style={{ paddingTop: "0" }}>
           <div className="section-heading projects-heading">
@@ -172,90 +129,26 @@ export default function MateryalStudyo() {
               <div className="section-line" />
             </div>
 
-            <div className="project-slider-controls" style={{ alignItems: "flex-end" }}>
-              <div className="project-slider-counter">
-                <span>{String(visibleCards.length).padStart(2, "0")}</span>
-                <small>RESULTS</small>
-              </div>
-            </div>
           </div>
 
-          <div className="studio-main material-studio-main">
-            <aside className="studio-sidebar">
-              <div className="filter-group">
-                <h4>KATEGORİLER</h4>
-                <ul className="filter-list" style={{ listStyle: "none", padding: 0 }}>
-                  {categoryFilters.map((filter) => (
-                    <li key={filter.value} style={{ marginBottom: "1rem" }}>
-                      <button
-                        className={`filter-button ${activeFilter === filter.value ? "active" : ""}`}
-                        onClick={() => setActiveFilter(filter.value)}
-                        style={{
-                          background: "none",
-                          border: "none",
-                          color: activeFilter === filter.value ? "#fff" : "rgba(255,255,255,0.4)",
-                          fontFamily: "var(--font-display)",
-                          fontSize: "0.8rem",
-                          letterSpacing: "0.2em",
-                          cursor: "pointer",
-                          transition: "all 0.3s ease",
-                          display: "flex",
-                          alignItems: "center",
-                          gap: "1rem",
-                        }}
-                      >
-                        <span
-                          style={{
-                            width: "4px",
-                            height: "4px",
-                            borderRadius: "50%",
-                            background: "#cca883",
-                            opacity: activeFilter === filter.value ? 1 : 0,
-                            transition: "all 0.3s ease",
-                          }}
-                        />
-                        {filter.label}
-                      </button>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-
-              <div className="filter-group" style={{ marginTop: "4rem", paddingTop: "2rem", borderTop: "1px solid rgba(255,255,255,0.05)" }}>
-                <h4 style={{ fontSize: "0.7rem", letterSpacing: "0.3em", color: "rgba(255,255,255,0.3)", marginBottom: "1.5rem" }}>RANDEVU PLANI</h4>
-                <p style={{ fontSize: "0.75rem", color: "rgba(255,255,255,0.4)", lineHeight: "1.8", marginBottom: "2rem", letterSpacing: "0.05em" }}>
-                  Özel projeleriniz için seçili materyal dilini birlikte belirleyelim.
-                </p>
-                <SwipeAppointmentButton onActivate={() => setIsConsultationOpen(true)} compact style={{ transformOrigin: "left" }} />
-              </div>
-            </aside>
-
-            <div className="services-grid">
-              {visibleCards.length > 0 ? (
-                visibleCards.map((card) => (
-                  <Link key={card.slug} href={`/materyal-studyo/${card.slug}`} className="service-card">
-                    <img src={card.image} alt={card.title} />
-                    <div className="service-overlay" />
-                    <div className="service-copy">
-                      <div>
-                        <h3>{card.title}</h3>
-                        <div className="service-line" />
-                        <div className="service-cta">
-                          <span>DETAYLARI GÖR</span>
-                          <span className="material-symbols-outlined">arrow_forward</span>
-                        </div>
-                      </div>
-                      <span className="vertical-text">{card.sideLabel}</span>
+          <div className="services-grid">
+            {materialCategories.map((card) => (
+              <Link key={card.slug} href={`/materyal-studyo/${card.slug}`} className="service-card">
+                <img src={card.image} alt={card.title} />
+                <div className="service-overlay" />
+                <div className="service-copy">
+                  <div>
+                    <h3>{card.title}</h3>
+                    <div className="service-line" />
+                    <div className="service-cta">
+                      <span>DETAYLARI GÖR</span>
+                      <span className="material-symbols-outlined">arrow_forward</span>
                     </div>
-                  </Link>
-                ))
-              ) : (
-                <div className="material-showcase-empty" style={{ gridColumn: "1 / -1" }}>
-                  <span className="material-symbols-outlined">search_off</span>
-                  <p>Aramanızla eşleşen bir kategori bulunamadı.</p>
+                  </div>
+                  <span className="vertical-text">{card.sideLabel}</span>
                 </div>
-              )}
-            </div>
+              </Link>
+            ))}
           </div>
         </div>
       </section>
