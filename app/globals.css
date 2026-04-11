@@ -4522,7 +4522,14 @@ video {
     height: 100svh;
     min-height: 100vh;
     min-height: 100dvh;
-    border-radius: 0;
+    border-radius: 0 !important;
+    overflow: clip;
+  }
+
+  .galeri-page .project-card img,
+  .galeri-page .project-overlay,
+  .galeri-page .project-slide-glow {
+    border-radius: 0 !important;
   }
 
   .galeri-page .project-card h4 {
@@ -4564,7 +4571,7 @@ video {
 
   .galeri-page .project-slider-window {
     min-height: 100vh;
-    border-radius: 0;
+    border-radius: 0 !important;
   }
 
   .galeri-page .project-slide-copy {
