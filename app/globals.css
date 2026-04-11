@@ -1765,7 +1765,7 @@ video {
   }
 
   .project-slide-copy {
-    padding: 1.25rem 1.15rem 1.35rem;
+    padding: 1rem 0.9rem 1.1rem;
     align-items: stretch;
     justify-content: flex-start;
   }
@@ -1791,8 +1791,8 @@ video {
 
   .project-slide-copy .vertical-text {
     position: absolute;
-    left: 1.15rem;
-    top: 1.15rem;
+    left: 0.9rem;
+    top: 0.9rem;
     writing-mode: vertical-rl;
     text-orientation: mixed;
     letter-spacing: 0.3em;
@@ -4565,7 +4565,7 @@ video {
     position: absolute;
     top: auto;
     left: auto;
-    right: 1.5rem;
+    right: 0.9rem;
     bottom: 4.5rem;
     font-size: 1.25rem;
     letter-spacing: 0.12em;
@@ -4579,7 +4579,7 @@ video {
     position: absolute;
     top: auto;
     left: auto;
-    right: 1.5rem;
+    right: 0.9rem;
     bottom: 2.5rem;
     font-size: 0.62rem;
     letter-spacing: 0.42em;
@@ -4590,7 +4590,7 @@ video {
 
   .galeri-page .project-card .vertical-text {
     position: absolute;
-    left: 1.5rem;
+    left: 0.9rem;
     bottom: 2.5rem;
     z-index: 2;
     color: rgba(255, 255, 255, 0.68);
@@ -4606,13 +4606,13 @@ video {
   .galeri-page .project-slide-copy {
     align-items: flex-end;
     justify-content: flex-start;
-    padding: 1.5rem;
+    padding: 1rem 0.9rem 1.15rem;
   }
 
   .galeri-page .project-slide-copy .vertical-text {
     position: absolute;
-    left: 1.5rem;
-    top: 1.5rem;
+    left: 0.9rem;
+    top: 0.9rem;
     writing-mode: vertical-rl;
     text-orientation: mixed;
   }
