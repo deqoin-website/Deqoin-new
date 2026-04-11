@@ -1789,7 +1789,7 @@ video {
   }
 
   .team-mobile-card {
-    max-width: min(48rem, 100%);
+    max-width: min(100%, 100vw);
     margin: 0 auto;
     width: 100%;
   }
@@ -1800,6 +1800,41 @@ video {
 
   .team-home-mobile-slider {
     margin-top: 1.25rem;
+    min-height: 100svh;
+    min-height: 100dvh;
+  }
+
+  .team-home-mobile-slider .team-card-gallery {
+    min-height: 100svh;
+    min-height: 100dvh;
+  }
+
+  .team-home-mobile-slider .team-card-img {
+    aspect-ratio: auto;
+    min-height: 100svh;
+    min-height: 100dvh;
+  }
+
+  .team-home-mobile-slider .team-card-content {
+    padding: 1.25rem 1.1rem 1.3rem;
+  }
+
+  .team-home-mobile-slider .team-card-role-vertical {
+    font-size: 0.48rem;
+    letter-spacing: 0.26em;
+  }
+
+  .team-home-mobile-slider .team-card-copy h3 {
+    font-size: clamp(1.8rem, 7vw, 2.6rem);
+    line-height: 0.88;
+  }
+
+  .team-home-mobile-slider .team-card-index {
+    font-size: 0.8rem;
+  }
+
+  .team-home-mobile-slider .team-card-footer .material-symbols-outlined {
+    font-size: 1rem;
   }
 
   .project-slide-copy {
