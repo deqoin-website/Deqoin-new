@@ -4510,16 +4510,22 @@ video {
 
   .galeri-page .project-grid {
     grid-template-columns: 1fr;
+    grid-auto-rows: 100svh;
     width: 100vw;
     margin-left: calc(50% - 50vw);
     margin-right: calc(50% - 50vw);
   }
 
   .galeri-page .project-card {
+    display: block;
+    width: 100%;
+    height: 100svh;
     min-height: 100vh;
+    min-height: 100dvh;
   }
 
   .galeri-page .project-card h4 {
+    position: absolute;
     top: auto;
     left: auto;
     right: 1.5rem;
@@ -4533,6 +4539,7 @@ video {
   }
 
   .galeri-page .project-card p {
+    position: absolute;
     top: auto;
     left: auto;
     right: 1.5rem;
