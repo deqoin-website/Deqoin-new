@@ -586,6 +586,7 @@ export default function Page() {
                     <div>
                       <h4>{currentProject?.title}</h4>
                       <p>PROJE DETAYI</p>
+                      <span className="project-slide-cta">DETAYLARI GÖR</span>
                     </div>
                   </div>
                 </Link>
