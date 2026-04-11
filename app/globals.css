@@ -1811,6 +1811,11 @@ video {
     gap: 0.65rem;
   }
 
+  .project-slide-copy .vertical-text {
+    font-size: clamp(1.45rem, 2vw, 2.4rem);
+    letter-spacing: 0.38em;
+  }
+
   .project-slide-copy h4 {
     font-size: clamp(4rem, 12vw, 8.2rem);
     line-height: 0.84;
