@@ -177,14 +177,6 @@ export default function MaterialProjectShowcase({
               ))}
             </ul>
           </div>
-
-          <div className="filter-group" style={{ marginTop: "4rem" }}>
-            <h4>MATERYAL BRİFİ</h4>
-            <p className="material-showcase-sidebar-copy">
-              {materialTitle}, proje tipine göre farklı teknik ve atmosferik roller üstlenir. Size uygun
-              uygulama senaryosunu birlikte netleştirelim.
-            </p>
-          </div>
         </aside>
 
         <div className="studio-gallery">
