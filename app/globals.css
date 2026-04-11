@@ -1517,7 +1517,7 @@ video {
   overflow: hidden;
   background: #0f0f0f;
   border: 1px solid rgba(255, 255, 255, 0.06);
-  border-radius: 2rem;
+  border-radius: 0;
   transition: transform 0.65s cubic-bezier(0.165, 0.84, 0.44, 1), border-color 0.65s ease;
 }
 
@@ -1530,6 +1530,7 @@ video {
   position: relative;
   aspect-ratio: 4 / 5;
   overflow: hidden;
+  border-radius: 0;
 }
 
 .team-card-img img {
