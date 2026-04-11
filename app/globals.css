@@ -1809,14 +1809,15 @@ video {
 
   .project-slider-controls {
     width: 100%;
-    justify-content: space-between;
-    gap: 0.6rem;
+    justify-content: flex-end;
+    gap: 0.35rem;
     flex-wrap: nowrap;
   }
 
   .project-slider-counter {
     order: 1;
-    gap: 0.45rem;
+    gap: 0.3rem;
+    margin-right: 0.15rem;
   }
 
   .project-slider-dots {
@@ -1826,6 +1827,25 @@ video {
   .carousel-buttons.project-slider-arrows {
     order: 2;
     margin-left: auto;
+    gap: 0.35rem;
+  }
+
+  .project-slider-counter span {
+    font-size: 1.1rem;
+  }
+
+  .project-slider-counter small {
+    font-size: 0.48rem;
+    letter-spacing: 0.22em;
+  }
+
+  .carousel-buttons.project-slider-arrows button {
+    width: 2.35rem;
+    height: 2.35rem;
+  }
+
+  .carousel-buttons.project-slider-arrows .material-symbols-outlined {
+    font-size: 1rem;
   }
 
   .hero-controls {
