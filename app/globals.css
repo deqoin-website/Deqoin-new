@@ -4490,6 +4490,14 @@ video {
 }
 
 @media (max-width: 767px) {
+  .project-slider-window {
+    border-radius: 0 !important;
+  }
+
+  .project-card.project-card-full {
+    border-radius: 0 !important;
+  }
+
   .galeri-subtitle {
      margin-top: 1rem; /* More spacing on mobile as requested */
      font-size: 0.7rem;
