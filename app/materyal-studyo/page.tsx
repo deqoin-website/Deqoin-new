@@ -1,15 +1,31 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import ConsultationModal from "../../components/ConsultationModal";
 import { Loader2 } from "lucide-react";
 import SwipeAppointmentButton from "../../components/SwipeAppointmentButton";
+import { materyalKategorileri } from "../../data/materyal-studyo";
+
+const materialCategories = materyalKategorileri.filter((item) =>
+  ["mobilya", "aydinlatma", "italyan-sivalar", "sanatsal-calismalar", "tugla-ve-tas"].includes(item.slug)
+);
+
+const categoryFilters = [
+  { label: "TÜMÜ", value: "all" },
+  { label: "Mobilya", value: "mobilya" },
+  { label: "Aydınlatma", value: "aydinlatma" },
+  { label: "İtalyan Sıvalar", value: "italyan-sivalar" },
+  { label: "Sanatsal Çalışmalar", value: "sanatsal-calismalar" },
+  { label: "Tuğla ve Taş", value: "tugla-ve-tas" },
+] as const;
 
 export default function MateryalStudyo() {
   const [content, setContent] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isConsultationOpen, setIsConsultationOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [activeFilter, setActiveFilter] = useState<(typeof categoryFilters)[number]["value"]>("all");
   const heroRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -38,6 +54,20 @@ export default function MateryalStudyo() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  const visibleCards = useMemo(() => {
+    const q = searchTerm.trim().toLowerCase();
+    return materialCategories.filter((card) => {
+      const matchesFilter = activeFilter === "all" || card.slug === activeFilter;
+      const matchesSearch =
+        q === "" ||
+        [card.title, card.sideLabel, card.description, ...(card.categories?.map((c) => c.label) || [])]
+          .join(" ")
+          .toLowerCase()
+          .includes(q);
+      return matchesFilter && matchesSearch;
+    });
+  }, [activeFilter, searchTerm]);
+
   if (isLoading) {
     return (
       <div className="site-shell" style={{ height: "60vh", display: "flex", alignItems: "center", justifyContent: "center" }}>
@@ -47,7 +77,6 @@ export default function MateryalStudyo() {
   }
 
   const heroSection = content?.sections?.find((s: any) => s.id === "hero");
-  const catSection = content?.sections?.find((s: any) => s.id === "categories");
 
   return (
     <main className="site-shell project-detail-shell" style={{ background: "#0a0a0a" }}>
@@ -57,7 +86,7 @@ export default function MateryalStudyo() {
             className="mimari-hero-slide active"
             ref={heroRef}
             style={{
-              backgroundImage: `url(${heroSection?.slides?.[0] || "https://images.unsplash.com/photo-1540932239986-30128078f3c5?q=80&w=2048&auto=format&fit=crop"})`,
+              backgroundImage: `url(${heroSection?.slides?.[0] || materialCategories[0]?.image || "https://images.unsplash.com/photo-1540932239986-30128078f3c5?q=80&w=2048&auto=format&fit=crop"})`,
             }}
           />
         </div>
@@ -69,9 +98,7 @@ export default function MateryalStudyo() {
             CREATIVE VISION
           </span>
           <h1 className="mimari-hero-title-main">{heroSection?.title || "MATERIAL STUDIO"}</h1>
-          <p className="mimari-hero-sub-main">
-            {heroSection?.subtitle || "ÜRÜN VE MALZEME"}
-          </p>
+          <p className="mimari-hero-sub-main">{heroSection?.subtitle || "ÜRÜN VE MALZEME"}</p>
           <div className="mimari-hero-line" />
           <div className="mimari-hero-actions" style={{ justifyContent: "center", marginTop: "3rem" }}>
             <SwipeAppointmentButton onActivate={() => setIsConsultationOpen(true)} />
@@ -115,72 +142,120 @@ export default function MateryalStudyo() {
         </div>
       </section>
 
-      <section className="services-section" style={{ background: "transparent", paddingTop: "0" }}>
-        <div className="services-grid">
-          {(catSection?.items || []).map((card: any) => (
-            <Link key={card.title} href={`/materyal-studyo/${card.slug}`} className="service-card">
-              <img src={card.image} alt={card.title} />
-              <div className="service-overlay" />
-              <div className="service-copy">
-                <div>
+      <div className="studio-search-container material-studio-search">
+        <div className="studio-search-bar">
+          <span className="material-symbols-outlined">search</span>
+          <input
+            type="text"
+            placeholder="Malzeme veya kategori ara..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+        </div>
+
+        <button className="mobile-filter-toggle" onClick={() => setActiveFilter("all")}>
+          <span className="material-symbols-outlined">tune</span>
+          FİLTRELE
+          {activeFilter !== "all" && <span className="active-dot" />}
+        </button>
+      </div>
+
+      <section className="studio-main material-studio-main">
+        <aside className="studio-sidebar">
+          <div className="filter-group">
+            <h4>KATEGORİLER</h4>
+            <ul className="filter-list">
+              {categoryFilters.map((filter) => (
+                <li key={filter.value} className="filter-item">
+                  <button
+                    className={`filter-button ${activeFilter === filter.value ? "active" : ""}`}
+                    onClick={() => setActiveFilter(filter.value)}
+                  >
+                    {filter.label}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div className="filter-group" style={{ marginTop: "4rem" }}>
+            <h4>MATERYAL BRİFİ</h4>
+            <p className="material-showcase-sidebar-copy">
+              Seçkin malzemeler, projenin ruhunu belirleyen son katman değil; tasarımın başlangıç kararlarından biridir. İhtiyacınıza uygun senaryoyu birlikte netleştirelim.
+            </p>
+            <SwipeAppointmentButton onActivate={() => setIsConsultationOpen(true)} />
+          </div>
+        </aside>
+
+        <div className="studio-gallery">
+          {visibleCards.length > 0 ? (
+            visibleCards.map((card) => (
+              <Link key={card.slug} href={`/materyal-studyo/${card.slug}`} className="project-card-interactive">
+                <div className="project-card-img">
+                  <img src={card.image} alt={card.title} />
+                  <div className="project-card-badge">{card.sideLabel}</div>
+                </div>
+
+                <div className="project-card-info">
                   <h3>{card.title}</h3>
-                  <div className="service-line" />
-                  <div className="service-cta">
-                    <span>DETAYLARI GÖR</span>
-                    <span className="material-symbols-outlined">arrow_forward</span>
+                  <div className="project-meta-row">
+                    <div className="meta-item">
+                      <label>KATEGORİ</label>
+                      <span>{card.title}</span>
+                    </div>
+                    <div className="meta-item">
+                      <label>ODAK</label>
+                      <span>{card.sideLabel}</span>
+                    </div>
+                    <div className="meta-item">
+                      <label>DETAY</label>
+                      <span>{card.categories?.length || 0} Alt Başlık</span>
+                    </div>
+                  </div>
+
+                  <div className="project-story-section">
+                    <div className="story-block">
+                      <h5>MALZEME VİZYONU</h5>
+                      <p>{card.description}</p>
+                    </div>
+                    <div className="story-block">
+                      <h5>KATEGORİLER</h5>
+                      <p>{card.categories?.map((item) => item.label).join(" • ")}</p>
+                    </div>
+                  </div>
+
+                  <div className="project-card-footer">
+                    <button className="project-action-btn" type="button" onClick={() => setIsConsultationOpen(true)}>
+                      DETAYLARI GÖR
+                      <span className="material-symbols-outlined">arrow_right_alt</span>
+                    </button>
+                    <span className="material-showcase-footer-note">MATERIAL © DEQOIN</span>
                   </div>
                 </div>
-                <span className="vertical-text">{card.sideLabel}</span>
-              </div>
-            </Link>
-          ))}
+              </Link>
+            ))
+          ) : (
+            <div className="material-showcase-empty">
+              <span className="material-symbols-outlined">search_off</span>
+              <p>Aramanızla eşleşen bir kategori bulunamadı.</p>
+            </div>
+          )}
         </div>
       </section>
 
       <section className="mimari-cta-banner">
         <div className="mimari-cta-bg">
-          <img src="https://images.unsplash.com/photo-1540932239986-30128078f3c5?q=80&w=2048&auto=format&fit=crop" alt="CTA" />
+          <img src={materialCategories[0]?.image || "https://images.unsplash.com/photo-1540932239986-30128078f3c5?q=80&w=2048&auto=format&fit=crop"} alt="CTA" />
         </div>
         <div className="mimari-cta-overlay" />
         <div className="mimari-cta-content">
           <span className="section-small-label" style={{ color: "#cca883" }}>BİR SONRAKİ ADIM</span>
-          <h2 className="mimari-cta-title">Projeye Özel Materyal Kurgusuna Başlayalım</h2>
+          <h2 className="mimari-cta-title">Materyal Seçimini Projeye Dönüştürelim</h2>
           <p className="mimari-cta-sub">
-            Seçkin malzeme portföyümüzü ve sanatsal yaklaşımımızı projenize taşıyalım.
+            Seçtiğiniz kategori için en doğru teknik ve estetik kombinasyonu birlikte planlayalım.
           </p>
           <SwipeAppointmentButton onActivate={() => setIsConsultationOpen(true)} />
         </div>
-      </section>
-
-      <section className="mimari-other-services">
-        <div className="mimari-section-inner">
-          <span className="section-small-label">DİĞER HİZMETLERİMİZ</span>
-          <div className="mimari-other-grid">
-            <Link href="/mimari" className="mimari-other-card">
-              <img src="/images/slider/mimari_slide.png" alt="Design Studio" />
-              <div className="mimari-other-overlay" />
-              <div className="mimari-other-copy">
-                <h3>Design Studio</h3>
-                <span className="vertical-text">Structural Integrity</span>
-              </div>
-            </Link>
-            <Link href="/uygulama" className="mimari-other-card">
-              <img src="/images/slider/uygulama_slide.png" alt="Execution Studio" />
-              <div className="mimari-other-overlay" />
-              <div className="mimari-other-copy">
-                <h3>Execution Studio</h3>
-                <span className="vertical-text">Precision Craft</span>
-              </div>
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      <section style={{ padding: "4rem 2rem", textAlign: "center", borderTop: "1px solid rgba(255,255,255,0.05)" }}>
-        <Link href="/materyal-studyo" className="mimari-ghost-btn" style={{ margin: "0 auto" }}>
-          <span className="material-symbols-outlined" style={{ marginRight: "1rem", transform: "rotate(180deg)" }}>arrow_right_alt</span>
-          <span>Material Studio Ana Sayfası</span>
-        </Link>
       </section>
 
       <ConsultationModal
