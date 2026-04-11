@@ -4472,6 +4472,16 @@ video {
   max-width: none; /* Already in section-inner */
 }
 
+.galeri-page .project-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0;
+}
+
+.galeri-page .project-card {
+  min-height: 34rem;
+}
+
 @media (max-width: 1024px) {
   .galeri-page .studio-main {
     grid-template-columns: 1fr;
@@ -4498,9 +4508,86 @@ video {
     gap: 0;
   }
 
+  .galeri-page .project-grid {
+    grid-template-columns: 1fr;
+    width: 100vw;
+    margin-left: calc(50% - 50vw);
+    margin-right: calc(50% - 50vw);
+  }
+
+  .galeri-page .project-card {
+    min-height: 100vh;
+  }
+
+  .galeri-page .project-card h4 {
+    top: auto;
+    left: auto;
+    right: 1.5rem;
+    bottom: 4.5rem;
+    font-size: 1.25rem;
+    letter-spacing: 0.12em;
+    max-width: min(78vw, 18rem);
+    text-align: right;
+    z-index: 2;
+    color: #fff;
+  }
+
+  .galeri-page .project-card p {
+    top: auto;
+    left: auto;
+    right: 1.5rem;
+    bottom: 2.5rem;
+    font-size: 0.62rem;
+    letter-spacing: 0.42em;
+    text-align: right;
+    z-index: 2;
+    color: rgba(255, 255, 255, 0.72);
+  }
+
+  .galeri-page .project-card .vertical-text {
+    position: absolute;
+    left: 1.5rem;
+    bottom: 2.5rem;
+    z-index: 2;
+    color: rgba(255, 255, 255, 0.68);
+    font-size: 0.62rem;
+    letter-spacing: 0.35em;
+  }
+
   .galeri-page .project-slider-window {
-    min-height: 72vh;
+    min-height: 100vh;
     border-radius: 1.25rem;
+  }
+
+  .galeri-page .project-slide-copy {
+    align-items: flex-end;
+    justify-content: flex-start;
+    padding: 1.5rem;
+  }
+
+  .galeri-page .project-slide-copy .vertical-text {
+    position: absolute;
+    left: 1.5rem;
+    top: 1.5rem;
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+  }
+
+  .galeri-page .project-slide-copy > div {
+    max-width: 100%;
+    gap: 0.6rem;
+    padding-left: 0;
+    margin-top: auto;
+  }
+
+  .galeri-page .project-slide-copy h4 {
+    font-size: clamp(2rem, 9vw, 3.2rem);
+    line-height: 0.92;
+  }
+
+  .galeri-page .project-slide-copy p {
+    font-size: 0.52rem;
+    letter-spacing: 0.42em;
   }
 
   /* Keep header and search container padded on mobile */
