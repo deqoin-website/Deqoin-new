@@ -585,8 +585,11 @@ export default function Page() {
                     <span className="vertical-text">{currentProject?.label}</span>
                     <div>
                       <h4>{currentProject?.title}</h4>
-                      <p>PROJE DETAYI</p>
-                      <span className="project-slide-cta">DETAYLARI GÖR</span>
+                      <span className="project-slide-cta">
+                        <span className="project-slide-cta-line" aria-hidden="true" />
+                        <span>DETAYLARI GÖR</span>
+                        <span className="material-symbols-outlined project-slide-cta-icon" aria-hidden="true">arrow_forward</span>
+                      </span>
                     </div>
                   </div>
                 </Link>
