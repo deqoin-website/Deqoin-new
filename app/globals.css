@@ -1704,20 +1704,21 @@ video {
   }
 
   .team-mobile-slider {
-    max-width: min(34rem, 80vw);
+    max-width: min(48rem, 92vw);
     margin: 0.65rem auto 0;
   }
 
   .team-slider-arrow {
-    display: none;
+    display: grid;
   }
 
   .team-home-mobile-slider {
     grid-template-columns: minmax(0, 1fr);
+    max-width: min(52rem, 96vw);
+    width: 100%;
   }
 
-  .team-slider-arrow {
-    display: grid;
+  .team-home-mobile-slider .team-slider-arrow {
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
@@ -1769,7 +1770,7 @@ video {
   }
 
   .team-mobile-card {
-    max-width: min(34rem, 100%);
+    max-width: min(48rem, 100%);
     margin: 0 auto;
     width: 100%;
   }
@@ -1780,10 +1781,6 @@ video {
 
   .team-home-mobile-slider {
     margin-top: 1.25rem;
-  }
-
-  .team-slider-arrow {
-    display: none;
   }
 
   .project-slide-copy {
