@@ -864,14 +864,14 @@ video {
 }
 
 .material-studio-collection-inner {
-  max-width: 1920px;
+  max-width: none;
   width: 100%;
-  padding-left: clamp(1rem, 1.8vw, 2rem);
-  padding-right: clamp(1rem, 1.8vw, 2rem);
+  padding-left: clamp(0.75rem, 1vw, 1.5rem);
+  padding-right: clamp(0.75rem, 1vw, 1.5rem);
 }
 
 .material-studio-grid {
-  grid-template-columns: repeat(auto-fit, minmax(540px, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 0;
 }
 
@@ -1972,12 +1972,6 @@ video {
   .team-desc p {
     text-align: left;
     margin-top: 1rem;
-  }
-}
-
-@media (min-width: 1600px) {
-  .material-studio-grid {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 }
 
