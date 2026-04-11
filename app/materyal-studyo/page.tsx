@@ -163,86 +163,100 @@ export default function MateryalStudyo() {
         </button>
       </div>
 
-      <section className="studio-main material-studio-main">
-        <aside className="studio-sidebar">
-          <div className="filter-group">
-            <h4>KATEGORİLER</h4>
-            <ul className="filter-list">
-              {categoryFilters.map((filter) => (
-                <li key={filter.value} className="filter-item">
-                  <button
-                    className={`filter-button ${activeFilter === filter.value ? "active" : ""}`}
-                    onClick={() => setActiveFilter(filter.value)}
-                  >
-                    {filter.label}
-                  </button>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          <div className="filter-group" style={{ marginTop: "4rem" }}>
-            <h4>MATERYAL BRİFİ</h4>
-            <p className="material-showcase-sidebar-copy">
-              Seçkin malzemeler, projenin ruhunu belirleyen son katman değil; tasarımın başlangıç kararlarından biridir. İhtiyacınıza uygun senaryoyu birlikte netleştirelim.
-            </p>
-            <SwipeAppointmentButton onActivate={() => setIsConsultationOpen(true)} />
-          </div>
-        </aside>
-
-        <div className="studio-gallery">
-          {visibleCards.length > 0 ? (
-            visibleCards.map((card) => (
-              <Link key={card.slug} href={`/materyal-studyo/${card.slug}`} className="project-card-interactive">
-                <div className="project-card-img">
-                  <img src={card.image} alt={card.title} />
-                  <div className="project-card-badge">{card.sideLabel}</div>
-                </div>
-
-                <div className="project-card-info">
-                  <h3>{card.title}</h3>
-                  <div className="project-meta-row">
-                    <div className="meta-item">
-                      <label>KATEGORİ</label>
-                      <span>{card.title}</span>
-                    </div>
-                    <div className="meta-item">
-                      <label>ODAK</label>
-                      <span>{card.sideLabel}</span>
-                    </div>
-                    <div className="meta-item">
-                      <label>DETAY</label>
-                      <span>{card.categories?.length || 0} Alt Başlık</span>
-                    </div>
-                  </div>
-
-                  <div className="project-story-section">
-                    <div className="story-block">
-                      <h5>MALZEME VİZYONU</h5>
-                      <p>{card.description}</p>
-                    </div>
-                    <div className="story-block">
-                      <h5>KATEGORİLER</h5>
-                      <p>{card.categories?.map((item) => item.label).join(" • ")}</p>
-                    </div>
-                  </div>
-
-                  <div className="project-card-footer">
-                    <button className="project-action-btn" type="button" onClick={() => setIsConsultationOpen(true)}>
-                      DETAYLARI GÖR
-                      <span className="material-symbols-outlined">arrow_right_alt</span>
-                    </button>
-                    <span className="material-showcase-footer-note">MATERIAL © DEQOIN</span>
-                  </div>
-                </div>
-              </Link>
-            ))
-          ) : (
-            <div className="material-showcase-empty">
-              <span className="material-symbols-outlined">search_off</span>
-              <p>Aramanızla eşleşen bir kategori bulunamadı.</p>
+      <section className="services-section" style={{ background: "transparent", paddingTop: "0" }}>
+        <div className="section-inner" style={{ paddingTop: "0" }}>
+          <div className="section-heading projects-heading">
+            <div>
+              <span className="section-small-label" style={{ color: "#cca883", marginBottom: "1rem", display: "block" }}>CATEGORY SELECTION</span>
+              <h2 style={{ marginBottom: "0.5rem", textTransform: "uppercase", color: "#fff" }}>MATERIAL COLLECTION</h2>
+              <div className="section-line" />
             </div>
-          )}
+
+            <div className="project-slider-controls" style={{ alignItems: "flex-end" }}>
+              <div className="project-slider-counter">
+                <span>{String(visibleCards.length).padStart(2, "0")}</span>
+                <small>RESULTS</small>
+              </div>
+            </div>
+          </div>
+
+          <div className="studio-main material-studio-main">
+            <aside className="studio-sidebar">
+              <div className="filter-group">
+                <h4>KATEGORİLER</h4>
+                <ul className="filter-list" style={{ listStyle: "none", padding: 0 }}>
+                  {categoryFilters.map((filter) => (
+                    <li key={filter.value} style={{ marginBottom: "1rem" }}>
+                      <button
+                        className={`filter-button ${activeFilter === filter.value ? "active" : ""}`}
+                        onClick={() => setActiveFilter(filter.value)}
+                        style={{
+                          background: "none",
+                          border: "none",
+                          color: activeFilter === filter.value ? "#fff" : "rgba(255,255,255,0.4)",
+                          fontFamily: "var(--font-display)",
+                          fontSize: "0.8rem",
+                          letterSpacing: "0.2em",
+                          cursor: "pointer",
+                          transition: "all 0.3s ease",
+                          display: "flex",
+                          alignItems: "center",
+                          gap: "1rem",
+                        }}
+                      >
+                        <span
+                          style={{
+                            width: "4px",
+                            height: "4px",
+                            borderRadius: "50%",
+                            background: "#cca883",
+                            opacity: activeFilter === filter.value ? 1 : 0,
+                            transition: "all 0.3s ease",
+                          }}
+                        />
+                        {filter.label}
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <div className="filter-group" style={{ marginTop: "4rem", paddingTop: "2rem", borderTop: "1px solid rgba(255,255,255,0.05)" }}>
+                <h4 style={{ fontSize: "0.7rem", letterSpacing: "0.3em", color: "rgba(255,255,255,0.3)", marginBottom: "1.5rem" }}>RANDEVU PLANI</h4>
+                <p style={{ fontSize: "0.75rem", color: "rgba(255,255,255,0.4)", lineHeight: "1.8", marginBottom: "2rem", letterSpacing: "0.05em" }}>
+                  Özel projeleriniz için seçili materyal dilini birlikte belirleyelim.
+                </p>
+                <SwipeAppointmentButton onActivate={() => setIsConsultationOpen(true)} compact style={{ transformOrigin: "left" }} />
+              </div>
+            </aside>
+
+            <div className="services-grid">
+              {visibleCards.length > 0 ? (
+                visibleCards.map((card) => (
+                  <Link key={card.slug} href={`/materyal-studyo/${card.slug}`} className="service-card">
+                    <img src={card.image} alt={card.title} />
+                    <div className="service-overlay" />
+                    <div className="service-copy">
+                      <div>
+                        <h3>{card.title}</h3>
+                        <div className="service-line" />
+                        <div className="service-cta">
+                          <span>DETAYLARI GÖR</span>
+                          <span className="material-symbols-outlined">arrow_forward</span>
+                        </div>
+                      </div>
+                      <span className="vertical-text">{card.sideLabel}</span>
+                    </div>
+                  </Link>
+                ))
+              ) : (
+                <div className="material-showcase-empty" style={{ gridColumn: "1 / -1" }}>
+                  <span className="material-symbols-outlined">search_off</span>
+                  <p>Aramanızla eşleşen bir kategori bulunamadı.</p>
+                </div>
+              )}
+            </div>
+          </div>
         </div>
       </section>
 
