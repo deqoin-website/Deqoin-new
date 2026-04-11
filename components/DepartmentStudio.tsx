@@ -3,7 +3,6 @@
 import { useState, useMemo, useEffect } from "react";
 import { ProjectDetail, Category } from "../data/projects";
 import ConsultationModal from "./ConsultationModal";
-import SwipeAppointmentButton from "./SwipeAppointmentButton";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -236,12 +235,6 @@ export default function DepartmentStudio({
                   ))}
                 </ul>
               </div>
-              <div className="drawer-footer">
-                <SwipeAppointmentButton onActivate={() => {
-                  setIsMobileDrawerOpen(false);
-                  setIsConsultationOpen(true);
-                }} />
-              </div>
             </motion.div>
           </>
         )}
@@ -266,13 +259,6 @@ export default function DepartmentStudio({
             </ul>
           </div>
 
-          <div className="filter-group" style={{ marginTop: "4rem" }}>
-            <h4 style={{ letterSpacing: "0.2em", fontSize: "0.7rem", color: "#a68966", marginBottom: "1rem" }}>RANDEVU PLANI</h4>
-            <p style={{ fontSize: "0.8rem", color: "rgba(255,255,255,0.4)", lineHeight: "1.6", marginBottom: "2rem" }}>
-              Projeniz için profesyonel bir yaklaşım mı arıyorsunuz? Uzman ekibimizle süreci hemen planlayın.
-            </p>
-            <SwipeAppointmentButton onActivate={() => setIsConsultationOpen(true)} compact />
-          </div>
         </aside>
 
         {/* GALLERY GRID */}
