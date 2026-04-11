@@ -4533,10 +4533,18 @@ video {
 }
 
 @media (max-width: 767px) {
+  .projects-section .section-inner {
+    padding-left: 0;
+    padding-right: 0;
+  }
+
   .project-slider-window {
     border-radius: 0 !important;
     min-height: 100svh;
     min-height: 100dvh;
+    width: 100vw;
+    margin-left: calc(50% - 50vw);
+    margin-right: calc(50% - 50vw);
   }
 
   .project-card.project-card-full {
