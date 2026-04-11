@@ -81,7 +81,7 @@ export default function SwipeAppointmentButton({
         style={{ minWidth: compact ? "min(100%, 460px)" : undefined }}
       >
         <motion.div className="swipe-appointment-fill" style={{ width: fillWidth }} />
-        <span className={`swipe-appointment-label ${isFilled ? "is-dark" : ""}`}>ŞİMDİ TASARLAYALIM</span>
+        <span className={`swipe-appointment-label ${isFilled ? "is-dark" : ""}`}>RANDEVU TALEP EDİNİZ</span>
         <motion.div
           className="swipe-appointment-handle"
           style={{ x }}
@@ -96,7 +96,7 @@ export default function SwipeAppointmentButton({
         </motion.div>
       </button>
       <span className={`swipe-appointment-hint ${isFilled ? "is-dark" : ""}`}>
-        <span className="swipe-appointment-hint-text">İLERLE</span>
+        <span className="swipe-appointment-hint-text">LÜTFEN KAYDIRINIZ</span>
         <span className="swipe-appointment-hint-arrow" aria-hidden="true">→</span>
       </span>
     </div>
