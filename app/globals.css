@@ -915,7 +915,7 @@ video {
   text-transform: uppercase;
   letter-spacing: -0.04em;
   line-height: 0.95;
-  font-size: clamp(2.2rem, 5vw, 3.8rem); /* Refined and scaled down */
+  font-size: clamp(3rem, 6vw, 5rem);
 }
 
 .section-heading h2,
@@ -939,16 +939,16 @@ video {
 
 .service-copy span {
   color: rgba(255, 255, 255, 0.7);
-  letter-spacing: 0.5em;
+  letter-spacing: 0.4em;
   text-transform: uppercase;
-  font-size: 0.6rem;
+  font-size: 0.75rem;
 }
 
 .service-cta {
   display: flex;
   align-items: center;
   gap: 1rem;
-  margin-top: 2.5rem;
+  margin-top: 2rem;
   font-family: var(--font-display), sans-serif;
   font-size: 0.7rem;
   letter-spacing: 0.3em;

@@ -462,7 +462,7 @@ export default function Page() {
                 <div>
                   <h3>{card.title}</h3>
                   {"subTitle" in card && (
-                    <p style={{ fontSize: "1.1rem", color: "rgba(255,255,255,0.8)", marginTop: "0.5rem", letterSpacing: "0.2em", textTransform: "uppercase" }}>{card.subTitle}</p>
+                    <p style={{ fontSize: "1.4rem", color: "rgba(255,255,255,0.8)", marginTop: "0.7rem", letterSpacing: "0.24em", textTransform: "uppercase", lineHeight: 1 }}>{card.subTitle}</p>
                   )}
                   <div className="service-line" />
                   <div className="service-cta">
