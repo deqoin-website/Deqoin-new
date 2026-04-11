@@ -420,7 +420,12 @@ export default function Page() {
           ].map((step, idx) => (
             <div key={idx} className="process-step">
               <div className="step-number">
-                <span className="material-symbols-outlined step-icon">{step.icon}</span>
+                <span
+                  className="material-symbols-outlined step-icon"
+                  style={{ fontVariationSettings: "'FILL' 0, 'wght' 200, 'opsz' 24" }}
+                >
+                  {step.icon}
+                </span>
                 <span className="step-id">{step.id}</span>
               </div>
               <div className="step-content">
