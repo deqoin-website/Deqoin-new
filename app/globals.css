@@ -871,7 +871,7 @@ video {
 }
 
 .material-studio-grid {
-  grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(460px, 1fr));
   gap: 0;
 }
 
@@ -1690,7 +1690,7 @@ video {
   }
 
   .material-studio-grid {
-    grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(520px, 1fr));
   }
 
   .service-card {
