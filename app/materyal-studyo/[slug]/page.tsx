@@ -62,6 +62,7 @@ export default function MaterialDetail({ params }: { params: Promise<ServicePara
       <DepartmentStudio 
         title={title.toUpperCase()}
         subtitle={subtitle.toUpperCase()}
+        eyebrow="DEQOIN | MATERIAL STUDIO"
         description={description}
         heroImage={heroImage}
         images={gallery}

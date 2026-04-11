@@ -10,6 +10,7 @@ import { motion, AnimatePresence } from "framer-motion";
 interface DepartmentStudioProps {
   title: string;
   subtitle: string;
+  eyebrow?: string;
   description?: string;
   heroImage: string;
   images?: string[];
@@ -40,6 +41,7 @@ const DEFAULT_CATEGORIES: { label: string; value: Category | string }[] = [
 export default function DepartmentStudio({ 
   title, 
   subtitle, 
+  eyebrow = "DEQOIN | DESIGN STUDIO",
   description,
   heroImage, 
   images, 
@@ -106,7 +108,7 @@ export default function DepartmentStudio({
             className="section-small-label" 
             style={{ color: "#cca883", marginBottom: "1rem", display: "inline-block", letterSpacing: "0.2em" }}
           >
-            DEQOIN | DESIGN STUDIO
+            {eyebrow}
           </motion.span>
           <motion.h1
             initial={{ opacity: 0, y: 30 }}
