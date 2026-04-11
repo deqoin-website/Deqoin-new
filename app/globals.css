@@ -4605,8 +4605,8 @@ video {
 
   .project-slider-window {
     border-radius: 0 !important;
-    min-height: 92svh;
-    min-height: 92dvh;
+    min-height: 94svh;
+    min-height: 94dvh;
     width: 100vw;
     margin-left: calc(50% - 50vw);
     margin-right: calc(50% - 50vw);
@@ -4614,8 +4614,8 @@ video {
 
   .project-card.project-card-full {
     border-radius: 0 !important;
-    min-height: 92svh;
-    min-height: 92dvh;
+    min-height: 94svh;
+    min-height: 94dvh;
   }
 
   .galeri-subtitle {
@@ -4638,7 +4638,7 @@ video {
 
   .galeri-page .project-grid {
     grid-template-columns: 1fr;
-    grid-auto-rows: 92svh;
+    grid-auto-rows: 94svh;
     width: 100vw;
     margin-left: calc(50% - 50vw);
     margin-right: calc(50% - 50vw);
@@ -4647,9 +4647,9 @@ video {
   .galeri-page .project-card {
     display: block;
     width: 100%;
-    height: 92svh;
-    min-height: 92vh;
-    min-height: 92dvh;
+    height: 94svh;
+    min-height: 94vh;
+    min-height: 94dvh;
     border-radius: 0 !important;
     overflow: clip;
   }
