@@ -866,13 +866,18 @@ video {
 .material-studio-collection-inner {
   max-width: none;
   width: 100%;
-  padding-left: clamp(0.75rem, 1vw, 1.5rem);
-  padding-right: clamp(0.75rem, 1vw, 1.5rem);
+  padding-left: 0;
+  padding-right: 0;
 }
 
 .material-studio-grid {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: 1fr;
   gap: 0;
+}
+
+.material-studio-collection .section-heading {
+  padding-left: clamp(0.75rem, 1vw, 1.25rem);
+  padding-right: clamp(0.75rem, 1vw, 1.25rem);
 }
 
 .service-card {
