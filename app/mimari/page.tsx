@@ -15,11 +15,25 @@ const heroSlides = [
 
 const mimariSubCategories = [
   {
+    href: "/mimari/insaat-muhendisligi",
+    title: "Mühendislik",
+    sideLabel: "Structural Strength",
+    image: "/images/projects/gallery_1.png",
+    slug: "insaat-muhendisligi"
+  },
+  {
     href: "/mimari/mimarlik",
     title: "Mimarlık",
     sideLabel: "Structural Form",
     image: "/images/slider/mimari_slide.png",
     slug: "mimarlik"
+  },
+  {
+    href: "/mimari/elektrik-elektronik-muhendisligi",
+    title: "Mekanik",
+    sideLabel: "Power & Logic",
+    image: "/images/projects/gallery_2.png",
+    slug: "elektrik-elektronik-muhendisligi"
   },
   {
     href: "/mimari/ic-mimarlik",
@@ -41,20 +55,6 @@ const mimariSubCategories = [
     sideLabel: "Natural Canvas",
     image: "/images/projects/gallery_2.png",
     slug: "peyzaj-mimarligi"
-  },
-  {
-    href: "/mimari/insaat-muhendisligi",
-    title: "Mühendislik",
-    sideLabel: "Structural Strength",
-    image: "/images/projects/gallery_1.png",
-    slug: "insaat-muhendisligi"
-  },
-  {
-    href: "/mimari/elektrik-elektronik-muhendisligi",
-    title: "Mekanik",
-    sideLabel: "Power & Logic",
-    image: "/images/projects/gallery_2.png",
-    slug: "elektrik-elektronik-muhendisligi"
   },
 ];
 
