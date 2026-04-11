@@ -3,7 +3,6 @@
 import { useMemo, useState } from "react";
 import { Category, ProjectDetail } from "../data/projects";
 import ConsultationModal from "./ConsultationModal";
-import SwipeAppointmentButton from "./SwipeAppointmentButton";
 
 type MaterialProjectShowcaseProps = {
   materialSlug?: string;
@@ -159,15 +158,6 @@ export default function MaterialProjectShowcase({
           </ul>
         </div>
 
-        <div className="drawer-footer">
-          <p>Bu uzmanlık birimini kendi projenizde doğru senaryoyla kurgulamak için ekibimizle görüşün.</p>
-          <SwipeAppointmentButton
-            onActivate={() => {
-              setIsMobileDrawerOpen(false);
-              setIsConsultationOpen(true);
-            }}
-          />
-        </div>
       </div>
 
       <section className="studio-main material-studio-main">
@@ -194,7 +184,6 @@ export default function MaterialProjectShowcase({
               {materialTitle}, proje tipine göre farklı teknik ve atmosferik roller üstlenir. Size uygun
               uygulama senaryosunu birlikte netleştirelim.
             </p>
-            <SwipeAppointmentButton onActivate={() => setIsConsultationOpen(true)} />
           </div>
         </aside>
 
