@@ -1690,7 +1690,7 @@ video {
   }
 
   .material-studio-grid {
-    grid-template-columns: repeat(auto-fit, minmax(620px, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
   .service-card {
@@ -1972,6 +1972,12 @@ video {
   .team-desc p {
     text-align: left;
     margin-top: 1rem;
+  }
+}
+
+@media (min-width: 1600px) {
+  .material-studio-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 }
 
