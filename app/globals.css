@@ -864,14 +864,14 @@ video {
 }
 
 .material-studio-collection-inner {
-  max-width: none;
+  max-width: 1920px;
   width: 100%;
-  padding-left: clamp(1.5rem, 3vw, 4rem);
-  padding-right: clamp(1.5rem, 3vw, 4rem);
+  padding-left: clamp(1rem, 1.8vw, 2rem);
+  padding-right: clamp(1rem, 1.8vw, 2rem);
 }
 
 .material-studio-grid {
-  grid-template-columns: repeat(auto-fit, minmax(460px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(540px, 1fr));
   gap: 0;
 }
 
@@ -1690,11 +1690,11 @@ video {
   }
 
   .material-studio-grid {
-    grid-template-columns: repeat(auto-fit, minmax(520px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(620px, 1fr));
   }
 
   .service-card {
-    min-height: 90vh;
+    min-height: 92vh;
     border-bottom: 0;
     border-right: 1px solid var(--line);
   }
