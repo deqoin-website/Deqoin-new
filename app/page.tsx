@@ -412,11 +412,11 @@ export default function Page() {
 
         <div className="process-timeline">
           {[
-            { id: "01", icon: "history_edu", title: "Randevu", detail: "Kusursuz sürecin ilk adımı." },
-            { id: "02", icon: "travel_explore", title: "Keşif", detail: "İhtiyaçların ve potansiyelin öngörülmesi." },
-            { id: "03", icon: "design_services", title: "Tasarım", detail: "Vizyonun ve mimari kimliğin kurgulanması." },
-            { id: "04", icon: "texture", title: "Malzeme", detail: "Projeye özel premium donatıların entegrasyonu." },
-            { id: "05", icon: "construction", title: "Uygulama", detail: "Tüm değerlerinizi ortaya koyan usta işi inşa süreci." }
+            { id: "01", icon: "calendar_month", title: "Randevu", detail: "Kusursuz sürecin ilk adımı." },
+            { id: "02", icon: "search", title: "Keşif", detail: "İhtiyaçların ve potansiyelin öngörülmesi." },
+            { id: "03", icon: "architecture", title: "Tasarım", detail: "Vizyonun ve mimari kimliğin kurgulanması." },
+            { id: "04", icon: "stylus", title: "Malzeme", detail: "Projeye özel premium donatıların entegrasyonu." },
+            { id: "05", icon: "build", title: "Uygulama", detail: "Tüm değerlerinizi ortaya koyan usta işi inşa süreci." }
           ].map((step, idx) => (
             <div key={idx} className="process-step">
               <div className="step-number">
