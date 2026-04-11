@@ -863,6 +863,13 @@ video {
   grid-template-columns: 1fr;
 }
 
+.material-studio-collection-shell {
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: 5rem 0 0;
+}
+
 .material-studio-collection-inner {
   max-width: none;
   width: 100%;
@@ -4283,14 +4290,15 @@ video {
   margin-top: 3rem;
 }
 
-  .material-studio-main {
-    padding-top: 0;
-  }
+.material-studio-main {
+  padding-top: 0;
+}
 
-  .material-studio-collection-inner {
-    padding-left: 0;
-    padding-right: 0;
-  }
+.material-studio-collection-shell,
+.material-studio-collection-inner {
+  padding-left: 0;
+  padding-right: 0;
+}
 
 .material-showcase-footer-note {
   font-size: 0.6rem;

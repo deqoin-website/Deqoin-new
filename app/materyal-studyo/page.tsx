@@ -121,7 +121,7 @@ export default function MateryalStudyo() {
       </section>
 
       <section className="services-section material-studio-collection" style={{ background: "transparent", paddingTop: "0" }}>
-        <div className="section-inner material-studio-collection-inner" style={{ paddingTop: "0" }}>
+        <div className="material-studio-collection-shell material-studio-collection-inner" style={{ paddingTop: "0" }}>
           <div className="section-heading projects-heading">
             <div>
               <span className="section-small-label" style={{ color: "#cca883", marginBottom: "1rem", display: "block" }}>CATEGORY SELECTION</span>
