@@ -4522,6 +4522,7 @@ video {
     height: 100svh;
     min-height: 100vh;
     min-height: 100dvh;
+    border-radius: 0;
   }
 
   .galeri-page .project-card h4 {
@@ -4563,7 +4564,7 @@ video {
 
   .galeri-page .project-slider-window {
     min-height: 100vh;
-    border-radius: 1.25rem;
+    border-radius: 0;
   }
 
   .galeri-page .project-slide-copy {
