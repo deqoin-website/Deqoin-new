@@ -4604,6 +4604,255 @@ video {
   }
 }
 
+@media (max-width: 1024px) {
+  .material-studio-page .mimari-manifesto-inner {
+    padding: 0 1.5rem;
+    gap: 2.5rem;
+  }
+
+  .material-studio-page .mimari-cta-content {
+    max-width: 100%;
+  }
+
+  .material-studio-page .studio-main {
+    padding: 0 1.5rem 7rem;
+    gap: 2rem;
+  }
+
+  .material-studio-page .studio-search-container {
+    margin: 0 auto 2.5rem;
+    padding: 0 1.5rem;
+  }
+
+  .material-studio-page .studio-gallery {
+    gap: 1.5rem;
+  }
+}
+
+@media (max-width: 767px) {
+  .material-studio-page .mimari-page-hero {
+    height: auto;
+    min-height: 100svh;
+    padding: 7rem 0 3rem;
+    align-items: flex-end;
+  }
+
+  .material-studio-page .mimari-hero-content-centric {
+    width: 100%;
+    padding: 0 1.25rem;
+  }
+
+  .material-studio-page .mimari-hero-title-main {
+    font-size: clamp(3.7rem, 18vw, 5.4rem);
+    letter-spacing: 0.1em;
+    line-height: 0.88;
+  }
+
+  .material-studio-page .mimari-hero-sub-main {
+    font-size: 0.72rem;
+    letter-spacing: 0.34em;
+    margin-top: 1.25rem;
+  }
+
+  .material-studio-page .mimari-hero-line {
+    width: 72px;
+    margin-top: 2rem;
+  }
+
+  .material-studio-page .mimari-hero-actions {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+    width: 100%;
+    margin-top: 2rem !important;
+  }
+
+  .material-studio-page .mimari-hero-actions > * {
+    width: 100%;
+  }
+
+  .material-studio-page .mimari-hero-actions .mimari-ghost-btn {
+    justify-content: center;
+    padding: 1rem 1.25rem;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-bottom-width: 1px;
+  }
+
+  .material-studio-page .mimari-hero-scroll-hint {
+    display: none;
+  }
+
+  .material-studio-page .mimari-manifesto {
+    padding: 5rem 0;
+  }
+
+  .material-studio-page .mimari-manifesto-inner {
+    padding: 0 1.25rem;
+    gap: 2rem;
+  }
+
+  .material-studio-page .mimari-manifesto-body .section-small-label {
+    display: block;
+    margin-bottom: 0.75rem;
+  }
+
+  .material-studio-page .mimari-manifesto-text {
+    max-width: none;
+    font-size: 0.98rem;
+    line-height: 1.8;
+  }
+
+  .material-studio-page .material-studio-collection-shell {
+    padding-top: 0;
+  }
+
+  .material-studio-page .material-studio-collection .section-heading {
+    margin-bottom: 2rem;
+    padding-left: 1.25rem;
+    padding-right: 1.25rem;
+  }
+
+  .material-studio-page .material-studio-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .material-studio-page .service-card {
+    min-height: 72svh;
+    border-right: 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .material-studio-page .service-copy {
+    padding: 1.5rem 1.25rem;
+    align-items: flex-end;
+  }
+
+  .material-studio-page .service-copy h3 {
+    font-size: clamp(2rem, 11vw, 3rem);
+    line-height: 0.98;
+    max-width: 11ch;
+  }
+
+  .material-studio-page .service-cta {
+    margin-top: 1.25rem;
+    gap: 0.7rem;
+    font-size: 0.62rem;
+    letter-spacing: 0.22em;
+  }
+
+  .material-studio-page .service-copy .vertical-text {
+    display: none;
+  }
+
+  .material-studio-page .mimari-cta-banner {
+    min-height: 68svh;
+    height: auto;
+  }
+
+  .material-studio-page .mimari-cta-content {
+    padding: 0 1.25rem;
+  }
+
+  .material-studio-page .mimari-cta-title {
+    font-size: clamp(2.4rem, 12vw, 3.6rem);
+  }
+
+  .material-studio-page .mimari-cta-sub {
+    font-size: 0.95rem;
+    line-height: 1.7;
+    margin-bottom: 2rem;
+  }
+
+  .material-studio-page .studio-search-container {
+    margin: 0 auto 2rem;
+    padding: 0 1.25rem;
+  }
+
+  .material-studio-page .studio-search-bar {
+    padding: 0.35rem 1rem;
+  }
+
+  .material-studio-page .studio-search-bar input {
+    padding: 0.95rem 0.75rem;
+    font-size: 0.82rem;
+  }
+
+  .material-studio-page .mobile-filter-toggle {
+    padding: 1rem 1.1rem;
+    font-size: 0.64rem;
+    letter-spacing: 0.24em;
+  }
+
+  .material-studio-page .studio-main {
+    padding: 0 1.25rem 5.5rem;
+    gap: 1.5rem;
+  }
+
+  .material-studio-page .studio-gallery {
+    gap: 1.25rem;
+  }
+
+  .material-studio-page .project-card-badge {
+    top: 0.85rem;
+    right: 0.85rem;
+    padding: 0.4rem 0.75rem;
+    font-size: 0.52rem;
+    letter-spacing: 0.18em;
+  }
+
+  .material-studio-page .project-card-info {
+    padding: 1.4rem 1.2rem 1.5rem;
+  }
+
+  .material-studio-page .project-card-info h3 {
+    font-size: 1.3rem;
+    margin-bottom: 1rem;
+    letter-spacing: 0.06em;
+  }
+
+  .material-studio-page .project-meta-row {
+    gap: 0.9rem;
+    flex-wrap: wrap;
+    margin-bottom: 1.25rem;
+    padding-bottom: 1rem;
+  }
+
+  .material-studio-page .meta-item {
+    min-width: calc(50% - 0.5rem);
+  }
+
+  .material-studio-page .story-block p {
+    font-size: 0.8rem;
+    line-height: 1.55;
+  }
+
+  .material-studio-page .project-card-footer {
+    margin-top: 2rem;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .material-studio-page .project-action-btn {
+    font-size: 0.62rem;
+    letter-spacing: 0.16em;
+  }
+
+  .material-studio-page .material-showcase-intro {
+    padding: 0 1.25rem;
+  }
+
+  .material-studio-page .material-showcase-intro h2 {
+    font-size: clamp(1.8rem, 10vw, 2.6rem);
+    letter-spacing: 0.05em;
+  }
+
+  .material-studio-page .material-showcase-intro p {
+    font-size: 0.9rem;
+    line-height: 1.75;
+  }
+}
+
 /* =========================================
    GALERI PAGE SPECIFIC OVERRIDES
    ========================================= */

@@ -54,7 +54,7 @@ export default function MateryalStudyo() {
   const heroSection = content?.sections?.find((s: any) => s.id === "hero");
 
   return (
-    <main className="site-shell project-detail-shell" style={{ background: "#0a0a0a" }}>
+    <main className="site-shell project-detail-shell material-studio-page" style={{ background: "#0a0a0a" }}>
       <section className="mimari-page-hero">
         <div className="mimari-hero-slider">
           <div
