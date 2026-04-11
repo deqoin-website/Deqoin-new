@@ -939,9 +939,9 @@ video {
 
 .service-copy span {
   color: rgba(255, 255, 255, 0.7);
-  letter-spacing: 0.4em;
+  letter-spacing: 0.48em;
   text-transform: uppercase;
-  font-size: 0.75rem;
+  font-size: 0.92rem;
 }
 
 .service-cta {
