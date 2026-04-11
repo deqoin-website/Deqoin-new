@@ -77,10 +77,6 @@ export default function MateryalStudyo() {
           <div className="mimari-hero-line" />
           <div className="mimari-hero-actions" style={{ justifyContent: "center", marginTop: "3rem" }}>
             <SwipeAppointmentButton onActivate={() => setIsConsultationOpen(true)} />
-            <Link href="/galeri?material=mobilya" className="mimari-ghost-btn">
-              <span>GALERİYİ İNCELE</span>
-              <span className="material-symbols-outlined">east</span>
-            </Link>
           </div>
         </div>
 
