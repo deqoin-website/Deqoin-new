@@ -4605,8 +4605,8 @@ video {
 
   .project-slider-window {
     border-radius: 0 !important;
-    min-height: 100svh;
-    min-height: 100dvh;
+    min-height: 92svh;
+    min-height: 92dvh;
     width: 100vw;
     margin-left: calc(50% - 50vw);
     margin-right: calc(50% - 50vw);
@@ -4614,8 +4614,8 @@ video {
 
   .project-card.project-card-full {
     border-radius: 0 !important;
-    min-height: 100svh;
-    min-height: 100dvh;
+    min-height: 92svh;
+    min-height: 92dvh;
   }
 
   .galeri-subtitle {
@@ -4638,7 +4638,7 @@ video {
 
   .galeri-page .project-grid {
     grid-template-columns: 1fr;
-    grid-auto-rows: 100svh;
+    grid-auto-rows: 92svh;
     width: 100vw;
     margin-left: calc(50% - 50vw);
     margin-right: calc(50% - 50vw);
@@ -4647,9 +4647,9 @@ video {
   .galeri-page .project-card {
     display: block;
     width: 100%;
-    height: 100svh;
-    min-height: 100vh;
-    min-height: 100dvh;
+    height: 92svh;
+    min-height: 92vh;
+    min-height: 92dvh;
     border-radius: 0 !important;
     overflow: clip;
   }
@@ -4698,7 +4698,7 @@ video {
   }
 
   .galeri-page .project-slider-window {
-    min-height: 100vh;
+    min-height: 92vh;
     border-radius: 0 !important;
   }
 
