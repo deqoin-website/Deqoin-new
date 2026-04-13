@@ -9,7 +9,8 @@ import {
   X, 
   Upload,
   Settings,
-  Image as ImageIcon
+  Image as ImageIcon,
+  FolderKanban
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
