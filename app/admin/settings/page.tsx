@@ -7,13 +7,26 @@ import {
   Loader2, 
   Globe, 
   Mail, 
-  Share2 
+  Share2,
+  Shield,
+  Phone,
+  MapPin,
+  Settings as SettingsIcon,
+  Hash,
+  Activity,
+  UserCheck,
+  Facebook,
+  Twitter,
+  Instagram,
+  Linkedin
 } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 export default function SettingsPage() {
   const [settings, setSettings] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
+  const [activeTab, setActiveTab] = useState('genel');
   const [uploadLoading, setUploadLoading] = useState(false);
 
   useEffect(() => {
@@ -32,7 +45,7 @@ export default function SettingsPage() {
     }
   };
 
-  const handleLogoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>, field: string) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
@@ -43,9 +56,9 @@ export default function SettingsPage() {
         body: file
       });
       const blob = await res.json();
-      setSettings({ ...settings, logoUrl: blob.url });
+      setSettings({ ...settings, [field]: blob.url });
     } catch (err) {
-      alert("Logo yüklenemedi.");
+      alert("Yüklenemedi.");
     } finally {
       setUploadLoading(false);
     }
@@ -73,8 +86,8 @@ export default function SettingsPage() {
     <div className="settings-container">
       <div className="settings-header">
         <div className="header-text">
-          <p>GENEL AYARLAR</p>
-          <span>Sitenizin kimliğini ve logonuzu buradan yönetin.</span>
+          <p>SİTE YÖNETİM MERKEZİ</p>
+          <span>Kimlik, SEO, İletişim ve Sistem ayarlarını buradan yönetin.</span>
         </div>
         <button className="save-btn" onClick={saveSettings} disabled={isSaving}>
           {isSaving ? <Loader2 className="animate-spin" size={18} /> : <Save size={18} />}
@@ -82,84 +95,131 @@ export default function SettingsPage() {
         </button>
       </div>
 
-      <div className="settings-grid">
-        {/* LOGO SECTION */}
-        <section className="settings-card logo-card">
-          <div className="card-header">
-            <h3>Site Logosu</h3>
-          </div>
-          <div className="logo-preview-area">
-            <div className="logo-display">
-              {uploadLoading ? (
-                <div className="logo-loader"><Loader2 className="animate-spin" size={32} /></div>
-              ) : settings.logoUrl && settings.logoUrl.trim() !== '' ? (
-                <img src={settings.logoUrl} alt="Logo Preview" />
-              ) : (
-                <div className="logo-placeholder"><Camera size={32} /></div>
-              )}
-            </div>
-            <div className="logo-actions">
-              <label className="upload-btn">
-                <Camera size={18} />
-                <span>Logoyu Değiştir</span>
-                <input type="file" className="hidden" onChange={handleLogoUpload} />
-              </label>
-              <p>Tavsiye edilen: Saydam arka plan (PNG), 512x512px</p>
-            </div>
-          </div>
-        </section>
+      <div className="tabs-navigation">
+        <button className={activeTab === 'genel' ? 'active' : ''} onClick={() => setActiveTab('genel')}><SettingsIcon size={14}/> GENEL</button>
+        <button className={activeTab === 'seo' ? 'active' : ''} onClick={() => setActiveTab('seo')}><Globe size={14}/> SEO & ANALİTİK</button>
+        <button className={activeTab === 'iletisim' ? 'active' : ''} onClick={() => setActiveTab('iletisim')}><Phone size={14}/> İLETİŞİM</button>
+        <button className={activeTab === 'sistem' ? 'active' : ''} onClick={() => setActiveTab('sistem')}><Shield size={14}/> SİSTEM</button>
+      </div>
 
-        {/* BASIC INFO */}
-        <section className="settings-card">
-          <div className="card-header">
-            <h3>Stüdyo Bilgileri</h3>
-          </div>
-          <div className="form-group">
-            <label><Globe size={14} /> Stüdyo İsmi</label>
-            <input 
-              type="text" 
-              value={settings.studioName} 
-              onChange={e => setSettings({ ...settings, studioName: e.target.value })} 
-            />
-          </div>
-          <div className="form-group">
-            <label><Mail size={14} /> İletişim E-posta</label>
-            <input 
-              type="email" 
-              value={settings.contactEmail} 
-              onChange={e => setSettings({ ...settings, contactEmail: e.target.value })} 
-            />
-          </div>
-        </section>
+      <div className="settings-content">
+        <AnimatePresence mode="wait">
+          {activeTab === 'genel' && (
+            <motion.div key="genel" initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 10 }} className="settings-grid">
+              <section className="settings-card logo-card">
+                <div className="card-header"><h3>Site Kimliği</h3></div>
+                <div className="logo-section-grid">
+                  <div className="logo-upload-wrap">
+                    <label>ANA LOGO</label>
+                    <div className="logo-preview-box" onClick={() => document.getElementById('logo-file')?.click()}>
+                      {settings.logoUrl ? <img src={settings.logoUrl} alt="Logo" /> : <Camera size={24} />}
+                      {uploadLoading && <div className="upload-overlay"><Loader2 className="animate-spin" /></div>}
+                    </div>
+                    <input id="logo-file" type="file" className="hidden" onChange={e => handleImageUpload(e, 'logoUrl')} />
+                    <button type="button" className="upload-btn-mini" onClick={() => document.getElementById('logo-file')?.click()}>DEĞİŞTİR</button>
+                  </div>
+                  <div className="logo-upload-wrap">
+                    <label>FAVICON</label>
+                    <div className="logo-preview-box square" onClick={() => document.getElementById('favicon-file')?.click()}>
+                      {settings.faviconUrl ? <img src={settings.faviconUrl} alt="Favicon" /> : <Camera size={20} />}
+                    </div>
+                    <input id="favicon-file" type="file" className="hidden" onChange={e => handleImageUpload(e, 'faviconUrl')} />
+                    <button type="button" className="upload-btn-mini" onClick={() => document.getElementById('favicon-file')?.click()}>DEĞİŞTİR</button>
+                  </div>
+                  <div className="info-inputs">
+                    <div className="form-group">
+                      <label>STÜDYO İSMİ</label>
+                      <input type="text" value={settings.studioName} onChange={e => setSettings({ ...settings, studioName: e.target.value })} />
+                    </div>
+                  </div>
+                </div>
+              </section>
 
-        {/* SOCIAL LINKS */}
-        <section className="settings-card">
-          <div className="card-header">
-            <h3>Sosyal Medya</h3>
-          </div>
-          <div className="form-group">
-            <label><Globe size={14} /> Instagram URL</label>
-            <input 
-              type="text" 
-              value={settings.socialLinks?.instagram || ''} 
-              onChange={e => setSettings({ 
-                ...settings, 
-                socialLinks: { ...settings.socialLinks, instagram: e.target.value } 
-              })} 
-            />
-          </div>
-          <div className="form-group">
-            <label><Share2 size={14} /> Linkedin URL</label>
-            <input 
-              type="text" 
-              value={settings.socialLinks?.linkedin || ''} 
-              onChange={e => setSettings({ 
-                ...settings, 
-                socialLinks: { ...settings.socialLinks, linkedin: e.target.value } 
-              })} 
-            />
-          </div>
-        </section>
+              <section className="settings-card">
+                <div className="card-header"><h3>Sosyal Medya Linkleri</h3></div>
+                <div className="form-grid-2">
+                  <div className="form-group"><label><Instagram size={14}/> INSTAGRAM</label><input type="text" value={settings.socialLinks?.instagram || ''} onChange={e => setSettings({...settings, socialLinks: {...settings.socialLinks, instagram: e.target.value}})} /></div>
+                  <div className="form-group"><label><Linkedin size={14}/> LINKEDIN</label><input type="text" value={settings.socialLinks?.linkedin || ''} onChange={e => setSettings({...settings, socialLinks: {...settings.socialLinks, linkedin: e.target.value}})} /></div>
+                  <div className="form-group"><label><Facebook size={14}/> FACEBOOK</label><input type="text" value={settings.socialLinks?.facebook || ''} onChange={e => setSettings({...settings, socialLinks: {...settings.socialLinks, facebook: e.target.value}})} /></div>
+                  <div className="form-group"><label><Twitter size={14}/> X / TWITTER</label><input type="text" value={settings.socialLinks?.x || ''} onChange={e => setSettings({...settings, socialLinks: {...settings.socialLinks, x: e.target.value}})} /></div>
+                </div>
+              </section>
+            </motion.div>
+          )}
+
+          {activeTab === 'seo' && (
+            <motion.div key="seo" initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 10 }} className="settings-grid single-col">
+              <section className="settings-card">
+                <div className="card-header"><h3>Arama Motoru Optimizasyonu (SEO)</h3></div>
+                <div className="form-group">
+                  <label><Hash size={14}/> VARSAYILAN SAYFA BAŞLIĞI</label>
+                  <input type="text" value={settings.metaTitle || ''} onChange={e => setSettings({ ...settings, metaTitle: e.target.value })} placeholder="Örn: Deqoin | Architectural Design Studio" />
+                </div>
+                <div className="form-group">
+                  <label><Mail size={14}/> META AÇIKLAMASI</label>
+                  <textarea rows={4} value={settings.metaDescription || ''} onChange={e => setSettings({ ...settings, metaDescription: e.target.value })} placeholder="Siteniz hakkında arama sonuçlarında görünecek kısa açıklama..." />
+                </div>
+                <div className="form-group">
+                  <label><Hash size={14}/> ANAHTAR KELİMELER</label>
+                  <input type="text" value={settings.keywords || ''} onChange={e => setSettings({ ...settings, keywords: e.target.value })} placeholder="mimari, iç mimari, tasarım, istanbul..." />
+                </div>
+              </section>
+
+              <section className="settings-card">
+                <div className="card-header"><h3>Takip & Analitik Kodları</h3></div>
+                <div className="form-grid-2">
+                  <div className="form-group">
+                    <label><Activity size={14}/> GOOGLE ANALYTICS (GA4) ID</label>
+                    <input type="text" value={settings.googleAnalyticsId || ''} onChange={e => setSettings({ ...settings, googleAnalyticsId: e.target.value })} placeholder="G-XXXXXXXXXX" />
+                  </div>
+                  <div className="form-group">
+                    <label><UserCheck size={14}/> META PIXEL ID</label>
+                    <input type="text" value={settings.metaPixelId || ''} onChange={e => setSettings({ ...settings, metaPixelId: e.target.value })} placeholder="123456789012345" />
+                  </div>
+                </div>
+              </section>
+            </motion.div>
+          )}
+
+          {activeTab === 'iletisim' && (
+            <motion.div key="iletisim" initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 10 }} className="settings-grid">
+              <section className="settings-card">
+                <div className="card-header"><h3>İletişim Kanalları</h3></div>
+                <div className="form-group"><label><Mail size={14}/> E-POSTA</label><input type="email" value={settings.contactEmail} onChange={e => setSettings({ ...settings, contactEmail: e.target.value })} /></div>
+                <div className="form-group"><label><Phone size={14}/> TELEFON</label><input type="text" value={settings.phone || ''} onChange={e => setSettings({ ...settings, phone: e.target.value })} /></div>
+                <div className="form-group"><label><Phone size={14}/> WHATSAPP</label><input type="text" value={settings.whatsapp || ''} onChange={e => setSettings({ ...settings, whatsapp: e.target.value })} /></div>
+              </section>
+              <section className="settings-card">
+                <div className="card-header"><h3>Adres Bilgileri</h3></div>
+                <div className="form-group"><label><MapPin size={14}/> FİZİKSEL ADRES</label><textarea rows={2} value={settings.address || ''} onChange={e => setSettings({ ...settings, address: e.target.value })} /></div>
+                <div className="form-group"><label><Globe size={14}/> GOOGLE MAPS URL</label><input type="text" value={settings.googleMapsUrl || ''} onChange={e => setSettings({ ...settings, googleMapsUrl: e.target.value })} /></div>
+              </section>
+            </motion.div>
+          )}
+
+          {activeTab === 'sistem' && (
+            <motion.div key="sistem" initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 10 }} className="settings-grid single-col">
+              <section className="settings-card maintenance-card">
+                <div className="card-header">
+                   <div>
+                      <h3>Bakım Modu</h3>
+                      <p>Aktif edildiğinde ziyaretçiler siteyi göremez, sadece "Bakımdayız" mesajı ile karşılaşırlar.</p>
+                   </div>
+                   <div className={`status-toggle ${settings.maintenanceMode ? 'active' : ''}`} onClick={() => setSettings({...settings, maintenanceMode: !settings.maintenanceMode})}>
+                      <div className="toggle-bullet" />
+                   </div>
+                </div>
+                <div className="maintenance-status-info">
+                   {settings.maintenanceMode ? (
+                     <p className="status-warn"><Shield size={16}/> SİTE ŞU AN ZİYARETÇİLERE KAPALI</p>
+                   ) : (
+                     <p className="status-ok"><UserCheck size={16}/> SİTE ŞU AN YAYINDA</p>
+                   )}
+                </div>
+              </section>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
 
       <style jsx>{`
@@ -173,8 +233,13 @@ export default function SettingsPage() {
           padding-bottom: 2rem;
         }
 
-        .header-text p { font-family: var(--font-display), sans-serif; font-size: 0.75rem; letter-spacing: 0.3em; color: #a68966; }
+        .header-text p { font-family: var(--font-display), sans-serif; font-size: 0.75rem; letter-spacing: 0.3em; color: #a68966; margin: 0; }
         .header-text span { font-size: 0.85rem; opacity: 0.4; display: block; margin-top: 0.5rem; }
+
+        .tabs-navigation { display: flex; gap: 1rem; margin-top: -1rem; }
+        .tabs-navigation button { background: transparent; border: none; border-bottom: 2px solid transparent; color: rgba(255,255,255,0.3); padding: 0.75rem 1rem; font-size: 0.7rem; font-weight: 800; letter-spacing: 0.1em; cursor: pointer; transition: all 0.3s; display: flex; align-items: center; gap: 0.5rem; }
+        .tabs-navigation button:hover { color: #fff; }
+        .tabs-navigation button.active { color: #a68966; border-color: #a68966; }
 
         .save-btn {
           background: #a68966;
@@ -195,64 +260,55 @@ export default function SettingsPage() {
         .save-btn:hover { background: #c2a785; transform: translateY(-2px); }
 
         .settings-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+        .settings-grid.single-col { grid-template-columns: 1fr; }
         
         .settings-card {
-          background: #141414;
-          border: 1px solid rgba(255, 255, 255, 0.03);
-          padding: 2rem;
+          background: rgba(255, 255, 255, 0.02);
+          border: 1px solid rgba(255, 255, 255, 0.05);
+          padding: 2.5rem;
           display: flex;
           flex-direction: column;
           gap: 1.5rem;
+          border-radius: 12px;
         }
 
-        .card-header h3 { font-family: var(--font-display), sans-serif; font-size: 0.8rem; letter-spacing: 0.1em; opacity: 0.6; text-transform: uppercase; }
+        .card-header h3 { font-family: var(--font-display), sans-serif; font-size: 0.8rem; letter-spacing: 0.1em; color: #a68966; text-transform: uppercase; margin: 0; }
+        .card-header p { font-size: 0.8rem; opacity: 0.4; margin-top: 0.5rem; }
 
-        .logo-preview-area { display: flex; align-items: center; gap: 3rem; }
+        .logo-section-grid { display: flex; gap: 2.5rem; align-items: flex-end; }
+        .logo-upload-wrap { display: flex; flex-direction: column; gap: 0.75rem; }
+        .logo-upload-wrap label { font-size: 0.6rem; font-weight: 900; color: rgba(255,255,255,0.3); }
+        .logo-preview-box { width: 140px; height: 100px; background: #fff; border-radius: 4px; display: flex; align-items: center; justify-content: center; cursor: pointer; padding: 10px; position: relative; }
+        .logo-preview-box.square { width: 60px; height: 60px; }
+        .logo-preview-box img { max-width: 100%; max-height: 100%; object-fit: contain; }
+        .upload-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; }
         
-        .logo-display {
-          width: 120px;
-          height: 120px;
-          background: #fff;
-          border-radius: 4px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          padding: 1rem;
-        }
+        .upload-btn-mini { background: rgba(255,255,255,0.05); color: #fff; border: 1px solid rgba(255,255,255,0.1); padding: 0.4rem; font-size: 0.6rem; font-weight: 700; cursor: pointer; border-radius: 2px; }
+        .upload-btn-mini:hover { background: #fff; color: #000; }
+        .info-inputs { flex: 1; }
 
-        .logo-display img { max-width: 100%; max-height: 100%; object-fit: contain; }
-
-        .logo-actions { display: flex; flex-direction: column; gap: 1rem; }
-        .logo-actions p { font-size: 0.7rem; opacity: 0.4; }
-
-        .upload-btn {
-          background: rgba(166, 137, 102, 0.1);
-          color: #a68966;
-          border: 1px dashed rgba(166, 137, 102, 0.3);
-          padding: 0.8rem 1.5rem;
-          display: flex;
-          align-items: center;
-          gap: 0.75rem;
-          cursor: pointer;
-          font-size: 0.8rem;
-          transition: all 0.3s;
-          width: fit-content;
-        }
-
-        .upload-btn:hover { background: rgba(166, 137, 102, 0.2); border-color: #a68966; }
-
+        .form-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
         .form-group { display: flex; flex-direction: column; gap: 0.75rem; }
-        .form-group label { font-size: 0.75rem; opacity: 0.6; display: flex; align-items: center; gap: 0.5rem; }
-        .form-group input {
-          background: rgba(255, 255, 255, 0.02);
-          border: 1px solid rgba(255, 255, 255, 0.08);
+        .form-group label { font-size: 0.65rem; color: rgba(255, 255, 255, 0.4); font-weight: 800; display: flex; align-items: center; gap: 0.5rem; }
+        .form-group input, .form-group textarea {
+          background: rgba(0,0,0,0.3);
+          border: 1px solid rgba(255, 255, 255, 0.05);
           padding: 1rem;
           color: #fff;
-          border-radius: 2px;
-          font-size: 0.9rem;
+          border-radius: 4px;
+          font-size: 0.85rem;
+          font-family: inherit;
         }
 
-        .logo-card { grid-column: span 2; }
+        .status-toggle { width: 60px; height: 32px; background: rgba(255,255,255,0.1); border-radius: 20px; position: relative; cursor: pointer; transition: all 0.3s; }
+        .status-toggle.active { background: #a68966; }
+        .toggle-bullet { width: 24px; height: 24px; background: #fff; border-radius: 50%; position: absolute; top: 4px; left: 4px; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
+        .status-toggle.active .toggle-bullet { left: 32px; background: #000; }
+        
+        .maintenance-status-info { margin-top: 1rem; padding-top: 1.5rem; border-top: 1px solid rgba(255,255,255,0.05); }
+        .status-warn { color: #ffab40; font-size: 0.8rem; font-weight: 700; display: flex; align-items: center; gap: 0.5rem; }
+        .status-ok { color: #4caf50; font-size: 0.8rem; font-weight: 700; display: flex; align-items: center; gap: 0.5rem; }
+
         .hidden { display: none; }
         .loader-wrap { height: 400px; display: flex; align-items: center; justify-content: center; color: #a68966; }
 
