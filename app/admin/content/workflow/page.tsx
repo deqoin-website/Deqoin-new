@@ -43,6 +43,21 @@ export default function CorporateContentPage() {
     }
   };
 
+  const runMigration = async () => {
+    setIsSaving(true);
+    try {
+      const res = await fetch('/api/admin/migrate/corporate');
+      if (res.ok) {
+        alert("Kurumsal içerikler ve iş akışı başarıyla aktarıldı!");
+        fetchContent();
+      }
+    } catch (e) {
+      alert("Aktarım sırasında bir hata oluştu.");
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
   const handleSave = async () => {
     setIsSaving(true);
     try {
@@ -87,6 +102,22 @@ export default function CorporateContentPage() {
 
   const removeStat = (index: number) => {
     setData(prev => ({ ...prev, stats: prev.stats.filter((_, i) => i !== index) }));
+  };
+
+  const addWorkflowStep = () => {
+    setData(prev => ({ ...prev, sections: [...prev.sections, { title: '', content: '' }] }));
+  };
+
+  const updateWorkflowStep = (index: number, key: string, value: string) => {
+    setData(prev => {
+      const newSections = [...prev.sections];
+      (newSections[index] as any)[key] = value;
+      return { ...prev, sections: newSections };
+    });
+  };
+
+  const removeWorkflowStep = (index: number) => {
+    setData(prev => ({ ...prev, sections: prev.sections.filter((_, i) => i !== index) }));
   };
 
   if (loading) return <div className="loader-wrap"><Loader2 className="animate-spin" /></div>;
@@ -174,9 +205,48 @@ export default function CorporateContentPage() {
 
           {activeTab === 'is-akisi' && (
             <motion.div key="workflow" initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 10 }} className="panel">
-              <div className="empty-state-placeholder">
-                 <Loader2 className="spin" size={32} />
-                 <p>İş Akışı (Workflow) detaylı düzenleme modülü bir sonraki güncellemede bu ekrana dahil edilecektir. Şimdilik statik yapı korunmaktadır.</p>
+              <div className="panel-header-inline">
+                <h3>Profesyonel İş Akışı Adımları</h3>
+                <button className="add-btn-small" onClick={addWorkflowStep}><Plus size={16}/> YENİ ADIM EKLE</button>
+              </div>
+
+              <div className="workflow-list-admin">
+                {data.sections.map((step, i) => (
+                  <div key={i} className="workflow-item-card">
+                    <div className="step-badge">ADIM {i + 1}</div>
+                    <div className="step-inputs-wrap">
+                      <div className="form-group border-none">
+                         <input 
+                           type="text" 
+                           className="title-input-large"
+                           placeholder="Adım Başlığı (Örn: Konsept Tasarım)" 
+                           value={step.title} 
+                           onChange={e => updateWorkflowStep(i, 'title', e.target.value)} 
+                         />
+                      </div>
+                      <div className="form-group border-none">
+                         <textarea 
+                           rows={3}
+                           placeholder="Adım detayı ve süreç açıklaması..." 
+                           value={step.content} 
+                           onChange={e => updateWorkflowStep(i, 'content', e.target.value)} 
+                         />
+                      </div>
+                    </div>
+                    <button className="delete-step-btn" onClick={() => removeWorkflowStep(i)}><Trash2 size={18}/></button>
+                  </div>
+                ))}
+
+                {data.sections.length === 0 && (
+                  <div className="migration-helper-workflow">
+                    <ImageIcon size={40} className="icon-fade" />
+                    <p>Henüz bir iş akışı adımı eklenmemiş. Kurumsal şablonu aktararak başlayabilirsiniz.</p>
+                    <button className="migrate-btn-workflow" onClick={runMigration} disabled={isSaving}>
+                       {isSaving ? <Loader2 className="animate-spin" size={16} /> : <Plus size={16} />}
+                       VARSAYILAN İÇERİĞİ AKTAR
+                    </button>
+                  </div>
+                )}
               </div>
             </motion.div>
           )}
@@ -227,8 +297,24 @@ export default function CorporateContentPage() {
         .stat-inputs input { background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.05); padding: 0.75rem; color: #fff; border-radius: 4px; font-size: 0.8rem; }
 
         .empty-state-placeholder { padding: 5rem; text-align: center; color: rgba(255,255,255,0.3); display: flex; flex-direction: column; align-items: center; gap: 1rem; }
+        .icon-fade { opacity: 0.1; }
+        .add-btn-placeholder { background: rgba(166,137,102,0.1); color: #a68966; border: 1px solid rgba(166,137,102,0.3); padding: 0.75rem 1.5rem; border-radius: 4px; font-size: 0.7rem; font-weight: 800; cursor: pointer; letter-spacing: 0.1em; }
         .spin { animation: spin 2s linear infinite; }
         @keyframes spin { 100% { transform: rotate(360deg); } }
+
+        /* WORKFLOW SPECIFIC */
+        .workflow-list-admin { display: flex; flex-direction: column; gap: 1.5rem; }
+        .workflow-item-card { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 12px; padding: 2rem; position: relative; display: flex; gap: 2rem; align-items: flex-start; }
+        .step-badge { background: #a68966; color: #000; font-size: 0.6rem; font-weight: 900; padding: 4px 10px; border-radius: 4px; letter-spacing: 0.1em; }
+        .step-inputs-wrap { flex: 1; display: flex; flex-direction: column; gap: 1rem; }
+        .border-none input, .border-none textarea { background: rgba(0,0,0,0.2) !important; border: 1px solid rgba(255,255,255,0.03) !important; }
+        .title-input-large { font-size: 1.1rem !important; font-weight: 600; color: #a68966 !important; }
+        .delete-step-btn { background: rgba(255,77,77,0.05); color: #ff4d4d; border: 1px solid rgba(255,77,77,0.1); width: 44px; height: 44px; border-radius: 8px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.3s; }
+        .delete-step-btn:hover { background: #ff4d4d; color: #fff; }
+
+        .migration-helper-workflow { padding: 4rem; text-align: center; border: 1px dashed rgba(166,137,102,0.3); background: rgba(166,137,102,0.03); border-radius: 12px; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; }
+        .migrate-btn-workflow { background: #a68966; color: #000; border: none; padding: 1rem 2rem; border-radius: 4px; font-weight: 800; font-size: 0.7rem; letter-spacing: 0.1em; cursor: pointer; display: flex; align-items: center; gap: 0.75rem; transition: all 0.3s; }
+        .migrate-btn-workflow:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(166,137,102,0.2); }
 
         .hidden { display: none; }
         .loader-wrap { height: 60vh; display: flex; align-items: center; justify-content: center; }

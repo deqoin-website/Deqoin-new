@@ -161,6 +161,82 @@ export default function AboutUs() {
           ))}
         </div>
 
+        {/* DYNAMIC WORKFLOW SECTION */}
+        {data?.sections && data.sections.length > 0 && (
+          <section style={{ marginTop: "15rem" }}>
+            <div style={{ textAlign: "center", marginBottom: "8rem" }}>
+              <span className="section-small-label" style={{ color: "#a68966", letterSpacing: "0.4em" }}>PROFESYONEL İŞ AKIŞI</span>
+              <h2 style={{ 
+                fontFamily: "var(--font-display), sans-serif", 
+                fontSize: "clamp(2rem, 5vw, 3rem)", 
+                color: "#fff", 
+                marginTop: "1.5rem",
+                letterSpacing: "0.1em"
+              }}>
+                FİKİRDEN GERÇEĞE UZANAN YOLCULUK
+              </h2>
+              <div style={{ width: "60px", height: "1px", background: "#a68966", margin: "2rem auto" }} />
+            </div>
+
+            <div style={{ display: "flex", flexDirection: "column", gap: "2rem", maxWidth: "1000px", margin: "0 auto" }}>
+              {data.sections.map((step: any, idx: number) => (
+                <div 
+                  key={idx} 
+                  style={{ 
+                    display: "flex", 
+                    gap: "4rem", 
+                    alignItems: "flex-start",
+                    padding: "4rem",
+                    background: "rgba(255,255,255,0.02)",
+                    border: "1px solid rgba(255,255,255,0.05)",
+                    borderRadius: "20px",
+                    position: "relative",
+                    overflow: "hidden"
+                  }}
+                >
+                   <div style={{ 
+                     fontSize: "6rem", 
+                     fontFamily: "var(--font-display)", 
+                     color: "rgba(166,137,102,0.1)", 
+                     lineHeight: "0.8",
+                     userSelect: "none"
+                   }}>
+                     0{idx + 1}
+                   </div>
+                   <div style={{ flex: 1 }}>
+                     <h4 style={{ 
+                       color: "#a68966", 
+                       fontSize: "1.25rem", 
+                       letterSpacing: "0.15em", 
+                       marginBottom: "1.5rem",
+                       textTransform: "uppercase"
+                     }}>
+                       {step.title}
+                     </h4>
+                     <p style={{ 
+                       color: "rgba(255,255,255,0.5)", 
+                       fontSize: "1.05rem", 
+                       lineHeight: "1.8",
+                       fontWeight: 300
+                     }}>
+                       {step.content}
+                     </p>
+                   </div>
+                   {/* Visual accent */}
+                   <div style={{ 
+                     position: "absolute", 
+                     right: 0, 
+                     top: 0, 
+                     bottom: 0, 
+                     width: "4px", 
+                     background: "linear-gradient(to bottom, transparent, #a68966, transparent)" 
+                   }} />
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
+
       </div>
     </main>
   );
