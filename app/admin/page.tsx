@@ -17,7 +17,8 @@ import {
   Layout, 
   ChevronRight,
   TrendingUp,
-  FileText
+  FileText,
+  Image as ImageIcon
 } from 'lucide-react';
 import Link from 'next/link';
 
