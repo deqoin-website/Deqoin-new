@@ -1,12 +1,30 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+import { Loader2 } from "lucide-react";
 
 export default function AboutUs() {
   const imageRef = useRef<HTMLDivElement>(null);
+  const [data, setData] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    const fetchContent = async () => {
+      try {
+        const res = await fetch('/api/admin/content/corporate/about');
+        if (res.ok) {
+          const json = await res.json();
+          setData(json);
+        }
+      } catch (err) {
+        console.error("About us fetch error:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchContent();
+
     const handleScroll = () => {
       if (imageRef.current) {
         const scrolled = window.scrollY;
@@ -17,6 +35,23 @@ export default function AboutUs() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  if (loading) return (
+    <div className="site-shell" style={{ height: '70vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <Loader2 className="animate-spin" size={48} color="#a68966" />
+    </div>
+  );
+
+  // Fallback defaults if DB is empty
+  const title = data?.title || "TASARIMDAN ÖTE: BÜTÜNSEL BİR DENEYİM";
+  const subtitle = data?.subtitle || "BİZ KİMİZ";
+  const description = data?.description || "Bizler sadece fiziksel yapılar inşa etmiyor; tüm değerlerinizi ortaya koyan bütünsel bir deneyim kurguluyoruz.";
+  const heroImage = data?.image || "/images/slider/mimari_slide.png";
+  const stats = data?.stats?.length > 0 ? data.stats : [
+    { label: "DENEYİM", value: "10+ YIL" },
+    { label: "TESLİM EDİLEN", value: "+240 PROJE" },
+    { label: "UZMAN EKİP", value: "40+ KİŞİ" }
+  ];
+
   return (
     <main className="site-shell project-detail-shell" style={{ paddingTop: "12rem" }}>
       <div className="section-inner" style={{ paddingBottom: "10rem" }}>
@@ -24,7 +59,7 @@ export default function AboutUs() {
         {/* HEADER */}
         <div style={{ marginBottom: "8rem", textAlign: "left" }}>
           <span className="section-small-label" style={{ letterSpacing: "0.5em", color: "rgba(255,255,255,0.4)" }}>
-            BİZ KİMİZ
+            {subtitle}
           </span>
           <h1 style={{ 
             fontFamily: "var(--font-display), sans-serif", 
@@ -35,8 +70,7 @@ export default function AboutUs() {
             textTransform: "uppercase", 
             margin: "1rem 0 0",
             lineHeight: "1.1"
-          }}>
-            TASARIMDAN ÖTE:<br />BÜTÜNSEL BİR DENEYİM
+          }} dangerouslySetInnerHTML={{ __html: title.replace(/\n/g, '<br />') }}>
           </h1>
         </div>
 
@@ -62,7 +96,7 @@ export default function AboutUs() {
               style={{ 
                 position: "absolute",
                 inset: "-10% 0",
-                backgroundImage: "url('/images/slider/mimari_slide.png')",
+                backgroundImage: `url('${heroImage}')`,
                 backgroundSize: "cover",
                 backgroundPosition: "center",
                 filter: "grayscale(0.1) contrast(1.05)"
@@ -85,37 +119,15 @@ export default function AboutUs() {
           }}>
             <div style={{ display: "flex", flexDirection: "column", gap: "2rem" }}>
               <p style={{ 
-                fontSize: "1.35rem", 
-                lineHeight: "1.6", 
+                fontSize: "1.25rem", 
+                lineHeight: "1.8", 
                 fontWeight: 300, 
                 color: "#fff", 
                 margin: 0,
-                letterSpacing: "-0.01em"
+                letterSpacing: "-0.01em",
+                whiteSpace: "pre-wrap"
               }}>
-                Bizler sadece fiziksel yapılar inşa etmiyor; tüm değerlerinizi ortaya koyan bütünsel bir deneyim kurguluyoruz.
-              </p>
-              
-              <p style={{ 
-                fontSize: "1.15rem", 
-                lineHeight: "1.9", 
-                fontWeight: 300, 
-                color: "rgba(255,255,255,0.6)", 
-                margin: 0,
-                maxWidth: "550px"
-              }}>
-                Belki de henüz farkında dahi olmadığınız, ancak deneyimlediğinizde eksikliğini hissettiğiniz o kusursuz dokunuşu çok iyi biliyor ve projelerinizi bu öngörüyle tasarlıyoruz. Kusursuz bir mimari vizyonu, doğru malzeme koleksiyonları ve usta işi bir uygulamayı tek bir çatı altında birleştiriyoruz.
-              </p>
-
-              <p style={{ 
-                fontSize: "1.15rem", 
-                lineHeight: "1.9", 
-                fontWeight: 400, 
-                color: "#fff", 
-                margin: "1rem 0 0",
-                borderLeft: "2px solid #fff",
-                paddingLeft: "2rem"
-              }}>
-                Dışarıdan hiçbir usta veya ekibe ihtiyaç bırakmayan bu güçlü yapımızla; tasarımın başından inşa sürecinin sonuna kadar o kusursuz süreci bizzat yönetiyoruz. Aslında projenizin tam olarak neye ihtiyacı olduğunu çok iyi biliyor ve aradığınız o üst düzey kaliteyi tam da burada başlatıyoruz.
+                {description}
               </p>
             </div>
 
@@ -130,24 +142,23 @@ export default function AboutUs() {
 
         {/* BOTTOM STATS */}
         <div className="stats-container" style={{ 
-          gridTemplateColumns: "repeat(3, 1fr)", 
+          gridTemplateColumns: `repeat(${stats.length}, 1fr)`, 
           marginTop: "12rem",
           padding: "7rem 0", 
           borderTop: "1px solid rgba(255,255,255,0.1)", 
           borderBottom: "1px solid rgba(255,255,255,0.1)" 
         }}>
-          <div className="stat-col" style={{ alignItems: "center", borderTop: "none", padding: 0 }}>
-            <span className="stat-label">DENEYİM</span>
-            <span className="stat-value" style={{ fontSize: "3.5rem", fontFamily: "var(--font-smooch)", color: "#fff" }}>10+ YIL</span>
-          </div>
-          <div className="stat-col" style={{ alignItems: "center", borderTop: "none", padding: 0, borderLeft: "1px solid rgba(255,255,255,0.1)", borderRight: "1px solid rgba(255,255,255,0.1)" }}>
-            <span className="stat-label">TESLİM EDİLEN</span>
-            <span className="stat-value" style={{ fontSize: "3.5rem", fontFamily: "var(--font-smooch)", color: "#fff" }}>+240 PROJE</span>
-          </div>
-          <div className="stat-col" style={{ alignItems: "center", borderTop: "none", padding: 0 }}>
-            <span className="stat-label">UZMAN EKİP</span>
-            <span className="stat-value" style={{ fontSize: "3.5rem", fontFamily: "var(--font-smooch)", color: "#fff" }}>40+ KİŞİ</span>
-          </div>
+          {stats.map((stat: any, idx: number) => (
+            <div key={idx} className="stat-col" style={{ 
+              alignItems: "center", 
+              borderTop: "none", 
+              padding: 0,
+              borderLeft: idx !== 0 ? "1px solid rgba(255,255,255,0.1)" : "none"
+            }}>
+              <span className="stat-label">{stat.label}</span>
+              <span className="stat-value" style={{ fontSize: "3.5rem", fontFamily: "var(--font-smooch)", color: "#fff" }}>{stat.value}</span>
+            </div>
+          ))}
         </div>
 
       </div>

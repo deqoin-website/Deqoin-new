@@ -21,11 +21,10 @@ export default function ExecutionDetail({ params }: { params: Promise<ServicePar
   useEffect(() => {
     const fetchContent = async () => {
       try {
-        const res = await fetch(`/api/content?page=service-${slug}`);
+        const res = await fetch(`/api/departments/${slug}`);
+        if (!res.ok) throw new Error("Fetch failed");
         const data = await res.json();
-        if (data && data.sections && data.sections.length > 0) {
-          setContent(data.sections[0]);
-        }
+        setContent(data);
       } catch (err) {
         console.error("Failed to fetch execution service detail:", err);
       } finally {
@@ -48,14 +47,14 @@ export default function ExecutionDetail({ params }: { params: Promise<ServicePar
   if (!service && !content) return notFound();
 
   // Prefer DB content (sections[0]), fallback to static service data
-  const title = content?.title || service?.title || slug;
-  const subtitle = content?.subtitle || service?.sideLabel || "";
-  const description = content?.description || service?.description || "";
-  const heroImage = content?.heroImage || service?.image || "";
-  const gallery = content?.gallery || service?.sliderImages || [];
-  const categories = content?.categories || service?.categories || [];
-  const process = content?.process || (service as any)?.process || [];
-  const focusAreas = content?.focusAreas || (service as any)?.focusAreas || [];
+  const title = content?.title || slug;
+  const subtitle = content?.sideLabel || "";
+  const description = content?.description || "";
+  const heroImage = content?.image || "";
+  const gallery = content?.sliderImages || [];
+  const categories = content?.categories || [];
+  const process = content?.process || [];
+  const focusAreas = content?.focusAreas || [];
 
   return (
     <main className="site-shell">
