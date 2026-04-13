@@ -7,6 +7,7 @@ const DepartmentSchema = new mongoose.Schema(
     sideLabel: { type: String, required: true }, // e.g., 'Structural Form'
     description: { type: String, required: true }, // Main text
     image: { type: String }, // Hero/Cover image
+    mediaType: { type: String, enum: ['image', 'video'], default: 'image' },
     sliderImages: [{ type: String }],
     
     // Arrays for dynamic tabs

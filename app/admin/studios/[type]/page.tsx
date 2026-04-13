@@ -20,6 +20,7 @@ export default function DepartmentManagerPage() {
     sideLabel: '',
     description: '',
     image: '',
+    mediaType: 'image',
     sliderImages: [] as string[],
     process: [] as { title: string; desc: string }[],
     focusAreas: [] as { title: string; icon: string; desc: string }[],
@@ -40,6 +41,7 @@ export default function DepartmentManagerPage() {
           sideLabel: json.sideLabel || '',
           description: json.description || '',
           image: json.image || '',
+          mediaType: json.mediaType || 'image',
           sliderImages: json.sliderImages || [],
           process: json.process || [],
           focusAreas: json.focusAreas || [],
@@ -82,9 +84,15 @@ export default function DepartmentManagerPage() {
     try {
       const res = await fetch(`/api/upload?filename=${file.name}`, { method: 'POST', body: file });
       const blob = await res.json();
-      setData(prev => ({ ...prev, [field]: blob.url }));
+      
+      const isVideo = file.type.startsWith('video/');
+      setData(prev => ({ 
+        ...prev, 
+        [field]: blob.url,
+        mediaType: isVideo ? 'video' : 'image'
+      }));
     } catch (err) {
-      alert("Fotoğraf yükleme başarısız.");
+      alert("Yükleme başarısız.");
     }
   };
 
@@ -163,11 +171,35 @@ export default function DepartmentManagerPage() {
               </div>
 
               <div className="hero-upload-section">
-                <label>KAPAK YADA SLIDER GÖRSELİ (HERO)</label>
+                <label>KAPAK MEDYASI (VİDEO YADA GÖRSEL)</label>
                 <div className="hero-preview" onClick={() => document.getElementById('hero-img-upload')?.click()}>
-                  {data.image ? <img src={data.image} alt="Hero" /> : <div className="placeholder"><Upload size={24} /> <p>Görsel Yükle</p></div>}
+                  {data.image ? (
+                    data.mediaType === 'video' ? (
+                      <video src={data.image} autoPlay muted loop className="preview-media" />
+                    ) : (
+                      <img src={data.image} alt="Hero" className="preview-media" />
+                    )
+                  ) : (
+                    <div className="placeholder"><Upload size={24} /> <p>Dosya Yükle</p></div>
+                  )}
                 </div>
-                <input id="hero-img-upload" type="file" className="hidden" onChange={e => handleImageUpload(e, 'image')} />
+                
+                <div className="url-input-row" style={{ marginTop: '1rem', display: 'flex', gap: '0.5rem' }}>
+                   <input 
+                     type="text" 
+                     placeholder="Manuel Video/Görsel URL (MP4 destekler)..." 
+                     value={data.image}
+                     onChange={e => {
+                       const url = e.target.value;
+                       const isVideo = url.toLowerCase().match(/\.(mp4|webm|ogg)$/) !== null;
+                       setData({...data, image: url, mediaType: isVideo ? 'video' : 'image'});
+                     }}
+                     style={{ flex: 1, padding: '0.85rem', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff', borderRadius: '4px' }}
+                   />
+                   <button className="upload-btn-sm" onClick={() => document.getElementById('hero-img-upload')?.click()} style={{ padding: '0 1rem', background: '#a68966', color: '#000', border: 'none', borderRadius: '4px', cursor: 'pointer', fontWeight: 700 }}>YÜKLE</button>
+                </div>
+                <input id="hero-img-upload" type="file" className="hidden" onChange={e => handleImageUpload(e, 'image')} accept="image/*,video/*" />
+                <p style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.3)', marginTop: '0.5rem' }}>Anasayfadaki ilk kapak görseli veya video burada yönetilir. MP4 formatı önerilir.</p>
               </div>
             </motion.div>
           )}

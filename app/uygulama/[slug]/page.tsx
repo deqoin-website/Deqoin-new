@@ -63,6 +63,7 @@ export default function ExecutionDetail({ params }: { params: Promise<ServicePar
         subtitle={subtitle.toUpperCase()}
         description={description}
         heroImage={heroImage}
+        mediaType={content?.mediaType || 'image'}
         images={gallery}
         projects={projectsData}
         categories={categories}

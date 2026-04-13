@@ -15,18 +15,27 @@ const heroSlides = [
     title: "DESIGN STUDIO",
     motto: "TASARIM",
     buttonText: "RANDEVU TALEP EDİNİZ",
+    blur: 0,
+    overlay: 30,
+    mediaType: 'image'
   },
   {
     image: "/images/slider/tasarim_slide.png",
     title: "MATERIAL STUDIO",
     motto: "MALZEME",
     buttonText: "RANDEVU TALEP EDİNİZ",
+    blur: 0,
+    overlay: 30,
+    mediaType: 'image'
   },
   {
     image: "/images/slider/uygulama_slide.png",
     title: "EXECUTION STUDIO",
     motto: "UYGULAMA",
     buttonText: "RANDEVU TALEP EDİNİZ",
+    blur: 0,
+    overlay: 30,
+    mediaType: 'image'
   }
 ];
 
@@ -61,7 +70,7 @@ export default function Page() {
   const [heroDirection, setHeroDirection] = useState(0);
   const [isConsultationOpen, setIsConsultationOpen] = useState(false);
   const [activeTeamFilter, setActiveTeamFilter] = useState<(typeof teamFilters)[number]["key"]>("all");
-  const [slides, setSlides] = useState(heroSlides);
+  const [slides, setSlides] = useState<any[]>(heroSlides);
   const [projectIndex, setProjectIndex] = useState(0);
   const [projectDirection, setProjectDirection] = useState(1);
   const [projectProgressKey, setProjectProgressKey] = useState(0);

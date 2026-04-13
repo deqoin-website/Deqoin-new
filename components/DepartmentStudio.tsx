@@ -13,6 +13,7 @@ interface DepartmentStudioProps {
   eyebrow?: string;
   description?: string;
   heroImage: string;
+  mediaType?: 'image' | 'video';
   images?: string[];
   projects: ProjectDetail[];
   categories?: { label: string; value: Category | string }[];
@@ -44,6 +45,7 @@ export default function DepartmentStudio({
   eyebrow = "DEQOIN | DESIGN STUDIO",
   description,
   heroImage, 
+  mediaType = 'image',
   images, 
   projects, 
   categories,
@@ -106,13 +108,28 @@ export default function DepartmentStudio({
       {/* FULL-SCREEN HERO SLIDER */}
       <section className="studio-hero studio-snap-point">
         <div className="studio-hero-slider">
-          {heroSlides.map((img: string, idx: number) => (
-            <div 
-              key={idx} 
-              className={`studio-hero-slide ${idx === currentSlide ? 'active' : ''}`}
-              style={{ backgroundImage: `url(${img})` }}
-            />
-          ))}
+          {heroSlides.map((url: string, idx: number) => {
+            const isVideo = (idx === 0 && mediaType === 'video') || url.toLowerCase().match(/\.(mp4|webm|ogg)$/) !== null;
+            
+            return (
+              <div 
+                key={idx} 
+                className={`studio-hero-slide ${idx === currentSlide ? 'active' : ''}`}
+                style={!isVideo ? { backgroundImage: `url(${url})` } : { backgroundColor: '#000' }}
+              >
+                {isVideo && (
+                  <video 
+                    src={url} 
+                    autoPlay 
+                    muted 
+                    loop 
+                    playsInline 
+                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                  />
+                )}
+              </div>
+            );
+          })}
         </div>
 
         <div className="studio-hero-blur-overlay" />

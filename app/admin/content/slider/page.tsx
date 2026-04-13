@@ -207,14 +207,25 @@ export default function SliderConfigPage() {
                     </div>
 
                     <div className="editor-group">
-                       <label><ImageIcon size={14} /> MEDYA DOSYASI</label>
+                       <label><ImageIcon size={14} /> MEDYA DOSYASI (VİDEO/GÖRSEL)</label>
                        <div className="file-control">
-                         <input type="text" readOnly value={slide.mediaUrl} placeholder="Henüz dosya seçilmedi..." />
+                         <input 
+                           type="text" 
+                           value={slide.mediaUrl} 
+                           onChange={e => {
+                             const url = e.target.value;
+                             const isVideo = url.toLowerCase().match(/\.(mp4|webm|ogg)$/) !== null;
+                             updateSlide(slide._id, 'mediaUrl', url);
+                             updateSlide(slide._id, 'mediaType', isVideo ? 'video' : 'image');
+                           }}
+                           placeholder="MP4 linki yapıştırın veya dosya yükleyin..." 
+                         />
                          <button className="upload-mini-btn" onClick={() => document.getElementById(`file-${slide._id}`)?.click()}>
-                           <Upload size={14}/> YÜKLE
+                           <Upload size={14}/> DOSYA YÜKLE
                          </button>
                          <input id={`file-${slide._id}`} type="file" className="hidden" onChange={e => handleFileUpload(e, slide._id)} accept="image/*,video/*" />
                        </div>
+                       <p className="hint-txt">Vercel Blob ile doğrudan yükleme yapabilir veya harici bir MP4/Resim bağlantısı kullanabilirsiniz.</p>
                     </div>
 
                     <div className="editor-group">
