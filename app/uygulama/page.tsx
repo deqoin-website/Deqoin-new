@@ -5,6 +5,18 @@ import Link from "next/link";
 import ConsultationModal from "../../components/ConsultationModal";
 import { Loader2 } from "lucide-react";
 import SwipeAppointmentButton from "../../components/SwipeAppointmentButton";
+import { uygulamaBirimleri } from "../../data/uygulama-birimleri";
+
+const executionCategories = uygulamaBirimleri.filter((item) =>
+  [
+    "insaat-ekipleri",
+    "siva-ve-alci-ekipleri",
+    "boya-ekipleri",
+    "duvar-sanatcilari",
+    "ressamlar",
+    "heykeltiraslar",
+  ].includes(item.slug)
+);
 
 export default function UygulamaPage() {
   const [content, setContent] = useState<any>(null);
@@ -49,36 +61,37 @@ export default function UygulamaPage() {
   }
 
   const heroSection = content?.sections?.find((s: any) => s.id === 'hero');
-  const catSection = content?.sections?.find((s: any) => s.id === 'categories');
-
   return (
-    <main className="site-shell project-detail-shell" style={{ background: "#0a0a0a" }}>
+    <main className="site-shell project-detail-shell material-studio-page" style={{ background: "#0a0a0a" }}>
 
       {/* HERO */}
-      <section className="mimari-hero">
-        <div className="mimari-hero-bg" ref={heroRef}>
-          <img
-            src={heroSection?.slides?.[0] || "https://lh3.googleusercontent.com/aida-public/AB6AXuBg-MKl4zF6vfhExOXkEX-PKVlktOgQYI9EevfKIIYXVJ2wtmRpvybiQLaOtQdeYc_lIPrntEOUrCatq_Efo6fw-z-0-6TilLvAsA4tcYK-QcbjqdetFT2T2EreDjugTzsElsUeoEqEM9i_daWDWBBOJXiZvrjMKWtS2z5I5ZuzOLXWozpZ8MroEnEj5yRtFuaubPctxfeO_ZAZ5E5Tawo9b6yB5w0pmG4_axQCW--XoR8nAAImAE_M5UpM2vFx3tuR2ePYvZ-VmaY"}
-            alt="DEQOIN Uygulama Departmanı"
+      <section className="mimari-page-hero">
+        <div className="mimari-hero-slider">
+          <div
+            className="mimari-hero-slide active"
+            ref={heroRef}
+            style={{
+              backgroundImage: `url(${heroSection?.slides?.[0] || executionCategories[0]?.image || "https://images.unsplash.com/photo-1541888946425-d81bb19480c5?q=80&w=2048&auto=format&fit=crop"})`,
+            }}
           />
         </div>
-        <div className="mimari-hero-overlay" />
-        <div className="mimari-hero-content">
-          <span className="mimari-hero-tag">Hizmet — 03 / 03</span>
-          <h1 className="mimari-hero-title">{heroSection?.title || 'EXECUTION STUDIO'}</h1>
-          <p className="mimari-hero-sub" style={{ fontSize: "1.6rem", letterSpacing: "0.5em", color: "rgba(255,255,255,0.8)", marginBottom: "3rem" }}>
-            {heroSection?.subtitle || 'UYGULAMA HİZMETLERİ'}
-          </p>
-          <p className="mimari-hero-sub">
-            Kusursuz Bir Bitiş İçin Teknik Ve Sanatsal Kadro.<br />
-            Gerçeğe Dönüştürmek Sadece Bir İnşaat Değil, Sanattır.
-          </p>
-          <div className="mimari-hero-actions">
+        <div className="mimari-hero-blur-overlay" />
+        <div className="mimari-hero-dark-overlay" />
+
+        <div className="mimari-hero-content-centric">
+          <span className="section-small-label" style={{ color: "#cca883", marginBottom: "1rem", display: "block" }}>
+            EXECUTION PHILOSOPHY
+          </span>
+          <h1 className="mimari-hero-title-main">{heroSection?.title || "EXECUTION STUDIO"}</h1>
+          <p className="mimari-hero-sub-main">{heroSection?.subtitle || "UYGULAMA HİZMETLERİ"}</p>
+          <div className="mimari-hero-line" />
+          <div className="mimari-hero-actions" style={{ justifyContent: "center", marginTop: "3rem" }}>
             <SwipeAppointmentButton onActivate={() => setIsConsultationOpen(true)} />
           </div>
         </div>
+
         <div className="mimari-hero-scroll-hint">
-          <span className="vertical-text">Aşağı Kaydır</span>
+          <span className="vertical-text">Detayları Gör</span>
           <div className="scroll-line" />
         </div>
       </section>
@@ -100,30 +113,46 @@ export default function UygulamaPage() {
               Bünyemizdeki sanatsal ve teknik kadrolarla, her detayı tasarımın bir parçası olarak inşa ediyoruz. 
               Bizimle çalışırken usta aramanıza gerek kalmaz; her fırça darbesi ve her yapısal bağlantı DEQOIN standartlarında hayata geçer.
             </p>
+
+            <div style={{ marginTop: "4rem" }}>
+              <SwipeAppointmentButton onActivate={() => setIsConsultationOpen(true)} />
+            </div>
           </div>
         </div>
       </section>
 
-      {/* SERVICE GRID */}
-      <section className="services-section" style={{ background: "transparent", padding: "0" }}>
-        <div className="services-grid">
-          {(catSection?.items || []).map((card: any) => (
-            <Link key={card.title} href={`/uygulama/${card.slug}`} className="service-card">
-              <img src={card.image} alt={card.title} />
-              <div className="service-overlay" />
-              <div className="service-copy">
-                <div>
-                  <h3>{card.title}</h3>
-                  <div className="service-line" />
-                  <div className="service-cta">
-                    <span>DETAYLARI İNCELE</span>
-                    <span className="material-symbols-outlined">arrow_forward</span>
+      <section className="services-section material-studio-collection" style={{ background: "transparent", paddingTop: "0" }}>
+        <div className="material-studio-collection-shell material-studio-collection-inner" style={{ paddingTop: "0" }}>
+          <div className="section-heading projects-heading">
+            <div>
+              <span className="section-small-label" style={{ color: "#cca883", marginBottom: "1rem", display: "block" }}>EXECUTION TEAMS</span>
+              <h2 style={{ marginBottom: "0.5rem", textTransform: "uppercase", color: "#fff" }}>UYGULAMA KOLEKSİYONU</h2>
+              <p style={{ maxWidth: "42rem", color: "rgba(255,255,255,0.6)", lineHeight: "1.8", margin: "0 0 1.5rem" }}>
+                Teknik disiplin ile sanatsal uygulamayı aynı sahada buluşturan uzman ekiplerimizi, kendi sayfalarında detaylı biçimde inceleyin.
+              </p>
+              <div className="section-line" />
+            </div>
+          </div>
+
+          <div className="services-grid material-studio-grid">
+            {executionCategories.map((card) => (
+              <Link key={card.slug} href={`/uygulama/${card.slug}`} className="service-card">
+                <img src={card.image} alt={card.title} />
+                <div className="service-overlay" />
+                <div className="service-copy">
+                  <div>
+                    <h3>{card.title}</h3>
+                    <div className="service-line" />
+                    <div className="service-cta">
+                      <span>DETAYLARI GÖR</span>
+                      <span className="material-symbols-outlined">arrow_forward</span>
+                    </div>
                   </div>
+                  <span className="vertical-text">{card.sideLabel}</span>
                 </div>
-                <span className="vertical-text">{card.sideLabel}</span>
-              </div>
-            </Link>
-          ))}
+              </Link>
+            ))}
+          </div>
         </div>
       </section>
 
@@ -140,7 +169,7 @@ export default function UygulamaPage() {
           <span className="section-small-label" style={{ color: "#cca883" }}>BİR SONRAKI ADIM</span>
           <h2 className="mimari-cta-title">Kusursuz Uygulama İçin Başlayalım</h2>
           <p className="mimari-cta-sub">
-            Projenizin her aşamasında şeffaflık ve teknik mükemmellik için iletişim kurun.
+            İnşaat, yüzey, boya ve sanatsal ekipleri tek çatı altında kurgulayıp projenizi kontrollü biçimde hayata geçirelim.
           </p>
           <SwipeAppointmentButton onActivate={() => setIsConsultationOpen(true)} />
         </div>

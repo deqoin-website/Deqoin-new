@@ -44,7 +44,7 @@ export const projectsData: ProjectDetail[] = [
     story: "Küresel ölçekteki iş insanları için hem bir ofis disiplini hem de bir ev sıcaklığı sunan hibrit bir mekan kurgusu hedeflendi.",
     gallery: ["/images/projects/gallery_1.png", "/images/projects/gallery_2.png"],
     materials: ["mobilya", "aydinlatma"],
-    executionUnits: ["insaat-ekipleri", "siva-alci-boya"]
+    executionUnits: ["insaat-ekipleri", "siva-ve-alci-ekipleri", "boya-ekipleri"]
   },
   {
     slug: "skyline-residence",
@@ -61,7 +61,7 @@ export const projectsData: ProjectDetail[] = [
     story: "Modern insanın şehir yaşamındaki kaosunu dindiren, sığınak hissi veren ama gökyüzüyle bütünleşen bir yaşam alanı kurgusu.",
     gallery: ["/images/projects/gallery_1.png", "/images/projects/gallery_2.png"],
     materials: ["tugla-ve-tas", "italyan-sivalar"],
-    executionUnits: ["insaat-ekipleri", "duvar-sanatcilari"]
+    executionUnits: ["insaat-ekipleri", "siva-ve-alci-ekipleri", "boya-ekipleri", "duvar-sanatcilari"]
   },
   {
     slug: "lumina-gallery",
@@ -78,7 +78,7 @@ export const projectsData: ProjectDetail[] = [
     story: "Geleneksel galeri algısını kırarak, ziyaretçinin mekanın kendisini de bir sanat objesi gibi deneyimlemesini sağlayan bir boşluk kurgusu.",
     gallery: ["/images/projects/gallery_1.png", "/images/projects/gallery_2.png"],
     materials: ["aydinlatma", "sanatsal-calismalar"],
-    executionUnits: ["ressamlar", "heykeltiraslar"]
+    executionUnits: ["boya-ekipleri", "ressamlar", "heykeltiraslar"]
   },
   {
     slug: "nexus-corporate-center",

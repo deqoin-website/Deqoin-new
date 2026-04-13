@@ -41,9 +41,9 @@ export const uygulamaBirimleri: UygulamaBirimi[] = [
     }
   },
   {
-    slug: "siva-alci-boya",
-    title: "Sıva, Alçı ve Boya Ekipleri",
-    sideLabel: "Surface Mastery",
+    slug: "siva-ve-alci-ekipleri",
+    title: "Sıva ve Alçı Ekipleri",
+    sideLabel: "Surface Structuring",
     image: "https://lh3.googleusercontent.com/aida-public/AB6AXuDQ33Fr_mp_94UQUZyYOcRBRBK4SsC3hdWkie-fw6V2__i_B1h6AdSqBrcIxAAgXdz-v3B0bxiTC-ksADc_Szblsz7rQvFfbm-HT7bZ1XL4bsM_asUURcwntMziJsDYv2IG_IZ29E-x6Q-o8X94qQUEmwhhDhnCvzR73u_lPOfR2qgqCLbkcFE__mn9WB-1VfwW7H_DqV9DkwKYK7M0io-43LvxYatvgMsrwap-p4wEffe-ljtcBwrQlBdN4PP7Q0JGnYBjixX0YQ0",
     sliderImages: [
       "https://images.unsplash.com/photo-1589939705384-5185137a7f0f?q=80&w=2000&auto=format&fit=crop",
@@ -56,13 +56,39 @@ export const uygulamaBirimleri: UygulamaBirimi[] = [
       { label: "DEKORATİF ÇITALAMA", value: "citalama" },
       { label: "PÜRÜZSÜZ BİTİŞ", value: "puruzsuz-bitis" }
     ],
-    description: "Yüzeylerin kusursuzluğu, nihai tasarımın kalitesini belirler. Uzman ekiplerimizle pürüzsüz ve karakter sahibi bitişler inşa ediyoruz.",
+    description: "Duvar, tavan ve geçiş yüzeylerini, kusursuz altyapı ve net geometri ile uygulamaya hazır hale getiriyoruz.",
     longDescription: {
-      title: "Kusursuz Yüzeyler, Karakterli Bitişler",
+      title: "Yüzeyin Strüktürünü Kusursuzlaştıran Ekip",
       content: [
-        "Yüzey kalitesi, tasarımın başarısını doğrudan etkileyen en kritik unsurdur. Alçı, sıva ve boya süreçlerini sadece bir 'kapatma' işlemi olarak değil, mekanın ışığını ve dokusunu yöneten bir sanat olarak görüyoruz.",
-        "Uzman ekiplerimizle pürüzsüz ve karakter sahibi bitişler inşa ediyoruz. Her detayda görsel mükemmelliği hedefleyerek, tasarımın öngördüğü atmosferi yüzeylere taşıyoruz.",
-        "Belki de henüz farkında olmadığınız uygulama inceliklerini en başından planlıyor, yüzeylerde zamansız bir kalite kurguluyoruz."
+        "Sıva ve alçı uygulamalarını yalnızca bir hazırlık aşaması olarak değil, mekanın tüm görsel disiplinini belirleyen teknik bir eşik olarak ele alıyoruz. Yüzeyin düzgünlüğü, köşe netliği ve ışık kırılımı burada başlar.",
+        "Uzman ekiplerimizle duvar ve tavanları, sonraki tüm dekoratif uygulamalara hazır hale getiriyor; çatlak, sehim ve dalgalanma risklerini daha iş başlamadan ortadan kaldırıyoruz.",
+        "Mimari dilin temiz ve rafine görünmesi için gereken yüzey altyapısını kontrollü, hızlı ve yüksek hassasiyetle inşa ediyoruz."
+      ]
+    }
+  },
+  {
+    slug: "boya-ekipleri",
+    title: "Boya Ekipleri",
+    sideLabel: "Chromatic Finish",
+    image: "https://images.unsplash.com/photo-1562259949-e8e7689d7828?q=80&w=2000&auto=format&fit=crop",
+    sliderImages: [
+      "https://images.unsplash.com/photo-1503387762-592dee58c460?q=80&w=2000&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1513694203232-719a280e022f?q=80&w=2000&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1497366754035-f200968a6e72?q=80&w=2000&auto=format&fit=crop"
+    ],
+    categories: [
+      { label: "RENK GEÇİŞLERİ", value: "renk-gecisleri" },
+      { label: "DEKORATİF BOYA", value: "dekoratif-boya" },
+      { label: "MAT & SATEN", value: "mat-saten" },
+      { label: "KORUYUCU KAPLAMA", value: "koruyucu-kaplama" }
+    ],
+    description: "Mekanın atmosferini belirleyen son katmanları, kontrollü tonlama ve rafine yüzey kalitesiyle uyguluyoruz.",
+    longDescription: {
+      title: "Renk ve Doku Dengesini Kurarız",
+      content: [
+        "Boya uygulamasını yalnızca renklendirme değil, mekanın ışıkla kurduğu ilişkiyi yöneten son mimari katman olarak görüyoruz. Ton, yansıma ve yüzey kalitesi birlikte değerlendirilir.",
+        "Ekiplerimiz, projeye özel renk senaryolarını duvar, tavan ve detay birleşimlerinde tutarlı bir standarda taşıyarak mekandaki bütünlük hissini güçlendirir.",
+        "Fırça izi, ton farkı ve uygulama yorgunluğu oluşturmadan, yüzeylerde sakin, dengeli ve premium bir sonuç elde ediyoruz."
       ]
     }
   },
