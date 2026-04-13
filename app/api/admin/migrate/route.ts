@@ -2,7 +2,9 @@ import { NextResponse } from "next/server";
 import mongoose from "mongoose";
 import connectToDatabase from "@/lib/mongodb";
 import Project from "@/models/Project";
+import User from "@/models/User";
 import { projectsData } from "@/data/projects";
+import bcrypt from "bcryptjs";
 
 /**
  * MIGRATION API V3 - BYPASSING MONGOOSE CACHE & VALIDATION
@@ -31,7 +33,27 @@ export async function POST() {
       }
     }
 
-    let message = `${importedCount} proje işlendi.`;
+    let message = `${importedCount} proje işlendi. `;
+
+    // 1.1 Seed Root User from .env
+    const adminUser = process.env.ADMIN_USERNAME;
+    const adminPass = process.env.ADMIN_PASSWORD;
+
+    if (adminUser && adminPass) {
+      const userExists = await User.findOne({ username: adminUser });
+      if (!userExists) {
+        const hashedPassword = await bcrypt.hash(adminPass, 10);
+        await User.create({
+          username: adminUser,
+          password: hashedPassword,
+          name: "Sistem Yöneticisi",
+          role: "admin"
+        });
+        message += "Root kullanıcı oluşturuldu. ";
+      } else {
+        message += "Root kullanıcı zaten mevcut. ";
+      }
+    }
 
     // Helper to upsert page content
     const upsertPage = async (pageId: string, sections: any[]) => {

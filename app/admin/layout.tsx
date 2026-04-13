@@ -95,6 +95,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     {
       group: 'SİSTEM',
       items: [
+        { name: 'Kullanıcı Yönetimi', icon: Users, path: '/admin/users' },
         { name: 'Genel Ayarlar', icon: Settings, path: '/admin/settings' },
       ]
     }
