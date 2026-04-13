@@ -163,14 +163,20 @@ export default function Page() {
         ),
       );
 
+    const getHeaderOffset = () => {
+      const topbar = document.querySelector<HTMLElement>(".topbar-nav");
+      return topbar?.offsetHeight ?? 80;
+    };
+
     const getClosestSectionIndex = (sections: HTMLElement[]) => {
-      const viewportCenter = window.scrollY + window.innerHeight * 0.5;
+      const headerOffset = getHeaderOffset();
+      const viewportAnchor = window.scrollY + headerOffset + 12;
       let closestIndex = 0;
       let closestDistance = Number.POSITIVE_INFINITY;
 
       sections.forEach((section, index) => {
-        const sectionCenter = section.offsetTop + section.offsetHeight * 0.5;
-        const distance = Math.abs(sectionCenter - viewportCenter);
+        const sectionTop = Math.max(0, section.offsetTop - headerOffset);
+        const distance = Math.abs(sectionTop - viewportAnchor);
         if (distance < closestDistance) {
           closestDistance = distance;
           closestIndex = index;
@@ -192,8 +198,19 @@ export default function Page() {
 
       if (nextIndex === currentIndex) return;
 
+      const headerOffset = getHeaderOffset();
+      const documentHeight = document.documentElement.scrollHeight;
+      const viewportHeight = window.innerHeight;
+      const targetTop = Math.max(
+        0,
+        Math.min(
+          sections[nextIndex].offsetTop - headerOffset,
+          documentHeight - viewportHeight,
+        ),
+      );
+
       homepageSnapLockRef.current = true;
-      sections[nextIndex].scrollIntoView({ behavior: "smooth", block: "start" });
+      window.scrollTo({ top: targetTop, behavior: "smooth" });
 
       window.setTimeout(() => {
         homepageSnapLockRef.current = false;
