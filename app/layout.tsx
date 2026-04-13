@@ -6,6 +6,7 @@ import MaintenancePage from "./maintenance/page";
 import connectToDatabase from "@/lib/mongodb";
 import Settings from "@/models/Settings";
 import Script from "next/script";
+import { headers } from "next/headers";
 import "./globals.css";
 
 const manrope = Manrope({ subsets: ["latin"], variable: "--font-body" });
@@ -51,6 +52,11 @@ export default async function RootLayout({
   const settings = await getSettings();
   const isMaintenance = settings?.maintenanceMode === true;
   
+  // Get pathname from headers (passed via middleware)
+  const headersList = await headers();
+  const pathname = headersList.get('x-pathname') || '';
+  const isAdminPath = pathname.startsWith('/admin');
+
   // Script and analytics integration
   const gaId = settings?.googleAnalyticsId;
   const pixelId = settings?.metaPixelId;
@@ -92,18 +98,14 @@ export default async function RootLayout({
         className={`${manrope.variable} ${notoSerif.variable} ${outfit.variable} ${playfair.variable} ${smooch.variable}`}
         suppressHydrationWarning
       >
-        {isMaintenance ? (
-          <main>{children.props?.childProp?.segment?.startsWith('admin') ? (
-            <>
-              <Header />
-              {children}
-            </>
-          ) : <MaintenancePage />}</main>
+        {isMaintenance && !isAdminPath ? (
+          <MaintenancePage />
         ) : (
           <>
-            <Header />
+            {!isAdminPath && <Header />}
+            {isAdminPath && <Header />} {/* Keep header for admin if needed, or modify logic */}
             {children}
-            <Footer />
+            {!isAdminPath && <Footer />}
           </>
         )}
       </body>
