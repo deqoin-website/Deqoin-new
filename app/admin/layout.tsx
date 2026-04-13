@@ -17,6 +17,7 @@ import {
   Aperture
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import ThemeToggle from '@/components/ThemeToggle';
 import './admin.css';
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
@@ -224,9 +225,12 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             <span className="page-breadcrumb">Yönetim Paneli / {currentPathItem?.name || 'Dashboard'}</span>
             <h1>{currentPathItem?.name || 'Dashboard'}</h1>
           </div>
-          <div className="user-profile">
-            <span>SİSTEM YÖNETİCİSİ</span>
-            <div className="avatar">DQ</div>
+          <div className="top-bar-actions">
+            <ThemeToggle />
+            <div className="user-profile">
+              <span>SİSTEM YÖNETİCİSİ</span>
+              <div className="avatar">DQ</div>
+            </div>
           </div>
         </header>
         

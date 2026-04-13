@@ -231,44 +231,44 @@ export default function UsersPage() {
         .users-container { display: flex; flex-direction: column; gap: 2rem; }
         .admin-page-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 1rem; }
         .header-copy h2 { font-family: var(--font-display), sans-serif; font-size: 1.75rem; font-weight: 300; letter-spacing: 0.1em; color: var(--accent); margin: 0; }
-        .header-copy p { color: rgba(255,255,255,0.5); font-size: 0.9rem; margin: 0.5rem 0 0 0; }
+        .header-copy p { color: var(--text-muted); font-size: 0.9rem; margin: 0.5rem 0 0 0; }
         
-        .users-card { padding: 0.5rem; overflow: hidden; background: rgba(14, 14, 14, 0.4); border: 1px solid rgba(255, 255, 255, 0.05); }
+        .users-card { padding: 0.5rem; overflow: hidden; background: var(--surface); border: 1px solid var(--line); box-shadow: var(--shadow); }
         .admin-table { width: 100%; border-collapse: collapse; text-align: left; }
-        .admin-table th { padding: 1.5rem 2rem; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.2em; color: rgba(166, 137, 102, 0.6); border-bottom: 1px solid rgba(255,255,255,0.05); }
-        .admin-table td { padding: 1.25rem 2rem; font-size: 0.85rem; border-bottom: 1px solid rgba(255,255,255,0.02); vertical-align: middle; }
+        .admin-table th { padding: 1.5rem 2rem; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.2em; color: var(--accent); border-bottom: 1px solid var(--line); }
+        .admin-table td { padding: 1.25rem 2rem; font-size: 0.85rem; border-bottom: 1px solid var(--line); vertical-align: middle; color: var(--text); }
         
         .user-info-cell { display: flex; align-items: center; gap: 1rem; }
-        .user-avatar-mini { width: 32px; height: 32px; background: #a68966; color: #000; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.75rem; }
-        .username-tag { background: rgba(255,255,255,0.05); padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; color: #a68966; }
+        .user-avatar-mini { width: 32px; height: 32px; background: var(--accent); color: #000; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.75rem; }
+        .username-tag { background: var(--surface-muted); padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; color: var(--accent); }
         
         .role-badge { padding: 4px 10px; border-radius: 99px; font-size: 0.65rem; font-weight: 800; display: flex; align-items: center; gap: 6px; width: fit-content; border: 1px solid transparent; }
-        .role-badge.admin { background: rgba(166, 137, 102, 0.1); color: #a68966; border-color: rgba(166, 137, 102, 0.2); }
-        .role-badge.editor { background: rgba(255, 255, 255, 0.03); color: rgba(255,255,255,0.6); border-color: rgba(255, 255, 255, 0.1); }
+        .role-badge.admin { background: rgba(166, 137, 102, 0.1); color: var(--accent); border-color: rgba(166, 137, 102, 0.2); }
+        .role-badge.editor { background: var(--surface-muted); color: var(--text-soft); border-color: var(--line); }
         
         .table-actions { display: flex; gap: 0.5rem; }
-        .action-btn { width: 36px; height: 36px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05); background: transparent; color: rgba(255,255,255,0.4); cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.3s; }
-        .action-btn:hover { color: #fff; border-color: #a68966; background: rgba(166, 137, 102, 0.1); }
+        .action-btn { width: 36px; height: 36px; border-radius: 8px; border: 1px solid var(--line); background: transparent; color: var(--text-muted); cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.3s; }
+        .action-btn:hover { color: var(--text); border-color: var(--accent); background: rgba(166, 137, 102, 0.1); }
         .action-btn.delete:hover { border-color: #ff4d4d; color: #ff4d4d; background: rgba(255, 77, 77, 0.1); }
         
         /* Modal Styles */
-        .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(10px); display: flex; align-items: center; justify-content: center; z-index: 1000; }
-        .admin-modal { background: #0a0a0a; border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; width: 100%; max-width: 500px; padding: 2.5rem; }
+        .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(10px); display: flex; align-items: center; justify-content: center; z-index: 1000; }
+        .admin-modal { background: var(--background); border: 1px solid var(--line); border-radius: 20px; width: 100%; max-width: 500px; padding: 2.5rem; box-shadow: var(--shadow); }
         .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; }
-        .modal-header h3 { font-family: var(--font-display), sans-serif; font-size: 1.25rem; font-weight: 300; letter-spacing: 0.1em; color: #fff; margin:0; }
-        .close-modal { background: none; border: none; color: #fff; font-size: 2rem; cursor: pointer; opacity: 0.5; }
+        .modal-header h3 { font-family: var(--font-display), sans-serif; font-size: 1.25rem; font-weight: 300; letter-spacing: 0.1em; color: var(--text); margin:0; }
+        .close-modal { background: none; border: none; color: var(--text); font-size: 2rem; cursor: pointer; opacity: 0.5; }
         
         .admin-form { display: flex; flex-direction: column; gap: 1.5rem; }
         .form-group { display: flex; flex-direction: column; gap: 0.5rem; }
-        .form-group label { font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(166, 137, 102, 0.8); font-weight: 600; }
-        .form-group input, .form-group select { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 0.75rem 1rem; color: #fff; outline: none; transition: border-color 0.3s; }
-        .form-group input:focus { border-color: #a68966; }
+        .form-group label { font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); font-weight: 600; }
+        .form-group input, .form-group select { background: var(--surface-muted); border: 1px solid var(--line); border-radius: 8px; padding: 0.75rem 1rem; color: var(--text); outline: none; transition: border-color 0.3s; }
+        .form-group input:focus { border-color: var(--accent); }
         
         .modal-footer { display: flex; gap: 1rem; margin-top: 1rem; }
-        .btn-primary { flex: 1; background: #a68966; color: #000; border: none; padding: 1rem; border-radius: 8px; font-weight: 800; cursor: pointer; letter-spacing: 0.1em; }
-        .btn-secondary { background: rgba(255,255,255,0.05); color: #fff; border: none; padding: 1rem; border-radius: 8px; font-weight: 600; cursor: pointer; }
+        .btn-primary { flex: 1; background: var(--accent); color: #000; border: none; padding: 1rem; border-radius: 8px; font-weight: 800; cursor: pointer; letter-spacing: 0.1em; }
+        .btn-secondary { background: var(--surface-muted); color: var(--text); border: none; padding: 1rem; border-radius: 8px; font-weight: 600; cursor: pointer; }
         
-        .premium-btn { background: #a68966; border: none; color: #000; padding: 0.75rem 1.5rem; border-radius: 8px; display: flex; align-items: center; gap: 0.75rem; font-weight: 800; cursor: pointer; transition: all 0.3s; }
+        .premium-btn { background: var(--accent); border: none; color: #000; padding: 0.75rem 1.5rem; border-radius: 8px; display: flex; align-items: center; gap: 0.75rem; font-weight: 800; cursor: pointer; transition: all 0.3s; }
         .premium-btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(166, 137, 102, 0.3); }
       `}</style>
     </div>
