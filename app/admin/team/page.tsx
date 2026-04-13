@@ -210,15 +210,20 @@ export default function TeamManagementPage() {
             >
               <div className="member-image">
                 {member.image ? <img src={member.image} alt={member.name} /> : <div className="no-img"><Users size={32} /></div>}
-                <div className="member-actions">
-                  <button onClick={() => openEditModal(member)} className="action-btn edit"><Edit2 size={16}/></button>
-                  <button onClick={() => handleDelete(member._id)} className="action-btn delete"><Trash2 size={16}/></button>
-                </div>
               </div>
               <div className="member-info">
                 <h3>{member.name}</h3>
                 <span>{member.role}</span>
                 <div className="cat-tag">{TEAM_CATEGORIES.find(c => c.key === member.category)?.title}</div>
+                
+                <div className="member-controls">
+                  <button onClick={() => openEditModal(member)} className="control-btn edit-btn">
+                    <Edit2 size={14}/> DÜZENLE
+                  </button>
+                  <button onClick={() => handleDelete(member._id)} className="control-btn delete-btn">
+                    <Trash2 size={14}/> SİL
+                  </button>
+                </div>
               </div>
             </motion.div>
           ))}
@@ -268,7 +273,10 @@ export default function TeamManagementPage() {
                     <div className="upload-preview" onClick={() => document.getElementById('member-file')?.click()}>
                       {formData.image ? <img src={formData.image} alt="Preview" /> : <div className="upload-placeholder"><Upload size={24}/><p>Fotoğraf</p></div>}
                     </div>
-                    <input id="member-file" type="file" className="hidden" onChange={handleImageUpload} />
+                    <button type="button" className="inline-upload-btn" onClick={() => document.getElementById('member-file')?.click()}>
+                       <Upload size={14} /> FOTOĞRAF SEÇ
+                    </button>
+                    <input id="member-file" type="file" className="hidden" onChange={handleImageUpload} accept="image/*" />
                   </div>
                   
                   <div className="inputs-side">
@@ -390,12 +398,12 @@ export default function TeamManagementPage() {
         .member-card:hover .member-image img { transform: scale(1.05); }
         .no-img { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: rgba(255,255,255,0.1); }
 
-        .member-actions { position: absolute; inset: 0; background: rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center; gap: 1rem; opacity: 0; transition: opacity 0.3s; }
-        .member-card:hover .member-actions { opacity: 1; }
-        .action-btn { width: 40px; height: 40px; border-radius: 50%; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.3s; }
-        .action-btn.edit { background: #fff; color: #000; }
-        .action-btn.delete { background: #ff4d4d; color: #fff; }
-        .action-btn:hover { transform: scale(1.1); }
+        .member-controls { display: flex; gap: 0.5rem; margin-top: 1.25rem; }
+        .control-btn { flex: 1; border: none; padding: 0.6rem; border-radius: 4px; font-size: 0.65rem; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 0.4rem; transition: all 0.3s; }
+        .edit-btn { background: rgba(255,255,255,0.05); color: #fff; border: 1px solid rgba(255,255,255,0.1); }
+        .edit-btn:hover { background: #fff; color: #000; }
+        .delete-btn { background: rgba(255,77,77,0.05); color: #ff4d4d; border: 1px solid rgba(255,77,77,0.1); }
+        .delete-btn:hover { background: #ff4d4d; color: #fff; }
 
         .member-info { padding: 1.5rem; text-align: center; display: flex; flex-direction: column; gap: 0.5rem; }
         .member-info h3 { margin: 0; font-size: 1rem; color: #fff; letter-spacing: 0.05em; }
@@ -414,6 +422,8 @@ export default function TeamManagementPage() {
         .migrate-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
         /* MODAL */
+        .inline-upload-btn { background: rgba(166,137,102,0.1); color: #a68966; border: 1px solid rgba(166,137,102,0.2); padding: 0.5rem; border-radius: 4px; font-size: 0.6rem; font-weight: 800; cursor: pointer; margin-top: 0.5rem; display: flex; align-items: center; justify-content: center; gap: 0.4rem; width: 100%; }
+        .inline-upload-btn:hover { background: #a68966; color: #000; }
         .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.9); backdrop-filter: blur(5px); z-index: 1000; display: flex; align-items: center; justify-content: center; padding: 2rem; }
         .modal-content { width: 100%; max-width: 650px; padding: 0; overflow: hidden; }
         .modal-header { padding: 1.5rem 2rem; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: space-between; align-items: center; }
