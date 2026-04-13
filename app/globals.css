@@ -98,6 +98,17 @@ body:has(.homepage-snap-shell) {
   padding-bottom: clamp(2rem, 4vh, 3rem);
 }
 
+.homepage-snap-shell .homepage-services-section {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.homepage-snap-shell .homepage-services-section .services-grid {
+  width: 100%;
+  flex: 1;
+}
+
 .homepage-snap-shell .homepage-projects-section .section-heading,
 .homepage-snap-shell .homepage-team-section .section-heading,
 .homepage-snap-shell .homepage-services-section .section-heading {
