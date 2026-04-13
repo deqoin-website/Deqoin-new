@@ -373,24 +373,24 @@ export default function TeamManagementPage() {
         .team-manager { display: flex; flex-direction: column; gap: 2.5rem; }
         
         .manager-top { display: flex; justify-content: space-between; align-items: flex-end; }
-        .manager-top h2 { font-family: var(--font-display); font-size: 1.5rem; letter-spacing: 0.1em; color: #fff; margin: 0 0 0.5rem 0; }
-        .manager-top p { margin: 0; color: rgba(255,255,255,0.4); font-size: 0.85rem; }
+        .manager-top h2 { font-family: var(--font-display); font-size: 1.5rem; letter-spacing: 0.1em; color: var(--text); margin: 0 0 0.5rem 0; }
+        .manager-top p { margin: 0; color: var(--text-soft); opacity: 0.7; font-size: 0.85rem; }
 
         .add-btn { background: #a68966; color: #000; border: none; padding: 0.85rem 1.5rem; border-radius: 4px; font-weight: 800; cursor: pointer; display: flex; align-items: center; gap: 0.75rem; font-size: 0.75rem; letter-spacing: 0.05em; transition: all 0.3s; }
         .add-btn:hover { background: #c5a680; transform: translateY(-2px); }
 
-        .filters-bar { display: flex; flex-direction: column; gap: 1.5rem; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 1.5rem; }
-        .search-box { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; padding: 0.75rem 1.25rem; display: flex; align-items: center; gap: 1rem; color: rgba(255,255,255,0.3); max-width: 400px; }
-        .search-box input { background: transparent; border: none; color: #fff; font-family: inherit; font-size: 0.9rem; flex: 1; }
+        .filters-bar { display: flex; flex-direction: column; gap: 1.5rem; border-bottom: 1px solid var(--line); padding-bottom: 1.5rem; }
+        .search-box { background: var(--background); border: 1px solid var(--line); border-radius: 8px; padding: 0.75rem 1.25rem; display: flex; align-items: center; gap: 1rem; color: var(--text-muted); max-width: 400px; }
+        .search-box input { background: transparent; border: none; color: var(--text); font-family: inherit; font-size: 0.9rem; flex: 1; }
         .search-box input:focus { outline: none; }
 
         .category-tabs { display: flex; flex-wrap: wrap; gap: 0.5rem; }
-        .filter-btn { background: transparent; border: 1px solid rgba(255,255,255,0.05); color: rgba(255,255,255,0.4); padding: 0.5rem 1rem; border-radius: 40px; font-size: 0.65rem; font-weight: 600; cursor: pointer; transition: all 0.3s; }
-        .filter-btn:hover { border-color: rgba(255,255,255,0.2); color: #fff; }
+        .filter-btn { background: transparent; border: 1px solid var(--line); color: var(--text-muted); padding: 0.5rem 1rem; border-radius: 40px; font-size: 0.65rem; font-weight: 600; cursor: pointer; transition: all 0.3s; }
+        .filter-btn:hover { border-color: var(--text-soft); color: var(--text); }
         .filter-btn.active { background: #a68966; color: #000; border-color: #a68966; }
 
         .team-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 2rem; }
-        .member-card { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 12px; overflow: hidden; transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+        .member-card { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
         .member-card:hover { transform: translateY(-5px); border-color: rgba(166,137,102,0.3); }
 
         .member-image { height: 260px; position: relative; overflow: hidden; background: #000; }
@@ -406,8 +406,8 @@ export default function TeamManagementPage() {
         .delete-btn:hover { background: #ff4d4d; color: #fff; }
 
         .member-info { padding: 1.5rem; text-align: center; display: flex; flex-direction: column; gap: 0.5rem; }
-        .member-info h3 { margin: 0; font-size: 1rem; color: #fff; letter-spacing: 0.05em; }
-        .member-info span { font-size: 0.75rem; color: rgba(255,255,255,0.4); }
+        .member-info h3 { margin: 0; font-size: 1rem; color: var(--text); letter-spacing: 0.05em; }
+        .member-info span { font-size: 0.75rem; color: var(--text-muted); }
         .cat-tag { margin-top: 0.5rem; font-size: 0.6rem; color: #a68966; background: rgba(166,137,102,0.1); padding: 0.25rem 0.75rem; border-radius: 4px; display: inline-block; align-self: center; text-transform: uppercase; font-weight: 700; letter-spacing: 0.1em; }
 
         .empty-state { grid-column: 1 / -1; padding: 5rem; text-align: center; color: rgba(255,255,255,0.2); display: flex; flex-direction: column; align-items: center; gap: 1rem; }
@@ -415,7 +415,7 @@ export default function TeamManagementPage() {
 
         .migration-helper { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 1rem; padding: 2.5rem 1.5rem; background: rgba(166,137,102,0.05); border: 1px dashed rgba(166,137,102,0.3); }
         .migration-helper h4 { font-size: 0.8rem; letter-spacing: 0.2em; color: #a68966; margin: 0; }
-        .migration-helper p { font-size: 0.75rem; color: rgba(255,255,255,0.4); line-height: 1.6; margin: 0; }
+        .migration-helper p { font-size: 0.75rem; color: var(--text-soft); opacity: 0.7; line-height: 1.6; margin: 0; }
         .icon-gold { color: #a68966; opacity: 0.6; }
         .migrate-btn { background: #a68966; color: #000; border: none; padding: 0.75rem 1.25rem; border-radius: 4px; font-size: 0.65rem; font-weight: 800; cursor: pointer; display: flex; align-items: center; gap: 0.5rem; transition: all 0.3s; margin-top: 0.5rem; }
         .migrate-btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(166,137,102,0.2); }
@@ -426,28 +426,28 @@ export default function TeamManagementPage() {
         .inline-upload-btn:hover { background: #a68966; color: #000; }
         .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.9); backdrop-filter: blur(5px); z-index: 1000; display: flex; align-items: center; justify-content: center; padding: 2rem; }
         .modal-content { width: 100%; max-width: 650px; padding: 0; overflow: hidden; }
-        .modal-header { padding: 1.5rem 2rem; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: space-between; align-items: center; }
+        .modal-header { padding: 1.5rem 2rem; border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; align-items: center; }
         .modal-header h3 { margin: 0; font-size: 0.9rem; letter-spacing: 0.15em; color: #a68966; }
-        .close-btn { background: transparent; border: none; color: rgba(255,255,255,0.3); cursor: pointer; }
+        .close-btn { background: transparent; border: none; color: var(--text-muted); cursor: pointer; }
 
         .modal-form { padding: 2rem; display: flex; flex-direction: column; gap: 1.5rem; }
         .form-row-split { display: flex; gap: 2rem; }
         .photo-upload-side { width: 140px; display: flex; flex-direction: column; gap: 0.75rem; }
         .photo-upload-side label { font-size: 0.6rem; color: rgba(255,255,255,0.4); font-weight: 700; }
-        .upload-preview { width: 140px; height: 160px; background: rgba(255,255,255,0.03); border: 1px dashed rgba(255,255,255,0.1); border-radius: 8px; cursor: pointer; overflow: hidden; display: flex; align-items: center; justify-content: center; }
+        .upload-preview { width: 140px; height: 160px; background: var(--background); border: 1px dashed var(--line); border-radius: 8px; cursor: pointer; overflow: hidden; display: flex; align-items: center; justify-content: center; }
         .upload-preview img { width: 100%; height: 100%; object-fit: cover; }
-        .upload-placeholder { display: flex; flex-direction: column; align-items: center; gap: 0.5rem; color: rgba(255,255,255,0.1); font-size: 0.7rem; }
+        .upload-placeholder { display: flex; flex-direction: column; align-items: center; gap: 0.5rem; color: var(--text-muted); opacity: 0.4; font-size: 0.7rem; }
         
         .inputs-side { flex: 1; display: flex; flex-direction: column; gap: 1.5rem; }
         .form-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
         
         .form-group { display: flex; flex-direction: column; gap: 0.6rem; }
-        .form-group label { font-size: 0.65rem; color: rgba(255,255,255,0.5); font-weight: 600; letter-spacing: 0.1em; }
-        .form-group input, .form-group select { background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1); padding: 0.85rem; color: #fff; border-radius: 4px; font-family: inherit; font-size: 0.85rem; }
-        .form-group input:focus, .form-group select:focus { outline: none; border-color: #a68966; }
+        .form-group label { font-size: 0.65rem; color: var(--text-muted); font-weight: 600; letter-spacing: 0.1em; }
+        .form-group input, .form-group select, .form-group textarea { background: var(--background); border: 1px solid var(--line); padding: 0.85rem; color: var(--text); border-radius: 4px; font-family: inherit; font-size: 0.85rem; }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus { outline: none; border-color: #a68966; }
 
-        .modal-footer { margin-top: 1rem; padding-top: 1.5rem; border-top: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: flex-end; gap: 1rem; }
-        .cancel-btn { background: transparent; border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 0.75rem 1.5rem; border-radius: 4px; font-size: 0.75rem; cursor: pointer; transition: all 0.3s; }
+        .modal-footer { margin-top: 1rem; padding-top: 1.5rem; border-top: 1px solid var(--line); display: flex; justify-content: flex-end; gap: 1rem; }
+        .cancel-btn { background: transparent; border: 1px solid var(--line); color: var(--text); padding: 0.75rem 1.5rem; border-radius: 4px; font-size: 0.75rem; cursor: pointer; transition: all 0.3s; }
         .cancel-btn:hover { background: rgba(255,255,255,0.05); }
         .submit-btn { background: #a68966; color: #000; border: none; padding: 0.75rem 2rem; border-radius: 4px; font-size: 0.75rem; font-weight: 800; cursor: pointer; display: flex; align-items: center; gap: 0.75rem; transition: all 0.3s; }
         .submit-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(166,137,102,0.2); }
