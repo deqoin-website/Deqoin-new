@@ -257,19 +257,20 @@ export default function AdminLoginPage() {
 
         /* --- FORM SIDE --- */
         .login-form-side {
-          width: 45%;
-          max-width: 600px;
+          flex: 0 0 45%; /* Symmetrical balance */
+          min-width: 450px;
           display: flex;
           align-items: center;
           justify-content: center;
           background: #0a0a0a;
           position: relative;
+          z-index: 10;
         }
 
         .login-wrapper {
           width: 100%;
-          max-width: 420px;
-          padding: 40px;
+          max-width: 440px;
+          padding: 60px 40px;
         }
 
         .login-box {
@@ -528,28 +529,29 @@ export default function AdminLoginPage() {
 
         /* ================== RESPONSIVE DESIGN ================== */
 
-        /* TABLET (up to 1024px) */
-        @media (max-width: 1024px) {
+        /* TABLET (up to 1100px) */
+        @media (max-width: 1100px) {
           .login-visual-side {
-            display: none; /* Hide visual pane fully and center form pane */
+            display: none;
           }
 
           .login-form-side {
+            flex: 1;
             width: 100%;
             max-width: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            min-width: 0;
+            background: radial-gradient(circle at top right, rgba(166, 137, 102, 0.1) 0%, transparent 60%), #050505;
           }
 
           .login-wrapper {
-            background: rgba(20, 20, 20, 0.6);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(166, 137, 102, 0.1);
-            border-radius: 20px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
-            max-width: 440px;
-            padding: 48px;
+            background: rgba(15, 15, 15, 0.8);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(166, 137, 102, 0.15);
+            border-radius: 24px;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.6);
+            max-width: 460px;
+            padding: 56px 48px;
+            margin: 20px;
           }
 
           .mobile-header-section {
@@ -564,17 +566,23 @@ export default function AdminLoginPage() {
         /* MOBILE (up to 768px) */
         @media (max-width: 768px) {
           .admin-login-layout {
-            padding: 16px;
-            background: radial-gradient(circle at top, rgba(166, 137, 102, 0.1) 0%, transparent 60%), #050505;
+            padding: 0;
+            background: #050505;
           }
 
           .login-form-side {
-            background: transparent;
+            align-items: flex-start;
+            padding-top: 10vh;
           }
 
           .login-wrapper {
+            background: transparent;
+            backdrop-filter: none;
+            border: none;
+            box-shadow: none;
             padding: 32px 24px;
-            border-radius: 16px;
+            margin: 0;
+            max-width: 100%;
           }
 
           .text-input {
