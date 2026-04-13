@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
 import nodemailer from "nodemailer";
+import connectToDatabase from "@/lib/mongodb";
+import Appointment from "@/models/Appointment";
 
 export async function POST(request: Request) {
   try {
@@ -16,14 +18,24 @@ export async function POST(request: Request) {
       note 
     } = body;
 
-    // 1. Server-side Log (Terminal'den takibi kolaylaştırır)
-    console.log("--- YENİ RANDEVU TALEBİ ---");
-    console.log(`Müşteri: ${firstName} ${lastName}`);
-    console.log(`İletişim: ${clientEmail} | ${phone}`);
-    console.log(`Bölge: ${city} ${company ? `(${company})` : ""}`);
-    console.log(`Hizmet: ${department} > ${subCategory}`);
-    console.log(`Not: ${note}`);
-    console.log("---------------------------");
+    // 1. Veritabanına Kayıt (CMS Admin Paneli İçin)
+    await connectToDatabase();
+    
+    // Frontend'den gelen form alanlarını veritabanı modeline uygun haritalıyoruz
+    const dbData = {
+      name: firstName,
+      surname: lastName,
+      email: clientEmail,
+      phone: phone,
+      city: `${city} ${company ? `(${company})` : ""}`.trim(),
+      interestedDepartment: `${department} - ${subCategory}`,
+      projectDetails: note,
+      status: "Yeni"
+    };
+
+    const newAppointment = await Appointment.create(dbData);
+    
+    console.log("--- YENİ RANDEVU TALEBİ CMS'E KAYDEDİLDİ ---", newAppointment._id);
 
     // 2. E-Posta Gönderim Hazırlığı (Nodemailer)
     if (!process.env.GMAIL_USER || !process.env.GMAIL_PASS) {
