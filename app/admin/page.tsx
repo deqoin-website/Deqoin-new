@@ -74,7 +74,7 @@ export default function AdminDashboard() {
   const itemVariants = {
     hidden: { opacity: 0, y: 20 },
     show: { opacity: 1, y: 0, transition: { ease: "easeOut", duration: 0.6 } }
-  };
+  } as const;
 
   return (
     <motion.div 
