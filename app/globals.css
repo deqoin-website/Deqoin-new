@@ -2110,6 +2110,8 @@ body:has(.homepage-snap-shell) {
   position: relative;
   padding: 1rem;
   border: 1px solid var(--line);
+  width: min(100%, 38rem);
+  margin-left: auto;
 }
 
 .about-image-wrap {
@@ -2344,12 +2346,12 @@ body:has(.homepage-snap-shell) {
   }
 
   .about-grid {
-    grid-template-columns: minmax(0, 1.2fr) minmax(18rem, 0.8fr);
+    grid-template-columns: minmax(0, 1.02fr) minmax(24rem, 0.98fr);
     align-items: center;
   }
 
   .about-image-wrap {
-    aspect-ratio: 1 / 1;
+    aspect-ratio: 1 / 1.08;
   }
 
   .team-grid {
@@ -5954,5 +5956,16 @@ body:has(.homepage-snap-shell) {
   .galeri-page .section-inner {
     padding-left: clamp(1.5rem, 4vw, 5rem);
     padding-right: clamp(1.5rem, 4vw, 5rem);
+  }
+}
+
+@media (min-width: 1440px) {
+  .about-grid {
+    grid-template-columns: minmax(0, 0.96fr) minmax(30rem, 1.08fr);
+    gap: 5rem;
+  }
+
+  .about-frame {
+    width: min(100%, 44rem);
   }
 }
