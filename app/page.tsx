@@ -73,6 +73,8 @@ export default function Page() {
   const projectTouchStartX = useRef<number | null>(null);
   const projectTouchStartY = useRef<number | null>(null);
   const projectIndexRef = useRef(0);
+  const homepageSnapLockRef = useRef(false);
+  const homepageTouchStartYRef = useRef<number | null>(null);
   const teamTouchStartX = useRef<number | null>(null);
   const teamTouchStartY = useRef<number | null>(null);
   const projectWheelLockRef = useRef(false);
@@ -152,6 +154,88 @@ export default function Page() {
       document.body.style.overflow = previousOverflow;
     };
   }, [activeProjectPanelSlug]);
+
+  useEffect(() => {
+    const getSnapSections = () =>
+      Array.from(
+        document.querySelectorAll<HTMLElement>(
+          ".homepage-snap-shell .snap-section, .homepage-footer-snap",
+        ),
+      );
+
+    const getClosestSectionIndex = (sections: HTMLElement[]) => {
+      const viewportCenter = window.scrollY + window.innerHeight * 0.5;
+      let closestIndex = 0;
+      let closestDistance = Number.POSITIVE_INFINITY;
+
+      sections.forEach((section, index) => {
+        const sectionCenter = section.offsetTop + section.offsetHeight * 0.5;
+        const distance = Math.abs(sectionCenter - viewportCenter);
+        if (distance < closestDistance) {
+          closestDistance = distance;
+          closestIndex = index;
+        }
+      });
+
+      return closestIndex;
+    };
+
+    const snapToSection = (direction: 1 | -1) => {
+      const sections = getSnapSections();
+      if (sections.length === 0) return;
+
+      const currentIndex = getClosestSectionIndex(sections);
+      const nextIndex = Math.min(
+        sections.length - 1,
+        Math.max(0, currentIndex + direction),
+      );
+
+      if (nextIndex === currentIndex) return;
+
+      homepageSnapLockRef.current = true;
+      sections[nextIndex].scrollIntoView({ behavior: "smooth", block: "start" });
+
+      window.setTimeout(() => {
+        homepageSnapLockRef.current = false;
+      }, 850);
+    };
+
+    const handleWheel = (event: WheelEvent) => {
+      if (homepageSnapLockRef.current || activeProjectPanelSlug || isConsultationOpen) return;
+      if (Math.abs(event.deltaY) < 24) return;
+
+      event.preventDefault();
+      snapToSection(event.deltaY > 0 ? 1 : -1);
+    };
+
+    const handleTouchStart = (event: TouchEvent) => {
+      homepageTouchStartYRef.current = event.touches[0]?.clientY ?? null;
+    };
+
+    const handleTouchEnd = (event: TouchEvent) => {
+      if (homepageSnapLockRef.current || activeProjectPanelSlug || isConsultationOpen) return;
+
+      const startY = homepageTouchStartYRef.current;
+      homepageTouchStartYRef.current = null;
+      if (startY == null) return;
+
+      const endY = event.changedTouches[0]?.clientY ?? startY;
+      const deltaY = startY - endY;
+      if (Math.abs(deltaY) < 52) return;
+
+      snapToSection(deltaY > 0 ? 1 : -1);
+    };
+
+    window.addEventListener("wheel", handleWheel, { passive: false });
+    window.addEventListener("touchstart", handleTouchStart, { passive: true });
+    window.addEventListener("touchend", handleTouchEnd, { passive: true });
+
+    return () => {
+      window.removeEventListener("wheel", handleWheel);
+      window.removeEventListener("touchstart", handleTouchStart);
+      window.removeEventListener("touchend", handleTouchEnd);
+    };
+  }, [activeProjectPanelSlug, isConsultationOpen]);
 
   useEffect(() => {
     if (filteredTeam.length === 0) return;
@@ -510,7 +594,6 @@ export default function Page() {
             className="project-slider-window"
             onTouchStart={handleProjectTouchStart}
             onTouchEnd={handleProjectTouchEnd}
-            onWheel={handleProjectWheel}
           >
             <div className="project-slider-progress" aria-hidden="true">
               <motion.span
@@ -644,7 +727,7 @@ export default function Page() {
               <div className="section-line" />
             </div>
           </div>
-          <div className="team-mobile-slider team-home-mobile-slider" onTouchStart={handleTeamTouchStart} onTouchEnd={handleTeamTouchEnd} onWheel={handleTeamWheel}>
+          <div className="team-mobile-slider team-home-mobile-slider" onTouchStart={handleTeamTouchStart} onTouchEnd={handleTeamTouchEnd}>
             <button type="button" className="team-slider-arrow team-slider-arrow-left" onClick={() => navigateTeamSlide(-1)} aria-label="Önceki ekip">
               <span className="material-symbols-outlined">arrow_back</span>
             </button>
