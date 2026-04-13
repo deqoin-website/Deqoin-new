@@ -302,10 +302,47 @@
   .admin-sidebar {
     position: fixed;
     height: 100vh;
-    left: -100%;
+    left: -300px;
     box-shadow: 20px 0 50px rgba(0,0,0,0.8);
+    background: #0a0a0a;
   }
   .admin-sidebar.open {
     left: 0;
+  }
+  
+  .admin-top-bar {
+    padding: 0 1.5rem;
+    height: 80px;
+  }
+  
+  .admin-content-inner {
+    padding: 1.5rem;
+  }
+
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .dashboard-main-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-sidebar::after {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 300px;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0,0,0,0.5);
+    backdrop-filter: blur(4px);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.4s ease;
+  }
+
+  .admin-sidebar.open::after {
+    opacity: 1;
+    pointer-events: auto;
   }
 }

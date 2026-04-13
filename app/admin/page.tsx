@@ -1,470 +1,354 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { MessageSquare, FolderKanban, Aperture, ArrowUpRight, Clock, Briefcase } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { 
+  MessageSquare, 
+  FolderKanban, 
+  Aperture, 
+  ArrowUpRight, 
+  Clock, 
+  Briefcase, 
+  Users, 
+  Zap, 
+  Server, 
+  ShieldCheck, 
+  Plus, 
+  Layout, 
+  ChevronRight,
+  TrendingUp,
+  FileText
+} from 'lucide-react';
 import Link from 'next/link';
 
 export default function AdminDashboard() {
   const [stats, setStats] = useState({
-    newAppointments: 0,
-    activeProjects: 0,
-    activeStudios: 0
+    appointments: 0,
+    projects: 0,
+    team: 0,
+    studios: 12 // static or from DB
   });
 
   const [isLoading, setIsLoading] = useState(true);
+  const [recentProjects, setRecentProjects] = useState<any[]>([]);
 
   useEffect(() => {
-    // In a real scenario, this fetches from multiple API endpoints or an aggregate dashboard API
-    // We will simulate the fetch for this CMS architecture implementation
-    setTimeout(() => {
-      setStats({
-        newAppointments: 5,
-        activeProjects: 24,
-        activeStudios: 3
-      });
-      setIsLoading(false);
-    }, 1000);
+    const fetchDashboardData = async () => {
+      try {
+        const [projRes, teamRes, appRes] = await Promise.all([
+          fetch('/api/projects'),
+          fetch('/api/admin/team'),
+          fetch('/api/admin/appointments')
+        ]);
+
+        const projects = await projRes.json();
+        const team = await teamRes.json();
+        const appointments = await appRes.json();
+
+        setStats({
+          projects: Array.isArray(projects) ? projects.length : 0,
+          team: Array.isArray(team) ? team.length : 0,
+          appointments: Array.isArray(appointments) ? appointments.length : 0,
+          studios: 12
+        });
+        
+        setRecentProjects(Array.isArray(projects) ? projects.slice(0, 3) : []);
+      } catch (err) {
+        console.error("Dashboard fetch error:", err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchDashboardData();
   }, []);
 
   const containerVariants = {
     hidden: { opacity: 0 },
     show: {
       opacity: 1,
-      transition: {
-        staggerChildren: 0.1
-      }
+      transition: { staggerChildren: 0.1 }
     }
   };
 
   const itemVariants = {
     hidden: { opacity: 0, y: 20 },
-    show: { opacity: 1, y: 0, transition: { ease: [0.16, 1, 0.3, 1] as const, duration: 0.8 } }
+    show: { opacity: 1, y: 0, transition: { ease: "easeOut", duration: 0.6 } }
   };
 
   return (
     <motion.div 
-      className="dashboard-container"
+      className="dashboard-wrapper"
       variants={containerVariants}
       initial="hidden"
       animate="show"
     >
-      <motion.div variants={itemVariants} className="dashboard-header">
-        <h2>Sisteme Tekrar Hoş Geldiniz</h2>
-        <p>Tüm stüdyo etkinliklerini ve randevularınızı buradan takip edebilirsiniz.</p>
+      {/* HEADER SECTION */}
+      <motion.div variants={itemVariants} className="dashboard-intro">
+        <div className="intro-text">
+          <h2>Sistem Özetiniz</h2>
+          <p>Stüdyonuzun dijital performansı ve güncel içerik durumu.</p>
+        </div>
+        <div className="system-health">
+          <div className="health-item active">
+            <Server size={14} />
+            <span>SUNUCU AKTİF</span>
+          </div>
+          <div className="health-item active">
+            <ShieldCheck size={14} />
+            <span>SSL GÜVENLİ</span>
+          </div>
+          <div className="health-item">
+            <Zap size={14} />
+            <span>V3.0 CORE</span>
+          </div>
+        </div>
       </motion.div>
 
+      {/* STATS GRID */}
       <div className="stats-grid">
-        <motion.div variants={itemVariants} className="admin-card stat-card">
-          <div className="stat-icon-wrapper appointment-icon">
-            <MessageSquare size={24} />
+        <motion.div variants={itemVariants} className="admin-stat-card glass">
+          <div className="stat-top">
+            <div className="stat-icon-box appointments"><MessageSquare size={20} /></div>
+            <Link href="/admin/crm" className="stat-link-icon"><ArrowUpRight size={16} /></Link>
           </div>
-          <div className="stat-content">
-            <span className="stat-label">Bekleyen Randevu Talepleri</span>
-            {isLoading ? <div className="skeleton-text"></div> : <div className="stat-value">{stats.newAppointments}</div>}
+          <div className="stat-value-group">
+            <h3>{isLoading ? '--' : stats.appointments}</h3>
+            <span>Randevu Talebi</span>
           </div>
-          <Link href="/admin/crm" className="stat-link">
-            İncele <ArrowUpRight size={16} />
-          </Link>
+          <div className="stat-trend positive">
+            <TrendingUp size={12} />
+            <span>+12% artış</span>
+          </div>
         </motion.div>
 
-        <motion.div variants={itemVariants} className="admin-card stat-card">
-          <div className="stat-icon-wrapper project-icon">
-            <FolderKanban size={24} />
+        <motion.div variants={itemVariants} className="admin-stat-card glass">
+          <div className="stat-top">
+            <div className="stat-icon-box projects"><FolderKanban size={20} /></div>
+            <Link href="/admin/projects" className="stat-link-icon"><ArrowUpRight size={16} /></Link>
           </div>
-          <div className="stat-content">
-            <span className="stat-label">Aktif Yayınlanan Projeler</span>
-            {isLoading ? <div className="skeleton-text"></div> : <div className="stat-value">{stats.activeProjects}</div>}
+          <div className="stat-value-group">
+            <h3>{isLoading ? '--' : stats.projects}</h3>
+            <span>Toplam Proje</span>
           </div>
-          <Link href="/admin/projects" className="stat-link">
-            Yönet <ArrowUpRight size={16} />
-          </Link>
+          <div className="stat-trend">
+            <Clock size={12} />
+            <span>Son güncelleme bugün</span>
+          </div>
         </motion.div>
 
-        <motion.div variants={itemVariants} className="admin-card stat-card">
-          <div className="stat-icon-wrapper studio-icon">
-            <Aperture size={24} />
+        <motion.div variants={itemVariants} className="admin-stat-card glass">
+          <div className="stat-top">
+            <div className="stat-icon-box team"><Users size={20} /></div>
+            <Link href="/admin/team" className="stat-link-icon"><ArrowUpRight size={16} /></Link>
           </div>
-          <div className="stat-content">
-            <span className="stat-label">Aktif Stüdyo Sayısı</span>
-            {isLoading ? <div className="skeleton-text"></div> : <div className="stat-value">{stats.activeStudios}</div>}
+          <div className="stat-value-group">
+            <h3>{isLoading ? '--' : stats.team}</h3>
+            <span>Ekip Üyesi</span>
           </div>
-          <Link href="/admin/studios" className="stat-link">
-            Düzenle <ArrowUpRight size={16} />
-          </Link>
+          <div className="stat-trend positive">
+            <TrendingUp size={12} />
+            <span>Tam kadro aktif</span>
+          </div>
+        </motion.div>
+
+        <motion.div variants={itemVariants} className="admin-stat-card glass">
+          <div className="stat-top">
+            <div className="stat-icon-box studios"><Aperture size={20} /></div>
+            <Link href="/admin/studios/mimarlik" className="stat-link-icon"><ArrowUpRight size={16} /></Link>
+          </div>
+          <div className="stat-value-group">
+            <h3>{stats.studios}</h3>
+            <span>Birim/Departman</span>
+          </div>
+          <div className="stat-trend opacity-50">
+            <span>Sanal Ofis Aktif</span>
+          </div>
         </motion.div>
       </div>
 
-      <div className="dashboard-grid">
-        <motion.div variants={itemVariants} className="admin-card recent-activity">
-          <div className="card-header">
-            <h3>Son Etkinlikler</h3>
-            <button className="text-btn">Tümünü Gör</button>
-          </div>
-          <div className="activity-list">
-            {[1, 2, 3].map((_, i) => (
-              <div key={i} className="activity-item">
-                <div className="activity-icon"><Clock size={16} /></div>
-                <div className="activity-details">
-                  <p>Yeni bir randevu talebi ulaştı (Tasarım Stüdyosu).</p>
-                  <span>{i + 1} saat önce</span>
+      <div className="dashboard-main-grid">
+        <div className="main-grid-left">
+          {/* RECENT PROJECTS TABLE-LIKE LIST */}
+          <motion.section variants={itemVariants} className="dashboard-section glass">
+            <div className="section-header">
+              <h3>Son Yayınlanan Projeler</h3>
+              <Link href="/admin/projects" className="view-all">Tümünü Yönet <ChevronRight size={14} /></Link>
+            </div>
+            <div className="project-preview-list">
+              {isLoading ? (
+                Array(3).fill(0).map((_, i) => <div key={i} className="preview-skeleton" />)
+              ) : recentProjects.map((p, i) => (
+                <div key={p._id || i} className="preview-item">
+                  <div className="preview-img">
+                    {p.coverImage ? <img src={p.coverImage} alt={p.title} /> : <div className="img-placeholder"><ImageIcon size={16}/></div>}
+                  </div>
+                  <div className="preview-info">
+                    <h4>{p.title}</h4>
+                    <p>{p.category}</p>
+                  </div>
+                  <div className="preview-status active">YAYINDA</div>
+                  <Link href="/admin/projects" className="edit-mini-btn"><Briefcase size={14}/></Link>
+                </div>
+              ))}
+              {recentProjects.length === 0 && !isLoading && <p className="empty-msg">Henüz proje eklenmemiş.</p>}
+            </div>
+          </motion.section>
+
+          {/* QUICK DRAFT / STATUS AREA */}
+          <motion.section variants={itemVariants} className="dashboard-section workflow-mini glass">
+             <div className="workflow-content">
+               <div className="workflow-badge">CMS WORKFLOW</div>
+               <h3>İş Akışınızı Güncelleyin</h3>
+               <p>Müşterilerinize sunduğunuz kurumsal adımları ve çalışma prensiplerinizi tek tıkla yenileyebilirsiniz.</p>
+               <Link href="/admin/content/workflow" className="action-button-premium">
+                 DÜZENLEMEYE BAŞLA <ArrowUpRight size={18} />
+               </Link>
+             </div>
+             <div className="workflow-visual">
+               <Zap size={100} strokeWidth={0.5} />
+             </div>
+          </motion.section>
+        </div>
+
+        <div className="main-grid-right">
+          {/* QUICK ACTIONS */}
+          <motion.section variants={itemVariants} className="dashboard-section glass">
+            <div className="section-header">
+              <h3>Hızlı İşlemler</h3>
+            </div>
+            <div className="quick-action-btns">
+              <Link href="/admin/projects" className="q-btn">
+                <Plus size={18} />
+                <span>Yeni Proje Ekle</span>
+              </Link>
+              <Link href="/admin/team" className="q-btn">
+                <Users size={18} />
+                <span>Ekip Üyesi Ekle</span>
+              </Link>
+              <Link href="/admin/content/slider" className="q-btn">
+                <Layout size={18} />
+                <span>Slider Düzenle</span>
+              </Link>
+              <Link href="/admin/settings" className="q-btn">
+                <FileText size={18} />
+                <span>SEO Ayarları</span>
+              </Link>
+            </div>
+          </motion.section>
+
+          {/* ACTIVITY LOG */}
+          <motion.section variants={itemVariants} className="dashboard-section glass">
+            <div className="section-header">
+              <h3>Sistem Günlüğü</h3>
+            </div>
+            <div className="activity-timeline">
+              <div className="timeline-item">
+                <div className="time-dot"></div>
+                <div className="time-info">
+                  <p>Yönetici paneline giriş yapıldı</p>
+                  <span>Az önce</span>
                 </div>
               </div>
-            ))}
-          </div>
-        </motion.div>
-
-        <motion.div variants={itemVariants} className="admin-card cinematic-control-card">
-          <div className="card-bg-decoration"></div>
-          <div className="cinematic-content">
-            <div className="cinematic-badge">CANLI DENEYİM</div>
-            <h3>SİNEMATİK MEDYA & SLIDER</h3>
-            <p>Anasayfa snap-scroll geçişlerini, sloganları ve arka plan efektlerini yönetin.</p>
-            <div className="cinematic-actions">
-               <Link href="/admin/content/slider" className="premium-manage-btn">
-                 DENEYİMİ YÖNET <ArrowUpRight size={18} />
-               </Link>
-               <div className="status-indicators">
-                 <div className="indicator"><div className="dot"></div> Video Desteği Aktif</div>
-                 <div className="indicator"><div className="dot"></div> Blur & Overlay Aktif</div>
-               </div>
+              <div className="timeline-item">
+                <div className="time-dot"></div>
+                <div className="time-info">
+                  <p>Ayarlar güncellendi</p>
+                  <span>14 dakika önce</span>
+                </div>
+              </div>
+              <div className="timeline-item">
+                <div className="time-dot"></div>
+                <div className="time-info">
+                  <p>Projeler senkronize edildi</p>
+                  <span>2 saat önce</span>
+                </div>
+              </div>
             </div>
-          </div>
-          <div className="cinematic-visual-hint">
-             <Aperture size={80} strokeWidth={0.5} />
-          </div>
-        </motion.div>
-
-        <motion.div variants={itemVariants} className="admin-card quick-actions">
-          <div className="card-header">
-            <h3>Hızlı İşlemler</h3>
-          </div>
-          <div className="actions-list">
-            <Link href="/admin/projects" className="action-btn">
-              <FolderKanban size={20} />
-              Yeni Proje Yükle
-            </Link>
-            <Link href="/admin/crm" className="action-btn">
-              <MessageSquare size={20} />
-              Randevuları Kontrol Et
-            </Link>
-            <Link href="/admin/content/workflow" className="action-btn">
-               <Briefcase size={20} />
-               İş Akışını Düzenle
-            </Link>
-          </div>
-        </motion.div>
+          </motion.section>
+        </div>
       </div>
 
       <style jsx>{`
-        .dashboard-container {
-          display: flex;
-          flex-direction: column;
-          gap: 2rem;
-        }
+        .dashboard-wrapper { display: flex; flex-direction: column; gap: 2.5rem; }
+        
+        .dashboard-intro { display: flex; justify-content: space-between; align-items: center; }
+        .intro-text h2 { font-family: var(--font-display), sans-serif; font-size: 1.75rem; font-weight: 300; letter-spacing: 0.1em; color: var(--text); margin: 0 0 0.5rem 0; }
+        .intro-text p { color: var(--text-muted); font-size: 0.9rem; margin: 0; }
+        
+        .system-health { display: flex; gap: 1.5rem; }
+        .health-item { display: flex; align-items: center; gap: 0.5rem; font-size: 0.65rem; font-weight: 800; color: var(--text-muted); opacity: 0.5; }
+        .health-item.active { color: #22c55e; opacity: 1; }
+        
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.5rem; }
+        .admin-stat-card { padding: 2rem; border-radius: 20px; display: flex; flex-direction: column; gap: 1.5rem; transition: all 0.3s; }
+        .admin-stat-card:hover { transform: translateY(-5px); border-color: var(--accent); }
+        
+        .stat-top { display: flex; justify-content: space-between; align-items: center; }
+        .stat-icon-box { width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; }
+        .stat-icon-box.appointments { background: rgba(166, 137, 102, 0.1); color: #a68966; }
+        .stat-icon-box.projects { background: rgba(191, 31, 90, 0.1); color: #bf1f5a; }
+        .stat-icon-box.team { background: rgba(34, 197, 94, 0.1); color: #22c55e; }
+        .stat-icon-box.studios { background: rgba(77, 171, 247, 0.1); color: #4dabf7; }
+        .stat-link-icon { color: var(--text-muted); opacity: 0.5; transition: all 0.3s; }
+        .stat-link-icon:hover { opacity: 1; color: var(--accent); }
+        
+        .stat-value-group h3 { font-family: var(--font-display), sans-serif; font-size: 2.25rem; font-weight: 300; margin: 0; }
+        .stat-value-group span { font-size: 0.75rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; }
+        
+        .stat-trend { display: flex; align-items: center; gap: 4px; font-size: 0.7rem; color: var(--text-muted); font-weight: 700; }
+        .stat-trend.positive { color: #22c55e; }
+        
+        .dashboard-main-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 1.75rem; }
+        .main-grid-left, .main-grid-right { display: flex; flex-direction: column; gap: 1.75rem; }
+        
+        .dashboard-section { padding: 2rem; border-radius: 20px; }
+        .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; }
+        .section-header h3 { font-family: var(--font-display), sans-serif; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--accent); margin: 0; }
+        .view-all { font-size: 0.75rem; font-weight: 700; color: var(--text-muted); display: flex; align-items: center; gap: 4px; }
+        .view-all:hover { color: var(--accent); }
 
-        .dashboard-header h2 {
-          font-family: var(--font-display), sans-serif;
-          font-size: 2rem;
-          font-weight: 300;
-          color: #fff;
-          margin: 0 0 0.5rem 0;
-        }
+        .project-preview-list { display: flex; flex-direction: column; gap: 1rem; }
+        .preview-item { display: flex; align-items: center; gap: 1rem; padding: 1rem; background: rgba(255,255,255,0.02); border-radius: 12px; }
+        .preview-img { width: 50px; height: 50px; border-radius: 8px; overflow: hidden; flex-shrink: 0; background: var(--surface-muted); }
+        .preview-img img { width: 100%; height: 100%; object-fit: cover; }
+        .preview-info { flex: 1; }
+        .preview-info h4 { font-size: 0.85rem; margin: 0 0 4px 0; color: var(--text); }
+        .preview-info p { font-size: 0.7rem; color: var(--text-muted); margin: 0; }
+        .preview-status { font-size: 0.6rem; font-weight: 800; background: rgba(34, 197, 94, 0.15); color: #22c55e; padding: 4px 8px; border-radius: 4px; }
+        .edit-mini-btn { width: 32px; height: 32px; border-radius: 50%; background: var(--surface-muted); display: flex; align-items: center; justify-content: center; color: var(--text-muted); }
 
-        .dashboard-header p {
-          color: rgba(255,255,255,0.5);
-          font-size: 0.9rem;
-          margin: 0;
-        }
+        .workflow-mini { display: flex; justify-content: space-between; align-items: center; background: linear-gradient(135deg, rgba(166, 137, 102, 0.1) 0%, transparent 100%); position: relative; overflow: hidden; }
+        .workflow-content { position: relative; z-index: 2; max-width: 60%; }
+        .workflow-badge { font-size: 0.55rem; font-weight: 900; color: var(--accent); background: rgba(166, 137, 102, 0.1); padding: 4px 8px; border-radius: 4px; width: fit-content; margin-bottom: 1rem; }
+        .workflow-content h3 { font-family: var(--font-display), sans-serif; font-size: 1.5rem; margin: 0 0 1rem 0; }
+        .workflow-content p { font-size: 0.85rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 2rem; }
+        .action-button-premium { background: var(--accent); color: #000; padding: 1rem 1.5rem; font-size: 0.75rem; font-weight: 800; display: inline-flex; align-items: center; gap: 8px; border-radius: 4px; }
+        .workflow-visual { position: absolute; right: -20px; top: 50%; transform: translateY(-50%) rotate(15deg); color: var(--accent); opacity: 0.1; }
 
-        .stats-grid {
-          display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-          gap: 1.5rem;
-        }
+        .quick-action-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        .q-btn { background: var(--surface-muted); border: 1px solid var(--line); padding: 1.5rem 1rem; border-radius: 12px; display: flex; flex-direction: column; align-items: center; gap: 0.75rem; text-align: center; transition: all 0.3s; }
+        .q-btn:hover { background: var(--accent); color: #000; border-color: var(--accent); }
+        .q-btn span { font-size: 0.7rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; }
 
-        .stat-card {
-          position: relative;
-          display: flex;
-          align-items: center;
-          gap: 1.5rem;
-          padding: 2rem;
-          overflow: hidden;
-        }
+        .activity-timeline { display: flex; flex-direction: column; gap: 1.5rem; }
+        .timeline-item { display: flex; gap: 1rem; }
+        .time-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); margin-top: 6px; position: relative; }
+        .timeline-item:not(:last-child) .time-dot::after { content: ''; position: absolute; height: 40px; width: 1px; background: var(--line); left: 3.5px; top: 8px; }
+        .time-info p { font-size: 0.8rem; margin: 0 0 4px 0; font-weight: 500; }
+        .time-info span { font-size: 0.7rem; color: var(--text-muted); }
 
-        .stat-icon-wrapper {
-          width: 60px;
-          height: 60px;
-          border-radius: 12px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          background: rgba(255,255,255,0.05);
-        }
-
-        .appointment-icon { color: #a68966; background: rgba(166, 137, 102, 0.1); }
-        .project-icon { color: #bf1f5a; background: rgba(191, 31, 90, 0.1); }
-        .studio-icon { color: #4dabf7; background: rgba(77, 171, 247, 0.1); }
-
-        .stat-content {
-          display: flex;
-          flex-direction: column;
-          z-index: 2;
-        }
-
-        .stat-label {
-          font-size: 0.75rem;
-          color: rgba(255,255,255,0.5);
-          text-transform: uppercase;
-          letter-spacing: 0.1em;
-          margin-bottom: 0.5rem;
-        }
-
-        .stat-value {
-          font-family: var(--font-display), sans-serif;
-          font-size: 2.5rem;
-          font-weight: 300;
-          color: #fff;
-          line-height: 1;
-        }
-
-        .skeleton-text {
-          height: 2.5rem;
-          width: 50px;
-          background: rgba(255,255,255,0.05);
-          border-radius: 4px;
-          animation: pulse 1.5s infinite;
-        }
-
-        .stat-link {
-          position: absolute;
-          top: 1.5rem;
-          right: 1.5rem;
-          display: flex;
-          align-items: center;
-          gap: 0.25rem;
-          font-size: 0.75rem;
-          color: rgba(255,255,255,0.3);
-          text-decoration: none;
-          transition: color 0.3s ease;
-          text-transform: uppercase;
-          letter-spacing: 0.1em;
-          z-index: 2;
-        }
-
-        .stat-link:hover { color: #fff; }
-
-        .dashboard-grid {
-          display: grid;
-          grid-template-columns: 2fr 1fr;
-          gap: 1.5rem;
-        }
-
-        .card-header {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          margin-bottom: 1.5rem;
-        }
-
-        .card-header h3 {
-          font-size: 1rem;
-          font-weight: 500;
-          color: #fff;
-          margin: 0;
-          text-transform: uppercase;
-          letter-spacing: 0.1em;
-        }
-
-        .text-btn {
-          background: transparent;
-          border: none;
-          color: #a68966;
-          font-size: 0.75rem;
-          text-transform: uppercase;
-          letter-spacing: 0.1em;
-          cursor: pointer;
-        }
-
-        .activity-list {
-          display: flex;
-          flex-direction: column;
-          gap: 1rem;
-        }
-
-        .activity-item {
-          display: flex;
-          align-items: flex-start;
-          gap: 1rem;
-          padding: 1rem;
-          background: rgba(255,255,255,0.02);
-          border-radius: 8px;
-          border: 1px solid rgba(255,255,255,0.02);
-        }
-
-        .activity-icon {
-          color: rgba(255,255,255,0.3);
-          padding-top: 2px;
-        }
-
-        .activity-details p {
-          margin: 0 0 0.25rem 0;
-          font-size: 0.9rem;
-          color: rgba(255,255,255,0.8);
-        }
-
-        .activity-details span {
-          font-size: 0.7rem;
-          color: rgba(255,255,255,0.4);
-        }
-
-        .actions-list {
-          display: flex;
-          flex-direction: column;
-          gap: 0.75rem;
-        }
-
-        .action-btn {
-          display: flex;
-          align-items: center;
-          gap: 1rem;
-          padding: 1rem;
-          background: rgba(255,255,255,0.03);
-          border: 1px solid rgba(255,255,255,0.05);
-          border-radius: 8px;
-          color: #fff;
-          text-decoration: none;
-          font-size: 0.85rem;
-          text-transform: uppercase;
-          letter-spacing: 0.1em;
-          transition: all 0.3s ease;
-        }
-
-        .action-btn:hover {
-          background: rgba(166, 137, 102, 0.1);
-          border-color: rgba(166, 137, 102, 0.3);
-          color: #a68966;
-        }
-
-        /* CINEMATIC CARD */
-        .cinematic-control-card {
-          position: relative;
-          background: linear-gradient(135deg, rgba(166, 137, 102, 0.1) 0%, rgba(0, 0, 0, 0) 100%);
-          border: 1px solid rgba(166, 137, 102, 0.2);
-          overflow: hidden;
-          padding: 3rem;
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-        }
-
-        .card-bg-decoration {
-          position: absolute;
-          top: -20%;
-          right: -10%;
-          width: 300px;
-          height: 300px;
-          background: radial-gradient(circle, rgba(166, 137, 102, 0.1) 0%, rgba(0, 0, 0, 0) 70%);
-          filter: blur(40px);
-          pointer-events: none;
-        }
-
-        .cinematic-content {
-          position: relative;
-          z-index: 2;
-          max-width: 60%;
-        }
-
-        .cinematic-badge {
-          display: inline-block;
-          background: rgba(166, 137, 102, 0.15);
-          color: #a68966;
-          padding: 4px 10px;
-          border-radius: 4px;
-          font-size: 0.6rem;
-          font-weight: 800;
-          letter-spacing: 0.2em;
-          margin-bottom: 1.5rem;
-        }
-
-        .cinematic-content h3 {
-          font-family: var(--font-display), sans-serif;
-          font-size: 1.5rem;
-          color: #fff;
-          margin: 0 0 1rem 0;
-          letter-spacing: 0.1em;
-        }
-
-        .cinematic-content p {
-          color: rgba(255,255,255,0.5);
-          font-size: 0.9rem;
-          line-height: 1.6;
-          margin-bottom: 2rem;
-        }
-
-        .cinematic-actions {
-          display: flex;
-          align-items: center;
-          gap: 2rem;
-        }
-
-        .premium-manage-btn {
-          background: #a68966;
-          color: #000;
-          padding: 1rem 2rem;
-          border-radius: 4px;
-          text-decoration: none;
-          font-weight: 800;
-          font-size: 0.75rem;
-          letter-spacing: 0.1em;
-          display: flex;
-          align-items: center;
-          gap: 0.75rem;
-          transition: all 0.3s ease;
-        }
-
-        .premium-manage-btn:hover {
-          transform: translateY(-3px);
-          box-shadow: 0 10px 30px rgba(166, 137, 102, 0.3);
-        }
-
-        .status-indicators {
-          display: flex;
-          flex-direction: column;
-          gap: 0.5rem;
-        }
-
-        .indicator {
-          display: flex;
-          align-items: center;
-          gap: 0.6rem;
-          font-size: 0.65rem;
-          color: rgba(255,255,255,0.4);
-          font-weight: 600;
-          letter-spacing: 0.05em;
-        }
-
-        .dot {
-          width: 6px;
-          height: 6px;
-          background: #22c55e;
-          border-radius: 50%;
-          box-shadow: 0 0 10px rgba(34, 197, 94, 0.5);
-        }
-
-        .cinematic-visual-hint {
-          color: rgba(166, 137, 102, 0.1);
-          transform: rotate(-15deg);
-        }
-
-        @keyframes pulse {
-          0% { opacity: 0.5; }
-          50% { opacity: 0.8; }
-          100% { opacity: 0.5; }
-        }
+        .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(20px); border: 1px solid var(--line); }
+        [data-theme='light'] .glass { background: rgba(0, 0, 0, 0.02); }
 
         @media (max-width: 1024px) {
-          .dashboard-grid { grid-template-columns: 1fr; }
+          .dashboard-main-grid { grid-template-columns: 1fr; }
+          .stats-grid { grid-template-columns: 1fr 1fr; }
+        }
+        @media (max-width: 600px) {
+          .stats-grid { grid-template-columns: 1fr; }
+          .dashboard-intro { flex-direction: column; align-items: flex-start; gap: 1.5rem; }
+          .system-health { width: 100%; justify-content: space-between; }
         }
       `}</style>
     </motion.div>

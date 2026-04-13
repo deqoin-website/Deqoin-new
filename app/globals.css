@@ -1,16 +1,32 @@
 @import url("https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap");
 
 :root {
-  --background: #f9f9f9;
+  /* LIGHT MODE (Default and Fallback) */
+  --background: #fdfdfd;
   --surface: #ffffff;
-  --surface-muted: #ebeeef;
-  --text: #2d3435;
-  --text-soft: #5a6061;
-  --text-muted: #9ea5a6;
+  --surface-muted: #f3f4f6;
+  --text: #1a1a1a;
+  --text-soft: #4a4a4a;
+  --text-muted: #888888;
   --line: rgba(0, 0, 0, 0.08);
-  --accent: #bf1f5a;
-  --accent-soft: #a68966;
-  --shadow: 0 24px 80px rgba(0, 0, 0, 0.18);
+  --accent: #a68966;
+  --accent-soft: #c5ac8c;
+  --shadow: 0 10px 40px rgba(0, 0, 0, 0.05);
+  --selection: #a68966;
+}
+
+[data-theme='dark'] {
+  --background: #080808;
+  --surface: #111111;
+  --surface-muted: #1a1a1a;
+  --text: #ffffff;
+  --text-soft: rgba(255, 255, 255, 0.7);
+  --text-muted: rgba(255, 255, 255, 0.4);
+  --line: rgba(255, 255, 255, 0.1);
+  --accent: #a68966;
+  --accent-soft: #8a7154;
+  --shadow: 0 30px 100px rgba(0, 0, 0, 0.6);
+  --selection: #a68966;
 }
 
 * {
@@ -156,11 +172,11 @@ body:has(.homepage-snap-shell) {
 
 /* Scroll state — frosted glass */
 .topbar.scrolled {
-  background: rgba(8, 8, 8, 0.72);
+  background: var(--surface-muted);
   backdrop-filter: blur(22px) saturate(160%);
   -webkit-backdrop-filter: blur(22px) saturate(160%);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
-  box-shadow: 0 2px 40px rgba(0, 0, 0, 0.45);
+  border-bottom: 1px solid var(--line);
+  box-shadow: var(--shadow);
 }
 
 .topbar-nav {
@@ -204,7 +220,19 @@ body:has(.homepage-snap-shell) {
     font-size: 0.55rem;
   }
   .topbar-brand {
-    gap: 1.5rem;
+    gap: 1rem;
+  }
+  .topbar-actions {
+    gap: 0.75rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .topbar {
+    padding: 0 1rem;
+  }
+  .topbar-nav {
+    height: 4.5rem;
   }
 }
 
@@ -4588,7 +4616,8 @@ body:has(.homepage-snap-shell) {
 @media (max-width: 1024px) {
   .process-timeline {
     flex-direction: column;
-    gap: 4rem;
+    gap: 3rem;
+    padding: 2rem 1rem;
   }
   
   .process-timeline::before {
@@ -4598,23 +4627,22 @@ body:has(.homepage-snap-shell) {
   .process-step {
     display: flex;
     text-align: left;
-    align-items: center;
-    gap: 2rem;
+    align-items: flex-start;
+    gap: 1.5rem;
     padding: 0;
   }
 
-  .process-section {
-    justify-content: flex-start;
-  }
-  
   .step-number {
     margin: 0;
     flex-shrink: 0;
+    width: 50px;
+    height: 50px;
   }
   
   .step-content p {
     margin: 0;
     max-width: 100%;
+    font-size: 0.8rem;
   }
 }
 

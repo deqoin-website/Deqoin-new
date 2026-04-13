@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import { projectsData } from "../data/projects";
 import { teamMembers } from "../data/team";
 import ConsultationModal from "./ConsultationModal";
+import ThemeToggle from "./ThemeToggle";
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -195,6 +196,7 @@ export default function Header() {
             <button className="icon-button" type="button" aria-label="Search" onClick={() => setIsSearchOpen(true)}>
               <span className="material-symbols-outlined">search</span>
             </button>
+            <ThemeToggle />
           </div>
           <div className="topbar-brand">
             <div className="topbar-links">
