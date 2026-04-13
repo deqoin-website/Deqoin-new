@@ -114,6 +114,27 @@ export default function AdminDashboard() {
           </div>
         </motion.div>
 
+        <motion.div variants={itemVariants} className="admin-card cinematic-control-card">
+          <div className="card-bg-decoration"></div>
+          <div className="cinematic-content">
+            <div className="cinematic-badge">CANLI DENEYİM</div>
+            <h3>SİNEMATİK MEDYA & SLIDER</h3>
+            <p>Anasayfa snap-scroll geçişlerini, sloganları ve arka plan efektlerini yönetin.</p>
+            <div className="cinematic-actions">
+               <Link href="/admin/content/slider" className="premium-manage-btn">
+                 DENEYİMİ YÖNET <ArrowUpRight size={18} />
+               </Link>
+               <div className="status-indicators">
+                 <div className="indicator"><div className="dot"></div> Video Desteği Aktif</div>
+                 <div className="indicator"><div className="dot"></div> Blur & Overlay Aktif</div>
+               </div>
+            </div>
+          </div>
+          <div className="cinematic-visual-hint">
+             <Aperture size={80} strokeWidth={0.5} />
+          </div>
+        </motion.div>
+
         <motion.div variants={itemVariants} className="admin-card quick-actions">
           <div className="card-header">
             <h3>Hızlı İşlemler</h3>
@@ -126,6 +147,10 @@ export default function AdminDashboard() {
             <Link href="/admin/crm" className="action-btn">
               <MessageSquare size={20} />
               Randevuları Kontrol Et
+            </Link>
+            <Link href="/admin/content/workflow" className="action-btn">
+               <Briefcase size={20} />
+               İş Akışını Düzenle
             </Link>
           </div>
         </motion.div>
@@ -319,6 +344,117 @@ export default function AdminDashboard() {
           background: rgba(166, 137, 102, 0.1);
           border-color: rgba(166, 137, 102, 0.3);
           color: #a68966;
+        }
+
+        /* CINEMATIC CARD */
+        .cinematic-control-card {
+          position: relative;
+          background: linear-gradient(135deg, rgba(166, 137, 102, 0.1) 0%, rgba(0, 0, 0, 0) 100%);
+          border: 1px solid rgba(166, 137, 102, 0.2);
+          overflow: hidden;
+          padding: 3rem;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+        }
+
+        .card-bg-decoration {
+          position: absolute;
+          top: -20%;
+          right: -10%;
+          width: 300px;
+          height: 300px;
+          background: radial-gradient(circle, rgba(166, 137, 102, 0.1) 0%, rgba(0, 0, 0, 0) 70%);
+          filter: blur(40px);
+          pointer-events: none;
+        }
+
+        .cinematic-content {
+          position: relative;
+          z-index: 2;
+          max-width: 60%;
+        }
+
+        .cinematic-badge {
+          display: inline-block;
+          background: rgba(166, 137, 102, 0.15);
+          color: #a68966;
+          padding: 4px 10px;
+          border-radius: 4px;
+          font-size: 0.6rem;
+          font-weight: 800;
+          letter-spacing: 0.2em;
+          margin-bottom: 1.5rem;
+        }
+
+        .cinematic-content h3 {
+          font-family: var(--font-display), sans-serif;
+          font-size: 1.5rem;
+          color: #fff;
+          margin: 0 0 1rem 0;
+          letter-spacing: 0.1em;
+        }
+
+        .cinematic-content p {
+          color: rgba(255,255,255,0.5);
+          font-size: 0.9rem;
+          line-height: 1.6;
+          margin-bottom: 2rem;
+        }
+
+        .cinematic-actions {
+          display: flex;
+          align-items: center;
+          gap: 2rem;
+        }
+
+        .premium-manage-btn {
+          background: #a68966;
+          color: #000;
+          padding: 1rem 2rem;
+          border-radius: 4px;
+          text-decoration: none;
+          font-weight: 800;
+          font-size: 0.75rem;
+          letter-spacing: 0.1em;
+          display: flex;
+          align-items: center;
+          gap: 0.75rem;
+          transition: all 0.3s ease;
+        }
+
+        .premium-manage-btn:hover {
+          transform: translateY(-3px);
+          box-shadow: 0 10px 30px rgba(166, 137, 102, 0.3);
+        }
+
+        .status-indicators {
+          display: flex;
+          flex-direction: column;
+          gap: 0.5rem;
+        }
+
+        .indicator {
+          display: flex;
+          align-items: center;
+          gap: 0.6rem;
+          font-size: 0.65rem;
+          color: rgba(255,255,255,0.4);
+          font-weight: 600;
+          letter-spacing: 0.05em;
+        }
+
+        .dot {
+          width: 6px;
+          height: 6px;
+          background: #22c55e;
+          border-radius: 50%;
+          box-shadow: 0 0 10px rgba(34, 197, 94, 0.5);
+        }
+
+        .cinematic-visual-hint {
+          color: rgba(166, 137, 102, 0.1);
+          transform: rotate(-15deg);
         }
 
         @keyframes pulse {

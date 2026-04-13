@@ -87,7 +87,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     {
       group: 'SAYFA YÖNETİMİ',
       items: [
-        { name: 'Sinematik Slider', icon: ImageIcon, path: '/admin/content/slider' },
+        { name: 'Sinematik Medya & Slider', icon: ImageIcon, path: '/admin/content/slider' },
         { name: 'İş Akışı & Kurumsal', icon: Briefcase, path: '/admin/content/workflow' },
         { name: 'Ekip Üyeleri', icon: Users, path: '/admin/team' },
       ]
