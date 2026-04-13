@@ -57,6 +57,16 @@ video {
   overflow-x: hidden;
 }
 
+.homepage-snap-shell {
+  height: 100svh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scroll-snap-type: y proximity;
+  scroll-padding-top: 5rem;
+  overscroll-behavior-y: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
 .site-shell-content {
   position: relative;
   z-index: 1;
@@ -69,6 +79,12 @@ video {
 .experiential-shell.project-panel-open .site-shell-content {
   filter: blur(18px) saturate(0.86);
   transform: scale(0.992);
+}
+
+.snap-section {
+  scroll-snap-align: start;
+  scroll-snap-stop: normal;
+  min-height: 100svh;
 }
 
 .topbar {
@@ -1489,15 +1505,19 @@ video {
 .project-snap-scroller {
   position: relative;
   height: min(100svh, 54rem);
-  overflow-y: auto;
-  overflow-x: hidden;
-  scroll-snap-type: y mandatory;
-  overscroll-behavior-y: contain;
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  overscroll-behavior-x: contain;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
   border-radius: 1.75rem;
   background: #0a0a0a;
   box-shadow: 0 28px 90px rgba(0, 0, 0, 0.18);
+  touch-action: pan-x;
 }
 
 .project-snap-scroller::-webkit-scrollbar {
@@ -1505,8 +1525,9 @@ video {
 }
 
 .project-snap-frame {
+  width: 100%;
   min-height: min(100svh, 54rem);
-  scroll-snap-align: start;
+  scroll-snap-align: center;
   scroll-snap-stop: always;
   position: relative;
 }
@@ -1515,7 +1536,7 @@ video {
   min-height: inherit;
   border-radius: inherit;
   isolation: isolate;
-  touch-action: pan-y;
+  touch-action: pan-x;
 }
 
 .project-snap-card.active .project-snap-image-wrap img {
@@ -1859,8 +1880,8 @@ video {
 
   .project-snap-scroller,
   .project-snap-frame {
-    height: min(100svh, 46rem);
-    min-height: min(100svh, 46rem);
+    height: min(82svh, 46rem);
+    min-height: min(82svh, 46rem);
   }
 
   .project-snap-scroller {
@@ -2519,6 +2540,16 @@ video {
   }
 }
 
+@media (prefers-reduced-motion: reduce) {
+  .homepage-snap-shell {
+    scroll-snap-type: none;
+  }
+
+  .snap-section {
+    scroll-snap-align: none;
+  }
+}
+
 @media (min-width: 1025px) {
   .project-slide-copy .vertical-text {
     font-size: clamp(1.8rem, 2.15vw, 3rem);
@@ -2783,6 +2814,24 @@ video {
   min-height: 100vh;
 }
 
+.gallery-vertical-shell,
+.gallery-detail-vertical-shell,
+.studio-vertical-shell {
+  height: 100svh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scroll-snap-type: y proximity;
+  scroll-padding-top: 5rem;
+  overscroll-behavior-y: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
+.gallery-snap-point,
+.studio-snap-point {
+  scroll-snap-align: start;
+  scroll-snap-stop: normal;
+}
+
 .detail-topbar {
   position: absolute;
   top: 0;
@@ -2969,6 +3018,47 @@ video {
 }
 
 @media (max-width: 767px) {
+  .studio-gallery-sensory,
+  .project-grid-sensory,
+  .project-gallery {
+    display: grid;
+    grid-auto-flow: row;
+    overflow: visible;
+    scroll-snap-type: none;
+  }
+
+  .studio-gallery-sensory {
+    grid-auto-columns: unset;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    align-items: stretch;
+  }
+
+  .project-grid-sensory,
+  .project-gallery {
+    grid-auto-columns: unset;
+    grid-template-columns: 1fr;
+    gap: 0.9rem;
+    align-items: stretch;
+  }
+
+  .studio-gallery-sensory .project-card-interactive-sensory,
+  .project-grid-sensory .project-card-gallery-sensory,
+  .project-gallery .gallery-item {
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+  }
+
+  .studio-gallery-sensory .project-card-interactive-sensory {
+    min-height: 86svh;
+  }
+
+  .project-gallery .gallery-item {
+    aspect-ratio: 16 / 11;
+    border-radius: 1.2rem;
+    min-height: 72svh;
+  }
+
   .project-detail-hero, .project-detail-content, .detail-topbar {
     padding-left: 1.25rem;
     padding-right: 1.25rem;
@@ -4670,9 +4760,50 @@ video {
   flex-direction: column;
 }
 
+.project-card-interactive-sensory {
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.project-card-interactive-sensory:focus-visible {
+  outline: 1px solid rgba(204, 168, 131, 0.88);
+  outline-offset: 8px;
+}
+
 .project-card-interactive:hover {
   transform: translateY(-10px);
   border-color: rgba(204, 168, 131, 0.3);
+}
+
+.project-card-interactive-sensory::after,
+.project-card-gallery-sensory::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(255,255,255,0.06), transparent 24%, rgba(0,0,0,0.08));
+  opacity: 0;
+  transition: opacity 0.45s ease;
+  pointer-events: none;
+}
+
+.project-card-interactive-sensory:hover::after,
+.project-card-gallery-sensory:hover::after {
+  opacity: 1;
+}
+
+.project-card-gallery-sensory {
+  cursor: pointer;
+}
+
+.project-card-gallery-sensory:focus-visible {
+  outline: 1px solid rgba(204, 168, 131, 0.88);
+  outline-offset: 8px;
+}
+
+.project-card-gallery-sensory h4,
+.project-card-gallery-sensory .vertical-text {
+  pointer-events: none;
 }
 
 .project-card-img {
@@ -5024,7 +5155,7 @@ video {
     text-align: center;
   }
 
-  .studio-gallery {
+  .studio-gallery:not(.studio-gallery-sensory) {
     grid-template-columns: 1fr;
   }
 
@@ -5486,7 +5617,7 @@ video {
     gap: 0;
   }
 
-  .galeri-page .project-grid {
+  .galeri-page .project-grid:not(.project-grid-sensory) {
     grid-template-columns: 1fr;
     grid-auto-rows: 94svh;
     width: 100vw;
@@ -5494,7 +5625,7 @@ video {
     margin-right: calc(50% - 50vw);
   }
 
-  .galeri-page .project-card {
+  .galeri-page .project-card:not(.project-card-gallery-sensory) {
     display: block;
     width: 100%;
     height: 94svh;
@@ -5508,6 +5639,23 @@ video {
   .galeri-page .project-overlay,
   .galeri-page .project-slide-glow {
     border-radius: 0 !important;
+  }
+
+  .galeri-page .project-grid.project-grid-sensory {
+    width: 100vw;
+    margin-left: calc(50% - 50vw);
+    margin-right: calc(50% - 50vw);
+    padding: 0 1rem;
+  }
+
+  .galeri-page .project-card-gallery-sensory {
+    display: block;
+    width: 100%;
+    height: 82svh;
+    min-height: 82svh;
+    border-radius: 1.35rem !important;
+    overflow: clip;
+    box-shadow: 0 28px 60px rgba(0, 0, 0, 0.22);
   }
 
   .galeri-page .project-card h4 {

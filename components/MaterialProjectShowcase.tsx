@@ -1,8 +1,9 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Category, ProjectDetail } from "../data/projects";
 import ConsultationModal from "./ConsultationModal";
+import ProjectInsightPanel from "./ProjectInsightPanel";
 
 type MaterialProjectShowcaseProps = {
   materialSlug?: string;
@@ -36,6 +37,7 @@ export default function MaterialProjectShowcase({
   const [activeCategory, setActiveCategory] = useState<string>("ALL");
   const [isConsultationOpen, setIsConsultationOpen] = useState(false);
   const [isMobileDrawerOpen, setIsMobileDrawerOpen] = useState(false);
+  const [activeProjectSlug, setActiveProjectSlug] = useState<string | null>(null);
 
   const studioProjects = useMemo(() => {
     if (materialSlug) {
@@ -86,6 +88,22 @@ export default function MaterialProjectShowcase({
     });
   }, [activeCategory, studioProjects, searchQuery]);
 
+  const selectedProject = useMemo(
+    () => filteredProjects.find((project) => project.slug === activeProjectSlug) ?? null,
+    [activeProjectSlug, filteredProjects],
+  );
+
+  useEffect(() => {
+    if (!activeProjectSlug) return;
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [activeProjectSlug]);
+
   const handleCategorySelect = (category: string) => {
     setActiveCategory(category);
     setIsMobileDrawerOpen(false);
@@ -101,7 +119,7 @@ export default function MaterialProjectShowcase({
 
   return (
     <>
-      <section className="material-showcase-intro">
+      <section className="material-showcase-intro studio-snap-point">
         <span className="section-small-label">SEÇKİLİ PROJELER</span>
         <h2>{materialTitle} ile Hayat Bulan Mekanlar</h2>
         <p>
@@ -110,7 +128,7 @@ export default function MaterialProjectShowcase({
         </p>
       </section>
 
-      <div className="studio-search-container material-studio-search">
+      <div className="studio-search-container material-studio-search studio-snap-point">
         <div className="studio-search-bar">
           <span className="material-symbols-outlined">search</span>
           <input
@@ -179,10 +197,22 @@ export default function MaterialProjectShowcase({
           </div>
         </aside>
 
-        <div className="studio-gallery">
+        <div className="studio-gallery studio-gallery-sensory">
           {filteredProjects.length > 0 ? (
             filteredProjects.map((project) => (
-              <div key={project.slug} className="project-card-interactive">
+              <div
+                key={project.slug}
+                className="project-card-interactive project-card-interactive-sensory studio-snap-point"
+                role="button"
+                tabIndex={0}
+                onClick={() => setActiveProjectSlug(project.slug)}
+                onKeyDown={(event) => {
+                  if (event.key === "Enter" || event.key === " ") {
+                    event.preventDefault();
+                    setActiveProjectSlug(project.slug);
+                  }
+                }}
+              >
                 <div className="project-card-img">
                   <img src={project.coverImage} alt={project.title} />
                   <div className="project-card-badge">{project.label}</div>
@@ -222,7 +252,13 @@ export default function MaterialProjectShowcase({
                   </div>
 
                   <div className="project-card-footer">
-                    <button className="project-action-btn" onClick={() => setIsConsultationOpen(true)}>
+                    <button
+                      className="project-action-btn"
+                      onClick={(event) => {
+                        event.stopPropagation();
+                        setIsConsultationOpen(true);
+                      }}
+                    >
                       SÜRECİ BAŞLAT
                       <span className="material-symbols-outlined">arrow_right_alt</span>
                     </button>
@@ -241,6 +277,7 @@ export default function MaterialProjectShowcase({
       </section>
 
       <ConsultationModal isOpen={isConsultationOpen} onClose={() => setIsConsultationOpen(false)} />
+      <ProjectInsightPanel project={selectedProject} onClose={() => setActiveProjectSlug(null)} />
     </>
   );
 }

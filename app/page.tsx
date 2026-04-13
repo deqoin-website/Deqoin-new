@@ -2,10 +2,11 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { projectsData } from "../data/projects";
 import { teamFilters, teamMembers } from "../data/team";
 import ConsultationModal from "../components/ConsultationModal";
+import ProjectInsightPanel from "../components/ProjectInsightPanel";
 import SwipeAppointmentButton from "../components/SwipeAppointmentButton";
 
 const heroSlides = [
@@ -56,7 +57,6 @@ const serviceCards = [
   },
 ];
 export default function Page() {
-  const prefersReducedMotion = useReducedMotion();
   const [heroIndex, setHeroIndex] = useState(0);
   const [heroDirection, setHeroDirection] = useState(0);
   const [isConsultationOpen, setIsConsultationOpen] = useState(false);
@@ -66,14 +66,12 @@ export default function Page() {
   const [projectDirection, setProjectDirection] = useState(1);
   const [projectProgressKey, setProjectProgressKey] = useState(0);
   const [activeProjectPanelSlug, setActiveProjectPanelSlug] = useState<string | null>(null);
-  const [isProjectSnapViewport, setIsProjectSnapViewport] = useState(false);
   const [teamSlideIndex, setTeamSlideIndex] = useState(0);
   const [teamSlideDirection, setTeamSlideDirection] = useState(1);
   const heroTouchStartX = useRef<number | null>(null);
   const heroTouchStartY = useRef<number | null>(null);
   const projectTouchStartX = useRef<number | null>(null);
   const projectTouchStartY = useRef<number | null>(null);
-  const projectSnapRef = useRef<HTMLDivElement | null>(null);
   const projectIndexRef = useRef(0);
   const teamTouchStartX = useRef<number | null>(null);
   const teamTouchStartY = useRef<number | null>(null);
@@ -133,23 +131,7 @@ export default function Page() {
   };
 
   useEffect(() => {
-    if (typeof window === "undefined") return;
-
-    const mediaQuery = window.matchMedia("(max-width: 767px)");
-    const handleViewportChange = () => setIsProjectSnapViewport(mediaQuery.matches);
-    handleViewportChange();
-
-    if (typeof mediaQuery.addEventListener === "function") {
-      mediaQuery.addEventListener("change", handleViewportChange);
-      return () => mediaQuery.removeEventListener("change", handleViewportChange);
-    }
-
-    mediaQuery.addListener(handleViewportChange);
-    return () => mediaQuery.removeListener(handleViewportChange);
-  }, []);
-
-  useEffect(() => {
-    if (filteredProjects.length === 0 || isProjectSnapViewport || activeProjectPanelSlug) return;
+    if (filteredProjects.length === 0 || activeProjectPanelSlug) return;
 
     const interval = window.setInterval(() => {
       setProjectDirection(1);
@@ -158,41 +140,7 @@ export default function Page() {
     }, 7000);
 
     return () => window.clearInterval(interval);
-  }, [activeProjectPanelSlug, filteredProjects.length, isProjectSnapViewport]);
-
-  useEffect(() => {
-    if (!isProjectSnapViewport || !projectSnapRef.current || filteredProjects.length === 0) return;
-
-    const snapContainer = projectSnapRef.current;
-    const snapCards = Array.from(
-      snapContainer.querySelectorAll<HTMLElement>("[data-project-index]"),
-    );
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const activeEntry = entries
-          .filter((entry) => entry.isIntersecting)
-          .sort((left, right) => right.intersectionRatio - left.intersectionRatio)[0];
-
-        if (!activeEntry) return;
-
-        const nextIndex = Number((activeEntry.target as HTMLElement).dataset.projectIndex);
-        if (Number.isNaN(nextIndex) || nextIndex === projectIndexRef.current) return;
-
-        setProjectDirection(nextIndex > projectIndexRef.current ? 1 : -1);
-        setProjectIndex(nextIndex);
-        setProjectProgressKey((current) => current + 1);
-      },
-      {
-        root: snapContainer,
-        threshold: [0.55, 0.7, 0.85],
-      },
-    );
-
-    snapCards.forEach((card) => observer.observe(card));
-
-    return () => observer.disconnect();
-  }, [filteredProjects, isProjectSnapViewport]);
+  }, [activeProjectPanelSlug, filteredProjects.length]);
 
   useEffect(() => {
     if (!activeProjectPanelSlug) return;
@@ -257,20 +205,6 @@ export default function Page() {
 
     setProjectDirection(direction);
     setProjectProgressKey((current) => current + 1);
-
-    if (isProjectSnapViewport) {
-      const nextCard = projectSnapRef.current?.querySelector<HTMLElement>(
-        `[data-project-index="${nextIndex}"]`,
-      );
-
-      nextCard?.scrollIntoView({
-        behavior: prefersReducedMotion ? "auto" : "smooth",
-        block: "nearest",
-      });
-      setProjectIndex(nextIndex);
-      return;
-    }
-
     setProjectIndex(nextIndex);
   };
 
@@ -280,18 +214,6 @@ export default function Page() {
 
     setProjectDirection(nextIndex > projectIndexRef.current ? 1 : -1);
     setProjectProgressKey((current) => current + 1);
-
-    if (isProjectSnapViewport) {
-      const nextCard = projectSnapRef.current?.querySelector<HTMLElement>(
-        `[data-project-index="${nextIndex}"]`,
-      );
-
-      nextCard?.scrollIntoView({
-        behavior: prefersReducedMotion ? "auto" : "smooth",
-        block: "nearest",
-      });
-    }
-
     setProjectIndex(nextIndex);
   };
 
@@ -362,7 +284,6 @@ export default function Page() {
   };
 
   const handleProjectWheel = (event: React.WheelEvent<HTMLElement>) => {
-    if (isProjectSnapViewport) return;
     if (projectWheelLockRef.current || filteredProjects.length === 0) return;
     if (Math.abs(event.deltaY) < 20 && Math.abs(event.deltaX) < 20) return;
 
@@ -384,13 +305,17 @@ export default function Page() {
 
 
   return (
-    <main className={`site-shell experiential-shell ${activeProjectPanelSlug ? "project-panel-open" : ""}`}>
+    <main
+      className={`site-shell experiential-shell homepage-snap-shell ${
+        activeProjectPanelSlug ? "project-panel-open" : ""
+      }`}
+    >
       <div className="site-shell-content">
         <section
-        className="hero-section"
-        id="hero-slider"
-        onTouchStart={handleHeroTouchStart}
-        onTouchEnd={handleHeroTouchEnd}
+          className="hero-section snap-section"
+          id="hero-slider"
+          onTouchStart={handleHeroTouchStart}
+          onTouchEnd={handleHeroTouchEnd}
         >
         <AnimatePresence mode="wait" initial={false}>
           <motion.div
@@ -468,7 +393,7 @@ export default function Page() {
         </section>
 
         {/* ── DESIGN & BUILD PROCESS SECTION ── */}
-        <section className="process-section">
+        <section className="process-section snap-section">
         <div className="process-header">
           <h2>İŞ AKIŞI</h2>
           <div className="section-line" />
@@ -501,7 +426,7 @@ export default function Page() {
         </div>
         </section>
 
-        <section className="services-section">
+        <section className="services-section snap-section">
         <div className="section-inner" style={{ paddingBottom: "2rem" }}>
           <div className="section-heading">
             <div>
@@ -547,14 +472,14 @@ export default function Page() {
         </section>
 
 
-        <section className="projects-section" id="galeri">
+        <section className="projects-section snap-section" id="galeri">
         <div className="section-inner">
           <div className="section-heading projects-heading">
             <div>
               <h2>Galeri</h2>
               <div className="section-line" />
             </div>
-            <div className={`project-slider-controls ${isProjectSnapViewport ? "project-slider-controls-mobile" : ""}`}>
+            <div className="project-slider-controls">
               <div className="project-slider-counter">
                 <span>{String(projectIndex + 1).padStart(2, "0")}</span>
                 <small>{String(filteredProjects.length).padStart(2, "0")}</small>
@@ -581,150 +506,87 @@ export default function Page() {
             </div>
           </div>
 
-          {isProjectSnapViewport ? (
-            <div className="project-snap-shell">
-              <div className="project-slider-progress project-slider-progress-mobile" aria-hidden="true">
-                <motion.span
-                  key={projectProgressKey}
-                  className="project-slider-progress-fill"
-                  initial={{ scaleX: 0 }}
-                  animate={{ scaleX: 1 }}
-                  transition={{ duration: prefersReducedMotion ? 0.01 : 0.9, ease: "linear" }}
-                />
-              </div>
-              <div ref={projectSnapRef} className="project-snap-scroller">
-                {filteredProjects.map((project, idx) => (
-                  <div
-                    key={project.slug}
-                    className="project-snap-frame"
-                    data-project-index={idx}
-                  >
-                    <motion.button
-                      type="button"
-                      className={`project-card project-card-full project-card-trigger project-snap-card ${
-                        idx === projectIndex ? "active" : ""
-                      }`}
-                      onClick={() => openProjectPanel(project.slug)}
-                      animate={
-                        prefersReducedMotion
-                          ? {}
-                          : {
-                              scale: idx === projectIndex ? 1 : 0.984,
-                              filter: idx === projectIndex ? "saturate(1)" : "saturate(0.9)",
-                            }
-                      }
-                      transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
-                    >
-                      <div
-                        className="project-snap-ambient"
-                        style={{ backgroundImage: `url(${project.coverImage})` }}
-                        aria-hidden="true"
-                      />
-                      <div className="project-snap-image-wrap">
-                        <img src={project.coverImage} alt={project.title} />
-                      </div>
-                      <div className="project-overlay" />
-                      <div className="project-slide-glow" />
-                      <div className="project-snap-copy">
-                        <span className="project-snap-kicker">{project.label}</span>
-                        <div className="project-snap-main">
-                          <h4>{project.title}</h4>
-                          <p>{project.description}</p>
-                        </div>
-                        <div className="project-snap-meta">
-                          <span>{project.year}</span>
-                          <span>{project.area}</span>
-                          <span>PROJE DOSYASI</span>
-                        </div>
-                      </div>
-                    </motion.button>
-                  </div>
-                ))}
-              </div>
+          <div
+            className="project-slider-window"
+            onTouchStart={handleProjectTouchStart}
+            onTouchEnd={handleProjectTouchEnd}
+            onWheel={handleProjectWheel}
+          >
+            <div className="project-slider-progress" aria-hidden="true">
+              <motion.span
+                key={projectProgressKey}
+                className="project-slider-progress-fill"
+                initial={{ scaleX: 0 }}
+                animate={{ scaleX: 1 }}
+                transition={{ duration: 4.8, ease: "linear" }}
+              />
             </div>
-          ) : (
-            <div
-              className="project-slider-window"
-              onTouchStart={handleProjectTouchStart}
-              onTouchEnd={handleProjectTouchEnd}
-              onWheel={handleProjectWheel}
-            >
-              <div className="project-slider-progress" aria-hidden="true">
-                <motion.span
-                  key={projectProgressKey}
-                  className="project-slider-progress-fill"
-                  initial={{ scaleX: 0 }}
-                  animate={{ scaleX: 1 }}
-                  transition={{ duration: 4.8, ease: "linear" }}
-                />
-              </div>
-              <AnimatePresence mode="wait" initial={false}>
-                <motion.div
-                  key={filteredProjects[projectIndex]?.slug}
-                  className="project-slide"
-                  drag="x"
-                  dragConstraints={{ left: 0, right: 0 }}
-                  dragElastic={0.12}
-                  onDragEnd={(_, info) => {
-                    const threshold = 60;
-                    if (info.offset.x < -threshold) navigateProject(1);
-                    if (info.offset.x > threshold) navigateProject(-1);
-                  }}
-                  initial={{
-                    opacity: 0,
-                    x: projectDirection >= 0 ? 120 : -120,
-                    scale: 1.08,
-                    filter: "blur(16px) saturate(0.8)",
-                  }}
-                  animate={{
-                    opacity: 1,
-                    x: 0,
-                    scale: 1,
-                    filter: "blur(0px) saturate(1)",
-                  }}
-                  exit={{
-                    opacity: 0,
-                    x: projectDirection >= 0 ? -120 : 120,
-                    scale: 0.98,
-                    filter: "blur(10px) saturate(0.85)",
-                  }}
-                  transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
+            <AnimatePresence mode="wait" initial={false}>
+              <motion.div
+                key={filteredProjects[projectIndex]?.slug}
+                className="project-slide"
+                drag="x"
+                dragConstraints={{ left: 0, right: 0 }}
+                dragElastic={0.12}
+                onDragEnd={(_, info) => {
+                  const threshold = 60;
+                  if (info.offset.x < -threshold) navigateProject(1);
+                  if (info.offset.x > threshold) navigateProject(-1);
+                }}
+                initial={{
+                  opacity: 0,
+                  x: projectDirection >= 0 ? 120 : -120,
+                  scale: 1.08,
+                  filter: "blur(16px) saturate(0.8)",
+                }}
+                animate={{
+                  opacity: 1,
+                  x: 0,
+                  scale: 1,
+                  filter: "blur(0px) saturate(1)",
+                }}
+                exit={{
+                  opacity: 0,
+                  x: projectDirection >= 0 ? -120 : 120,
+                  scale: 0.98,
+                  filter: "blur(10px) saturate(0.85)",
+                }}
+                transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
+              >
+                <button
+                  type="button"
+                  className="project-card project-card-full project-card-trigger"
+                  onClick={() => currentProject && openProjectPanel(currentProject.slug)}
+                  aria-label={`${currentProject?.title ?? "Proje"} bilgilerini aç`}
                 >
-                  <button
-                    type="button"
-                    className="project-card project-card-full project-card-trigger"
-                    onClick={() => currentProject && openProjectPanel(currentProject.slug)}
-                    aria-label={`${currentProject?.title ?? "Proje"} bilgilerini aç`}
-                  >
-                    <motion.div
-                      className="project-slide-parallax"
-                      style={currentProject?.coverImage ? { backgroundImage: `url(${currentProject.coverImage})` } : undefined}
-                      initial={{ scale: 1.08, x: projectDirection >= 0 ? -30 : 30 }}
-                      animate={{ scale: 1.16, x: 0 }}
-                      exit={{ scale: 1.08, x: projectDirection >= 0 ? 30 : -30 }}
-                      transition={{ duration: 0.75, ease: [0.16, 1, 0.3, 1] }}
-                    />
-                    {currentProject?.coverImage ? (
-                      <img src={currentProject.coverImage} alt={currentProject.title} />
-                    ) : null}
-                    <div className="project-overlay" />
-                    <div className="project-slide-glow" />
-                    <div className="project-slide-copy">
-                      <span className="vertical-text">{currentProject?.label}</span>
-                      <div>
-                        <h4>{currentProject?.title}</h4>
-                        <span className="project-slide-cta">
-                          <span className="project-slide-cta-line" aria-hidden="true" />
-                          <span>PROJE BİLGİSİ</span>
-                          <span className="material-symbols-outlined project-slide-cta-icon" aria-hidden="true">arrow_forward</span>
-                        </span>
-                      </div>
+                  <motion.div
+                    className="project-slide-parallax"
+                    style={currentProject?.coverImage ? { backgroundImage: `url(${currentProject.coverImage})` } : undefined}
+                    initial={{ scale: 1.08, x: projectDirection >= 0 ? -30 : 30 }}
+                    animate={{ scale: 1.16, x: 0 }}
+                    exit={{ scale: 1.08, x: projectDirection >= 0 ? 30 : -30 }}
+                    transition={{ duration: 0.75, ease: [0.16, 1, 0.3, 1] }}
+                  />
+                  {currentProject?.coverImage ? (
+                    <img src={currentProject.coverImage} alt={currentProject.title} />
+                  ) : null}
+                  <div className="project-overlay" />
+                  <div className="project-slide-glow" />
+                  <div className="project-slide-copy">
+                    <span className="vertical-text">{currentProject?.label}</span>
+                    <div>
+                      <h4>{currentProject?.title}</h4>
+                      <span className="project-slide-cta">
+                        <span className="project-slide-cta-line" aria-hidden="true" />
+                        <span>PROJE BİLGİSİ</span>
+                        <span className="material-symbols-outlined project-slide-cta-icon" aria-hidden="true">arrow_forward</span>
+                      </span>
                     </div>
-                  </button>
-                </motion.div>
-              </AnimatePresence>
-            </div>
-          )}
+                  </div>
+                </button>
+              </motion.div>
+            </AnimatePresence>
+          </div>
 
           <div style={{ display: "flex", justifyContent: "center", marginTop: "5rem" }}>
             <Link href="/galeri" className="premium-all-btn">
@@ -735,7 +597,7 @@ export default function Page() {
         </div>
         </section>
 
-        <section className="about-section" id="about-us">
+        <section className="about-section snap-section" id="about-us">
         <div className="section-inner about-grid">
           <div className="about-copy">
             <div>
@@ -774,7 +636,7 @@ export default function Page() {
         </div>
         </section>
 
-        <section className="team-section" id="departman-ekipleri">
+        <section className="team-section snap-section" id="departman-ekipleri">
         <div className="section-inner">
           <div className="section-heading projects-heading">
             <div>
@@ -853,123 +715,7 @@ export default function Page() {
         </section>
       </div>
 
-      <AnimatePresence>
-        {selectedProject ? (
-          <>
-            <motion.button
-              type="button"
-              className="project-detail-backdrop"
-              aria-label="Proje bilgi ekranını kapat"
-              onClick={() => setActiveProjectPanelSlug(null)}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: prefersReducedMotion ? 0.1 : 0.32, ease: [0.16, 1, 0.3, 1] }}
-            />
-            <motion.aside
-              className="project-detail-sheet"
-              initial={
-                prefersReducedMotion
-                  ? { opacity: 0 }
-                  : {
-                      opacity: 0,
-                      y: isProjectSnapViewport ? 48 : -36,
-                      scale: 0.985,
-                    }
-              }
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={
-                prefersReducedMotion
-                  ? { opacity: 0 }
-                  : {
-                      opacity: 0,
-                      y: isProjectSnapViewport ? 44 : 24,
-                      scale: 0.985,
-                    }
-              }
-              transition={{ duration: prefersReducedMotion ? 0.1 : 0.56, ease: [0.16, 1, 0.3, 1] }}
-              role="dialog"
-              aria-modal="true"
-              aria-label={`${selectedProject.title} proje bilgisi`}
-            >
-              <div className="project-detail-sheet-media">
-                <img src={selectedProject.coverImage} alt={selectedProject.title} />
-                <div className="project-detail-sheet-media-overlay" />
-              </div>
-
-              <div className="project-detail-sheet-body">
-                <div className="project-detail-sheet-head">
-                  <div>
-                    <span className="project-detail-sheet-label">{selectedProject.label}</span>
-                    <h3>{selectedProject.title}</h3>
-                  </div>
-                  <button
-                    type="button"
-                    className="project-detail-close"
-                    onClick={() => setActiveProjectPanelSlug(null)}
-                    aria-label="Proje bilgisini kapat"
-                  >
-                    <span className="material-symbols-outlined">close</span>
-                  </button>
-                </div>
-
-                <p className="project-detail-sheet-summary">{selectedProject.description}</p>
-
-                <div className="project-detail-facts">
-                  <div>
-                    <span>İŞVEREN</span>
-                    <strong>{selectedProject.client}</strong>
-                  </div>
-                  <div>
-                    <span>TESLİM YILI</span>
-                    <strong>{selectedProject.year}</strong>
-                  </div>
-                  <div>
-                    <span>ÖLÇEK</span>
-                    <strong>{selectedProject.area}</strong>
-                  </div>
-                </div>
-
-                <div className="project-detail-sections">
-                  <section>
-                    <span>KISA BRİF</span>
-                    <p>{selectedProject.description}</p>
-                  </section>
-                  <section>
-                    <span>TEKNİK OMURGA</span>
-                    <p>{selectedProject.techDetails}</p>
-                  </section>
-                  <section>
-                    <span>TESLİM KURGUSU</span>
-                    <p>
-                      {selectedProject.client} için {selectedProject.year} teslim programına göre,{" "}
-                      {selectedProject.label.toLowerCase()} odağında {selectedProject.area} ölçeğinde
-                      geliştirildi.
-                    </p>
-                  </section>
-                </div>
-
-                <div className="project-detail-gallery-strip" aria-hidden="true">
-                  {selectedProject.gallery.slice(0, 2).map((image, idx) => (
-                    <div key={`${selectedProject.slug}-${idx}`} className="project-detail-gallery-frame">
-                      <img src={image} alt="" />
-                    </div>
-                  ))}
-                </div>
-
-                <div className="project-detail-sheet-footer">
-                  <Link href={`/galeri/${selectedProject.slug}`} className="inline-link">
-                    <span>GALERİ DOSYASINI AÇ</span>
-                    <span className="inline-link-rail">
-                      <span />
-                    </span>
-                  </Link>
-                </div>
-              </div>
-            </motion.aside>
-          </>
-        ) : null}
-      </AnimatePresence>
+      <ProjectInsightPanel project={selectedProject} onClose={() => setActiveProjectPanelSlug(null)} />
 
       <ConsultationModal 
         isOpen={isConsultationOpen} 

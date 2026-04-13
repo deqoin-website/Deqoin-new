@@ -1,10 +1,9 @@
 "use client";
 
-import { useState, useMemo, Suspense } from "react";
-import Link from "next/link";
+import { useState, useMemo, Suspense, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
-import ConsultationModal from "../../components/ConsultationModal";
-import SwipeAppointmentButton from "../../components/SwipeAppointmentButton";
+import ProjectInsightPanel from "../../components/ProjectInsightPanel";
+import { ProjectDetail } from "../../data/projects";
 
 const categories = [
   { key: "all", title: "HEPSİ", sideLabel: "Selection" },
@@ -23,15 +22,15 @@ function GaleriContent() {
   const searchParams = useSearchParams();
   const materialParam = searchParams?.get("material") ?? null;
   
-  const [projectsData, setProjectsData] = useState<any[]>([]);
+  const [projectsData, setProjectsData] = useState<ProjectDetail[]>([]);
   const [activeFilter, setActiveFilter] = useState<(typeof categories)[number]["key"]>("all");
   const [searchTerm, setSearchTerm] = useState("");
-  const [isConsultationOpen, setIsConsultationOpen] = useState(false);
   const [isMobileDrawerOpen, setIsMobileDrawerOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [activeProjectSlug, setActiveProjectSlug] = useState<string | null>(null);
 
   // Fetch projects from MongoDB
-  useMemo(() => {
+  useEffect(() => {
     const fetchProjects = async () => {
       try {
         const res = await fetch('/api/projects');
@@ -71,17 +70,33 @@ function GaleriContent() {
     return result;
   }, [activeFilter, searchTerm, materialParam]);
 
+  const selectedProject = useMemo(
+    () => filteredProjects.find((project) => project.slug === activeProjectSlug) ?? null,
+    [activeProjectSlug, filteredProjects],
+  );
+
+  useEffect(() => {
+    if (!activeProjectSlug) return;
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [activeProjectSlug]);
+
   const handleCategorySelect = (key: (typeof categories)[number]["key"]) => {
     setActiveFilter(key);
     setIsMobileDrawerOpen(false);
   };
 
   return (
-    <main className="site-shell project-detail-shell galeri-page" style={{ paddingTop: "8rem" }}>
+    <main className="site-shell project-detail-shell galeri-page gallery-vertical-shell" style={{ paddingTop: "8rem" }}>
       <div className="section-inner" style={{ paddingBottom: "6rem" }}>
         
         {/* HEADER SECTION */}
-        <div className="galeri-header-section">
+        <div className="galeri-header-section gallery-snap-point">
           <h1 className="galeri-title">GALERİ</h1>
           <p className="galeri-subtitle">
             Tüm Çalışmalarımız & Portfolyo
@@ -89,7 +104,7 @@ function GaleriContent() {
         </div>
 
         {/* SEARCH & MOBILE FILTER BAR */}
-        <div className="studio-search-container" style={{ position: 'sticky', top: '80px', zIndex: 100, background: 'rgba(10,10,10,0.8)', backdropFilter: 'blur(20px)', borderBottom: '1px solid rgba(255,255,255,0.05)', marginBottom: '4rem' }}>
+        <div className="studio-search-container gallery-snap-point" style={{ position: 'sticky', top: '80px', zIndex: 100, background: 'rgba(10,10,10,0.8)', backdropFilter: 'blur(20px)', borderBottom: '1px solid rgba(255,255,255,0.05)', marginBottom: '4rem' }}>
           <div className="studio-search-bar">
             <span className="material-symbols-outlined">search</span>
             <input 
@@ -182,17 +197,24 @@ function GaleriContent() {
           </aside>
 
           {/* PROJECT GRID */}
-          <div className="project-grid" style={{ marginTop: 0 }}>
+          <div className="project-grid project-grid-sensory" style={{ marginTop: 0 }}>
             {isLoading ? (
                <div style={{ textAlign: "center", padding: "10rem 0", gridColumn: '1/-1', color: '#cca883' }}>YÜKLENİYOR...</div>
             ) : filteredProjects.length > 0 ? (
                filteredProjects.map((project) => (
-                <Link href={`/galeri/${project.slug}`} className="project-card" key={project.slug}>
+                <button
+                  type="button"
+                  className="project-card project-card-trigger project-card-gallery-sensory gallery-snap-point"
+                  key={project.slug}
+                  onClick={() => setActiveProjectSlug(project.slug)}
+                  aria-label={`${project.title} proje bilgisini aç`}
+                >
                   <img src={project.coverImage} alt={project.title} />
                   <div className="project-overlay" />
+                  <div className="project-slide-glow" />
                   <h4>{project.title}</h4>
                   <p className="vertical-text">{project.label}</p>
-                </Link>
+                </button>
               ))
             ) : (
               <div style={{ textAlign: "center", padding: "10rem 0", color: "rgba(255,255,255,0.3)", gridColumn: '1/-1' }}>
@@ -203,11 +225,7 @@ function GaleriContent() {
           </div>
         </div>
       </div>
-
-      <ConsultationModal 
-        isOpen={isConsultationOpen} 
-        onClose={() => setIsConsultationOpen(false)} 
-      />
+      <ProjectInsightPanel project={selectedProject} onClose={() => setActiveProjectSlug(null)} />
     </main>
   );
 }

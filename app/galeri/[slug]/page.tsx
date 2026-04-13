@@ -44,15 +44,15 @@ export default function ProjectDetail({ params }: { params: Promise<ProjectParam
   if (!project) return notFound();
 
   return (
-    <main className="site-shell project-detail-shell">
-      <header className="detail-topbar">
+    <main className="site-shell project-detail-shell gallery-detail-vertical-shell">
+      <header className="detail-topbar gallery-snap-point">
         <Link href="/galeri" className="back-button">
           <span className="material-symbols-outlined">arrow_back</span>
           <span className="back-text">Galeriye Dön</span>
         </Link>
       </header>
 
-      <div className="project-detail-hero">
+      <div className="project-detail-hero gallery-snap-point">
         <div className="hero-bg" style={{ backgroundImage: `url(${project.coverImage})` }}>
           <div className="hero-overlay-dark" />
         </div>
@@ -63,7 +63,7 @@ export default function ProjectDetail({ params }: { params: Promise<ProjectParam
       </div>
 
       <div className="project-detail-content">
-        <div className="detail-info-block">
+        <div className="detail-info-block gallery-snap-point">
           <div className="desc-container">
             <span className="section-small-label">ÇALIŞMA BİLGİSİ</span>
             <p className="desc-text">{project.description}</p>
@@ -92,7 +92,7 @@ export default function ProjectDetail({ params }: { params: Promise<ProjectParam
         {project.gallery && project.gallery.length > 0 && (
           <div className="project-gallery">
             {project.gallery.map((imgSrc: string, index: number) => (
-              <div key={index} className="gallery-item">
+              <div key={index} className="gallery-item gallery-snap-point">
                 <img src={imgSrc} alt={`${project.title} detayı ${index + 1}`} />
               </div>
             ))}

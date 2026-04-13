@@ -5,6 +5,7 @@ import { ProjectDetail, Category } from "../data/projects";
 import ConsultationModal from "./ConsultationModal";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
+import ProjectInsightPanel from "./ProjectInsightPanel";
 
 interface DepartmentStudioProps {
   title: string;
@@ -54,6 +55,7 @@ export default function DepartmentStudio({
   const [activeCategory, setActiveCategory] = useState<Category | string>("ALL");
   const [isConsultationOpen, setIsConsultationOpen] = useState(false);
   const [isMobileDrawerOpen, setIsMobileDrawerOpen] = useState(false);
+  const [activeProjectSlug, setActiveProjectSlug] = useState<string | null>(null);
   
   const [currentSlide, setCurrentSlide] = useState(0);
   const heroSlides = images && images.length > 0 ? images : [heroImage, ...FALLBACK_SLIDES.filter(img => img !== heroImage)];
@@ -74,6 +76,22 @@ export default function DepartmentStudio({
     });
   }, [projects, searchQuery, activeCategory]);
 
+  const selectedProject = useMemo(
+    () => filteredProjects.find((project) => project.slug === activeProjectSlug) ?? null,
+    [activeProjectSlug, filteredProjects],
+  );
+
+  useEffect(() => {
+    if (!activeProjectSlug) return;
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [activeProjectSlug]);
+
   const handleCategorySelect = (category: Category | string) => {
     setActiveCategory(category);
     setIsMobileDrawerOpen(false);
@@ -84,9 +102,9 @@ export default function DepartmentStudio({
   };
 
   return (
-    <div className="studio-page">
+    <div className="studio-page studio-vertical-shell">
       {/* FULL-SCREEN HERO SLIDER */}
-      <section className="studio-hero">
+      <section className="studio-hero studio-snap-point">
         <div className="studio-hero-slider">
           {heroSlides.map((img: string, idx: number) => (
             <div 
@@ -128,7 +146,7 @@ export default function DepartmentStudio({
       </section>
 
       {/* RICH CONTENT SECTION: VISION & PROCESS */}
-      <section className="rich-service-content">
+      <section className="rich-service-content studio-snap-point">
         <div className="rich-content-inner">
           {description && (
             <div className="service-vision-block">
@@ -175,7 +193,7 @@ export default function DepartmentStudio({
       </section>
 
       {/* SEARCH & MOBILE FILTER BAR */}
-      <div className="studio-search-container">
+      <div className="studio-search-container studio-snap-point">
         <div className="studio-search-bar">
           <span className="material-symbols-outlined">search</span>
           <input 
@@ -262,10 +280,22 @@ export default function DepartmentStudio({
         </aside>
 
         {/* GALLERY GRID */}
-        <div className="studio-gallery">
+        <div className="studio-gallery studio-gallery-sensory">
           {filteredProjects.length > 0 ? (
             filteredProjects.map((project) => (
-              <div key={project.slug} className="project-card-interactive">
+              <div
+                key={project.slug}
+                className="project-card-interactive project-card-interactive-sensory studio-snap-point"
+                role="button"
+                tabIndex={0}
+                onClick={() => setActiveProjectSlug(project.slug)}
+                onKeyDown={(event) => {
+                  if (event.key === "Enter" || event.key === " ") {
+                    event.preventDefault();
+                    setActiveProjectSlug(project.slug);
+                  }
+                }}
+              >
                 <div className="project-card-img">
                   <img src={project.coverImage} alt={project.title} />
                   <div className="project-card-badge">{project.label}</div>
@@ -283,7 +313,13 @@ export default function DepartmentStudio({
                     <div className="story-block"><h5>TEKNİK DETAYLAR</h5><p>{project.techDetails}</p></div>
                   </div>
                   <div className="project-card-footer">
-                    <button className="project-action-btn" onClick={() => setIsConsultationOpen(true)}>
+                    <button
+                      className="project-action-btn"
+                      onClick={(event) => {
+                        event.stopPropagation();
+                        setIsConsultationOpen(true);
+                      }}
+                    >
                       SÜRECİ BAŞLAT <span className="material-symbols-outlined">arrow_right_alt</span>
                     </button>
                   </div>
@@ -300,6 +336,7 @@ export default function DepartmentStudio({
         isOpen={isConsultationOpen} 
         onClose={() => setIsConsultationOpen(false)} 
       />
+      <ProjectInsightPanel project={selectedProject} onClose={() => setActiveProjectSlug(null)} />
 
 
       <style jsx>{`
