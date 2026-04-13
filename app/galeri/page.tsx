@@ -136,15 +136,6 @@ function GaleriContent() {
             </ul>
           </div>
 
-          <div className="drawer-footer">
-            <p>Uzman ekibimizle profesyonel sürecinizi hemen planlayın.</p>
-            <SwipeAppointmentButton
-              onActivate={() => {
-                setIsMobileDrawerOpen(false);
-                setIsConsultationOpen(true);
-              }}
-            />
-          </div>
         </div>
 
         <div className="studio-main">
@@ -188,17 +179,6 @@ function GaleriContent() {
               </ul>
             </div>
 
-            <div className="filter-group" style={{ marginTop: "4rem", paddingTop: '2rem', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
-              <h4 style={{ fontSize: '0.7rem', letterSpacing: '0.3em', color: 'rgba(255,255,255,0.3)', marginBottom: '1.5rem' }}>RANDEVU PLANI</h4>
-              <p style={{ fontSize: "0.75rem", color: "rgba(255,255,255,0.4)", lineHeight: "1.8", marginBottom: "2rem", letterSpacing: '0.05em' }}>
-                Hayalinizdeki projeyi uzman ekibimizle planlamak için profesyonel randevu oluşturun.
-              </p>
-              <SwipeAppointmentButton
-                onActivate={() => setIsConsultationOpen(true)}
-                compact
-                style={{ transformOrigin: 'left' }}
-              />
-            </div>
           </aside>
 
           {/* PROJECT GRID */}
