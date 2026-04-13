@@ -6,6 +6,7 @@ const TeamMemberSchema = new mongoose.Schema(
     role: { type: String, required: true },
     category: { type: String, required: true }, // e.g., 'mimarlik', 'ic-mimarlik'
     image: { type: String },
+    bio: { type: String },
     order: { type: Number, default: 99 },
     socials: {
       linkedin: { type: String },

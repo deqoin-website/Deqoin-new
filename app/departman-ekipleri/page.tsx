@@ -200,9 +200,23 @@ export default function OurTeam() {
                     <div className="team-card-copy">
                       <h3>{filteredTeam[activeMemberIndex]?.name}</h3>
                       <p>{filteredTeam[activeMemberIndex]?.role}</p>
+                      {filteredTeam[activeMemberIndex]?.bio && (
+                        <p className="team-bio-mini">{filteredTeam[activeMemberIndex].bio}</p>
+                      )}
                     </div>
                     <div className="team-card-footer">
-                      <span className="team-card-index">{String(activeMemberIndex + 1).padStart(2, "0")}</span>
+                       <div className="team-socials">
+                          {filteredTeam[activeMemberIndex]?.socials?.linkedin && (
+                            <a href={filteredTeam[activeMemberIndex].socials.linkedin} target="_blank" rel="noopener noreferrer" className="social-link">
+                              <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>link</span>
+                            </a>
+                          )}
+                          {filteredTeam[activeMemberIndex]?.socials?.instagram && (
+                            <a href={filteredTeam[activeMemberIndex].socials.instagram} target="_blank" rel="noopener noreferrer" className="social-link">
+                              <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>photo_camera</span>
+                            </a>
+                          )}
+                       </div>
                       <span className="material-symbols-outlined">arrow_outward</span>
                     </div>
                   </div>
@@ -224,9 +238,21 @@ export default function OurTeam() {
                 <div className="team-card-copy">
                   <h3>{member.name}</h3>
                   <p>{member.role}</p>
+                  {member.bio && <p className="team-bio-mini">{member.bio}</p>}
                 </div>
                 <div className="team-card-footer">
-                  <span className="team-card-index">{String(idx + 1).padStart(2, "0")}</span>
+                   <div className="team-socials">
+                      {member.socials?.linkedin && (
+                        <a href={member.socials.linkedin} target="_blank" rel="noopener noreferrer" className="social-link">
+                           <img src="https://upload.wikimedia.org/wikipedia/commons/c/ca/LinkedIn_logo_initials.png" style={{ width: '16px', filter: 'invert(1) brightness(0.7)' }} alt="LinkedIn" />
+                        </a>
+                      )}
+                      {member.socials?.instagram && (
+                        <a href={member.socials.instagram} target="_blank" rel="noopener noreferrer" className="social-link">
+                           <img src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png" style={{ width: '16px', filter: 'invert(1) brightness(0.7)' }} alt="Instagram" />
+                        </a>
+                      )}
+                   </div>
                   <span className="material-symbols-outlined">arrow_outward</span>
                 </div>
               </div>
@@ -234,6 +260,16 @@ export default function OurTeam() {
           ))}
         </div>
       </div>
+
+      <style jsx>{`
+        .team-bio-mini { font-size: 0.7rem; color: rgba(255,255,255,0.4); line-height: 1.5; margin-top: 0.5rem; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+        .team-socials { display: flex; gap: 0.75rem; align-items: center; }
+        .social-link { opacity: 0.5; transition: all 0.3s; display: flex; align-items: center; }
+        .social-link:hover { opacity: 1; transform: scale(1.1); }
+        .team-card-gallery:hover .team-bio-mini { color: rgba(255,255,255,0.8); }
+        
+        .team-mobile-card .team-bio-mini { -webkit-line-clamp: 3; }
+      `}</style>
     </main>
   );
 }

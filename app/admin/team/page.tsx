@@ -30,6 +30,7 @@ export default function TeamManagementPage() {
     role: '',
     category: 'mimarlik',
     image: '',
+    bio: '',
     order: 99,
     socials: { linkedin: '', instagram: '' }
   });
@@ -76,6 +77,7 @@ export default function TeamManagementPage() {
       role: '',
       category: 'mimarlik',
       image: '',
+      bio: '',
       order: 99,
       socials: { linkedin: '', instagram: '' }
     });
@@ -89,6 +91,7 @@ export default function TeamManagementPage() {
       role: member.role,
       category: member.category,
       image: member.image,
+      bio: member.bio || '',
       order: member.order || 99,
       socials: member.socials || { linkedin: '', instagram: '' }
     });
@@ -315,13 +318,34 @@ export default function TeamManagementPage() {
                 </div>
 
                 <div className="form-group">
-                  <label>LINKEDIN PROFIL (OPSİYONEL)</label>
-                  <input 
-                    type="url" 
-                    value={formData.socials.linkedin} 
-                    onChange={e => setFormData({...formData, socials: {...formData.socials, linkedin: e.target.value}})} 
-                    placeholder="https://linkedin.com/in/..."
+                  <label>BİYOGRAFİ / HAKKINDA (KISA)</label>
+                  <textarea 
+                    rows={4}
+                    value={formData.bio} 
+                    onChange={e => setFormData({...formData, bio: e.target.value})} 
+                    placeholder="Ekip üyesinin uzmanlığını ve yaklaşımını anlatan kısa bir metin..."
                   />
+                </div>
+
+                <div className="form-grid-2">
+                  <div className="form-group">
+                    <label>LINKEDIN PROFIL</label>
+                    <input 
+                      type="url" 
+                      value={formData.socials.linkedin} 
+                      onChange={e => setFormData({...formData, socials: {...formData.socials, linkedin: e.target.value}})} 
+                      placeholder="https://linkedin.com/..."
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>INSTAGRAM PROFIL</label>
+                    <input 
+                      type="url" 
+                      value={formData.socials.instagram} 
+                      onChange={e => setFormData({...formData, socials: {...formData.socials, instagram: e.target.value}})} 
+                      placeholder="https://instagram.com/..."
+                    />
+                  </div>
                 </div>
 
                 <div className="modal-footer">
