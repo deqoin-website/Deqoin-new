@@ -1,17 +1,20 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { 
   LayoutDashboard, 
   Image as ImageIcon, 
   Settings, 
-  Users, 
   FolderKanban, 
   LogOut,
   ChevronLeft,
-  Menu
+  Menu,
+  Briefcase,
+  Users,
+  MessageSquare,
+  Aperture
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import './admin.css';
@@ -31,40 +34,40 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   const menuGroups = [
     {
-      group: 'GENEL',
+      group: 'OVERVIEW',
       items: [
         { name: 'Dashboard', icon: LayoutDashboard, path: '/admin' },
+        { name: 'Randevu & CRM', icon: MessageSquare, path: '/admin/crm' }
       ]
     },
     {
-      group: 'SAYFA İÇERİĞİ',
+      group: 'DEPARTMANLAR & STÜDYO',
       items: [
-        { name: 'Ana Sayfa', icon: ImageIcon, path: '/admin/content/home' },
-        { name: 'Hakkımızda', icon: ImageIcon, path: '/admin/content/about' },
-        { name: 'Galeri Sayfası', icon: ImageIcon, path: '/admin/content/gallery' },
+        { name: 'Tüm Projeler (Havuz)', icon: FolderKanban, path: '/admin/projects' },
         { 
-          name: 'Hizmetler', 
-          icon: ImageIcon, 
-          path: '/admin/content/services',
+          name: 'Stüdyo Yönetimi', 
+          icon: Aperture, 
+          path: '/admin/studios',
           subItems: [
-            { name: 'Mimari Stüdyo', path: '/admin/content/services/mimari' },
-            { name: 'Materyal Stüdyo', path: '/admin/content/services/materyal' },
-            { name: 'Uygulama Stüdyosu', path: '/admin/content/services/uygulama' },
+            { name: 'Mimari Stüdyo', path: '/admin/studios/design' },
+            { name: 'Materyal Stüdyo', path: '/admin/studios/material' },
+            { name: 'Uygulama Birimi', path: '/admin/studios/execution' },
           ]
         },
       ]
     },
     {
-      group: 'YÖNETİM',
+      group: 'SAYFA YÖNETİMİ',
       items: [
-        { name: 'Portfolyo', icon: FolderKanban, path: '/admin/projects' },
+        { name: 'Sinematik Slider', icon: ImageIcon, path: '/admin/content/slider' },
+        { name: 'İş Akışı & Kurumsal', icon: Briefcase, path: '/admin/content/workflow' },
         { name: 'Ekip Üyeleri', icon: Users, path: '/admin/team' },
       ]
     },
     {
-      group: 'YAPILANDIRMA',
+      group: 'SİSTEM',
       items: [
-        { name: 'Site Ayarları', icon: Settings, path: '/admin/settings' },
+        { name: 'Genel Ayarlar', icon: Settings, path: '/admin/settings' },
       ]
     }
   ];
@@ -81,14 +84,12 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       }
     } catch (err) {
       console.error("Logout error:", err);
-      // Fallback
       router.push('/admin/login');
     }
   };
 
-  // Hide Sidebar on Login page
   if (pathname === '/admin/login') {
-    return <div className="admin-layout">{children}</div>;
+    return <>{children}</>;
   }
 
   return (
@@ -98,7 +99,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         <div className="sidebar-header">
           <div className="admin-logo">
             <img src="/images/logo-new.jpeg" alt="DEQOIN" />
-            {isSidebarOpen && <motion.span initial={{ opacity: 0 }} animate={{ opacity: 1 }}>MASTER ADMIN</motion.span>}
+            {isSidebarOpen && <motion.span initial={{ opacity: 0 }} animate={{ opacity: 1 }}>STUDIO ADMIN</motion.span>}
           </div>
           <button onClick={() => setIsSidebarOpen(!isSidebarOpen)} className="sidebar-toggle">
             {isSidebarOpen ? <ChevronLeft size={20} /> : <Menu size={20} />}
@@ -132,7 +133,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                                 style={{ 
                                   marginLeft: 'auto', 
                                   transform: isOpen ? 'rotate(-90deg)' : 'none',
-                                  transition: 'transform 0.3s ease',
+                                  transition: 'transform 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
                                   opacity: 0.5
                                 }} 
                               />
@@ -181,8 +182,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
         <div className="sidebar-footer">
           <button onClick={handleLogout} className="nav-item logout-btn">
-            <LogOut size={20} />
-            {isSidebarOpen && <span>Çıkış Yap</span>}
+            <LogOut size={20} className="nav-icon" />
+            {isSidebarOpen && <span>Sistemi Kapat</span>}
           </button>
         </div>
       </aside>
@@ -191,16 +192,27 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       <main className="admin-main">
         <header className="admin-top-bar">
           <div className="page-info">
-            <h1>{allItems.find(item => item.path === pathname)?.name || 'Dashboard'}</h1>
+            <span className="page-breadcrumb">Yönetim Paneli / {currentPathItem?.name || 'Dashboard'}</span>
+            <h1>{currentPathItem?.name || 'Dashboard'}</h1>
           </div>
           <div className="user-profile">
-            <span>Admin</span>
-            <div className="avatar">A</div>
+            <span>SİSTEM YÖNETİCİSİ</span>
+            <div className="avatar">DQ</div>
           </div>
         </header>
         
         <div className="admin-content-inner">
-          {children}
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={pathname}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+            >
+              {children}
+            </motion.div>
+          </AnimatePresence>
         </div>
       </main>
     </div>

@@ -1,165 +1,336 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { FolderKanban, Users, Eye, TrendingUp } from 'lucide-react';
+import { MessageSquare, FolderKanban, Aperture, ArrowUpRight, Clock } from 'lucide-react';
+import Link from 'next/link';
 
 export default function AdminDashboard() {
-  const stats = [
-    { name: 'Toplam Proje', value: '12', icon: FolderKanban, color: '#a68966' },
-    { name: 'Ekip Üyeleri', value: '8', icon: Users, color: '#a68966' },
-    { name: 'Aylık İzlenme', value: '2.4k', icon: Eye, color: '#a68966' },
-    { name: 'Dönüşüm Oranı', value: '%14', icon: TrendingUp, color: '#a68966' },
-  ];
+  const [stats, setStats] = useState({
+    newAppointments: 0,
+    activeProjects: 0,
+    activeStudios: 0
+  });
+
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    // In a real scenario, this fetches from multiple API endpoints or an aggregate dashboard API
+    // We will simulate the fetch for this CMS architecture implementation
+    setTimeout(() => {
+      setStats({
+        newAppointments: 5,
+        activeProjects: 24,
+        activeStudios: 3
+      });
+      setIsLoading(false);
+    }, 1000);
+  }, []);
+
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    show: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1
+      }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    show: { opacity: 1, y: 0, transition: { type: "tween", ease: [0.16, 1, 0.3, 1], duration: 0.8 } }
+  };
 
   return (
-    <div className="dashboard-container">
-      <motion.div 
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="stats-grid"
-      >
-        {stats.map((stat, idx) => (
-          <div key={idx} className="stat-card">
-            <div className="stat-icon-wrap" style={{ background: `${stat.color}15` }}>
-              <stat.icon size={24} style={{ color: stat.color }} />
-            </div>
-            <div className="stat-info">
-              <span className="stat-name">{stat.name}</span>
-              <span className="stat-value">{stat.value}</span>
-            </div>
-          </div>
-        ))}
+    <motion.div 
+      className="dashboard-container"
+      variants={containerVariants}
+      initial="hidden"
+      animate="show"
+    >
+      <motion.div variants={itemVariants} className="dashboard-header">
+        <h2>Sisteme Tekrar Hoş Geldiniz</h2>
+        <p>Tüm stüdyo etkinliklerini ve randevularınızı buradan takip edebilirsiniz.</p>
       </motion.div>
 
-      <div className="dashboard-sections" style={{ marginTop: '3rem', display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '2rem' }}>
-        <div className="section-card">
-          <h3>Son Projeler</h3>
-          <div className="placeholder-content">Henüz veritabanı bağlantısı kurulmadı.</div>
-        </div>
-        <div className="section-card">
-          <h3>Hızlı Aksiyonlar</h3>
-          <div className="action-list">
-             <button className="quick-action-btn" onClick={() => window.location.href='/admin/projects'}>Yeni Proje Ekle</button>
-             <button className="quick-action-btn" onClick={() => window.location.href='/admin/settings'}>Logoyu Güncelle</button>
-             <button 
-                className="quick-action-btn migrate-btn" 
-                onClick={async () => {
-                  if(confirm('Mevcut verileri MongoDB\'ye aktarmak istiyor musunuz?')) {
-                    const res = await fetch('/api/admin/migrate', { method: 'POST' });
-                    const data = await res.json();
-                    alert(data.message || data.error);
-                  }
-                }}
-             >
-                Verileri İçeri Aktar (Migration)
-             </button>
+      <div className="stats-grid">
+        <motion.div variants={itemVariants} className="admin-card stat-card">
+          <div className="stat-icon-wrapper appointment-icon">
+            <MessageSquare size={24} />
           </div>
-        </div>
+          <div className="stat-content">
+            <span className="stat-label">Bekleyen Randevu Talepleri</span>
+            {isLoading ? <div className="skeleton-text"></div> : <div className="stat-value">{stats.newAppointments}</div>}
+          </div>
+          <Link href="/admin/crm" className="stat-link">
+            İncele <ArrowUpRight size={16} />
+          </Link>
+        </motion.div>
+
+        <motion.div variants={itemVariants} className="admin-card stat-card">
+          <div className="stat-icon-wrapper project-icon">
+            <FolderKanban size={24} />
+          </div>
+          <div className="stat-content">
+            <span className="stat-label">Aktif Yayınlanan Projeler</span>
+            {isLoading ? <div className="skeleton-text"></div> : <div className="stat-value">{stats.activeProjects}</div>}
+          </div>
+          <Link href="/admin/projects" className="stat-link">
+            Yönet <ArrowUpRight size={16} />
+          </Link>
+        </motion.div>
+
+        <motion.div variants={itemVariants} className="admin-card stat-card">
+          <div className="stat-icon-wrapper studio-icon">
+            <Aperture size={24} />
+          </div>
+          <div className="stat-content">
+            <span className="stat-label">Aktif Stüdyo Sayısı</span>
+            {isLoading ? <div className="skeleton-text"></div> : <div className="stat-value">{stats.activeStudios}</div>}
+          </div>
+          <Link href="/admin/studios" className="stat-link">
+            Düzenle <ArrowUpRight size={16} />
+          </Link>
+        </motion.div>
+      </div>
+
+      <div className="dashboard-grid">
+        <motion.div variants={itemVariants} className="admin-card recent-activity">
+          <div className="card-header">
+            <h3>Son Etkinlikler</h3>
+            <button className="text-btn">Tümünü Gör</button>
+          </div>
+          <div className="activity-list">
+            {[1, 2, 3].map((_, i) => (
+              <div key={i} className="activity-item">
+                <div className="activity-icon"><Clock size={16} /></div>
+                <div className="activity-details">
+                  <p>Yeni bir randevu talebi ulaştı (Tasarım Stüdyosu).</p>
+                  <span>{i + 1} saat önce</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </motion.div>
+
+        <motion.div variants={itemVariants} className="admin-card quick-actions">
+          <div className="card-header">
+            <h3>Hızlı İşlemler</h3>
+          </div>
+          <div className="actions-list">
+            <Link href="/admin/projects" className="action-btn">
+              <FolderKanban size={20} />
+              Yeni Proje Yükle
+            </Link>
+            <Link href="/admin/crm" className="action-btn">
+              <MessageSquare size={20} />
+              Randevuları Kontrol Et
+            </Link>
+          </div>
+        </motion.div>
       </div>
 
       <style jsx>{`
-        .migrate-btn {
-          border-color: rgba(166, 137, 102, 0.4) !important;
-          background: rgba(166, 137, 102, 0.05) !important;
+        .dashboard-container {
+          display: flex;
+          flex-direction: column;
+          gap: 2rem;
         }
+
+        .dashboard-header h2 {
+          font-family: var(--font-display), sans-serif;
+          font-size: 2rem;
+          font-weight: 300;
+          color: #fff;
+          margin: 0 0 0.5rem 0;
+        }
+
+        .dashboard-header p {
+          color: rgba(255,255,255,0.5);
+          font-size: 0.9rem;
+          margin: 0;
+        }
+
         .stats-grid {
           display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+          grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
           gap: 1.5rem;
         }
 
         .stat-card {
-          background: #141414;
-          border: 1px solid rgba(255, 255, 255, 0.03);
-          padding: 2rem;
+          position: relative;
           display: flex;
           align-items: center;
           gap: 1.5rem;
-          border-radius: 4px;
+          padding: 2rem;
+          overflow: hidden;
         }
 
-        .stat-icon-wrap {
-          width: 56px;
-          height: 56px;
+        .stat-icon-wrapper {
+          width: 60px;
+          height: 60px;
+          border-radius: 12px;
           display: flex;
           align-items: center;
           justify-content: center;
-          border-radius: 12px;
+          background: rgba(255,255,255,0.05);
         }
 
-        .stat-info {
+        .appointment-icon { color: #a68966; background: rgba(166, 137, 102, 0.1); }
+        .project-icon { color: #bf1f5a; background: rgba(191, 31, 90, 0.1); }
+        .studio-icon { color: #4dabf7; background: rgba(77, 171, 247, 0.1); }
+
+        .stat-content {
           display: flex;
           flex-direction: column;
+          z-index: 2;
         }
 
-        .stat-name {
+        .stat-label {
           font-size: 0.75rem;
+          color: rgba(255,255,255,0.5);
           text-transform: uppercase;
           letter-spacing: 0.1em;
-          opacity: 0.4;
           margin-bottom: 0.5rem;
         }
 
         .stat-value {
           font-family: var(--font-display), sans-serif;
-          font-size: 1.5rem;
-          font-weight: 700;
+          font-size: 2.5rem;
+          font-weight: 300;
+          color: #fff;
+          line-height: 1;
         }
 
-        .section-card {
-          background: #141414;
-          border: 1px solid rgba(255, 255, 255, 0.03);
-          padding: 2rem;
+        .skeleton-text {
+          height: 2.5rem;
+          width: 50px;
+          background: rgba(255,255,255,0.05);
           border-radius: 4px;
+          animation: pulse 1.5s infinite;
         }
 
-        .section-card h3 {
-          font-family: var(--font-display), sans-serif;
-          font-size: 0.9rem;
-          letter-spacing: 0.1em;
-          margin-bottom: 2rem;
+        .stat-link {
+          position: absolute;
+          top: 1.5rem;
+          right: 1.5rem;
+          display: flex;
+          align-items: center;
+          gap: 0.25rem;
+          font-size: 0.75rem;
+          color: rgba(255,255,255,0.3);
+          text-decoration: none;
+          transition: color 0.3s ease;
           text-transform: uppercase;
+          letter-spacing: 0.1em;
+          z-index: 2;
+        }
+
+        .stat-link:hover { color: #fff; }
+
+        .dashboard-grid {
+          display: grid;
+          grid-template-columns: 2fr 1fr;
+          gap: 1.5rem;
+        }
+
+        .card-header {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          margin-bottom: 1.5rem;
+        }
+
+        .card-header h3 {
+          font-size: 1rem;
+          font-weight: 500;
+          color: #fff;
+          margin: 0;
+          text-transform: uppercase;
+          letter-spacing: 0.1em;
+        }
+
+        .text-btn {
+          background: transparent;
+          border: none;
           color: #a68966;
+          font-size: 0.75rem;
+          text-transform: uppercase;
+          letter-spacing: 0.1em;
+          cursor: pointer;
         }
 
-        .placeholder-content {
-          padding: 4rem 0;
-          text-align: center;
-          opacity: 0.3;
-          border: 1px dashed rgba(255, 255, 255, 0.1);
-        }
-
-        .action-list {
+        .activity-list {
           display: flex;
           flex-direction: column;
           gap: 1rem;
         }
 
-        .quick-action-btn {
-          width: 100%;
+        .activity-item {
+          display: flex;
+          align-items: flex-start;
+          gap: 1rem;
           padding: 1rem;
-          background: rgba(255, 255, 255, 0.03);
-          border: 1px solid rgba(255, 255, 255, 0.05);
-          color: #fff;
-          text-align: left;
-          cursor: pointer;
-          transition: all 0.3s ease;
-          font-size: 0.85rem;
-          border-radius: 4px;
+          background: rgba(255,255,255,0.02);
+          border-radius: 8px;
+          border: 1px solid rgba(255,255,255,0.02);
         }
 
-        .quick-action-btn:hover {
-          background: rgba(166, 137, 102, 0.08);
-          border-color: rgba(166, 137, 102, 0.2);
+        .activity-icon {
+          color: rgba(255,255,255,0.3);
+          padding-top: 2px;
+        }
+
+        .activity-details p {
+          margin: 0 0 0.25rem 0;
+          font-size: 0.9rem;
+          color: rgba(255,255,255,0.8);
+        }
+
+        .activity-details span {
+          font-size: 0.7rem;
+          color: rgba(255,255,255,0.4);
+        }
+
+        .actions-list {
+          display: flex;
+          flex-direction: column;
+          gap: 0.75rem;
+        }
+
+        .action-btn {
+          display: flex;
+          align-items: center;
+          gap: 1rem;
+          padding: 1rem;
+          background: rgba(255,255,255,0.03);
+          border: 1px solid rgba(255,255,255,0.05);
+          border-radius: 8px;
+          color: #fff;
+          text-decoration: none;
+          font-size: 0.85rem;
+          text-transform: uppercase;
+          letter-spacing: 0.1em;
+          transition: all 0.3s ease;
+        }
+
+        .action-btn:hover {
+          background: rgba(166, 137, 102, 0.1);
+          border-color: rgba(166, 137, 102, 0.3);
           color: #a68966;
         }
 
-        @media (max-width: 1100px) {
-          .dashboard-sections {
-            grid-template-columns: 1fr;
-          }
+        @keyframes pulse {
+          0% { opacity: 0.5; }
+          50% { opacity: 0.8; }
+          100% { opacity: 0.5; }
+        }
+
+        @media (max-width: 1024px) {
+          .dashboard-grid { grid-template-columns: 1fr; }
         }
       `}</style>
-    </div>
+    </motion.div>
   );
 }

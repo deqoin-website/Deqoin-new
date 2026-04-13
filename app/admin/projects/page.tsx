@@ -5,10 +5,10 @@ import {
   Plus, 
   Trash2, 
   Edit3, 
-  ExternalLink, 
   Loader2, 
   X, 
   Upload,
+  Settings,
   Image as ImageIcon
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -20,18 +20,29 @@ export default function AdminProjects() {
   const [editingProject, setEditingProject] = useState<any>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  // Advanced panel toggle (for SEO & Publishing)
+  const [showAdvancedPanel, setShowAdvancedPanel] = useState(false);
+
   // Form State
   const [formData, setFormData] = useState({
     title: '',
     label: '',
-    category: 'mimarlik',
+    categories: [] as string[],
+    publishTargets: {
+      designStudio: true,
+      materialStudio: false,
+      executionStudio: false
+    },
     coverImage: '',
     description: '',
     client: '',
     year: '',
     area: '',
-    gallery: [] as string[]
+    seoMeta: { title: '', description: '', keywords: '' },
+    gallery: [] as { url: string; imageAlt: string; caption: string }[]
   });
+
+  const CATEGORIES = ["Lüks Konut", "Ticari Yapı", "Karma Kullanım", "Kurumsal Alan", "Butik Otel", "Kültür Yapısı"];
 
   useEffect(() => {
     fetchProjects();
@@ -49,7 +60,7 @@ export default function AdminProjects() {
     }
   };
 
-  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>, field: 'coverImage' | 'gallery') => {
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>, isCover: boolean = false) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
@@ -60,14 +71,42 @@ export default function AdminProjects() {
       });
       const blob = await res.json();
       
-      if (field === 'coverImage') {
+      if (isCover) {
         setFormData({ ...formData, coverImage: blob.url });
       } else {
-        setFormData({ ...formData, gallery: [...formData.gallery, blob.url] });
+        setFormData({ 
+          ...formData, 
+          gallery: [...formData.gallery, { url: blob.url, imageAlt: '', caption: '' }] 
+        });
       }
     } catch (err) {
       alert("Yükleme başarısız.");
     }
+  };
+
+  const toggleCategory = (cat: string) => {
+    setFormData(prev => ({
+      ...prev,
+      categories: prev.categories.includes(cat) 
+        ? prev.categories.filter(c => c !== cat)
+        : [...prev.categories, cat]
+    }));
+  };
+
+  const togglePublishTarget = (target: 'designStudio' | 'materialStudio' | 'executionStudio') => {
+    setFormData(prev => ({
+      ...prev,
+      publishTargets: {
+        ...prev.publishTargets,
+        [target]: !prev.publishTargets[target]
+      }
+    }));
+  };
+
+  const updateGalleryItem = (index: number, field: string, value: string) => {
+    const updatedGallery = [...formData.gallery];
+    updatedGallery[index] = { ...updatedGallery[index], [field]: value };
+    setFormData({ ...formData, gallery: updatedGallery });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -75,7 +114,7 @@ export default function AdminProjects() {
     setIsSubmitting(true);
 
     const url = editingProject ? `/api/projects/${editingProject._id}` : '/api/projects';
-    const method = editingProject ? 'PATCH' : 'POST';
+    const method = editingProject ? 'PATCH' : 'POST'; // Assuming the API handles PATCH like PUT
 
     try {
       const res = await fetch(url, {
@@ -97,7 +136,7 @@ export default function AdminProjects() {
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm('Bu projeyi silmek istediğinize emin misiniz?')) return;
+    if (!confirm('Bu projeyi tamamen havuzdan silmek istediğinize emin misiniz?')) return;
     
     try {
       await fetch(`/api/projects/${id}`, { method: 'DELETE' });
@@ -111,354 +150,314 @@ export default function AdminProjects() {
     setFormData({
       title: '',
       label: '',
-      category: 'mimarlik',
+      categories: [],
+      publishTargets: { designStudio: true, materialStudio: false, executionStudio: false },
       coverImage: '',
       description: '',
       client: '',
       year: '',
       area: '',
+      seoMeta: { title: '', description: '', keywords: '' },
       gallery: []
     });
     setEditingProject(null);
+    setShowAdvancedPanel(false);
   };
 
   const openEditModal = (project: any) => {
     setEditingProject(project);
     setFormData({
-      title: project.title,
-      label: project.label,
-      category: project.category,
-      coverImage: project.coverImage,
-      description: project.description,
+      title: project.title || '',
+      label: project.label || '',
+      categories: project.categories || [],
+      publishTargets: project.publishTargets || { designStudio: true, materialStudio: false, executionStudio: false },
+      coverImage: project.coverImage || '',
+      description: project.description || '',
       client: project.client || '',
       year: project.year || '',
       area: project.area || '',
-      gallery: project.gallery || []
+      seoMeta: project.seoMeta || { title: '', description: '', keywords: '' },
+      gallery: project.gallery?.map((g: any) => typeof g === 'string' ? { url: g, imageAlt: '', caption: '' } : g) || []
     });
     setIsModalOpen(true);
   };
 
   return (
-    <div className="projects-admin-container">
-      <div className="page-header">
+    <div className="portfolio-engine-container">
+      <div className="engine-header">
         <div className="header-text">
-          <p>PROJE YÖNETİMİ</p>
-          <span>Portfolyonuzdaki tüm çalışmaları buradan yönetin.</span>
+          <p>ÇAPRAZ PORTFÖY HAVUZU</p>
+          <span>Aşağıdaki havuzdan projeleri farklı departmanlara (Mimari, Materyal, İnşaat) dağıtabilirsiniz.</span>
         </div>
-        <button className="add-project-btn" onClick={() => { resetForm(); setIsModalOpen(true); }}>
-          <Plus size={20} />
-          <span>YENI PROJE EKLE</span>
+        <button className="add-engine-btn" onClick={() => { resetForm(); setIsModalOpen(true); }}>
+          <Plus size={18} /> PROJE EKLE
         </button>
       </div>
 
       {isLoading ? (
         <div className="loader-wrap"><Loader2 className="animate-spin" /></div>
       ) : (
-        <div className="projects-list-grid">
+        <div className="engine-grid">
           {projects.map((project: any) => (
-            <motion.div layout key={project._id} className="project-admin-card">
-              <div className="card-img">
+            <motion.div layout key={project._id} className="engine-card">
+              <div className="card-thumb">
                 {project.coverImage && <img src={project.coverImage} alt={project.title} />}
                 <div className="card-overlay">
-                   <button onClick={() => openEditModal(project)} className="action-icn"><Edit3 size={18} /></button>
-                   <button onClick={() => handleDelete(project._id)} className="action-icn delete"><Trash2 size={18} /></button>
+                   <button onClick={() => openEditModal(project)} className="action-icn"><Edit3 size={16} /></button>
+                   <button onClick={() => handleDelete(project._id)} className="action-icn delete"><Trash2 size={16} /></button>
                 </div>
               </div>
-              <div className="card-info">
+              <div className="card-meta">
                 <h4>{project.title}</h4>
-                <span>{project.label}</span>
+                <div className="publish-badges">
+                  {project.publishTargets?.designStudio && <span className="badge design">DESIGN</span>}
+                  {project.publishTargets?.materialStudio && <span className="badge material">MAT.</span>}
+                  {project.publishTargets?.executionStudio && <span className="badge execution">EXEC.</span>}
+                </div>
               </div>
             </motion.div>
           ))}
         </div>
       )}
 
-      {/* MODAL */}
+      {/* NEW HYBRID MODAL + DRAWER FOR ADVANCED SETTINGS */}
       <AnimatePresence>
         {isModalOpen && (
-          <div className="modal-overlay">
+          <div className="hybrid-modal-overlay">
             <motion.div 
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              className="modal-content"
+              initial={{ y: 20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              exit={{ y: 20, opacity: 0 }}
+              className={`hybrid-modal-content ${showAdvancedPanel ? 'advanced-open' : ''}`}
             >
-              <div className="modal-header">
-                <h3>{editingProject ? 'PROJEYİ DÜZENLE' : 'YENİ PROJE OLUŞTUR'}</h3>
-                <button onClick={() => setIsModalOpen(false)}><X size={24} /></button>
-              </div>
-
-              <form onSubmit={handleSubmit} className="modal-form">
-                <div className="form-row">
-                  <div className="input-group">
-                    <label>Proje Başlığı</label>
-                    <input type="text" value={formData.title} onChange={e => setFormData({...formData, title: e.target.value})} required />
-                  </div>
-                  <div className="input-group">
-                    <label>Etiket (Örn: Lüks Konut)</label>
-                    <input type="text" value={formData.label} onChange={e => setFormData({...formData, label: e.target.value})} required />
+              <div className="modal-inner-scroll">
+                <div className="modal-header">
+                  <h3>{editingProject ? 'PROJE BİLGİLERİNİ DÜZENLE' : 'YENİ PROJE YÜKLE'}</h3>
+                  <div className="header-actions">
+                    <button className="text-btn" onClick={() => setShowAdvancedPanel(!showAdvancedPanel)}>
+                      <Settings size={16} /> {showAdvancedPanel ? 'TEMEL AYARLAR' : 'DAĞITIM & SEO AYARLARI'}
+                    </button>
+                    <button onClick={() => setIsModalOpen(false)} className="close-btn"><X size={20} /></button>
                   </div>
                 </div>
 
-                <div className="form-row">
-                  <div className="input-group">
-                    <label>Kategori</label>
-                    <select value={formData.category} onChange={e => setFormData({...formData, category: e.target.value})}>
-                      <option value="mimarlik">Mimarlık</option>
-                      <option value="ic-mimarlik">İç Mimarlık</option>
-                      <option value="uygulama">Uygulama</option>
-                      <option value="peyzaj">Peyzaj</option>
-                    </select>
-                  </div>
-                  <div className="input-group">
-                    <label>Client / Müşteri</label>
-                    <input type="text" value={formData.client} onChange={e => setFormData({...formData, client: e.target.value})} />
-                  </div>
-                </div>
-
-                <div className="input-group">
-                  <label>Açıklama</label>
-                  <textarea value={formData.description} onChange={e => setFormData({...formData, description: e.target.value})} rows={3} />
-                </div>
-
-                <div className="image-upload-sections">
-                  <div className="upload-box main-cover">
-                    <label>KAPAK GÖRSELİ</label>
-                    <div className="cover-preview" onClick={() => document.getElementById('cover-up')?.click()}>
-                      {formData.coverImage ? <img src={formData.coverImage} alt="Cover" /> : <div className="upload-placeholder"><Upload size={24} /></div>}
+                <form onSubmit={handleSubmit} className="modal-form">
+                  <div className="main-form-content" style={{ display: showAdvancedPanel ? 'none' : 'flex' }}>
+                    <div className="form-cols">
+                       <div className="group">
+                         <label>PROJE ADI</label>
+                         <input type="text" value={formData.title} onChange={e => setFormData({...formData, title: e.target.value})} required />
+                       </div>
+                       <div className="group">
+                         <label>ETİKET</label>
+                         <input type="text" value={formData.label} onChange={e => setFormData({...formData, label: e.target.value})} required />
+                       </div>
                     </div>
-                    <input id="cover-up" type="file" className="hidden" onChange={e => handleImageUpload(e, 'coverImage')} />
-                  </div>
 
-                  <div className="upload-box gallery-box">
-                    <label>GALERİ GÖRSELLERİ</label>
-                    <div className="gallery-previews">
-                      {formData.gallery.map((url, i) => (
-                        <div key={i} className="gallery-item">
-                           {url && <img src={url} alt="Gallery" />}
-                           <button type="button" onClick={() => setFormData({...formData, gallery: formData.gallery.filter((_, idx)=>idx!==i)})}><X size={12}/></button>
+                    <div className="group">
+                      <label>AÇIKLAMA</label>
+                      <textarea value={formData.description} onChange={e => setFormData({...formData, description: e.target.value})} rows={3} />
+                    </div>
+
+                    <div className="upload-sections">
+                      <div className="upload-box">
+                        <label>KAPAK GÖRSELİ</label>
+                        <div className="cover-preview" onClick={() => document.getElementById('cover-up')?.click()}>
+                          {formData.coverImage ? <img src={formData.coverImage} alt="Cover" /> : <div className="placeholder"><Upload size={20} /></div>}
                         </div>
-                      ))}
-                      <button type="button" className="add-gallery-btn" onClick={() => document.getElementById('gal-up')?.click()}>
-                        <Plus size={20} />
-                      </button>
-                    </div>
-                    <input id="gal-up" type="file" className="hidden" onChange={e => handleImageUpload(e, 'gallery')} />
-                  </div>
-                </div>
+                        <input id="cover-up" type="file" className="hidden" onChange={e => handleImageUpload(e, true)} />
+                      </div>
 
-                <div className="modal-footer">
-                   <button type="button" className="cancel-btn" onClick={() => setIsModalOpen(false)}>İPTAL</button>
-                   <button type="submit" className="submit-btn" disabled={isSubmitting}>
-                      {isSubmitting ? 'KAYDEDİLİYOR...' : (editingProject ? 'GÜNCELLE' : 'YAYINLA')}
-                   </button>
-                </div>
-              </form>
+                      <div className="upload-box flex-1">
+                        <label>GALERİ & METİNLER (Gelişmiş)</label>
+                        <div className="advanced-gallery">
+                          {formData.gallery.map((item, i) => (
+                            <div key={i} className="gallery-card">
+                               <img src={item.url} alt="Gallery item" />
+                               <div className="gallery-fields">
+                                  <input type="text" placeholder="Fotoğraf Alt Etiketi (SEO)" value={item.imageAlt} onChange={e => updateGalleryItem(i, 'imageAlt', e.target.value)} />
+                                  <input type="text" placeholder="Fotoğraf Altyazısı (Görünür)" value={item.caption} onChange={e => updateGalleryItem(i, 'caption', e.target.value)} />
+                               </div>
+                               <button type="button" className="remove-btn" onClick={() => setFormData({...formData, gallery: formData.gallery.filter((_, idx)=>idx!==i)})}><Trash2 size={12}/></button>
+                            </div>
+                          ))}
+                          <button type="button" className="add-photo-btn" onClick={() => document.getElementById('gal-up')?.click()}>
+                            <Plus size={16} /> GÖRSEL EKLE
+                          </button>
+                        </div>
+                        <input id="gal-up" type="file" className="hidden" onChange={e => handleImageUpload(e, false)} />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* ADVANCED DRAWER PANEL */}
+                  <div className="advanced-form-content" style={{ display: showAdvancedPanel ? 'flex' : 'none' }}>
+                    <div className="advanced-section">
+                      <h4>DEPARTMAN DAĞITIMI</h4>
+                      <p className="hint">Bu projenin web sitesinde hangi stüdyo sayfalarında görüneceğini seçin.</p>
+                      <div className="checkbox-grid">
+                        <label className="custom-cb">
+                          <input type="checkbox" checked={formData.publishTargets.designStudio} onChange={() => togglePublishTarget('designStudio')} />
+                          <span className="cb-mark"></span> Design Studio (Mimari)
+                        </label>
+                        <label className="custom-cb">
+                          <input type="checkbox" checked={formData.publishTargets.materialStudio} onChange={() => togglePublishTarget('materialStudio')} />
+                          <span className="cb-mark"></span> Material Studio (Mobilya vs.)
+                        </label>
+                        <label className="custom-cb">
+                          <input type="checkbox" checked={formData.publishTargets.executionStudio} onChange={() => togglePublishTarget('executionStudio')} />
+                          <span className="cb-mark"></span> Execution Studio (Uygulama)
+                        </label>
+                      </div>
+                    </div>
+
+                    <div className="advanced-section mt-4">
+                      <h4>KATEGORİLER (Filtreleme İçin)</h4>
+                      <div className="checkbox-grid">
+                        {CATEGORIES.map(cat => (
+                          <label key={cat} className="custom-cb">
+                            <input type="checkbox" checked={formData.categories.includes(cat)} onChange={() => toggleCategory(cat)} />
+                            <span className="cb-mark"></span> {cat}
+                          </label>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="advanced-section mt-4">
+                      <h4>SEO & META DEĞERLERİ</h4>
+                      <div className="group">
+                        <label>SAYFA BAŞLIĞI (TITLE)</label>
+                        <input type="text" value={formData.seoMeta.title} onChange={e => setFormData({...formData, seoMeta: {...formData.seoMeta, title: e.target.value}})} />
+                      </div>
+                      <div className="group">
+                        <label>META AÇIKLAMA (DESCRIPTION)</label>
+                        <textarea value={formData.seoMeta.description} onChange={e => setFormData({...formData, seoMeta: {...formData.seoMeta, description: e.target.value}})} rows={2} />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="modal-footer">
+                     <button type="submit" className="action-btn-main" disabled={isSubmitting}>
+                        {isSubmitting ? 'KAYDEDİLİYOR...' : (editingProject ? 'PROJEYİ GÜNCELLE' : 'PORTFÖYE YÜKLE')}
+                     </button>
+                  </div>
+                </form>
+              </div>
             </motion.div>
           </div>
         )}
       </AnimatePresence>
 
       <style jsx>{`
-        .projects-admin-container {
-          display: flex;
-          flex-direction: column;
-          gap: 3rem;
+        .portfolio-engine-container { display: flex; flex-direction: column; gap: 2rem; }
+        
+        .engine-header {
+          display: flex; justify-content: space-between; align-items: flex-end;
+          padding: 1.5rem 2rem; background: rgba(10,10,10,0.5); border: 1px solid rgba(255,255,255,0.05); border-radius: 12px;
         }
 
-        .page-header {
-          display: flex;
-          justify-content: space-between;
-          align-items: flex-end;
-          border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-          padding-bottom: 2rem;
+        .header-text p { font-family: var(--font-display); font-size: 0.8rem; letter-spacing: 0.2em; color: #a68966; margin: 0 0 5px 0; font-weight: 700; }
+        .header-text span { font-size: 0.75rem; color: rgba(255,255,255,0.5); }
+
+        .add-engine-btn {
+          background: #fff; color: #000; border: none; padding: 0.8rem 1.5rem; display: flex; align-items: center; gap: 0.5rem;
+          font-family: var(--font-display), sans-serif; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em; cursor: pointer; border-radius: 4px;
         }
+        .add-engine-btn:hover { background: #e0e0e0; }
 
-        .header-text p {
-          font-family: var(--font-display), sans-serif;
-          font-size: 0.75rem;
-          letter-spacing: 0.3em;
-          color: #a68966;
-          margin-bottom: 0.5rem;
+        .loader-wrap { display: flex; justify-content: center; padding: 5rem; color: #a68966; }
+
+        .engine-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem; }
+
+        .engine-card {
+          background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 8px; overflow: hidden;
         }
-
-        .header-text span {
-          font-size: 0.85rem;
-          opacity: 0.4;
-        }
-
-        .add-project-btn {
-          background: #a68966;
-          color: #080808;
-          border: none;
-          padding: 1rem 2rem;
-          display: flex;
-          align-items: center;
-          gap: 1rem;
-          font-family: var(--font-display), sans-serif;
-          font-weight: 700;
-          font-size: 0.75rem;
-          letter-spacing: 0.1em;
-          cursor: pointer;
-          transition: all 0.3s ease;
-        }
-
-        .add-project-btn:hover { background: #c2a785; transform: translateY(-2px); }
-
-        .loader-wrap { height: 400px; display: flex; align-items: center; justify-content: center; color: #a68966; }
-
-        .projects-list-grid {
-          display: grid;
-          grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-          gap: 2rem;
-        }
-
-        .project-admin-card {
-          background: #141414;
-          border-radius: 4px;
-          overflow: hidden;
-          border: 1px solid rgba(255, 255, 255, 0.03);
-          transition: border-color 0.3s ease;
-        }
-
-        .project-admin-card:hover { border-color: rgba(166, 137, 102, 0.3); }
-
-        .card-img {
-          aspect-ratio: 16 / 10;
-          position: relative;
-          overflow: hidden;
-        }
-
-        .card-img img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s ease; }
-
+        
+        .card-thumb { aspect-ratio: 16/10; position: relative; overflow: hidden; }
+        .card-thumb img { width: 100%; height: 100%; object-fit: cover; }
+        
         .card-overlay {
-          position: absolute;
-          inset: 0;
-          background: rgba(0, 0, 0, 0.6);
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          gap: 1rem;
-          opacity: 0;
-          transition: opacity 0.4s ease;
+          position: absolute; inset: 0; background: rgba(0,0,0,0.7); display: flex; align-items: center; justify-content: center; gap: 1rem; opacity: 0; transition: opacity 0.3s ease;
         }
-
-        .project-admin-card:hover .card-overlay { opacity: 1; }
-        .project-admin-card:hover img { transform: scale(1.05); }
-
-        .action-icn {
-          width: 44px;
-          height: 44px;
-          border-radius: 50%;
-          background: #fff;
-          color: #000;
-          border: none;
-          cursor: pointer;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          transition: transform 0.3s ease;
-        }
-
-        .action-icn:hover { transform: scale(1.1); }
+        .engine-card:hover .card-overlay { opacity: 1; }
+        
+        .action-icn { width: 40px; height: 40px; border-radius: 50%; background: #fff; color: #000; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        .action-icn:hover { transform: scale(1.05); }
         .action-icn.delete:hover { background: #ff4d4d; color: #fff; }
 
-        .card-info { padding: 1.5rem; }
-        .card-info h4 { font-family: var(--font-display), sans-serif; font-size: 0.9rem; letter-spacing: 0.05em; margin-bottom: 0.5rem; }
-        .card-info span { font-size: 0.7rem; text-transform: uppercase; opacity: 0.4; letter-spacing: 0.1em; }
-
-        /* MODAL STYLES */
-        .modal-overlay {
-          position: fixed;
-          inset: 0;
-          background: rgba(0,0,0,0.8);
-          backdrop-filter: blur(10px);
-          z-index: 1000;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          padding: 2rem;
-        }
-
-        .modal-content {
-          background: #121212;
-          width: 100%;
-          max-width: 800px;
-          max-height: 90vh;
-          overflow-y: auto;
-          border: 1px solid rgba(166, 137, 102, 0.2);
-          border-radius: 4px;
-          display: flex;
-          flex-direction: column;
-        }
-
-        .modal-header {
-          padding: 2rem;
-          border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-        }
-
-        .modal-header h3 { font-family: var(--font-display), sans-serif; font-size: 1rem; letter-spacing: 0.2em; color: #a68966; }
-        .modal-header button { background: none; border: none; color: #fff; opacity: 0.4; cursor: pointer; }
-
-        .modal-form { padding: 2.5rem; display: flex; flex-direction: column; gap: 2rem; }
-
-        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
-
-        .input-group label { display: block; font-size: 0.7rem; opacity: 0.5; margin-bottom: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; }
-        .input-group input, .input-group select, .input-group textarea {
-          width: 100%;
-          background: rgba(255, 255, 255, 0.03);
-          border: 1px solid rgba(255, 255, 255, 0.1);
-          padding: 1rem;
-          color: #fff;
-          font-family: inherit;
-          border-radius: 2px;
-        }
-
-        .image-upload-sections { display: grid; grid-template-columns: 200px 1fr; gap: 3rem; }
+        .card-meta { padding: 1rem; display: flex; flex-direction: column; gap: 0.5rem; }
+        .card-meta h4 { margin: 0; font-size: 0.9rem; font-weight: 500; font-family: var(--font-display); }
         
-        .cover-preview {
-          width: 100%;
-          aspect-ratio: 16 / 10;
-          background: rgba(255, 255, 255, 0.02);
-          border: 1px dashed rgba(255, 255, 255, 0.1);
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          cursor: pointer;
-          overflow: hidden;
+        .publish-badges { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+        .badge { font-size: 0.6rem; padding: 2px 6px; border-radius: 2px; letter-spacing: 0.1em; font-weight: 700; }
+        .badge.design { background: rgba(166,137,102,0.2); color: #a68966; }
+        .badge.material { background: rgba(191,31,90,0.2); color: #bf1f5a; }
+        .badge.execution { background: rgba(77,171,247,0.2); color: #4dabf7; }
+
+        /* MODAL */
+        .hybrid-modal-overlay {
+          position: fixed; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(10px); z-index: 1000;
+          display: flex; align-items: center; justify-content: center; padding: 2rem;
         }
 
+        .hybrid-modal-content {
+          background: #0d0d0d; border: 1px solid rgba(255,255,255,0.1); width: 100%; max-width: 900px;
+          height: 85vh; border-radius: 12px; display: flex; flex-direction: column; overflow: hidden;
+        }
+
+        .modal-inner-scroll { overflow-y: auto; height: 100%; display: flex; flex-direction: column; }
+
+        .modal-header { padding: 1.5rem 2rem; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; background: rgba(13,13,13,0.9); z-index: 10; }
+        .modal-header h3 { margin: 0; font-family: var(--font-display); font-size: 1rem; letter-spacing: 0.15em; color: #fff; }
+        .header-actions { display: flex; align-items: center; gap: 1.5rem; }
+        .text-btn { background: none; border: none; color: #a68966; font-size: 0.75rem; letter-spacing: 0.1em; display: flex; align-items: center; gap: 0.5rem; cursor: pointer; }
+        .close-btn { background: none; border: none; color: rgba(255,255,255,0.5); cursor: pointer; }
+
+        .modal-form { padding: 2rem; display: flex; flex-direction: column; gap: 2rem; flex: 1; }
+        .main-form-content, .advanced-form-content { flex-direction: column; gap: 1.5rem; }
+
+        .form-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+        
+        .group { display: flex; flex-direction: column; gap: 0.5rem; }
+        .group label { font-size: 0.65rem; color: rgba(255,255,255,0.5); letter-spacing: 0.15em; }
+        .group input, .group textarea { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); padding: 1rem; color: #fff; border-radius: 4px; font-family: inherit; }
+        .group input:focus, .group textarea:focus { outline: none; border-color: #a68966; }
+
+        .upload-sections { display: flex; gap: 2rem; align-items: flex-start; }
+        .upload-box { display: flex; flex-direction: column; gap: 0.5rem; }
+        .upload-box label { font-size: 0.65rem; color: rgba(255,255,255,0.5); letter-spacing: 0.15em; }
+        .flex-1 { flex: 1; }
+
+        .cover-preview { width: 250px; aspect-ratio: 16/10; border: 1px dashed rgba(255,255,255,0.2); border-radius: 4px; display: flex; align-items: center; justify-content: center; cursor: pointer; overflow: hidden; background: rgba(255,255,255,0.02); }
         .cover-preview img { width: 100%; height: 100%; object-fit: cover; }
+        .placeholder { color: rgba(255,255,255,0.3); }
 
-        .gallery-previews { display: flex; flex-wrap: wrap; gap: 1rem; }
-        .gallery-item { position: relative; width: 80px; height: 80px; border-radius: 4px; overflow: hidden; }
-        .gallery-item img { width: 100%; height: 100%; object-fit: cover; }
-        .gallery-item button { position: absolute; top: 2px; right: 2px; background: #ff4d4d; color: #fff; border: none; border-radius: 50%; width: 18px; height: 18px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+        .advanced-gallery { display: flex; flex-direction: column; gap: 1rem; }
+        .gallery-card { display: flex; gap: 1rem; background: rgba(255,255,255,0.02); padding: 1rem; border-radius: 4px; border: 1px solid rgba(255,255,255,0.05); align-items: center; }
+        .gallery-card img { width: 80px; height: 80px; object-fit: cover; border-radius: 2px; }
+        .gallery-fields { display: flex; flex-direction: column; gap: 0.5rem; flex: 1; }
+        .gallery-fields input { background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.05); color: #fff; padding: 0.4rem 0.8rem; font-size: 0.8rem; border-radius: 2px; }
+        .remove-btn { background: #ff4d4d; color: #fff; border: none; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; }
 
-        .add-gallery-btn { width: 80px; height: 80px; border: 1px dashed rgba(255, 255, 255, 0.1); background: transparent; color: #fff; display: flex; align-items: center; justify-content: center; cursor: pointer; opacity: 0.4; transition: opacity 0.3s; }
-        .add-gallery-btn:hover { opacity: 1; }
+        .add-photo-btn { background: rgba(255,255,255,0.05); color: #fff; border: 1px dashed rgba(255,255,255,0.2); padding: 1rem; display: flex; align-items: center; justify-content: center; gap: 0.5rem; cursor: pointer; border-radius: 4px; font-size: 0.75rem; letter-spacing: 0.1em; }
 
-        .modal-footer { display: flex; justify-content: flex-end; gap: 1.5rem; margin-top: 2rem; border-top: 1px solid rgba(255, 255, 255, 0.05); padding-top: 2.5rem; }
+        /* ADVANCED STYLES */
+        .advanced-section h4 { font-family: var(--font-display); font-size: 0.8rem; color: #a68966; margin: 0 0 0.5rem 0; letter-spacing: 0.1em; border-bottom: 1px solid rgba(166,137,102,0.2); padding-bottom: 0.5rem; }
+        .hint { font-size: 0.75rem; color: rgba(255,255,255,0.4); margin-bottom: 1rem; }
         
-        .submit-btn {
-          background: #a68966;
-          color: #080808;
-          border: none;
-          padding: 1rem 3rem;
-          font-family: var(--font-display), sans-serif;
-          font-weight: 700;
-          font-size: 0.75rem;
-          letter-spacing: 0.15em;
-          cursor: pointer;
-        }
+        .checkbox-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem; }
+        .custom-cb { display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; cursor: pointer; color: rgba(255,255,255,0.8); }
+        .custom-cb input { display: none; }
+        .cb-mark { width: 18px; height: 18px; border: 1px solid rgba(255,255,255,0.2); border-radius: 3px; display: inline-flex; position: relative; }
+        .custom-cb input:checked + .cb-mark { background: #a68966; border-color: #a68966; }
+        .custom-cb input:checked + .cb-mark::after { content: '✓'; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); color: #000; font-size: 12px; }
 
-        .cancel-btn { background: transparent; border: 1px solid rgba(255, 255, 255, 0.1); color: #fff; padding: 1rem 2rem; font-size: 0.7rem; cursor: pointer; letter-spacing: 0.1em; }
-
+        .mt-4 { margin-top: 2rem; }
         .hidden { display: none; }
+
+        .modal-footer { margin-top: auto; padding-top: 2rem; display: flex; justify-content: flex-end; }
+        .action-btn-main { background: #a68966; color: #000; padding: 1.2rem 3rem; border: none; border-radius: 4px; font-family: var(--font-display); font-weight: 700; letter-spacing: 0.15em; font-size: 0.85rem; cursor: pointer; }
+        
       `}</style>
     </div>
   );
