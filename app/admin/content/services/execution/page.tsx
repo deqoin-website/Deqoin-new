@@ -249,28 +249,28 @@ export default function ExecutionEditor() {
 
       <style jsx>{`
         .editor-container { display: flex; flex-direction: column; gap: 3rem; padding-bottom: 5rem; }
-        .editor-header { display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 2rem; }
-        .header-info h1 { font-family: var(--font-display), sans-serif; font-size: 1.5rem; letter-spacing: 0.1em; color: #fff; }
-        .header-info p { font-size: 0.9rem; opacity: 0.5; margin-top: 0.5rem; }
+        .editor-header { display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 1px solid var(--line); padding-bottom: 2rem; }
+        .header-info h1 { font-family: var(--font-display), sans-serif; font-size: 1.5rem; letter-spacing: 0.1em; color: var(--text); }
+        .header-info p { font-size: 0.9rem; color: var(--text-soft); opacity: 0.7; margin-top: 0.5rem; }
 
         .save-btn { background: #a68966; color: #080808; border: none; padding: 1rem 2.5rem; display: flex; align-items: center; gap: 1rem; font-family: var(--font-display), sans-serif; font-weight: 700; font-size: 0.75rem; letter-spacing: 0.2em; cursor: pointer; transition: 0.3s; }
         .save-btn:hover { background: #c2a785; transform: translateY(-2px); }
 
         .editor-sections { display: flex; flex-direction: column; gap: 2.5rem; }
-        .section-card { background: #141414; padding: 2.5rem; border: 1px solid rgba(255,255,255,0.03); }
+        .section-card { background: var(--surface); padding: 2.5rem; border: 1px solid var(--line); }
         .section-title { display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem; }
-        .section-title h2 { font-family: var(--font-display), sans-serif; font-size: 0.85rem; letter-spacing: 0.2em; text-transform: uppercase; color: #fff; }
+        .section-title h2 { font-family: var(--font-display), sans-serif; font-size: 0.85rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--text); }
 
         .add-area-btn { background: rgba(166,137,102,0.1); border: 1px solid #a68966; color: #a68966; padding: 0.6rem 1.2rem; display: flex; align-items: center; gap: 0.8rem; font-size: 0.65rem; font-weight: 800; cursor: pointer; transition: 0.3s; }
         .add-area-btn:hover { background: #a68966; color: #000; }
 
         .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 2rem; }
         .input-group { display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 1rem; }
-        .input-group label { font-size: 0.7rem; opacity: 0.4; letter-spacing: 0.1em; text-transform: uppercase; }
-        .input-group input { background: #0c0c0c; border: 1px solid rgba(255,255,255,0.08); padding: 1rem; color: #fff; font-size: 0.9rem; }
+        .input-group label { font-size: 0.7rem; color: var(--text-muted); opacity: 0.8; letter-spacing: 0.1em; text-transform: uppercase; }
+        .input-group input { background: var(--background); border: 1px solid var(--line); padding: 1rem; color: var(--text); font-size: 0.9rem; }
 
         .category-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1.5rem; }
-        .category-item-card { background: #0c0c0c; border: 1px solid rgba(255,255,255,0.05); padding: 1.25rem; display: flex; gap: 1.25rem; }
+        .category-item-card { background: var(--surface-muted); border: 1px solid var(--line); padding: 1.25rem; display: flex; gap: 1.25rem; }
         
         .cat-image { width: 100px; aspect-ratio: 1; position: relative; cursor: pointer; border: 1px solid rgba(255,255,255,0.1); }
         .cat-image img { width: 100%; height: 100%; object-fit: cover; }
@@ -278,12 +278,12 @@ export default function ExecutionEditor() {
         .cat-image:hover .cat-overlay { opacity: 1; }
 
         .cat-info { flex: 1; display: flex; flex-direction: column; gap: 0.5rem; }
-        .cat-title-input { background: transparent; border: none; border-bottom: 1px solid rgba(255,255,255,0.1); color: #fff; font-size: 1rem; font-weight: 600; padding: 0.3rem 0; width: 100%; }
+        .cat-title-input { background: transparent; border: none; border-bottom: 1px solid var(--line); color: var(--text); font-size: 1rem; font-weight: 600; padding: 0.3rem 0; width: 100%; }
         .cat-label-input { background: transparent; border: none; color: #a68966; font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; width: 100%; }
         
         .cat-actions { display: flex; gap: 0.5rem; margin-top: auto; }
-        .detail-edit-link { flex: 1; display: flex; align-items: center; justify-content: center; gap: 0.5rem; background: rgba(255,255,255,0.03); color: #fff; text-decoration: none; padding: 0.5rem; font-size: 0.65rem; font-weight: 700; transition: 0.3s; }
-        .detail-edit-link:hover { background: #fff; color: #000; }
+        .detail-edit-link { flex: 1; display: flex; align-items: center; justify-content: center; gap: 0.5rem; background: var(--surface); border: 1px solid var(--line); color: var(--text); text-decoration: none; padding: 0.5rem; font-size: 0.65rem; font-weight: 700; transition: 0.3s; }
+        .detail-edit-link:hover { background: var(--accent); color: #000; border-color: var(--accent); }
         .delete-area-btn { background: rgba(255,68,68,0.1); border: 1px solid rgba(255,68,68,0.3); color: #ff4444; width: 35px; height: 35px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.3s; }
         .delete-area-btn:hover { background: #ff4444; color: #fff; }
 
@@ -293,11 +293,11 @@ export default function ExecutionEditor() {
         .delete-slide { position: absolute; top: -5px; right: -5px; background: #ff4444; color: #fff; border: none; width: 18px; height: 18px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; }
         .add-slide-btn { width: 150px; aspect-ratio: 16/9; border: 1px dashed rgba(166,137,102,0.4); display: flex; align-items: center; justify-content: center; color: #a68966; cursor: pointer; }
 
-        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(5px); display: flex; align-items: center; justify-content: center; z-index: 1000; }
-        .modal-content { background: #141414; width: 100%; max-width: 450px; padding: 2rem; border: 1px solid rgba(255,255,255,0.1); }
-        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 1rem; }
-        .modal-header h3 { font-family: var(--font-display), sans-serif; font-size: 1rem; letter-spacing: 0.1em; }
-        .modal-header button { background: transparent; border: none; color: #fff; cursor: pointer; opacity: 0.5; }
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(5px); display: flex; align-items: center; justify-content: center; z-index: 1000; }
+        .modal-content { background: var(--surface); width: 100%; max-width: 450px; padding: 2rem; border: 1px solid var(--line); border-radius: 12px; }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; border-bottom: 1px solid var(--line); padding-bottom: 1rem; }
+        .modal-header h3 { font-family: var(--font-display), sans-serif; font-size: 1.1rem; letter-spacing: 0.1em; color: var(--text); }
+        .modal-header button { background: transparent; border: none; color: var(--text); cursor: pointer; opacity: 0.5; }
 
         .loader-wrap { height: 400px; display: flex; align-items: center; justify-content: center; color: #a68966; }
         .hidden { display: none; }
