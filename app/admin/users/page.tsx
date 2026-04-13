@@ -178,47 +178,69 @@ export default function UsersPage() {
               </div>
               
               <form onSubmit={handleSubmit} className="admin-form">
-                <div className="form-group">
-                  <label>Tam İsim</label>
-                  <input 
-                    type="text" 
-                    value={formData.name} 
-                    onChange={e => setFormData({ ...formData, name: e.target.value })}
-                    required 
-                  />
+                <div className="form-group-premium">
+                  <label><UserCircle size={14} /> AD SOYAD</label>
+                  <div className="input-with-icn">
+                    <input 
+                      type="text" 
+                      value={formData.name} 
+                      onChange={e => setFormData({ ...formData, name: e.target.value })}
+                      required 
+                      placeholder="Tam isim girin"
+                    />
+                  </div>
                 </div>
-                <div className="form-group">
-                  <label>Kullanıcı Adı</label>
-                  <input 
-                    type="text" 
-                    value={formData.username} 
-                    onChange={e => setFormData({ ...formData, username: e.target.value })}
-                    required 
-                  />
+
+                <div className="form-group-premium">
+                  <label><Users size={14} /> KULLANICI ADI</label>
+                  <div className="input-with-icn">
+                    <input 
+                      type="text" 
+                      value={formData.username} 
+                      onChange={e => setFormData({ ...formData, username: e.target.value })}
+                      required 
+                      placeholder="Giriş adını belirleyin"
+                    />
+                  </div>
                 </div>
-                <div className="form-group">
-                  <label>Şifre {editingUser && '(Değiştirmek istemiyorsanız boş bırakın)'}</label>
-                  <input 
-                    type="password" 
-                    value={formData.password} 
-                    onChange={e => setFormData({ ...formData, password: e.target.value })}
-                    required={!editingUser} 
-                  />
+
+                <div className="form-group-premium">
+                  <label><Shield size={14} /> ŞİFRE</label>
+                  <div className="input-with-icn">
+                    <input 
+                      type="password" 
+                      value={formData.password} 
+                      onChange={e => setFormData({ ...formData, password: e.target.value })}
+                      required={!editingUser} 
+                      placeholder={editingUser ? "Değiştirmek istemiyorsanız boş bırakın" : "Güçlü bir şifre girin"}
+                    />
+                  </div>
+                  {editingUser && <p className="field-hint">Şifre güvenliği için düzenli güncelleme önerilir.</p>}
                 </div>
-                <div className="form-group">
-                  <label>Yetki Rolü</label>
-                  <select 
-                    value={formData.role} 
-                    onChange={e => setFormData({ ...formData, role: e.target.value })}
-                  >
-                    <option value="editor">Editör (İçerik Yönetimi)</option>
-                    <option value="admin">Admin (Tam Yetki)</option>
-                  </select>
+
+                <div className="form-group-premium">
+                  <label><Shield size={14} /> YETKİ SEVİYESİ</label>
+                  <div className="select-wrapper">
+                    <select 
+                      value={formData.role} 
+                      onChange={e => setFormData({ ...formData, role: e.target.value })}
+                    >
+                      <option value="editor">Editör (İçerik Yönetimi)</option>
+                      <option value="admin">Admin (Tam Yetki)</option>
+                    </select>
+                  </div>
+                  <div className="role-description">
+                     {formData.role === 'admin' ? 
+                       "Tam yetki: Kullanıcı ekleyebilir, silebilir ve tüm site ayarlarını değiştirebilir." : 
+                       "Sınırlı yetki: Sadece içerik ve stüdyo verilerini düzenleyebilir."}
+                  </div>
                 </div>
-                <div className="modal-footer">
-                   <button type="button" onClick={() => setIsModalOpen(false)} className="btn-secondary">İptal</button>
-                   <button type="submit" className="btn-primary">
-                     {editingUser ? 'GÜNCELLE' : 'EKLE'}
+
+                <div className="modal-footer-premium">
+                   <button type="button" onClick={() => setIsModalOpen(false)} className="btn-cancel">İPTAL</button>
+                   <button type="submit" className="btn-submit">
+                     {editingUser ? <CheckCircle size={18} /> : <UserPlus size={18} />}
+                     <span>{editingUser ? 'GÜNCELLE' : 'KULLANICIYI OLUŞTUR'}</span>
                    </button>
                 </div>
               </form>
@@ -252,24 +274,34 @@ export default function UsersPage() {
         .action-btn.delete:hover { border-color: #ff4d4d; color: #ff4d4d; background: rgba(255, 77, 77, 0.1); }
         
         /* Modal Styles */
-        .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(10px); display: flex; align-items: center; justify-content: center; z-index: 1000; }
-        .admin-modal { background: var(--background); border: 1px solid var(--line); border-radius: 20px; width: 100%; max-width: 500px; padding: 2.5rem; box-shadow: var(--shadow); }
-        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; }
-        .modal-header h3 { font-family: var(--font-display), sans-serif; font-size: 1.25rem; font-weight: 300; letter-spacing: 0.1em; color: var(--text); margin:0; }
-        .close-modal { background: none; border: none; color: var(--text); font-size: 2rem; cursor: pointer; opacity: 0.5; }
+        .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(8px); display: flex; align-items: center; justify-content: center; z-index: 1000; padding: 1.5rem; }
+        .admin-modal { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; width: 100%; max-width: 550px; padding: 2.5rem; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5); }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2.5rem; }
+        .modal-header h3 { font-family: var(--font-display), sans-serif; font-size: 1rem; font-weight: 700; letter-spacing: 0.15em; color: #a68966; margin:0; text-transform: uppercase; }
+        .close-modal { background: var(--background); border: 1px solid var(--line); color: var(--text); border-radius: 50%; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; font-size: 1.25rem; cursor: pointer; transition: all 0.3s; }
+        .close-modal:hover { border-color: #ff4d4d; color: #ff4d4d; transform: rotate(90deg); }
         
-        .admin-form { display: flex; flex-direction: column; gap: 1.5rem; }
-        .form-group { display: flex; flex-direction: column; gap: 0.5rem; }
-        .form-group label { font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); font-weight: 600; }
-        .form-group input, .form-group select { background: var(--surface-muted); border: 1px solid var(--line); border-radius: 8px; padding: 0.75rem 1rem; color: var(--text); outline: none; transition: border-color 0.3s; }
-        .form-group input:focus { border-color: var(--accent); }
+        .admin-form { display: flex; flex-direction: column; gap: 1.75rem; }
+        .form-group-premium { display: flex; flex-direction: column; gap: 0.75rem; }
+        .form-group-premium label { font-size: 0.65rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--text-soft); font-weight: 800; display: flex; align-items: center; gap: 0.6rem; }
         
-        .modal-footer { display: flex; gap: 1rem; margin-top: 1rem; }
-        .btn-primary { flex: 1; background: var(--accent); color: #000; border: none; padding: 1rem; border-radius: 8px; font-weight: 800; cursor: pointer; letter-spacing: 0.1em; }
-        .btn-secondary { background: var(--surface-muted); color: var(--text); border: none; padding: 1rem; border-radius: 8px; font-weight: 600; cursor: pointer; }
+        .input-with-icn { position: relative; }
+        .input-with-icn input, .select-wrapper select { width: 100%; background: var(--background); border: 1px solid var(--line); border-radius: 8px; padding: 1rem 1.25rem; color: var(--text); font-family: inherit; font-size: 0.9rem; transition: all 0.3s; }
+        .input-with-icn input:focus, .select-wrapper select:focus { outline: none; border-color: #a68966; box-shadow: 0 0 0 4px rgba(166,137,102,0.1); }
         
-        .premium-btn { background: var(--accent); border: none; color: #000; padding: 0.75rem 1.5rem; border-radius: 8px; display: flex; align-items: center; gap: 0.75rem; font-weight: 800; cursor: pointer; transition: all 0.3s; }
-        .premium-btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(166, 137, 102, 0.3); }
+        .field-hint { font-size: 0.7rem; color: var(--text-muted); margin-top: 0.4rem; font-style: italic; }
+        
+        .role-description { font-size: 0.75rem; color: var(--text-muted); background: var(--background); padding: 0.75rem 1rem; border-radius: 6px; border-left: 3px solid #a68966; line-height: 1.5; }
+        
+        .modal-footer-premium { display: flex; gap: 1.25rem; margin-top: 1rem; }
+        .btn-submit { flex: 2; background: #a68966; color: #000; border: none; padding: 1.1rem; border-radius: 8px; font-weight: 900; cursor: pointer; letter-spacing: 0.1em; display: flex; align-items: center; justify-content: center; gap: 0.75rem; transition: all 0.3s; }
+        .btn-submit:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(166,137,102,0.3); }
+        .btn-cancel { flex: 1; background: transparent; color: var(--text-muted); border: 1px solid var(--line); padding: 1rem; border-radius: 8px; font-weight: 700; cursor: pointer; transition: all 0.3s; }
+        .btn-cancel:hover { background: var(--line); color: var(--text); }
+        
+        .premium-btn { background: #fff; border: 1px solid var(--line); color: #000; padding: 0.75rem 1.75rem; border-radius: 8px; display: flex; align-items: center; gap: 0.75rem; font-weight: 800; cursor: pointer; transition: all 0.3s; letter-spacing: 0.05em; font-size: 0.75rem; }
+        .premium-btn.primary { background: #a68966; color: #000; border-color: #a68966; }
+        .premium-btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(166,137,102,0.3); }
       `}</style>
     </div>
   );
