@@ -120,6 +120,21 @@ export default function SliderConfigPage() {
     }
   };
 
+  const runMigration = async () => {
+    setIsSaving(true);
+    try {
+      const res = await fetch('/api/admin/migrate/slides');
+      if (res.ok) {
+        alert("Varsayılan sahneler başarıyla aktarıldı!");
+        fetchSlides();
+      }
+    } catch (e) {
+      alert("Aktarım sırasında bir hata oluştu.");
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
   if (loading) return <div className="loader-wrap"><Loader2 className="animate-spin" /></div>;
 
   return (
@@ -162,7 +177,17 @@ export default function SliderConfigPage() {
               </button>
             </div>
           ))}
-          {slides.length === 0 && <p className="empty-txt">Henüz hiçbir sahne eklenmemiş.</p>}
+          {slides.length === 0 && (
+            <div className="migration-helper admin-card">
+              <ImageIcon size={32} className="icon-gold" />
+              <h4>VERİTABANI BOŞ</h4>
+              <p>Henüz yönetilebilir bir sahne bulunamadı. Web sitesindeki varsayılan sahneleri buraya aktararak başlayabilirsiniz.</p>
+              <button className="migrate-btn" onClick={runMigration} disabled={isSaving}>
+                {isSaving ? <Loader2 className="animate-spin" size={16} /> : <Check size={16} />}
+                VARSAYILANLARI AKTAR
+              </button>
+            </div>
+          )}
         </div>
 
         <div className="editor-side">
@@ -331,6 +356,14 @@ export default function SliderConfigPage() {
 
         .loader-wrap { height: 60vh; display: flex; align-items: center; justify-content: center; }
         .hidden { display: none; }
+
+        .migration-helper { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 1rem; padding: 2.5rem 1.5rem; background: rgba(166,137,102,0.05); border: 1px dashed rgba(166,137,102,0.3); margin-top: 1rem; }
+        .migration-helper h4 { font-size: 0.8rem; letter-spacing: 0.2em; color: #a68966; margin: 0; }
+        .migration-helper p { font-size: 0.75rem; color: rgba(255,255,255,0.4); line-height: 1.6; margin: 0; }
+        .icon-gold { color: #a68966; opacity: 0.6; }
+        .migrate-btn { background: #a68966; color: #000; border: none; padding: 0.75rem 1.25rem; border-radius: 4px; font-size: 0.65rem; font-weight: 800; cursor: pointer; display: flex; align-items: center; gap: 0.5rem; transition: all 0.3s; margin-top: 0.5rem; }
+        .migrate-btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(166,137,102,0.2); }
+        .migrate-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
         @media (max-width: 1280px) {
           .slides-layout { grid-template-columns: 1fr; }
