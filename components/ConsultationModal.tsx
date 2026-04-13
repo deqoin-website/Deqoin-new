@@ -188,6 +188,13 @@ export default function ConsultationModal({ isOpen, onClose }: ConsultationModal
         role="dialog"
         aria-modal="true"
         aria-label="Randevu talep formu"
+        initial={{ opacity: 0, y: 56, scale: 0.985 }}
+        animate={{
+          opacity: isVisible ? 1 : 0,
+          y: isVisible ? 0 : 40,
+          scale: isVisible ? 1 : 0.985,
+        }}
+        transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
         drag="y"
         dragControls={dragControls}
         dragListener={false}
