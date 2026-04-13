@@ -39,7 +39,7 @@ export default function AdminDashboard() {
 
   const itemVariants = {
     hidden: { opacity: 0, y: 20 },
-    show: { opacity: 1, y: 0, transition: { type: "tween", ease: [0.16, 1, 0.3, 1], duration: 0.8 } }
+    show: { opacity: 1, y: 0, transition: { ease: [0.16, 1, 0.3, 1], duration: 0.8 } }
   };
 
   return (
