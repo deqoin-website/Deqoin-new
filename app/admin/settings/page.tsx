@@ -230,11 +230,11 @@ export default function SettingsPage() {
         }
 
         .header-text p { font-family: var(--font-display), sans-serif; font-size: 0.75rem; letter-spacing: 0.3em; color: #a68966; margin: 0; }
-        .header-text span { font-size: 0.85rem; opacity: 0.4; display: block; margin-top: 0.5rem; }
+        .header-text span { font-size: 0.85rem; color: var(--text-soft); opacity: 0.7; display: block; margin-top: 0.5rem; }
 
         .tabs-navigation { display: flex; gap: 1rem; margin-top: -1rem; }
-        .tabs-navigation button { background: transparent; border: none; border-bottom: 2px solid transparent; color: rgba(255,255,255,0.3); padding: 0.75rem 1rem; font-size: 0.7rem; font-weight: 800; letter-spacing: 0.1em; cursor: pointer; transition: all 0.3s; display: flex; align-items: center; gap: 0.5rem; }
-        .tabs-navigation button:hover { color: #fff; }
+        .tabs-navigation button { background: transparent; border: none; border-bottom: 2px solid transparent; color: var(--text-muted); padding: 0.75rem 1rem; font-size: 0.7rem; font-weight: 800; letter-spacing: 0.1em; cursor: pointer; transition: all 0.3s; display: flex; align-items: center; gap: 0.5rem; }
+        .tabs-navigation button:hover { color: var(--text); }
         .tabs-navigation button.active { color: #a68966; border-color: #a68966; }
 
         .save-btn {
@@ -259,8 +259,8 @@ export default function SettingsPage() {
         .settings-grid.single-col { grid-template-columns: 1fr; }
         
         .settings-card {
-          background: rgba(255, 255, 255, 0.02);
-          border: 1px solid rgba(255, 255, 255, 0.05);
+          background: var(--surface);
+          border: 1px solid var(--line);
           padding: 2.5rem;
           display: flex;
           flex-direction: column;
@@ -269,39 +269,39 @@ export default function SettingsPage() {
         }
 
         .card-header h3 { font-family: var(--font-display), sans-serif; font-size: 0.8rem; letter-spacing: 0.1em; color: #a68966; text-transform: uppercase; margin: 0; }
-        .card-header p { font-size: 0.8rem; opacity: 0.4; margin-top: 0.5rem; }
+        .card-header p { font-size: 0.8rem; color: var(--text-soft); opacity: 0.7; margin-top: 0.5rem; }
 
         .logo-section-grid { display: flex; gap: 2.5rem; align-items: flex-end; }
         .logo-upload-wrap { display: flex; flex-direction: column; gap: 0.75rem; }
-        .logo-upload-wrap label { font-size: 0.6rem; font-weight: 900; color: rgba(255,255,255,0.3); }
+        .logo-upload-wrap label { font-size: 0.6rem; font-weight: 900; color: var(--text-muted); }
         .logo-preview-box { width: 140px; height: 100px; background: #fff; border-radius: 4px; display: flex; align-items: center; justify-content: center; cursor: pointer; padding: 10px; position: relative; }
         .logo-preview-box.square { width: 60px; height: 60px; }
         .logo-preview-box img { max-width: 100%; max-height: 100%; object-fit: contain; }
         .upload-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; }
         
-        .upload-btn-mini { background: rgba(255,255,255,0.05); color: #fff; border: 1px solid rgba(255,255,255,0.1); padding: 0.4rem; font-size: 0.6rem; font-weight: 700; cursor: pointer; border-radius: 2px; }
-        .upload-btn-mini:hover { background: #fff; color: #000; }
+        .upload-btn-mini { background: var(--surface-muted); color: var(--text); border: 1px solid var(--line); padding: 0.4rem; font-size: 0.6rem; font-weight: 700; cursor: pointer; border-radius: 2px; }
+        .upload-btn-mini:hover { background: var(--text); color: var(--background); }
         .info-inputs { flex: 1; }
 
         .form-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
         .form-group { display: flex; flex-direction: column; gap: 0.75rem; }
-        .form-group label { font-size: 0.65rem; color: rgba(255, 255, 255, 0.4); font-weight: 800; display: flex; align-items: center; gap: 0.5rem; }
+        .form-group label { font-size: 0.65rem; color: var(--text-muted); font-weight: 800; display: flex; align-items: center; gap: 0.5rem; }
         .form-group input, .form-group textarea {
-          background: rgba(0,0,0,0.3);
-          border: 1px solid rgba(255, 255, 255, 0.05);
+          background: var(--background);
+          border: 1px solid var(--line);
           padding: 1rem;
-          color: #fff;
+          color: var(--text);
           border-radius: 4px;
           font-size: 0.85rem;
           font-family: inherit;
         }
 
-        .status-toggle { width: 60px; height: 32px; background: rgba(255,255,255,0.1); border-radius: 20px; position: relative; cursor: pointer; transition: all 0.3s; }
+        .status-toggle { width: 60px; height: 32px; background: var(--line); border-radius: 20px; position: relative; cursor: pointer; transition: all 0.3s; }
         .status-toggle.active { background: #a68966; }
         .toggle-bullet { width: 24px; height: 24px; background: #fff; border-radius: 50%; position: absolute; top: 4px; left: 4px; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
         .status-toggle.active .toggle-bullet { left: 32px; background: #000; }
         
-        .maintenance-status-info { margin-top: 1rem; padding-top: 1.5rem; border-top: 1px solid rgba(255,255,255,0.05); }
+        .maintenance-status-info { margin-top: 1rem; padding-top: 1.5rem; border-top: 1px solid var(--line); }
         .status-warn { color: #ffab40; font-size: 0.8rem; font-weight: 700; display: flex; align-items: center; gap: 0.5rem; }
         .status-ok { color: #4caf50; font-size: 0.8rem; font-weight: 700; display: flex; align-items: center; gap: 0.5rem; }
 

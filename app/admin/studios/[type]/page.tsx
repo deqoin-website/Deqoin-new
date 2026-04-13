@@ -291,16 +291,16 @@ export default function DepartmentManagerPage() {
         .dept-manager-layout { display: flex; flex-direction: column; gap: 2rem; }
         
         .dept-header { display: flex; justify-content: space-between; align-items: flex-end; }
-        .dept-header h2 { font-family: var(--font-display); font-size: 1.5rem; letter-spacing: 0.1em; color: #fff; margin: 0 0 0.5rem 0; }
-        .dept-header p { margin: 0; color: rgba(255,255,255,0.5); font-size: 0.85rem; }
+        .dept-header h2 { font-family: var(--font-display); font-size: 1.5rem; letter-spacing: 0.1em; color: var(--text); margin: 0 0 0.5rem 0; }
+        .dept-header p { margin: 0; color: var(--text-soft); opacity: 0.7; font-size: 0.85rem; }
 
         .save-btn-main { background: #a68966; color: #000; border: none; padding: 1rem 2rem; border-radius: 4px; font-family: var(--font-display); font-weight: 700; letter-spacing: 0.1em; font-size: 0.8rem; cursor: pointer; display: flex; align-items: center; gap: 0.75rem; transition: background 0.3s; }
         .save-btn-main:hover { background: #c5a680; }
         .save-btn-main:disabled { opacity: 0.7; cursor: not-allowed; }
 
-        .tabs-nav { display: flex; gap: 0.5rem; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 1rem; }
-        .tab-btn { background: transparent; border: none; color: rgba(255,255,255,0.4); padding: 0.75rem 1.5rem; border-radius: 4px; font-size: 0.75rem; font-weight: 600; letter-spacing: 0.1em; cursor: pointer; transition: all 0.3s; }
-        .tab-btn:hover { color: #fff; background: rgba(255,255,255,0.02); }
+        .tabs-nav { display: flex; gap: 0.5rem; border-bottom: 1px solid var(--line); padding-bottom: 1rem; }
+        .tab-btn { background: transparent; border: none; color: var(--text-muted); padding: 0.75rem 1.5rem; border-radius: 4px; font-size: 0.75rem; font-weight: 600; letter-spacing: 0.1em; cursor: pointer; transition: all 0.3s; }
+        .tab-btn:hover { color: var(--text); background: var(--surface-muted); }
         .tab-btn.active { background: rgba(166,137,102,0.1); color: #a68966; }
 
         .tab-content-area { padding: 3rem; min-height: 400px; }
@@ -309,50 +309,50 @@ export default function DepartmentManagerPage() {
 
         .form-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
         .form-group { display: flex; flex-direction: column; gap: 0.75rem; }
-        .form-group label { font-size: 0.65rem; color: rgba(255,255,255,0.5); letter-spacing: 0.15em; font-weight: 600; }
-        .form-group input, .form-group textarea { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); padding: 1rem; color: #fff; border-radius: 4px; font-family: inherit; resize: vertical; }
+        .form-group label { font-size: 0.65rem; color: var(--text-muted); letter-spacing: 0.15em; font-weight: 600; }
+        .form-group input, .form-group textarea { background: var(--background); border: 1px solid var(--line); padding: 1rem; color: var(--text); border-radius: 4px; font-family: inherit; resize: vertical; }
         .form-group input:focus, .form-group textarea:focus { outline: none; border-color: #a68966; }
 
         .hero-upload-section { display: flex; flex-direction: column; gap: 0.75rem; }
-        .hero-upload-section label { font-size: 0.65rem; color: rgba(255,255,255,0.5); letter-spacing: 0.15em; font-weight: 600; }
-        .hero-preview { width: 100%; height: 300px; background: rgba(255,255,255,0.02); border: 1px dashed rgba(255,255,255,0.1); border-radius: 8px; overflow: hidden; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: border-color 0.3s; }
-        .hero-preview:hover { border-color: rgba(255,255,255,0.3); }
+        .hero-upload-section label { font-size: 0.65rem; color: var(--text-muted); letter-spacing: 0.15em; font-weight: 600; }
+        .hero-preview { width: 100%; height: 300px; background: var(--background); border: 1px dashed var(--line); border-radius: 8px; overflow: hidden; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: border-color 0.3s; }
+        .hero-preview:hover { border-color: var(--accent); }
         .hero-preview img { width: 100%; height: 100%; object-fit: cover; }
-        .placeholder { display: flex; flex-direction: column; align-items: center; gap: 0.5rem; color: rgba(255,255,255,0.3); font-size: 0.8rem; }
+        .placeholder { display: flex; flex-direction: column; align-items: center; gap: 0.5rem; color: var(--text-muted); font-size: 0.8rem; }
 
         /* LIST PANELS */
-        .panel-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 1rem; }
+        .panel-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--line); padding-bottom: 1rem; }
         .panel-header h3 { margin: 0; color: #a68966; font-family: var(--font-display); font-size: 1.1rem; letter-spacing: 0.1em; }
         
-        .add-item-btn { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 0.5rem 1rem; border-radius: 4px; display: flex; align-items: center; gap: 0.5rem; font-size: 0.75rem; cursor: pointer; transition: background 0.3s; }
-        .add-item-btn:hover { background: rgba(255,255,255,0.1); }
+        .add-item-btn { background: var(--surface-muted); border: 1px solid var(--line); color: var(--text); padding: 0.5rem 1rem; border-radius: 4px; display: flex; align-items: center; gap: 0.5rem; font-size: 0.75rem; cursor: pointer; transition: background 0.3s; }
+        .add-item-btn:hover { background: var(--line); }
 
         .items-list { display: flex; flex-direction: column; gap: 1rem; margin-top: 1rem; }
-        .list-item-card { display: flex; align-items: flex-start; gap: 1rem; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); padding: 1.5rem; border-radius: 8px; }
-        .drag-handle { padding-top: 0.5rem; color: rgba(255,255,255,0.3); cursor: grab; }
+        .list-item-card { display: flex; align-items: flex-start; gap: 1rem; background: var(--surface-muted); border: 1px solid var(--line); padding: 1.5rem; border-radius: 8px; }
+        .drag-handle { padding-top: 0.5rem; color: var(--text-muted); cursor: grab; }
         .item-inputs { flex: 1; display: flex; flex-direction: column; gap: 0.75rem; }
-        .item-inputs input, .item-inputs textarea { background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.05); color: #fff; padding: 0.85rem; border-radius: 4px; font-family: inherit; }
+        .item-inputs input, .item-inputs textarea { background: var(--background); border: 1px solid var(--line); color: var(--text); padding: 0.85rem; border-radius: 4px; font-family: inherit; }
         .item-inputs input:focus, .item-inputs textarea:focus { outline: none; border-color: rgba(166,137,102,0.5); }
         .remove-btn { background: rgba(255,77,77,0.1); color: #ff4d4d; border: none; width: 44px; height: 44px; border-radius: 4px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.3s; }
         .remove-btn:hover { background: #ff4d4d; color: #fff; }
 
         .items-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem; margin-top: 1rem; }
-        .grid-item-card { display: flex; flex-direction: column; gap: 0.75rem; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); padding: 1.5rem; border-radius: 8px; }
+        .grid-item-card { display: flex; flex-direction: column; gap: 0.75rem; background: var(--surface-muted); border: 1px solid var(--line); padding: 1.5rem; border-radius: 8px; }
         .card-top { display: flex; justify-content: space-between; align-items: center; }
-        .icon-select { background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1); color: #a68966; padding: 0.5rem; border-radius: 4px; font-family: inherit; font-size: 0.8rem; }
+        .icon-select { background: var(--background); border: 1px solid var(--line); color: #a68966; padding: 0.5rem; border-radius: 4px; font-family: inherit; font-size: 0.8rem; }
         .icon-select:focus { outline: none; border-color: #a68966; }
-        .grid-item-card input, .grid-item-card textarea { background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.05); color: #fff; padding: 0.85rem; border-radius: 4px; font-family: inherit; }
+        .grid-item-card input, .grid-item-card textarea { background: var(--background); border: 1px solid var(--line); color: var(--text); padding: 0.85rem; border-radius: 4px; font-family: inherit; }
         .grid-item-card input:focus, .grid-item-card textarea:focus { outline: none; border-color: rgba(166,137,102,0.5); }
         .remove-btn-small { background: rgba(255,77,77,0.1); color: #ff4d4d; border: none; width: 32px; height: 32px; border-radius: 4px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
 
         .category-list { display: flex; flex-direction: column; gap: 0.75rem; margin-top: 1rem; }
-        .category-row { display: flex; align-items: center; gap: 1rem; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); padding: 1rem; border-radius: 8px; }
-        .category-row input { background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 0.75rem; border-radius: 4px; font-family: inherit; flex: 1; }
-        .arrow { color: rgba(255,255,255,0.3); }
+        .category-row { display: flex; align-items: center; gap: 1rem; background: var(--surface-muted); border: 1px solid var(--line); padding: 1rem; border-radius: 8px; }
+        .category-row input { background: var(--background); border: 1px solid var(--line); color: var(--text); padding: 0.75rem; border-radius: 4px; font-family: inherit; flex: 1; }
+        .arrow { color: var(--text-muted); }
         .ml-auto { margin-left: auto; }
 
-        .hint { font-size: 0.75rem; color: rgba(255,255,255,0.4); margin-bottom: 1rem; }
-        .empty { text-align: center; color: rgba(255,255,255,0.3); font-size: 0.85rem; padding: 2rem; border: 1px dashed rgba(255,255,255,0.1); border-radius: 8px; margin-top: 1rem; }
+        .hint { font-size: 0.75rem; color: var(--text-muted); margin-bottom: 1rem; }
+        .empty { text-align: center; color: var(--text-muted); font-size: 0.85rem; padding: 2rem; border: 1px dashed var(--line); border-radius: 8px; margin-top: 1rem; }
         .hidden { display: none; }
         .loader-wrap { height: 60vh; display: flex; align-items: center; justify-content: center; color: #a68966; }
       `}</style>

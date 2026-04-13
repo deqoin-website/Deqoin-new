@@ -119,8 +119,8 @@ export default function OurTeam() {
       <div className="section-inner" style={{ paddingBottom: "6rem" }}>
         
         <div style={{ marginBottom: "5rem", textAlign: "center" }}>
-          <h1 style={{ fontFamily: "var(--font-smooch), sans-serif", fontSize: "clamp(4rem, 10vw, 8rem)", fontWeight: 100, color: "#fff", letterSpacing: "0.2em", textTransform: "uppercase", margin: 0 }}>DEPARTMAN EKİPLERİ</h1>
-          <p style={{ fontFamily: "var(--font-display), sans-serif", fontSize: "0.8rem", letterSpacing: "0.4em", fontWeight: 300, color: "rgba(255,255,255,0.7)", textTransform: "uppercase", marginTop: "1rem" }}>
+          <h1 style={{ fontFamily: "var(--font-smooch), sans-serif", fontSize: "clamp(4rem, 10vw, 8rem)", fontWeight: 100, color: "var(--text)", letterSpacing: "0.2em", textTransform: "uppercase", margin: 0 }}>DEPARTMAN EKİPLERİ</h1>
+          <p style={{ fontFamily: "var(--font-display), sans-serif", fontSize: "0.8rem", letterSpacing: "0.4em", fontWeight: 300, color: "var(--text-soft)", textTransform: "uppercase", marginTop: "1rem" }}>
             DEQOIN Studio Ekipleri
           </p>
         </div>
@@ -134,8 +134,8 @@ export default function OurTeam() {
                 className={`filter-button ${activeTeamFilter === filter.key ? "active" : ""}`}
                 onClick={() => setActiveTeamFilter(filter.key)}
               >
-                <span className="filter-border" style={{ borderColor: 'rgba(255,255,255,0.2)' }} />
-                <span className="filter-text" style={{ color: 'white' }}>{filter.title}</span>
+                <span className="filter-border" style={{ borderColor: 'var(--line)' }} />
+                <span className="filter-text" style={{ color: 'var(--text)' }}>{filter.title}</span>
               </button>
             ))}
           </div>
@@ -262,11 +262,11 @@ export default function OurTeam() {
       </div>
 
       <style jsx>{`
-        .team-bio-mini { font-size: 0.7rem; color: rgba(255,255,255,0.4); line-height: 1.5; margin-top: 0.5rem; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+        .team-bio-mini { font-size: 0.7rem; color: var(--text-soft); opacity: 0.7; line-height: 1.5; margin-top: 0.5rem; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
         .team-socials { display: flex; gap: 0.75rem; align-items: center; }
         .social-link { opacity: 0.5; transition: all 0.3s; display: flex; align-items: center; }
         .social-link:hover { opacity: 1; transform: scale(1.1); }
-        .team-card-gallery:hover .team-bio-mini { color: rgba(255,255,255,0.8); }
+        .team-card-gallery:hover .team-bio-mini { color: var(--text); opacity: 1; }
         
         .team-mobile-card .team-bio-mini { -webkit-line-clamp: 3; }
       `}</style>

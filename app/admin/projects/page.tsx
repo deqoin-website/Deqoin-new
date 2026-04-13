@@ -357,7 +357,7 @@ export default function AdminProjects() {
         }
 
         .header-text p { font-family: var(--font-display); font-size: 0.8rem; letter-spacing: 0.2em; color: #a68966; margin: 0 0 5px 0; font-weight: 700; }
-        .header-text span { font-size: 0.75rem; color: rgba(255,255,255,0.5); }
+        .header-text span { font-size: 0.75rem; color: var(--text-soft); opacity: 0.7; }
 
         .add-engine-btn {
           background: #fff; color: #000; border: none; padding: 0.8rem 1.5rem; display: flex; align-items: center; gap: 0.5rem;
@@ -370,7 +370,7 @@ export default function AdminProjects() {
         .engine-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem; }
 
         .engine-card {
-          background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 8px; overflow: hidden;
+          background: var(--surface); border: 1px solid var(--line); border-radius: 8px; overflow: hidden;
         }
         
         .card-thumb { aspect-ratio: 16/10; position: relative; overflow: hidden; }
@@ -386,7 +386,7 @@ export default function AdminProjects() {
         .action-icn.delete:hover { background: #ff4d4d; color: #fff; }
 
         .card-meta { padding: 1rem; display: flex; flex-direction: column; gap: 0.5rem; }
-        .card-meta h4 { margin: 0; font-size: 0.9rem; font-weight: 500; font-family: var(--font-display); }
+        .card-meta h4 { margin: 0; font-size: 0.9rem; font-weight: 500; font-family: var(--font-display); color: var(--text); }
         
         .publish-badges { display: flex; gap: 0.5rem; flex-wrap: wrap; }
         .badge { font-size: 0.6rem; padding: 2px 6px; border-radius: 2px; letter-spacing: 0.1em; font-weight: 700; }
@@ -401,17 +401,17 @@ export default function AdminProjects() {
         }
 
         .hybrid-modal-content {
-          background: #0d0d0d; border: 1px solid rgba(255,255,255,0.1); width: 100%; max-width: 900px;
+          background: var(--surface); border: 1px solid var(--line); width: 100%; max-width: 900px;
           height: 85vh; border-radius: 12px; display: flex; flex-direction: column; overflow: hidden;
         }
 
         .modal-inner-scroll { overflow-y: auto; height: 100%; display: flex; flex-direction: column; }
 
-        .modal-header { padding: 1.5rem 2rem; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; background: rgba(13,13,13,0.9); z-index: 10; }
-        .modal-header h3 { margin: 0; font-family: var(--font-display); font-size: 1rem; letter-spacing: 0.15em; color: #fff; }
+        .modal-header { padding: 1.5rem 2rem; border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; background: var(--surface); z-index: 10; }
+        .modal-header h3 { margin: 0; font-family: var(--font-display); font-size: 1rem; letter-spacing: 0.15em; color: var(--text); }
         .header-actions { display: flex; align-items: center; gap: 1.5rem; }
         .text-btn { background: none; border: none; color: #a68966; font-size: 0.75rem; letter-spacing: 0.1em; display: flex; align-items: center; gap: 0.5rem; cursor: pointer; }
-        .close-btn { background: none; border: none; color: rgba(255,255,255,0.5); cursor: pointer; }
+        .close-btn { background: none; border: none; color: var(--text-muted); cursor: pointer; }
 
         .modal-form { padding: 2rem; display: flex; flex-direction: column; gap: 2rem; flex: 1; }
         .main-form-content, .advanced-form-content { flex-direction: column; gap: 1.5rem; }
@@ -419,8 +419,8 @@ export default function AdminProjects() {
         .form-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
         
         .group { display: flex; flex-direction: column; gap: 0.5rem; }
-        .group label { font-size: 0.65rem; color: rgba(255,255,255,0.5); letter-spacing: 0.15em; }
-        .group input, .group textarea { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); padding: 1rem; color: #fff; border-radius: 4px; font-family: inherit; }
+        .group label { font-size: 0.65rem; color: var(--text-muted); letter-spacing: 0.15em; }
+        .group input, .group textarea { background: var(--background); border: 1px solid var(--line); padding: 1rem; color: var(--text); border-radius: 4px; font-family: inherit; }
         .group input:focus, .group textarea:focus { outline: none; border-color: #a68966; }
 
         .upload-sections { display: flex; gap: 2rem; align-items: flex-start; }
@@ -428,27 +428,27 @@ export default function AdminProjects() {
         .upload-box label { font-size: 0.65rem; color: rgba(255,255,255,0.5); letter-spacing: 0.15em; }
         .flex-1 { flex: 1; }
 
-        .cover-preview { width: 250px; aspect-ratio: 16/10; border: 1px dashed rgba(255,255,255,0.2); border-radius: 4px; display: flex; align-items: center; justify-content: center; cursor: pointer; overflow: hidden; background: rgba(255,255,255,0.02); }
+        .cover-preview { width: 250px; aspect-ratio: 16/10; border: 1px dashed var(--line); border-radius: 4px; display: flex; align-items: center; justify-content: center; cursor: pointer; overflow: hidden; background: var(--background); }
         .cover-preview img { width: 100%; height: 100%; object-fit: cover; }
-        .placeholder { color: rgba(255,255,255,0.3); }
+        .placeholder { color: var(--text-muted); }
 
         .advanced-gallery { display: flex; flex-direction: column; gap: 1rem; }
-        .gallery-card { display: flex; gap: 1rem; background: rgba(255,255,255,0.02); padding: 1rem; border-radius: 4px; border: 1px solid rgba(255,255,255,0.05); align-items: center; }
+        .gallery-card { display: flex; gap: 1rem; background: var(--surface-muted); padding: 1rem; border-radius: 4px; border: 1px solid var(--line); align-items: center; }
         .gallery-card img { width: 80px; height: 80px; object-fit: cover; border-radius: 2px; }
         .gallery-fields { display: flex; flex-direction: column; gap: 0.5rem; flex: 1; }
-        .gallery-fields input { background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.05); color: #fff; padding: 0.4rem 0.8rem; font-size: 0.8rem; border-radius: 2px; }
+        .gallery-fields input { background: var(--background); border: 1px solid var(--line); color: var(--text); padding: 0.4rem 0.8rem; font-size: 0.8rem; border-radius: 2px; }
         .remove-btn { background: #ff4d4d; color: #fff; border: none; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; }
 
-        .add-photo-btn { background: rgba(255,255,255,0.05); color: #fff; border: 1px dashed rgba(255,255,255,0.2); padding: 1rem; display: flex; align-items: center; justify-content: center; gap: 0.5rem; cursor: pointer; border-radius: 4px; font-size: 0.75rem; letter-spacing: 0.1em; }
+        .add-photo-btn { background: var(--surface-muted); color: var(--text); border: 1px dashed var(--line); padding: 1rem; display: flex; align-items: center; justify-content: center; gap: 0.5rem; cursor: pointer; border-radius: 4px; font-size: 0.75rem; letter-spacing: 0.1em; }
 
         /* ADVANCED STYLES */
         .advanced-section h4 { font-family: var(--font-display); font-size: 0.8rem; color: #a68966; margin: 0 0 0.5rem 0; letter-spacing: 0.1em; border-bottom: 1px solid rgba(166,137,102,0.2); padding-bottom: 0.5rem; }
-        .hint { font-size: 0.75rem; color: rgba(255,255,255,0.4); margin-bottom: 1rem; }
+        .hint { font-size: 0.75rem; color: var(--text-muted); margin-bottom: 1rem; }
         
         .checkbox-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem; }
-        .custom-cb { display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; cursor: pointer; color: rgba(255,255,255,0.8); }
+        .custom-cb { display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; cursor: pointer; color: var(--text-soft); }
         .custom-cb input { display: none; }
-        .cb-mark { width: 18px; height: 18px; border: 1px solid rgba(255,255,255,0.2); border-radius: 3px; display: inline-flex; position: relative; }
+        .cb-mark { width: 18px; height: 18px; border: 1px solid var(--line); border-radius: 3px; display: inline-flex; position: relative; }
         .custom-cb input:checked + .cb-mark { background: #a68966; border-color: #a68966; }
         .custom-cb input:checked + .cb-mark::after { content: '✓'; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); color: #000; font-size: 12px; }
 
