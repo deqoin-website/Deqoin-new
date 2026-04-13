@@ -1,134 +1,329 @@
 'use client';
 
-import { useState } from 'react';
-import { motion } from 'framer-motion';
-import { Image as ImageIcon, Video, Save, Sliders, Type } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { 
+  Image as ImageIcon, 
+  Video, 
+  Save, 
+  Sliders, 
+  Type, 
+  Plus, 
+  Trash2, 
+  Upload, 
+  Loader2, 
+  Check, 
+  Eye,
+  GripVertical
+} from 'lucide-react';
 
 export default function SliderConfigPage() {
-  // Mock data representing what would come from PageContent or Slide models
-  const [slides, setSlides] = useState([
-    { id: 1, title: 'TASARIM & KEŞİF', subtitle: 'HAYALLERİN MİMARİSİ', image: '/images/slider1.jpg', blur: 20, overlay: 40, type: 'video' },
-    { id: 2, title: 'MATERIAL STUDIO', subtitle: 'DOKUNUN GÜCÜ', image: '/images/slider2.jpg', blur: 0, overlay: 20, type: 'image' },
-  ]);
+  const [slides, setSlides] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [isSaving, setIsSaving] = useState(false);
+  const [activePreviewId, setActivePreviewId] = useState<string | null>(null);
 
-  const updateSlide = (id: number, key: string, value: any) => {
-    setSlides(slides.map(s => s.id === id ? { ...s, [key]: value } : s));
+  useEffect(() => {
+    fetchSlides();
+  }, []);
+
+  const fetchSlides = async () => {
+    try {
+      const res = await fetch('/api/admin/slides');
+      if (res.ok) {
+        const data = await res.json();
+        setSlides(data);
+        if (data.length > 0) setActivePreviewId(data[0]._id);
+      }
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setLoading(false);
+    }
   };
+
+  const addSlide = () => {
+    const newSlide = {
+      title: 'YENİ SAHNE',
+      subtitle: 'ALT BAŞLIK',
+      mediaUrl: '',
+      mediaType: 'image',
+      blur: 0,
+      overlay: 30,
+      order: slides.length,
+      active: true
+    };
+    setSlides([...slides, { ...newSlide, _temporary: true, _id: Date.now().toString() }]);
+  };
+
+  const updateSlide = (id: string, key: string, value: any) => {
+    setSlides(slides.map(s => s._id === id ? { ...s, [key]: value } : s));
+  };
+
+  const removeSlide = async (id: string, isTemporary?: boolean) => {
+    if (!confirm("Bu sahneyi silmek istediğinize emin misiniz?")) return;
+    if (isTemporary) {
+      setSlides(slides.filter(s => s._id !== id));
+      return;
+    }
+    try {
+      const res = await fetch(`/api/admin/slides/${id}`, { method: 'DELETE' });
+      if (res.ok) fetchSlides();
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  const handleSave = async () => {
+    setIsSaving(true);
+    try {
+      // Logic: Save each slide. Optimized version would be a bulk update API.
+      // For now, we'll save them one by one for simplicity and robustness.
+      for (const slide of slides) {
+        const method = slide._temporary ? 'POST' : 'PUT';
+        const url = slide._temporary ? '/api/admin/slides' : `/api/admin/slides/${slide._id}`;
+        
+        const { _temporary, _id, ...saveBody } = slide;
+        
+        await fetch(url, {
+          method,
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(saveBody)
+        });
+      }
+      alert("Tüm sahneler başarıyla kaydedildi!");
+      fetchSlides();
+    } catch (e) {
+      console.error(e);
+      alert("Kayıt sırasında bir hata oluştu.");
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>, slideId: string) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    try {
+      const res = await fetch(`/api/upload?filename=${file.name}`, { method: 'POST', body: file });
+      const blob = await res.json();
+      
+      const isVideo = file.type.startsWith('video/');
+      
+      setSlides(slides.map(s => s._id === slideId ? { 
+        ...s, 
+        mediaUrl: blob.url, 
+        mediaType: isVideo ? 'video' : 'image' 
+      } : s));
+    } catch (err) {
+      alert("Yükleme başarısız.");
+    }
+  };
+
+  if (loading) return <div className="loader-wrap"><Loader2 className="animate-spin" /></div>;
 
   return (
     <div className="slider-manager">
       <div className="manager-header">
         <div>
           <h2>SİNEMATİK MEDYA & SLIDER</h2>
-          <p>Anasayfa "Snap-Scroll" geçişlerini ve arka plan görsel efektlerini (Blur & Gradient) ayarlayın.</p>
+          <p>Anasayfa snap-scroll geçişlerini, sloganları ve arka plan efektlerini yönetin.</p>
         </div>
-        <button className="save-btn"><Save size={18} /> TÜMÜNÜ KAYDET</button>
+        <div className="header-actions">
+           <button className="add-btn-outline" onClick={addSlide}><Plus size={18} /> YENİ SAHNE</button>
+           <button className="save-btn" onClick={handleSave} disabled={isSaving}>
+              {isSaving ? <Loader2 className="animate-spin" size={18} /> : <Save size={18} />}
+              {isSaving ? 'KAYDEDİLİYOR...' : 'TÜMÜNÜ KAYDET'}
+           </button>
+        </div>
       </div>
 
-      <div className="slides-container">
-        {slides.map((slide, i) => (
-          <motion.div 
-            key={slide.id} 
-            className="slide-card admin-card"
-            initial={{ opacity: 0, y: 15 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: i * 0.1 }}
-          >
-            <div className="slide-preview-area">
-              <div className="preview-box">
-                {/* Simulated preview with actual blur/overlay applied inline to show admin accurate preview */}
-                <div className="real-preview" style={{ 
-                  backgroundImage: `url(${slide.image})`,
-                  filter: `blur(${slide.blur}px)`
-                }}></div>
-                <div className="real-overlay" style={{ background: `rgba(0,0,0,${slide.overlay / 100})` }}></div>
-                
-                <div className="preview-content">
-                  <span className="subtitle-prev">{slide.subtitle}</span>
-                  <span className="title-prev">{slide.title}</span>
-                </div>
-                
-                <div className="badge">{slide.type === 'video' ? <Video size={14}/> : <ImageIcon size={14} />} {slide.type.toUpperCase()}</div>
+      <div className="slides-layout">
+        <div className="slides-list">
+          {slides.map((slide, i) => (
+            <div 
+              key={slide._id} 
+              className={`slide-item-sm ${activePreviewId === slide._id ? 'active' : ''}`}
+              onClick={() => setActivePreviewId(slide._id)}
+            >
+              <div className="drag-handle"><GripVertical size={16}/></div>
+              <div className="item-thumb">
+                {slide.mediaType === 'image' ? <img src={slide.mediaUrl || '/images/placeholder.jpg'} alt="" /> : <div className="video-thumb"><Video size={16}/></div>}
               </div>
+              <div className="item-meta">
+                <span className="item-title">{slide.title || 'BAŞLIKSIZ'}</span>
+                <span className="item-sub">{slide.mediaType.toUpperCase()}</span>
+              </div>
+              <button 
+                className="delete-item-btn" 
+                onClick={(e) => { e.stopPropagation(); removeSlide(slide._id, slide._temporary); }}
+              >
+                <Trash2 size={14}/>
+              </button>
             </div>
+          ))}
+          {slides.length === 0 && <p className="empty-txt">Henüz hiçbir sahne eklenmemiş.</p>}
+        </div>
 
-            <div className="slide-settings">
-              <div className="setting-group">
-                 <label><Type size={14} /> TİPOGRAFİ METİNLERİ</label>
-                 <input type="text" value={slide.title} onChange={e => updateSlide(slide.id, 'title', e.target.value)} placeholder="Ana Başlık (Örn: TASARIM)" />
-                 <input type="text" value={slide.subtitle} onChange={e => updateSlide(slide.id, 'subtitle', e.target.value)} placeholder="Alt Başlık" />
-              </div>
+        <div className="editor-side">
+          {activePreviewId ? (
+            <AnimatePresence mode="wait">
+              {slides.filter(s => s._id === activePreviewId).map(slide => (
+                <motion.div 
+                  key={slide._id}
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -20 }}
+                  className="slide-editor-card admin-card"
+                >
+                  <div className="editor-top">
+                     <h3>SAHNE AYARLARI</h3>
+                     <div className="badge">{slide.mediaType === 'video' ? <Video size={14}/> : <ImageIcon size={14} />} {slide.mediaType.toUpperCase()}</div>
+                  </div>
 
-              <div className="setting-group">
-                 <label><Sliders size={14} /> SİNEMATİK ETKİLER (BLUR & OPACITY)</label>
-                 
-                 <div className="range-control">
-                   <span>Arka Plan Flu (Blur) Seviyesi: {slide.blur}px</span>
-                   <input type="range" min="0" max="50" value={slide.blur} onChange={e => updateSlide(slide.id, 'blur', parseInt(e.target.value))} />
-                 </div>
+                  <div className="visual-preview-container">
+                    <div className="preview-label"><Eye size={12}/> CANLI ÖNİZLEME</div>
+                    <div className="dynamic-preview-box">
+                       {slide.mediaType === 'image' ? (
+                         <div className="preview-bg" style={{ backgroundImage: `url(${slide.mediaUrl || '/images/placeholder.jpg'})`, filter: `blur(${slide.blur}px)` }}></div>
+                       ) : (
+                         <video key={slide.mediaUrl} className="preview-bg" autoPlay muted loop style={{ filter: `blur(${slide.blur}px)` }}><source src={slide.mediaUrl} /></video>
+                       )}
+                       <div className="preview-overlay" style={{ background: `rgba(0,0,0,${slide.overlay / 100})` }}></div>
+                       <div className="preview-content">
+                         <span className="prev-sub">{slide.subtitle}</span>
+                         <span className="prev-title">{slide.title}</span>
+                       </div>
+                    </div>
+                  </div>
 
-                 <div className="range-control">
-                   <span>Karanlık Maske (Overlay): %{slide.overlay}</span>
-                   <input type="range" min="0" max="100" value={slide.overlay} onChange={e => updateSlide(slide.id, 'overlay', parseInt(e.target.value))} />
-                 </div>
-              </div>
+                  <div className="editor-grid">
+                    <div className="editor-group">
+                       <label><Type size={14} /> METİN İÇERİKLERİ</label>
+                       <div className="input-stack">
+                         <input type="text" placeholder="Ana Başlık (Örn: TASARIM)" value={slide.title} onChange={e => updateSlide(slide._id, 'title', e.target.value)} />
+                         <input type="text" placeholder="Alt Başlık (Örn: HAYALLERİN MİMARİSİ)" value={slide.subtitle} onChange={e => updateSlide(slide._id, 'subtitle', e.target.value)} />
+                       </div>
+                    </div>
+
+                    <div className="editor-group">
+                       <label><ImageIcon size={14} /> MEDYA DOSYASI</label>
+                       <div className="file-control">
+                         <input type="text" readOnly value={slide.mediaUrl} placeholder="Henüz dosya seçilmedi..." />
+                         <button className="upload-mini-btn" onClick={() => document.getElementById(`file-${slide._id}`)?.click()}>
+                           <Upload size={14}/> YÜKLE
+                         </button>
+                         <input id={`file-${slide._id}`} type="file" className="hidden" onChange={e => handleFileUpload(e, slide._id)} accept="image/*,video/*" />
+                       </div>
+                    </div>
+
+                    <div className="editor-group">
+                       <label><Sliders size={14} /> SİNEMATİK EFEKTLER</label>
+                       <div className="range-rows">
+                         <div className="range-row">
+                           <div className="range-info">
+                             <span>Arka Plan Fluluğu (Blur)</span>
+                             <strong>{slide.blur}px</strong>
+                           </div>
+                           <input type="range" min="0" max="40" value={slide.blur} onChange={e => updateSlide(slide._id, 'blur', parseInt(e.target.value))} />
+                         </div>
+                         <div className="range-row">
+                           <div className="range-info">
+                             <span>Karanlık Maske (Overlay)</span>
+                             <strong>%{slide.overlay}</strong>
+                           </div>
+                           <input type="range" min="0" max="90" value={slide.overlay} onChange={e => updateSlide(slide._id, 'overlay', parseInt(e.target.value))} />
+                         </div>
+                       </div>
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
+            </AnimatePresence>
+          ) : (
+            <div className="no-selection admin-card">
+              <ImageIcon size={48} />
+              <p>Düzenlemek için soldaki listeden bir sahne seçin veya yeni bir tane ekleyin.</p>
             </div>
-          </motion.div>
-        ))}
+          )}
+        </div>
       </div>
 
       <style jsx>{`
-        .slider-manager { display: flex; flex-direction: column; gap: 2.5rem; }
+        .slider-manager { display: flex; flex-direction: column; gap: 2rem; }
         
         .manager-header { display: flex; justify-content: space-between; align-items: flex-end; }
-        .manager-header h2 { font-family: var(--font-display); font-size: 1.5rem; letter-spacing: 0.1em; margin: 0 0 0.5rem 0; color: #fff; }
-        .manager-header p { margin: 0; color: rgba(255,255,255,0.5); font-size: 0.85rem; }
+        .manager-header h2 { font-family: var(--font-display); font-size: 1.5rem; letter-spacing: 0.1em; color: #fff; margin: 0 0 0.5rem 0; }
+        .manager-header p { margin: 0; color: rgba(255,255,255,0.4); font-size: 0.85rem; }
+
+        .header-actions { display: flex; gap: 1rem; }
+        .add-btn-outline { background: transparent; border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 0.85rem 1.5rem; border-radius: 4px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 0.75rem; font-size: 0.75rem; }
+        .save-btn { background: #a68966; color: #000; border: none; padding: 0.85rem 2rem; border-radius: 4px; font-weight: 800; cursor: pointer; display: flex; align-items: center; gap: 0.75rem; font-size: 0.75rem; transition: transform 0.3s; }
+        .save-btn:hover { transform: translateY(-2px); }
+
+        .slides-layout { display: grid; grid-template-columns: 320px 1fr; gap: 2rem; align-items: start; }
         
-        .save-btn { background: #a68966; color: #000; border: none; padding: 1rem 2rem; border-radius: 4px; font-weight: 800; cursor: pointer; display: flex; align-items: center; gap: 0.75rem; letter-spacing: 0.1em; }
-
-        .slides-container { display: flex; flex-direction: column; gap: 2rem; }
-
-        .slide-card { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; padding: 2rem; }
-
-        .preview-box {
-          position: relative; aspect-ratio: 16/9; background: #222; border-radius: 8px; overflow: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center;
-        }
-
-        .real-preview {
-          position: absolute; inset: -20px; /* offset blur edges */ background-size: cover; background-position: center; z-index: 1; transition: filter 0.3s;
-        }
-
-        .real-overlay {
-          position: absolute; inset: 0; z-index: 2; transition: background 0.3s;
-        }
-
-        .preview-content {
-          position: relative; z-index: 3; display: flex; flex-direction: column; align-items: center; gap: 0.5rem;
-        }
-
-        .title-prev { font-family: var(--font-display); font-size: 2rem; font-weight: 300; letter-spacing: 0.2em; color: #fff; text-shadow: 0 4px 10px rgba(0,0,0,0.5); }
-        .subtitle-prev { font-size: 0.8rem; letter-spacing: 0.3em; color: rgba(255,255,255,0.8); }
-
-        .badge { position: absolute; top: 1rem; left: 1rem; z-index: 4; background: rgba(255,255,255,0.1); backdrop-filter: blur(5px); padding: 5px 10px; border-radius: 4px; font-size: 0.6rem; display: flex; align-items: center; gap: 5px; color: #fff; letter-spacing: 0.1em; }
-
-        .slide-settings { display: flex; flex-direction: column; gap: 2rem; justify-content: center; }
-
-        .setting-group { display: flex; flex-direction: column; gap: 1rem; }
-        .setting-group label { display: flex; align-items: center; gap: 0.5rem; font-size: 0.75rem; letter-spacing: 0.1em; color: #a68966; border-bottom: 1px solid rgba(166,137,102,0.2); padding-bottom: 0.5rem; }
+        /* LIST SIDE */
+        .slides-list { display: flex; flex-direction: column; gap: 0.75rem; }
+        .slide-item-sm { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); padding: 0.75rem; border-radius: 8px; display: flex; align-items: center; gap: 1rem; cursor: pointer; transition: all 0.3s; position: relative; }
+        .slide-item-sm:hover { background: rgba(255,255,255,0.04); }
+        .slide-item-sm.active { background: rgba(166,137,102,0.1); border-color: #a68966; }
         
-        .setting-group input[type="text"] {
-          background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); color: #fff; padding: 1rem; border-radius: 4px; font-family: inherit; font-size: 0.9rem;
-        }
-        .setting-group input[type="text"]:focus { outline: none; border-color: #a68966; }
+        .drag-handle { color: rgba(255,255,255,0.15); cursor: grab; }
+        .item-thumb { width: 60px; height: 40px; border-radius: 4px; overflow: hidden; background: #000; }
+        .item-thumb img { width: 100%; height: 100%; object-fit: cover; }
+        .video-thumb { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: rgba(255,255,255,0.3); }
 
-        .range-control { display: flex; flex-direction: column; gap: 0.5rem; }
-        .range-control span { font-size: 0.75rem; color: rgba(255,255,255,0.6); }
-        .range-control input[type="range"] {
-          width: 100%; cursor: pointer; accent-color: #a68966;
-        }
+        .item-meta { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+        .item-title { font-size: 0.75rem; font-weight: 700; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; letter-spacing: 0.05em; }
+        .item-sub { font-size: 0.6rem; color: rgba(255,255,255,0.3); }
+        
+        .delete-item-btn { position: absolute; right: 0.75rem; background: transparent; border: none; color: rgba(255,77,77,0.3); cursor: pointer; opacity: 0; transition: opacity 0.3s; }
+        .slide-item-sm:hover .delete-item-btn { opacity: 1; }
+        .delete-item-btn:hover { color: #ff4d4d; }
 
-        @media (max-width: 1024px) {
-          .slide-card { grid-template-columns: 1fr; }
+        /* EDITOR SIDE */
+        .slide-editor-card { padding: 2rem; }
+        .editor-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; }
+        .editor-top h3 { margin: 0; font-family: var(--font-display); font-size: 1rem; color: #a68966; letter-spacing: 0.1em; }
+        .badge { background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.6); padding: 4px 10px; border-radius: 4px; font-size: 0.6rem; font-weight: 700; display: flex; align-items: center; gap: 0.5rem; }
+
+        .visual-preview-container { margin-bottom: 2.5rem; }
+        .preview-label { font-size: 0.6rem; color: rgba(255,255,255,0.3); letter-spacing: 0.1em; margin-bottom: 0.5rem; font-weight: 800; display: flex; align-items: center; gap: 0.4rem; }
+        .dynamic-preview-box { width: 100%; height: 300px; background: #000; border-radius: 12px; position: relative; overflow: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .preview-bg { position: absolute; inset: -20px; background-size: cover; background-position: center; transition: filter 0.3s; }
+        .preview-overlay { position: absolute; inset: 0; transition: background 0.3s; }
+        .preview-content { position: relative; z-index: 2; text-align: center; }
+        .prev-title { display: block; font-family: var(--font-display); font-size: 2.5rem; color: #fff; letter-spacing: 0.15em; font-weight: 200; }
+        .prev-sub { display: block; font-size: 0.75rem; color: rgba(255,255,255,0.7); letter-spacing: 0.3em; margin-bottom: 0.5rem; }
+
+        .editor-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+        .editor-group { display: flex; flex-direction: column; gap: 1rem; }
+        .editor-group label { display: flex; align-items: center; gap: 0.6rem; font-size: 0.7rem; color: rgba(255,255,255,0.5); font-weight: 700; letter-spacing: 0.1em; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 0.5rem; }
+        
+        .input-stack { display: flex; flex-direction: column; gap: 0.75rem; }
+        .input-stack input { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.1); padding: 0.85rem; border-radius: 4px; color: #fff; font-family: inherit; font-size: 0.85rem; }
+        .input-stack input:focus { border-color: #a68966; outline: none; }
+
+        .file-control { display: flex; gap: 0.5rem; }
+        .file-control input { flex: 1; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.05); padding: 0.75rem; border-radius: 4px; color: rgba(255,255,255,0.4); font-size: 0.75rem; }
+        .upload-mini-btn { background: rgba(255,255,255,0.05); color: #fff; border: 1px solid rgba(255,255,255,0.1); padding: 0 1.25rem; border-radius: 4px; font-size: 0.7rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 0.5rem; }
+
+        .range-rows { display: flex; flex-direction: column; gap: 1.5rem; }
+        .range-row { display: flex; flex-direction: column; gap: 0.5rem; }
+        .range-info { display: flex; justify-content: space-between; font-size: 0.7rem; color: rgba(255,255,255,0.4); }
+        .range-info strong { color: #a68966; }
+        .range-row input[type="range"] { accent-color: #a68966; cursor: pointer; }
+
+        .no-selection { height: 500px; display: flex; flex-direction: column; align-items: center; justify-content: center; color: rgba(255,255,255,0.15); gap: 1.5rem; text-align: center; padding: 3rem; }
+        .no-selection p { font-size: 0.9rem; color: rgba(255,255,255,0.3); }
+
+        .loader-wrap { height: 60vh; display: flex; align-items: center; justify-content: center; }
+        .hidden { display: none; }
+
+        @media (max-width: 1280px) {
+          .slides-layout { grid-template-columns: 1fr; }
+          .slides-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); }
         }
       `}</style>
     </div>

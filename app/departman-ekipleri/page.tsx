@@ -3,10 +3,25 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
-import { teamFilters, teamMembers } from "../../data/team";
+import { Loader2 } from "lucide-react";
+
+const teamFilters = [
+  { key: "all", title: "HEPSİ" },
+  { key: "mimarlik", title: "Mimarlık" },
+  { key: "ic-mimarlik", title: "İç Mimarlık" },
+  { key: "restorasyon", title: "Restorasyon Mimarlığı" },
+  { key: "peyzaj", title: "Peyzaj Mimarlığı" },
+  { key: "insaat-muhendisligi", title: "İnşaat Mühendisliği" },
+  { key: "elektrik-elektronik-muhendisligi", title: "Elektrik ve Elektronik Mühendisliği" },
+  { key: "plan-proje", title: "Plan ve Proje" },
+  { key: "uygulama", title: "Uygulama Departmanı" },
+  { key: "malzeme", title: "Malzeme Departmanı" },
+];
 
 export default function OurTeam() {
-  const [activeTeamFilter, setActiveTeamFilter] = useState<(typeof teamFilters)[number]["key"]>("all");
+  const [teamMembers, setTeamMembers] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [activeTeamFilter, setActiveTeamFilter] = useState("all");
   const [activeMemberIndex, setActiveMemberIndex] = useState(0);
   const [slideDirection, setSlideDirection] = useState(1);
   const [progressKey, setProgressKey] = useState(0);
@@ -14,10 +29,27 @@ export default function OurTeam() {
   const touchStartY = useRef<number | null>(null);
   const wheelLockRef = useRef(false);
 
+  useEffect(() => {
+    const fetchTeam = async () => {
+      try {
+        const res = await fetch('/api/admin/team');
+        if (res.ok) {
+          const data = await res.json();
+          setTeamMembers(data);
+        }
+      } catch (err) {
+        console.error("Team fetch error:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchTeam();
+  }, []);
+
   const filteredTeam = useMemo(() => {
     if (activeTeamFilter === "all") return teamMembers;
     return teamMembers.filter((item) => item.category === activeTeamFilter);
-  }, [activeTeamFilter]);
+  }, [activeTeamFilter, teamMembers]);
 
   useEffect(() => {
     if (filteredTeam.length === 0) return;
@@ -76,6 +108,12 @@ export default function OurTeam() {
     }, 850);
   };
 
+  if (loading) return (
+    <div className="site-shell" style={{ height: '70vh', display: 'flex', alignItems: 'center', justifyContent: 'center', paddingTop: '12rem' }}>
+      <Loader2 className="animate-spin" size={48} color="#a68966" />
+    </div>
+  );
+
   return (
     <main className="site-shell project-detail-shell" style={{ paddingTop: "12rem" }}>
       <div className="section-inner" style={{ paddingBottom: "6rem" }}>
@@ -121,7 +159,7 @@ export default function OurTeam() {
           </div>
           <AnimatePresence mode="wait" initial={false}>
             <motion.div
-              key={filteredTeam[activeMemberIndex]?.id}
+              key={filteredTeam[activeMemberIndex]?._id}
               className="team-mobile-slide"
               drag="x"
               dragConstraints={{ left: 0, right: 0 }}
@@ -151,30 +189,32 @@ export default function OurTeam() {
               }}
               transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
             >
-              <Link href="/departman-ekipleri" className="team-card-gallery team-mobile-card" key={filteredTeam[activeMemberIndex]?.id}>
-                <div className="team-card-img">
-                  <img src={filteredTeam[activeMemberIndex]?.image} alt={filteredTeam[activeMemberIndex]?.name} />
-                  <div className="team-overlay" />
-                  <div className="team-card-badge">{filteredTeam[activeMemberIndex]?.role}</div>
-                </div>
-                <div className="team-card-info">
-                  <div className="team-card-copy">
-                    <h3>{filteredTeam[activeMemberIndex]?.name}</h3>
-                    <p>{filteredTeam[activeMemberIndex]?.role}</p>
+              {filteredTeam[activeMemberIndex] && (
+                <Link href="/departman-ekipleri" className="team-card-gallery team-mobile-card" key={filteredTeam[activeMemberIndex]?._id}>
+                  <div className="team-card-img">
+                    <img src={filteredTeam[activeMemberIndex]?.image} alt={filteredTeam[activeMemberIndex]?.name} />
+                    <div className="team-overlay" />
+                    <div className="team-card-badge">{filteredTeam[activeMemberIndex]?.role}</div>
                   </div>
-                  <div className="team-card-footer">
-                    <span className="team-card-index">{String(activeMemberIndex + 1).padStart(2, "0")}</span>
-                    <span className="material-symbols-outlined">arrow_outward</span>
+                  <div className="team-card-info">
+                    <div className="team-card-copy">
+                      <h3>{filteredTeam[activeMemberIndex]?.name}</h3>
+                      <p>{filteredTeam[activeMemberIndex]?.role}</p>
+                    </div>
+                    <div className="team-card-footer">
+                      <span className="team-card-index">{String(activeMemberIndex + 1).padStart(2, "0")}</span>
+                      <span className="material-symbols-outlined">arrow_outward</span>
+                    </div>
                   </div>
-                </div>
-              </Link>
+                </Link>
+              )}
             </motion.div>
           </AnimatePresence>
         </div>
 
         <div className="team-grid team-grid-gallery">
           {filteredTeam.map((member, idx) => (
-            <Link href="/departman-ekipleri" className="team-member team-card-gallery" key={member.id}>
+            <Link href="/departman-ekipleri" className="team-member team-card-gallery" key={member._id}>
               <div className="team-card-img">
                 <img src={member.image} alt={member.name} />
                 <div className="team-overlay" />

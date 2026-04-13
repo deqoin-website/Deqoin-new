@@ -83,12 +83,16 @@ export default function Page() {
   useEffect(() => {
     const fetchSlides = async () => {
       try {
-        const res = await fetch('/api/content?page=home');
-        const data = await res.json();
-        if (data.sections) {
-          const heroSection = data.sections.find((s: any) => s.id === 'hero');
-          if (heroSection?.content?.slides?.length > 0) {
-            setSlides(heroSection.content.slides);
+        const res = await fetch('/api/slides');
+        if (res.ok) {
+          const data = await res.json();
+          if (data.length > 0) {
+            setSlides(data.map((s: any) => ({
+              ...s,
+              image: s.mediaUrl, // Mapping fields for compatibility
+              motto: s.subtitle,
+              mediaType: s.mediaType || 'image'
+            })));
           }
         }
       } catch (err) {
@@ -99,7 +103,9 @@ export default function Page() {
 
     const interval = window.setInterval(() => {
       setSlides(current => {
-        setHeroIndex((idx) => (idx + 1) % current.length);
+        if (current.length > 0) {
+          setHeroIndex((idx) => (idx + 1) % current.length);
+        }
         return current;
       });
     }, 8000);
@@ -426,29 +432,42 @@ export default function Page() {
               opacity: 0,
               x: heroDirection >= 0 ? 90 : -90,
               scale: 1.08,
-              filter: "blur(12px) brightness(0.45)",
+              filter: `blur(${slides[heroIndex]?.blur || 12}px) brightness(0.45)`,
             }}
             animate={{
               opacity: 1,
               x: 0,
               scale: 1.05,
-              filter: "blur(6px) brightness(0.6)",
+              filter: `blur(${slides[heroIndex]?.blur ?? 6}px) brightness(0.6)`,
             }}
             exit={{
               opacity: 0,
               x: heroDirection >= 0 ? -90 : 90,
               scale: 1.08,
-              filter: "blur(12px) brightness(0.45)",
+              filter: `blur(${slides[heroIndex]?.blur || 12}px) brightness(0.45)`,
             }}
             transition={{ duration: 0.75, ease: [0.16, 1, 0.3, 1] }}
             style={{
-              backgroundImage: `url(${slides[heroIndex]?.image})`,
+              backgroundImage: slides[heroIndex]?.mediaType === 'image' ? `url(${slides[heroIndex]?.image})` : 'none',
               backgroundSize: "cover",
               backgroundPosition: "center",
               backgroundRepeat: "no-repeat",
+              backgroundColor: '#000'
             }}
           >
-            <div className="hero-overlay" />
+            {slides[heroIndex]?.mediaType === 'video' && (
+              <video 
+                key={slides[heroIndex]?.mediaUrl}
+                autoPlay 
+                muted 
+                loop 
+                playsInline
+                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+              >
+                <source src={slides[heroIndex]?.mediaUrl} />
+              </video>
+            )}
+            <div className="hero-overlay" style={{ background: `rgba(0,0,0,${(slides[heroIndex]?.overlay ?? 30) / 100})` }} />
           </motion.div>
         </AnimatePresence>
 
