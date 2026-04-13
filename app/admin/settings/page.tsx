@@ -14,8 +14,7 @@ import {
   Settings as SettingsIcon,
   Hash,
   Activity,
-  UserCheck,
-  Share2
+  UserCheck
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
