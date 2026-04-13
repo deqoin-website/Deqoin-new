@@ -38,6 +38,9 @@ export default function AdminProjects() {
     client: '',
     year: '',
     area: '',
+    vision: '',
+    techDetails: '',
+    story: '',
     seoMeta: { title: '', description: '', keywords: '' },
     gallery: [] as { url: string; imageAlt: string; caption: string }[]
   });
@@ -157,6 +160,9 @@ export default function AdminProjects() {
       client: '',
       year: '',
       area: '',
+      vision: '',
+      techDetails: '',
+      story: '',
       seoMeta: { title: '', description: '', keywords: '' },
       gallery: []
     });
@@ -176,6 +182,9 @@ export default function AdminProjects() {
       client: project.client || '',
       year: project.year || '',
       area: project.area || '',
+      vision: project.vision || '',
+      techDetails: project.techDetails || '',
+      story: project.story || '',
       seoMeta: project.seoMeta || { title: '', description: '', keywords: '' },
       gallery: project.gallery?.map((g: any) => typeof g === 'string' ? { url: g, imageAlt: '', caption: '' } : g) || []
     });
@@ -243,14 +252,29 @@ export default function AdminProjects() {
 
                 <form onSubmit={handleSubmit} className="modal-form">
                   <div className="main-form-content" style={{ display: showAdvancedPanel ? 'none' : 'flex' }}>
-                    <div className="form-cols">
+                    <div className="form-cols-3">
                        <div className="group">
                          <label>PROJE ADI</label>
-                         <input type="text" value={formData.title} onChange={e => setFormData({...formData, title: e.target.value})} required />
+                         <input type="text" value={formData.title} onChange={e => setFormData({...formData, title: e.target.value})} required placeholder="Örn: Modern Villa" />
+                       </div>
+                       <div className="group">
+                         <label>MÜŞTERİ / KONUM</label>
+                         <input type="text" value={formData.client} onChange={e => setFormData({...formData, client: e.target.value})} placeholder="Örn: Özel Müşteri / İstanbul" />
                        </div>
                        <div className="group">
                          <label>ETİKET</label>
-                         <input type="text" value={formData.label} onChange={e => setFormData({...formData, label: e.target.value})} required />
+                         <input type="text" value={formData.label} onChange={e => setFormData({...formData, label: e.target.value})} required placeholder="Örn: VİLLA" />
+                       </div>
+                    </div>
+
+                    <div className="form-cols-2">
+                       <div className="group">
+                         <label>TAMAMLANMA YILI</label>
+                         <input type="text" value={formData.year} onChange={e => setFormData({...formData, year: e.target.value})} placeholder="Örn: 2024" />
+                       </div>
+                       <div className="group">
+                         <label>TOPLAM ALAN (m²)</label>
+                         <input type="text" value={formData.area} onChange={e => setFormData({...formData, area: e.target.value})} placeholder="Örn: 450 m²" />
                        </div>
                     </div>
 
@@ -291,47 +315,69 @@ export default function AdminProjects() {
                   </div>
 
                   {/* ADVANCED DRAWER PANEL */}
-                  <div className="advanced-form-content" style={{ display: showAdvancedPanel ? 'flex' : 'none' }}>
-                    <div className="advanced-section">
-                      <h4>DEPARTMAN DAĞITIMI</h4>
-                      <p className="hint">Bu projenin web sitesinde hangi stüdyo sayfalarında görüneceğini seçin.</p>
-                      <div className="checkbox-grid">
-                        <label className="custom-cb">
-                          <input type="checkbox" checked={formData.publishTargets.designStudio} onChange={() => togglePublishTarget('designStudio')} />
-                          <span className="cb-mark"></span> Design Studio (Mimari)
-                        </label>
-                        <label className="custom-cb">
-                          <input type="checkbox" checked={formData.publishTargets.materialStudio} onChange={() => togglePublishTarget('materialStudio')} />
-                          <span className="cb-mark"></span> Material Studio (Mobilya vs.)
-                        </label>
-                        <label className="custom-cb">
-                          <input type="checkbox" checked={formData.publishTargets.executionStudio} onChange={() => togglePublishTarget('executionStudio')} />
-                          <span className="cb-mark"></span> Execution Studio (Uygulama)
-                        </label>
+                   <div className="advanced-form-content" style={{ display: showAdvancedPanel ? 'flex' : 'none' }}>
+                    <div className="advanced-grid">
+                      <div className="adv-left">
+                        <div className="advanced-section">
+                          <h4>DETAYLI İÇERİK & MİMARİ ANLATIM</h4>
+                          <div className="group mb-4">
+                            <label>TASARIM HİKAYESİ (STORY)</label>
+                            <textarea value={formData.story} onChange={e => setFormData({...formData, story: e.target.value})} rows={3} placeholder="Projenin ortaya çıkış hikayesi..." />
+                          </div>
+                          <div className="group mb-4">
+                            <label>MİMARİ VİZYON (VISION)</label>
+                            <textarea value={formData.vision} onChange={e => setFormData({...formData, vision: e.target.value})} rows={3} placeholder="Tasarım yaklaşımı ve estetik değerler..." />
+                          </div>
+                          <div className="group">
+                            <label>TEKNİK DETAYLAR</label>
+                            <textarea value={formData.techDetails} onChange={e => setFormData({...formData, techDetails: e.target.value})} rows={3} placeholder="Malzeme, strüktür ve teknoloji detayları..." />
+                          </div>
+                        </div>
                       </div>
-                    </div>
 
-                    <div className="advanced-section mt-4">
-                      <h4>KATEGORİLER (Filtreleme İçin)</h4>
-                      <div className="checkbox-grid">
-                        {CATEGORIES.map(cat => (
-                          <label key={cat} className="custom-cb">
-                            <input type="checkbox" checked={formData.categories.includes(cat)} onChange={() => toggleCategory(cat)} />
-                            <span className="cb-mark"></span> {cat}
-                          </label>
-                        ))}
-                      </div>
-                    </div>
+                      <div className="adv-right">
+                        <div className="advanced-section">
+                          <h4>DEPARTMAN DAĞITIMI</h4>
+                          <p className="hint">Hangi stüdyolarda yayınlanacak?</p>
+                          <div className="checkbox-grid">
+                            <label className="custom-cb">
+                              <input type="checkbox" checked={formData.publishTargets.designStudio} onChange={() => togglePublishTarget('designStudio')} />
+                              <span className="cb-mark"></span> Design Studio
+                            </label>
+                            <label className="custom-cb">
+                              <input type="checkbox" checked={formData.publishTargets.materialStudio} onChange={() => togglePublishTarget('materialStudio')} />
+                              <span className="cb-mark"></span> Material Studio
+                            </label>
+                            <label className="custom-cb">
+                              <input type="checkbox" checked={formData.publishTargets.executionStudio} onChange={() => togglePublishTarget('executionStudio')} />
+                              <span className="cb-mark"></span> Execution Studio
+                            </label>
+                          </div>
+                        </div>
 
-                    <div className="advanced-section mt-4">
-                      <h4>SEO & META DEĞERLERİ</h4>
-                      <div className="group">
-                        <label>SAYFA BAŞLIĞI (TITLE)</label>
-                        <input type="text" value={formData.seoMeta.title} onChange={e => setFormData({...formData, seoMeta: {...formData.seoMeta, title: e.target.value}})} />
-                      </div>
-                      <div className="group">
-                        <label>META AÇIKLAMA (DESCRIPTION)</label>
-                        <textarea value={formData.seoMeta.description} onChange={e => setFormData({...formData, seoMeta: {...formData.seoMeta, description: e.target.value}})} rows={2} />
+                        <div className="advanced-section mt-4">
+                          <h4>KATEGORİLER</h4>
+                          <div className="checkbox-grid">
+                            {CATEGORIES.map(cat => (
+                              <label key={cat} className="custom-cb">
+                                <input type="checkbox" checked={formData.categories.includes(cat)} onChange={() => toggleCategory(cat)} />
+                                <span className="cb-mark"></span> {cat}
+                              </label>
+                            ))}
+                          </div>
+                        </div>
+
+                        <div className="advanced-section mt-4">
+                          <h4>SEO AYARLARI</h4>
+                          <div className="group mb-2">
+                            <label>SAYFA BAŞLIĞI</label>
+                            <input type="text" value={formData.seoMeta.title} onChange={e => setFormData({...formData, seoMeta: {...formData.seoMeta, title: e.target.value}})} />
+                          </div>
+                          <div className="group">
+                            <label>META AÇIKLAMA</label>
+                            <textarea value={formData.seoMeta.description} onChange={e => setFormData({...formData, seoMeta: {...formData.seoMeta, description: e.target.value}})} rows={2} />
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -416,12 +462,17 @@ export default function AdminProjects() {
         .modal-form { padding: 2rem; display: flex; flex-direction: column; gap: 2rem; flex: 1; }
         .main-form-content, .advanced-form-content { flex-direction: column; gap: 1.5rem; }
 
-        .form-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+        .form-cols-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1.5rem; }
+        .form-cols-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
         
         .group { display: flex; flex-direction: column; gap: 0.5rem; }
-        .group label { font-size: 0.65rem; color: var(--text-muted); letter-spacing: 0.15em; }
-        .group input, .group textarea { background: var(--background); border: 1px solid var(--line); padding: 1rem; color: var(--text); border-radius: 4px; font-family: inherit; }
+        .group label { font-size: 0.65rem; color: var(--text-muted); letter-spacing: 0.15em; font-weight: 700; }
+        .group input, .group textarea { background: var(--background); border: 1px solid var(--line); padding: 1rem; color: var(--text); border-radius: 4px; font-family: inherit; font-size: 0.85rem; }
         .group input:focus, .group textarea:focus { outline: none; border-color: #a68966; }
+        .mb-4 { margin-bottom: 1rem; }
+        .mb-2 { margin-bottom: 0.5rem; }
+
+        .advanced-grid { display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 3rem; }
 
         .upload-sections { display: flex; gap: 2rem; align-items: flex-start; }
         .upload-box { display: flex; flex-direction: column; gap: 0.5rem; }
