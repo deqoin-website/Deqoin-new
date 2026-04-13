@@ -400,8 +400,8 @@ export default function TeamManagementPage() {
 
         .member-controls { display: flex; gap: 0.5rem; margin-top: 1.25rem; }
         .control-btn { flex: 1; border: none; padding: 0.6rem; border-radius: 4px; font-size: 0.65rem; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 0.4rem; transition: all 0.3s; }
-        .edit-btn { background: rgba(255,255,255,0.05); color: #fff; border: 1px solid rgba(255,255,255,0.1); }
-        .edit-btn:hover { background: #fff; color: #000; }
+        .edit-btn { background: var(--surface-muted); color: var(--text); border: 1px solid var(--line); }
+        .edit-btn:hover { background: var(--text); color: var(--background); }
         .delete-btn { background: rgba(255,77,77,0.05); color: #ff4d4d; border: 1px solid rgba(255,77,77,0.1); }
         .delete-btn:hover { background: #ff4d4d; color: #fff; }
 
