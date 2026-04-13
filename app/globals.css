@@ -73,13 +73,19 @@ video {
 
 .snap-section {
   scroll-snap-align: start;
-  scroll-snap-stop: normal;
+  scroll-snap-stop: always;
   min-height: 100svh;
 }
 
 body:has(.homepage-snap-shell) {
-  scroll-snap-type: y proximity;
+  scroll-snap-type: y mandatory;
   scroll-padding-top: 5rem;
+}
+
+.homepage-footer-snap {
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+  min-height: 100svh;
 }
 
 .topbar {

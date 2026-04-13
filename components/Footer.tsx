@@ -64,7 +64,7 @@ export default function Footer() {
   }
 
   return (
-    <footer className="site-footer">
+    <footer className={`site-footer ${pathname === "/" ? "homepage-footer-snap" : ""}`.trim()}>
       {/* ── TOP STRIP ── */}
       <div className="footer-top">
         <div className="footer-top-inner">
