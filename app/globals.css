@@ -4831,6 +4831,7 @@ body:has(.homepage-snap-shell) {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
   gap: 3rem;
+  min-width: 0;
 }
 
 .project-card-interactive {
@@ -4922,6 +4923,7 @@ body:has(.homepage-snap-shell) {
   flex: 1;
   display: flex;
   flex-direction: column;
+  min-width: 0;
 }
 
 .project-card-info h3 {
@@ -4939,12 +4941,15 @@ body:has(.homepage-snap-shell) {
   margin-bottom: 2rem;
   border-bottom: 1px solid rgba(255, 255, 255, 0.05);
   padding-bottom: 1.5rem;
+  min-width: 0;
 }
 
 .meta-item {
   display: flex;
   flex-direction: column;
   gap: 0.4rem;
+  min-width: 0;
+  flex: 1 1 0;
 }
 
 .meta-item label {
@@ -4957,6 +4962,7 @@ body:has(.homepage-snap-shell) {
 .meta-item span {
   font-size: 0.75rem;
   color: #fff;
+  overflow-wrap: anywhere;
 }
 
 .project-story-section {
@@ -4976,6 +4982,7 @@ body:has(.homepage-snap-shell) {
   font-size: 0.85rem;
   line-height: 1.6;
   color: rgba(255, 255, 255, 0.6);
+  overflow-wrap: anywhere;
 }
 
 .project-card-footer {
@@ -5243,6 +5250,18 @@ body:has(.homepage-snap-shell) {
   .material-showcase-intro {
     padding: 0 1.5rem;
   }
+
+  .studio-gallery {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1.5rem;
+    width: 100%;
+  }
+
+  .project-card-interactive,
+  .project-card-interactive-sensory {
+    min-width: 0;
+    width: 100%;
+  }
 }
 
 
@@ -5374,6 +5393,37 @@ body:has(.homepage-snap-shell) {
 }
 
 @media (max-width: 767px) {
+  .studio-hero {
+    min-height: 100svh;
+    height: auto;
+    padding: 7rem 0 3rem;
+    align-items: flex-end;
+  }
+
+  .studio-hero-content {
+    width: 100%;
+    max-width: none;
+    padding: 0 1.25rem;
+  }
+
+  .studio-hero-content h1 {
+    font-size: clamp(3.6rem, 17vw, 5.2rem);
+    letter-spacing: 0.08em;
+    line-height: 0.88;
+  }
+
+  .studio-hero-content p {
+    font-size: 0.72rem;
+    letter-spacing: 0.28em;
+    line-height: 1.6;
+    margin-top: 1.25rem;
+  }
+
+  .studio-hero-line {
+    width: 70px;
+    margin-top: 2rem;
+  }
+
   .material-studio-page .mimari-page-hero {
     height: auto;
     min-height: 100svh;
@@ -5534,6 +5584,81 @@ body:has(.homepage-snap-shell) {
 
   .material-studio-page .studio-gallery {
     gap: 1.25rem;
+  }
+
+  .studio-main {
+    padding: 0 1.25rem 5.5rem;
+    gap: 1.5rem;
+  }
+
+  .studio-search-container {
+    margin: 0 auto 2rem;
+    padding: 0 1.25rem;
+  }
+
+  .studio-search-bar {
+    padding: 0.35rem 0.9rem;
+  }
+
+  .studio-search-bar input {
+    padding: 0.9rem 0.65rem;
+    font-size: 0.82rem;
+    min-width: 0;
+  }
+
+  .mobile-filter-toggle {
+    padding: 1rem 1.1rem;
+    font-size: 0.64rem;
+    letter-spacing: 0.22em;
+  }
+
+  .project-card-badge {
+    top: 0.85rem;
+    right: 0.85rem;
+    padding: 0.4rem 0.75rem;
+    font-size: 0.52rem;
+    letter-spacing: 0.18em;
+    max-width: calc(100% - 1.7rem);
+    overflow-wrap: anywhere;
+  }
+
+  .project-card-info {
+    padding: 1.4rem 1.2rem 1.5rem;
+  }
+
+  .project-card-info h3 {
+    font-size: 1.3rem;
+    margin-bottom: 1rem;
+    letter-spacing: 0.06em;
+    overflow-wrap: anywhere;
+  }
+
+  .project-meta-row {
+    gap: 0.9rem;
+    flex-wrap: wrap;
+    margin-bottom: 1.25rem;
+    padding-bottom: 1rem;
+  }
+
+  .meta-item {
+    min-width: calc(50% - 0.5rem);
+  }
+
+  .story-block p {
+    font-size: 0.8rem;
+    line-height: 1.55;
+  }
+
+  .project-card-footer {
+    margin-top: 2rem;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .project-action-btn {
+    font-size: 0.62rem;
+    letter-spacing: 0.16em;
   }
 
   .material-studio-page .project-card-badge {

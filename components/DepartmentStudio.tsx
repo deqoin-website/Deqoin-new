@@ -373,6 +373,47 @@ export default function DepartmentStudio({
           .focus-grid { grid-template-columns: 1fr; gap: 3rem; }
           .service-focus-block { padding: 3rem 2rem; }
         }
+
+        @media (max-width: 767px) {
+          .rich-service-content { padding: 5.5rem 0; }
+          .rich-content-inner { padding: 0 1.25rem; gap: 3rem; }
+          .vision-title { font-size: clamp(1.8rem, 9vw, 2.4rem); }
+          .vision-text { font-size: 0.95rem; line-height: 1.75; }
+
+          .service-process-block { gap: 1.5rem; }
+          .process-grid { grid-template-columns: 1fr; gap: 1rem; }
+          .process-card {
+            padding: 1.4rem 1.1rem 1.25rem;
+            min-width: 0;
+            overflow-wrap: anywhere;
+          }
+          .process-num { font-size: 2.15rem; top: 0.8rem; right: 0.85rem; }
+          .process-step-title {
+            font-size: 0.9rem;
+            line-height: 1.45;
+            padding-right: 2.6rem;
+          }
+          .process-step-desc {
+            font-size: 0.8rem;
+            line-height: 1.65;
+            overflow-wrap: anywhere;
+          }
+          .process-step-line { margin-top: 1.25rem; }
+
+          .service-focus-block {
+            padding: 1.5rem 1.1rem;
+            border-radius: 1.25rem;
+          }
+          .focus-grid { gap: 1.5rem; }
+          .focus-card { gap: 1rem; }
+          .focus-icon { font-size: 2rem; }
+          .focus-info h4 { font-size: 0.85rem; }
+          .focus-info p {
+            font-size: 0.78rem;
+            line-height: 1.6;
+            overflow-wrap: anywhere;
+          }
+        }
       `}</style>
     </div>
   );
