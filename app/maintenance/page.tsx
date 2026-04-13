@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { Mail, Phone, Instagram, Linkedin } from 'lucide-react';
+import { Mail, Phone, Globe, Share2 } from 'lucide-react';
 import Link from 'next/link';
 
 export default function MaintenancePage() {
@@ -38,8 +38,8 @@ export default function MaintenancePage() {
         </div>
 
         <div className="social-links">
-          <Link href="#" className="social-icon"><Instagram size={20} /></Link>
-          <Link href="#" className="social-icon"><Linkedin size={20} /></Link>
+          <Link href="#" className="social-icon"><Globe size={20} /></Link>
+          <Link href="#" className="social-icon"><Share2 size={20} /></Link>
         </div>
 
         <div className="admin-access">

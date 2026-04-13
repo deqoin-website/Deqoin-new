@@ -15,10 +15,7 @@ import {
   Hash,
   Activity,
   UserCheck,
-  Facebook,
-  Twitter,
-  Instagram,
-  Linkedin
+  Share2
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -138,10 +135,10 @@ export default function SettingsPage() {
               <section className="settings-card">
                 <div className="card-header"><h3>Sosyal Medya Linkleri</h3></div>
                 <div className="form-grid-2">
-                  <div className="form-group"><label><Instagram size={14}/> INSTAGRAM</label><input type="text" value={settings.socialLinks?.instagram || ''} onChange={e => setSettings({...settings, socialLinks: {...settings.socialLinks, instagram: e.target.value}})} /></div>
-                  <div className="form-group"><label><Linkedin size={14}/> LINKEDIN</label><input type="text" value={settings.socialLinks?.linkedin || ''} onChange={e => setSettings({...settings, socialLinks: {...settings.socialLinks, linkedin: e.target.value}})} /></div>
-                  <div className="form-group"><label><Facebook size={14}/> FACEBOOK</label><input type="text" value={settings.socialLinks?.facebook || ''} onChange={e => setSettings({...settings, socialLinks: {...settings.socialLinks, facebook: e.target.value}})} /></div>
-                  <div className="form-group"><label><Twitter size={14}/> X / TWITTER</label><input type="text" value={settings.socialLinks?.x || ''} onChange={e => setSettings({...settings, socialLinks: {...settings.socialLinks, x: e.target.value}})} /></div>
+                  <div className="form-group"><label><Globe size={14}/> INSTAGRAM</label><input type="text" value={settings.socialLinks?.instagram || ''} onChange={e => setSettings({...settings, socialLinks: {...settings.socialLinks, instagram: e.target.value}})} /></div>
+                  <div className="form-group"><label><Share2 size={14}/> LINKEDIN</label><input type="text" value={settings.socialLinks?.linkedin || ''} onChange={e => setSettings({...settings, socialLinks: {...settings.socialLinks, linkedin: e.target.value}})} /></div>
+                  <div className="form-group"><label><Globe size={14}/> FACEBOOK</label><input type="text" value={settings.socialLinks?.facebook || ''} onChange={e => setSettings({...settings, socialLinks: {...settings.socialLinks, facebook: e.target.value}})} /></div>
+                  <div className="form-group"><label><Share2 size={14}/> X / TWITTER</label><input type="text" value={settings.socialLinks?.x || ''} onChange={e => setSettings({...settings, socialLinks: {...settings.socialLinks, x: e.target.value}})} /></div>
                 </div>
               </section>
             </motion.div>
