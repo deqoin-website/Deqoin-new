@@ -18,11 +18,11 @@
 [data-theme='dark'] {
   --background: #080808;
   --surface: #111111;
-  --surface-muted: #1a1a1a;
+  --surface-muted: #2a2a2a;
   --text: #ffffff;
   --text-soft: rgba(255, 255, 255, 0.7);
-  --text-muted: rgba(255, 255, 255, 0.4);
-  --line: rgba(255, 255, 255, 0.1);
+  --text-muted: rgba(255, 255, 255, 0.5);
+  --line: rgba(255, 255, 255, 0.15);
   --accent: #a68966;
   --accent-soft: #8a7154;
   --shadow: 0 30px 100px rgba(0, 0, 0, 0.6);
