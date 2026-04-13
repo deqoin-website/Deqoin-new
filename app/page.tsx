@@ -426,8 +426,8 @@ export default function Page() {
         </div>
         </section>
 
-        <section className="services-section snap-section">
-        <div className="section-inner" style={{ paddingBottom: "2rem" }}>
+        <section className="services-section snap-section homepage-section homepage-services-section">
+        <div className="section-inner homepage-section-inner homepage-services-inner">
           <div className="section-heading">
             <div>
               <span className="section-small-label" style={{ letterSpacing: "0.5em", color: "#cca883", fontSize: "0.75rem", marginBottom: "1rem", display: "block" }}>STUDIO SELECTION</span>
@@ -472,8 +472,8 @@ export default function Page() {
         </section>
 
 
-        <section className="projects-section snap-section" id="galeri">
-        <div className="section-inner">
+        <section className="projects-section snap-section homepage-section homepage-projects-section" id="galeri">
+        <div className="section-inner homepage-section-inner">
           <div className="section-heading projects-heading">
             <div>
               <h2>Galeri</h2>
@@ -588,7 +588,7 @@ export default function Page() {
             </AnimatePresence>
           </div>
 
-          <div style={{ display: "flex", justifyContent: "center", marginTop: "5rem" }}>
+          <div className="homepage-section-cta">
             <Link href="/galeri" className="premium-all-btn">
               <span className="premium-btn-text">TÜM GALERİYİ GÖR</span>
               <span className="material-symbols-outlined premium-btn-icon">east</span>
@@ -597,8 +597,8 @@ export default function Page() {
         </div>
         </section>
 
-        <section className="about-section snap-section" id="about-us">
-        <div className="section-inner about-grid">
+        <section className="about-section snap-section homepage-section homepage-about-section" id="about-us">
+        <div className="section-inner homepage-section-inner about-grid homepage-about-grid">
           <div className="about-copy">
             <div>
               <h2>Geleneklerin ötesinde.</h2>
@@ -614,7 +614,7 @@ export default function Page() {
                   benzersiz bir monolittir; kimliğin ve zamansızlığın tekil, uyumlu bir ifadesidir.
                 </p>
               </div>
-              <div style={{ marginTop: "2rem" }}>
+              <div className="homepage-copy-cta">
                 <Link href="/faaliyet-alanlarimiz" className="premium-all-btn">
                   <span className="premium-btn-text">Design & Collection</span>
                   <span className="material-symbols-outlined premium-btn-icon">east</span>
@@ -636,8 +636,8 @@ export default function Page() {
         </div>
         </section>
 
-        <section className="team-section snap-section" id="departman-ekipleri">
-        <div className="section-inner">
+        <section className="team-section snap-section homepage-section homepage-team-section" id="departman-ekipleri">
+        <div className="section-inner homepage-section-inner">
           <div className="section-heading projects-heading">
             <div>
               <h2>Departman Ekipleri</h2>
@@ -705,7 +705,7 @@ export default function Page() {
             </AnimatePresence>
           </div>
 
-          <div style={{ display: "flex", justifyContent: "center", marginTop: "5rem" }}>
+          <div className="homepage-section-cta">
             <Link href="/departman-ekipleri" className="premium-all-btn">
               <span className="premium-btn-text">TÜM EKİPLERİ GÖR</span>
               <span className="material-symbols-outlined premium-btn-icon">east</span>

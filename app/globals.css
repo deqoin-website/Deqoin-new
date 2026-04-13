@@ -82,6 +82,47 @@ body:has(.homepage-snap-shell) {
   scroll-padding-top: 5rem;
 }
 
+.homepage-snap-shell .homepage-section {
+  display: flex;
+  align-items: center;
+}
+
+.homepage-snap-shell .homepage-section-inner {
+  width: min(100%, 88rem);
+  padding-top: clamp(2.5rem, 5vh, 4rem);
+  padding-bottom: clamp(2.5rem, 5vh, 4rem);
+}
+
+.homepage-snap-shell .homepage-services-inner {
+  padding-top: clamp(2rem, 4vh, 3rem);
+  padding-bottom: clamp(2rem, 4vh, 3rem);
+}
+
+.homepage-snap-shell .homepage-projects-section .section-heading,
+.homepage-snap-shell .homepage-team-section .section-heading,
+.homepage-snap-shell .homepage-services-section .section-heading {
+  margin-bottom: clamp(1.75rem, 3.5vh, 3rem);
+}
+
+.homepage-snap-shell .homepage-section-cta {
+  display: flex;
+  justify-content: center;
+  margin-top: clamp(1.75rem, 3vh, 3rem);
+}
+
+.homepage-snap-shell .homepage-copy-cta {
+  margin-top: clamp(1.25rem, 2.4vh, 2rem);
+}
+
+.homepage-snap-shell .homepage-about-grid {
+  align-items: center;
+  gap: clamp(2rem, 4vw, 3.5rem);
+}
+
+.homepage-snap-shell .homepage-team-section {
+  padding-bottom: 0;
+}
+
 .homepage-footer-snap {
   scroll-snap-align: start;
   scroll-snap-stop: always;
@@ -2548,6 +2589,27 @@ body:has(.homepage-snap-shell) {
 
   .snap-section {
     scroll-snap-align: none;
+  }
+}
+
+@media (max-width: 767px) {
+  .homepage-snap-shell .homepage-section-inner {
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+  }
+
+  .homepage-snap-shell .homepage-projects-section .section-heading,
+  .homepage-snap-shell .homepage-team-section .section-heading,
+  .homepage-snap-shell .homepage-services-section .section-heading {
+    margin-bottom: 1.5rem;
+  }
+
+  .homepage-snap-shell .homepage-section-cta {
+    margin-top: 1.5rem;
+  }
+
+  .homepage-snap-shell .homepage-about-grid {
+    gap: 1.75rem;
   }
 }
 
