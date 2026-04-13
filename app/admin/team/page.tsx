@@ -36,6 +36,21 @@ export default function TeamManagementPage() {
 
   const [isSaving, setIsSaving] = useState(false);
 
+  const runMigration = async () => {
+    setIsSaving(true);
+    try {
+      const res = await fetch('/api/admin/migrate/team');
+      if (res.ok) {
+        alert("Varsayılan ekip üyeleri başarıyla aktarıldı!");
+        fetchMembers();
+      }
+    } catch (e) {
+      alert("Aktarım sırasında bir hata oluştu.");
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
   useEffect(() => {
     fetchMembers();
   }, []);
@@ -207,9 +222,23 @@ export default function TeamManagementPage() {
         </AnimatePresence>
         
         {filteredMembers.length === 0 && (
-          <div className="empty-state">
-             <Users size={40} />
-             <p>Aradığınız kriterlerde üye bulunamadı.</p>
+          <div className="empty-state-container">
+            {members.length === 0 ? (
+               <div className="migration-helper admin-card" style={{ width: '100%', maxWidth: '500px', margin: '2rem auto' }}>
+                 <Users size={32} className="icon-gold" />
+                 <h4>VERİTABANI BOŞ</h4>
+                 <p>Henüz sistemde bir ekip üyesi bulunamadı. Web sitesindeki varsayılan ekip üyelerini buraya aktararak başlayabilirsiniz.</p>
+                 <button className="migrate-btn" onClick={runMigration} disabled={isSaving}>
+                   {isSaving ? <Loader2 className="animate-spin" size={16} /> : <Save size={16} />}
+                   VARSAYILAN EKİBİ AKTAR
+                 </button>
+               </div>
+            ) : (
+               <div className="empty-state">
+                  <Users size={40} />
+                  <p>Aradığınız kriterlerde üye bulunamadı.</p>
+               </div>
+            )}
           </div>
         )}
       </div>
@@ -350,6 +379,15 @@ export default function TeamManagementPage() {
         .cat-tag { margin-top: 0.5rem; font-size: 0.6rem; color: #a68966; background: rgba(166,137,102,0.1); padding: 0.25rem 0.75rem; border-radius: 4px; display: inline-block; align-self: center; text-transform: uppercase; font-weight: 700; letter-spacing: 0.1em; }
 
         .empty-state { grid-column: 1 / -1; padding: 5rem; text-align: center; color: rgba(255,255,255,0.2); display: flex; flex-direction: column; align-items: center; gap: 1rem; }
+        .empty-state-container { grid-column: 1 / -1; }
+
+        .migration-helper { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 1rem; padding: 2.5rem 1.5rem; background: rgba(166,137,102,0.05); border: 1px dashed rgba(166,137,102,0.3); }
+        .migration-helper h4 { font-size: 0.8rem; letter-spacing: 0.2em; color: #a68966; margin: 0; }
+        .migration-helper p { font-size: 0.75rem; color: rgba(255,255,255,0.4); line-height: 1.6; margin: 0; }
+        .icon-gold { color: #a68966; opacity: 0.6; }
+        .migrate-btn { background: #a68966; color: #000; border: none; padding: 0.75rem 1.25rem; border-radius: 4px; font-size: 0.65rem; font-weight: 800; cursor: pointer; display: flex; align-items: center; gap: 0.5rem; transition: all 0.3s; margin-top: 0.5rem; }
+        .migrate-btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(166,137,102,0.2); }
+        .migrate-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
         /* MODAL */
         .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.9); backdrop-filter: blur(5px); z-index: 1000; display: flex; align-items: center; justify-content: center; padding: 2rem; }

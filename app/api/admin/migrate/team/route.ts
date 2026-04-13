@@ -3,7 +3,10 @@ import connectToDatabase from "@/lib/mongodb";
 import TeamMember from "@/models/TeamMember";
 import { teamMembers } from "@/data/team";
 
-export async function POST() {
+export async function GET() { return handleMigration(); }
+export async function POST() { return handleMigration(); }
+
+async function handleMigration() {
   try {
     await connectToDatabase();
     
@@ -24,8 +27,8 @@ export async function POST() {
     await TeamMember.insertMany(membersToInsert);
 
     return NextResponse.json({ message: "Team migration successful!", count: membersToInsert.length });
-  } catch (error) {
+  } catch (error: any) {
     console.error("Migration error:", error);
-    return NextResponse.json({ error: "Migration failed" }, { status: 500 });
+    return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
