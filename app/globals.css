@@ -1,13 +1,14 @@
 @import url("https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap");
 
 :root {
-  /* LIGHT MODE (Default and Fallback) */
+  /* LIGHT MODE (Default) */
   --background: #fdfdfd;
   --surface: #ffffff;
   --surface-muted: #f3f4f6;
-  --text: #1a1a1a;
-  --text-soft: #4a4a4a;
+  --text: #171717;
+  --text-soft: #444444;
   --text-muted: #888888;
+  --text-inverse: #ffffff; /* For dark buttons in light mode */
   --line: rgba(0, 0, 0, 0.08);
   --accent: #a68966;
   --accent-soft: #c5ac8c;
@@ -16,13 +17,15 @@
 }
 
 [data-theme='dark'] {
+  /* DARK MODE */
   --background: #080808;
-  --surface: #111111;
-  --surface-muted: #2a2a2a;
+  --surface: #121212;
+  --surface-muted: #1e1e1e;
   --text: #ffffff;
-  --text-soft: rgba(255, 255, 255, 0.7);
+  --text-soft: rgba(255, 255, 255, 0.8);
   --text-muted: rgba(255, 255, 255, 0.5);
-  --line: rgba(255, 255, 255, 0.15);
+  --text-inverse: #171717;
+  --line: rgba(255, 255, 255, 0.12);
   --accent: #a68966;
   --accent-soft: #8a7154;
   --shadow: 0 30px 100px rgba(0, 0, 0, 0.6);
@@ -200,11 +203,11 @@ body:has(.homepage-snap-shell) {
   letter-spacing: 0.2em;
   font-size: 0.65rem;
   font-weight: 800;
-  color: #ffffff !important;
+  color: var(--text) !important;
 }
 
 .topbar-links a {
-  color: #ffffff !important;
+  color: var(--text) !important;
   text-decoration: none;
 }
 
@@ -244,7 +247,7 @@ body:has(.homepage-snap-shell) {
 
 .brand-mark {
   font-family: var(--font-display), sans-serif;
-  color: #ffffff !important;
+  color: var(--text) !important;
   letter-spacing: 0.35em;
   text-transform: uppercase;
   font-size: 0.9rem;
@@ -264,7 +267,7 @@ body:has(.homepage-snap-shell) {
 .icon-button {
   border: 0;
   background: transparent;
-  color: #ffffff !important;
+  color: var(--text) !important;
   cursor: pointer;
   transition: transform 0.3s ease, opacity 0.3s ease;
 }
@@ -275,7 +278,7 @@ body:has(.homepage-snap-shell) {
 
 .icon-button span {
   font-size: 2rem;
-  color: #ffffff !important;
+  color: var(--text) !important;
 }
 
 /* Mobile Menu Overlay */
@@ -283,7 +286,7 @@ body:has(.homepage-snap-shell) {
   position: fixed;
   inset: 0;
   z-index: 999;
-  background: rgba(10, 10, 10, 0.6);
+  background: var(--background);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   display: flex;
@@ -313,7 +316,7 @@ body:has(.homepage-snap-shell) {
 }
 
 .mobile-menu-header .close-button {
-  color: white;
+  color: var(--text);
 }
 
 .mobile-menu-nav {
@@ -332,7 +335,7 @@ body:has(.homepage-snap-shell) {
   font-weight: 200;
   text-transform: uppercase;
   letter-spacing: 0.15em;
-  color: rgba(255, 255, 255, 0.6);
+  color: var(--text-soft);
   transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
   transform: translateY(20px);
   opacity: 0;
@@ -358,14 +361,14 @@ body:has(.homepage-snap-shell) {
 
 .mobile-menu-nav a:hover,
 .mobile-menu-nav button:hover {
-  color: #fff;
+  color: var(--text);
   letter-spacing: 0.25em;
 }
 
 .mobile-menu-footer {
   position: absolute;
   bottom: 2rem;
-  color: rgba(255, 255, 255, 0.3);
+  color: var(--text-muted);
   font-size: 0.6rem;
   letter-spacing: 0.4em;
   text-transform: uppercase;
@@ -411,7 +414,12 @@ body:has(.homepage-snap-shell) {
 }
 
 .hero-overlay {
-  background: rgba(0, 0, 0, 0.3);
+  background: rgba(0, 0, 0, 0.4);
+}
+
+[data-theme='light'] .hero-overlay {
+  background: rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(2px);
 }
 
 .hero-content {
@@ -433,8 +441,8 @@ body:has(.homepage-snap-shell) {
   align-items: center;
   gap: 0;
   background: transparent;
-  border: 1px solid rgba(255, 255, 255, 0.25);
-  color: #fff;
+  border: 1px solid var(--line);
+  color: var(--text);
   font-family: var(--font-display), sans-serif;
   text-transform: uppercase;
   letter-spacing: 0.18em;
@@ -452,11 +460,11 @@ body:has(.homepage-snap-shell) {
 
 .hero-cta.appointment-cta {
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.28);
+  background: var(--surface-muted);
+  border: 1px solid var(--line);
   backdrop-filter: blur(16px) saturate(140%);
   -webkit-backdrop-filter: blur(16px) saturate(140%);
-  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.25);
+  box-shadow: var(--shadow);
 }
 
 .hero-cta.appointment-cta:hover {
@@ -483,8 +491,8 @@ body:has(.homepage-snap-shell) {
 }
 
 .hero-cta:hover {
-  border-color: #fff;
-  color: #080808;
+  border-color: var(--accent);
+  color: var(--text-inverse);
 }
 
 .hero-cta:hover::before {
@@ -545,7 +553,7 @@ body:has(.homepage-snap-shell) {
   width: 3.4rem;
   height: 100%;
   min-height: 3.1rem;
-  border-left: 1px solid rgba(255, 255, 255, 0.12);
+  border-left: 1px solid var(--line);
   flex-shrink: 0;
   transition: border-color 0.7s cubic-bezier(0.19, 1, 0.22, 1);
   overflow: hidden;
@@ -575,6 +583,7 @@ body:has(.homepage-snap-shell) {
   z-index: 2;
   font-size: 1.1rem;
   display: block;
+  color: var(--text);
   transition:
     transform 0.6s cubic-bezier(0.19, 1, 0.22, 1),
     color 0.7s cubic-bezier(0.19, 1, 0.22, 1);
@@ -664,7 +673,7 @@ body:has(.homepage-snap-shell) {
   z-index: 1;
   transform: translate(-50%, -50%);
   margin-left: 0;
-  color: #ffffff;
+  color: var(--text);
   font-family: var(--font-display), sans-serif;
   font-size: 0.76rem;
   letter-spacing: 0.28em;
@@ -784,7 +793,7 @@ body:has(.homepage-snap-shell) {
   .swipe-appointment-hint {
     font-size: 0.6rem;
     letter-spacing: 0.3em;
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--text);
     padding-left: 0.7rem;
   }
 
@@ -878,7 +887,7 @@ body:has(.homepage-snap-shell) {
 .hero-controls button:hover,
 .carousel-buttons button:hover {
   transform: scale(1.1);
-  border-color: #fff;
+  border-color: var(--text);
 }
 
 .hero-controls button:hover::before,
@@ -930,7 +939,7 @@ body:has(.homepage-snap-shell) {
 .hero-count small {
   display: block;
   letter-spacing: 0.3em;
-  color: rgba(255, 255, 255, 0.5);
+  color: var(--text-muted);
   font-size: 0.65rem;
   line-height: 1.2;
 }
@@ -940,7 +949,7 @@ body:has(.homepage-snap-shell) {
   letter-spacing: 0.2em;
   font-size: 0.65rem;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.4);
+  color: var(--text-muted);
   line-height: 1.1;
   margin: 0;
   padding-top: 0.1rem;
@@ -1024,15 +1033,23 @@ body:has(.homepage-snap-shell) {
 }
 
 .service-overlay {
-  background: rgba(0, 0, 0, 0.25); /* More transparent to show more image details */
+  background: rgba(0, 0, 0, 0.35);
   backdrop-filter: blur(3px);
   -webkit-backdrop-filter: blur(3px);
   transition: backdrop-filter 0.8s ease, background 0.8s ease;
 }
 
+[data-theme='light'] .service-overlay {
+  background: rgba(255, 255, 255, 0.35);
+}
+
 .service-card:hover .service-overlay {
   backdrop-filter: blur(6px);
-  background: rgba(0, 0, 0, 0.35);
+  background: rgba(0, 0, 0, 0.45);
+}
+
+[data-theme='light'] .service-card:hover .service-overlay {
+  background: rgba(255, 255, 255, 0.45);
 }
 
 .service-copy {
@@ -1040,7 +1057,7 @@ body:has(.homepage-snap-shell) {
   align-items: flex-end;
   justify-content: space-between;
   padding: 3rem;
-  color: white;
+  color: var(--text);
 }
 
 .service-copy h3 {
@@ -1073,7 +1090,7 @@ body:has(.homepage-snap-shell) {
 }
 
 .service-copy span {
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--text-soft);
   letter-spacing: 0.48em;
   text-transform: uppercase;
   font-size: 0.92rem;
@@ -1089,8 +1106,7 @@ body:has(.homepage-snap-shell) {
   letter-spacing: 0.3em;
   font-weight: 500;
   text-transform: uppercase;
-  color: white;
-  opacity: 0.7;
+  color: var(--text-muted);
   transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
 }
 
@@ -1520,7 +1536,7 @@ body:has(.homepage-snap-shell) {
 .project-slide-copy h4,
 .project-slide-copy p {
   margin: 0;
-  color: #fff;
+  color: var(--text);
 }
 
 .project-slide-copy h4 {
@@ -1560,7 +1576,7 @@ body:has(.homepage-snap-shell) {
 
 .project-card-trigger:hover .project-slide-cta-icon {
   transform: translateX(4px);
-  color: #fff;
+  color: var(--text);
 }
 
 .project-card-trigger:hover .project-slide-cta-line {
@@ -1671,7 +1687,7 @@ body:has(.homepage-snap-shell) {
   border: 1px solid rgba(255, 255, 255, 0.14);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  color: rgba(255, 255, 255, 0.9);
+  color: var(--text);
   font-size: 0.58rem;
   letter-spacing: 0.22em;
   text-transform: uppercase;
@@ -1685,7 +1701,7 @@ body:has(.homepage-snap-shell) {
 
 .project-snap-main h4 {
   margin: 0;
-  color: #fff;
+  color: var(--text);
   font-family: var(--font-smooch), sans-serif;
   font-size: clamp(2.9rem, 15vw, 4.7rem);
   line-height: 0.9;
@@ -1820,7 +1836,7 @@ body:has(.homepage-snap-shell) {
 
 .project-detail-sheet-head h3 {
   margin: 0;
-  color: #fff;
+  color: var(--text);
   font-family: var(--font-display), sans-serif;
   font-size: clamp(1.9rem, 4vw, 2.7rem);
   font-weight: 300;
@@ -1836,7 +1852,7 @@ body:has(.homepage-snap-shell) {
   border-radius: 999px;
   border: 1px solid rgba(255, 255, 255, 0.12);
   background: rgba(255, 255, 255, 0.06);
-  color: #fff;
+  color: var(--text);
   display: grid;
   place-items: center;
   cursor: pointer;
@@ -1885,7 +1901,7 @@ body:has(.homepage-snap-shell) {
 
 .project-detail-facts strong {
   display: block;
-  color: #fff;
+  color: var(--text);
   font-size: 0.9rem;
   line-height: 1.45;
   font-weight: 500;
@@ -2273,7 +2289,7 @@ body:has(.homepage-snap-shell) {
   font-style: normal;
   font-weight: 100;
   line-height: 0.86;
-  color: #fff;
+  color: var(--text);
   letter-spacing: 0.16em;
   text-transform: uppercase;
   text-wrap: balance;
@@ -2287,7 +2303,7 @@ body:has(.homepage-snap-shell) {
   display: inline-flex;
   align-items: flex-end;
   gap: 0.75rem;
-  color: #fff;
+  color: var(--text);
 }
 
 .team-card-index {
@@ -2411,7 +2427,7 @@ body:has(.homepage-snap-shell) {
     border-radius: 999px;
     border: 1px solid rgba(255, 255, 255, 0.14);
     background: rgba(255, 255, 255, 0.08);
-    color: #fff;
+    color: var(--text);
     place-items: center;
     backdrop-filter: blur(18px) saturate(1.45);
     -webkit-backdrop-filter: blur(18px) saturate(1.45);
@@ -2734,7 +2750,7 @@ body:has(.homepage-snap-shell) {
   position: fixed;
   inset: 0;
   z-index: 1000;
-  background: rgba(8, 8, 8, 0.95);
+  background: var(--background);
   backdrop-filter: blur(30px);
   -webkit-backdrop-filter: blur(30px);
   display: flex;
@@ -2772,18 +2788,18 @@ body:has(.homepage-snap-shell) {
   width: 100%;
   display: flex;
   align-items: center;
-  border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 2px solid var(--line);
   padding-bottom: 1rem;
   transition: border-color 0.4s ease;
 }
 
 .search-input-wrapper:focus-within {
-  border-bottom-color: rgba(255, 255, 255, 0.8);
+  border-bottom-color: var(--accent);
 }
 
 .search-icon-massive {
   font-size: clamp(2rem, 4vw, 3rem);
-  color: #fff;
+  color: var(--text);
   margin-right: 2rem;
   opacity: 0.5;
 }
@@ -2793,7 +2809,7 @@ body:has(.homepage-snap-shell) {
   background: transparent;
   border: none;
   outline: none;
-  color: #fff;
+  color: var(--text);
   font-family: var(--font-headline), serif;
   font-size: clamp(3rem, 6vw, 6rem);
   font-weight: 200;
@@ -2801,7 +2817,7 @@ body:has(.homepage-snap-shell) {
 }
 
 .huge-search-input::placeholder {
-  color: rgba(255, 255, 255, 0.15);
+  color: var(--text-muted);
 }
 
 .search-results-container {
@@ -2812,7 +2828,7 @@ body:has(.homepage-snap-shell) {
 .no-results-msg {
   font-family: var(--font-display), sans-serif;
   font-size: 1.5rem;
-  color: rgba(255, 255, 255, 0.4);
+  color: var(--text-muted);
   font-weight: 300;
   text-align: center;
   margin-top: 5rem;
@@ -2823,7 +2839,7 @@ body:has(.homepage-snap-shell) {
   font-family: var(--font-display), sans-serif;
   font-size: 0.7rem;
   letter-spacing: 0.3em;
-  color: rgba(255, 255, 255, 0.4);
+  color: var(--text-muted);
   margin-bottom: 2rem;
 }
 
@@ -2869,7 +2885,7 @@ body:has(.homepage-snap-shell) {
 
 .result-info h4 {
   font-family: var(--font-body), sans-serif;
-  color: #fff;
+  color: var(--text);
   font-size: 1.1rem;
   font-weight: 400;
   margin: 0 0 0.4rem 0;
@@ -2877,7 +2893,7 @@ body:has(.homepage-snap-shell) {
 
 .result-info span {
   font-family: var(--font-display), sans-serif;
-  color: rgba(255, 255, 255, 0.5);
+  color: var(--text-muted);
   font-size: 0.7rem;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -3005,7 +3021,7 @@ body:has(.homepage-snap-shell) {
   font-family: var(--font-smooch), sans-serif;
   font-size: clamp(4rem, 15vw, 13rem);
   font-weight: 100;
-  color: #fff;
+  color: var(--text);
   letter-spacing: 0.1em;
   line-height: 0.9;
   text-transform: uppercase;
@@ -3054,7 +3070,7 @@ body:has(.homepage-snap-shell) {
   font-size: clamp(1.2rem, 3vw, 2.5rem);
   line-height: 1.3;
   font-weight: 200;
-  color: #fff;
+  color: var(--text);
   margin: 0;
 }
 
@@ -3083,7 +3099,7 @@ body:has(.homepage-snap-shell) {
 .stat-value {
   font-size: 1.2rem;
   font-weight: 300;
-  color: #fff;
+  color: var(--text);
 }
 
 .project-gallery {
@@ -3282,7 +3298,7 @@ body:has(.homepage-snap-shell) {
 .consultation-title {
   font-family: var(--font-smooch), sans-serif;
   font-size: clamp(3rem, 6vw, 4.5rem);
-  color: #fff;
+  color: var(--text);
   font-weight: 200;
   letter-spacing: 0.1em;
   margin: 0 0 1rem 0;
@@ -3290,7 +3306,7 @@ body:has(.homepage-snap-shell) {
 
 .consultation-subtitle {
   font-family: var(--font-body), sans-serif;
-  color: rgba(255, 255, 255, 0.5);
+  color: var(--text-muted);
   font-size: 1rem;
   font-weight: 300;
   line-height: 1.6;
@@ -3338,7 +3354,7 @@ body:has(.homepage-snap-shell) {
   border: none;
   border-bottom: 1px solid rgba(255, 255, 255, 0.2);
   padding: 1rem 0;
-  color: #fff;
+  color: var(--text);
   font-family: var(--font-body), sans-serif;
   font-size: 1.1rem;
   font-weight: 300;
@@ -3348,11 +3364,11 @@ body:has(.homepage-snap-shell) {
 }
 
 .consultation-input::placeholder {
-  color: rgba(255, 255, 255, 0.3);
+  color: var(--text-muted);
 }
 
 .consultation-input:focus {
-  border-bottom-color: #fff;
+  border-bottom-color: var(--text);
   box-shadow: 0 1px 0 #fff;
 }
 
@@ -3363,19 +3379,19 @@ body:has(.homepage-snap-shell) {
 
 .select-style option {
   background: #111;
-  color: #fff;
+  color: var(--text);
 }
 
 .submit-btn-invert {
-  border-color: rgba(255, 255, 255, 0.3) !important;
+  border-color: var(--text-muted) !important;
   align-self: flex-start;
 }
 .submit-btn-invert .premium-btn-text,
 .submit-btn-invert .premium-btn-icon {
-  color: #fff !important;
+  color: var(--text-inverse) !important;
 }
 .submit-btn-invert:hover {
-  border-color: #fff !important;
+  border-color: var(--accent) !important;
 }
 
 @media (max-width: 767px) {
@@ -3501,7 +3517,7 @@ body:has(.homepage-snap-shell) {
   font-family: var(--font-display), sans-serif;
   font-size: clamp(2rem, 4vw, 3rem);
   letter-spacing: 0.4em;
-  color: #fff;
+  color: var(--text);
   font-weight: 200;
   margin-bottom: 2rem;
   text-transform: uppercase;
@@ -3547,7 +3563,7 @@ body:has(.homepage-snap-shell) {
 
 .cp-pointer-dot.active {
   transform: translate(-50%, -50%) scale(1.1);
-  background-color: #fff;
+  background-color: var(--text);
   box-shadow: 0 0 20px #fff;
 }
 
@@ -3611,7 +3627,7 @@ body:has(.homepage-snap-shell) {
 .cp-info-content p {
   font-family: var(--font-body), sans-serif;
   font-size: 0.85rem;
-  color: rgba(255, 255, 255, 0.5);
+  color: var(--text-muted);
   font-weight: 300;
   line-height: 1.8;
   margin: 0;
@@ -3629,7 +3645,7 @@ body:has(.homepage-snap-shell) {
   font-family: var(--font-display), sans-serif;
   font-size: clamp(1.2rem, 3vw, 2rem);
   letter-spacing: 0.5em;
-  color: #fff;
+  color: var(--text);
   font-weight: 300;
   text-transform: uppercase;
   position: relative;
@@ -3714,7 +3730,7 @@ body:has(.homepage-snap-shell) {
 .map-header h4 {
   font-family: var(--font-display), sans-serif;
   font-size: clamp(1.5rem, 4vw, 2.5rem);
-  color: #fff;
+  color: var(--text);
   font-weight: 200;
   letter-spacing: 0.2em;
   text-transform: uppercase;
@@ -3817,7 +3833,7 @@ body:has(.homepage-snap-shell) {
   font-family: var(--font-smooch), sans-serif;
   font-size: clamp(5rem, 14vw, 13rem);
   font-weight: 100;
-  color: #ffffff;
+  color: var(--text);
   letter-spacing: 0.08em;
   text-transform: uppercase;
   line-height: 0.9;
@@ -3828,7 +3844,7 @@ body:has(.homepage-snap-shell) {
   font-family: var(--font-body), sans-serif;
   font-size: clamp(1rem, 2vw, 1.5rem);
   font-weight: 300;
-  color: rgba(255, 255, 255, 0.6);
+  color: var(--text-soft);
   line-height: 1.6;
   margin-bottom: 3rem;
   max-width: 550px;
@@ -3849,7 +3865,7 @@ body:has(.homepage-snap-shell) {
   font-size: 0.7rem;
   letter-spacing: 0.3em;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.5);
+  color: var(--text-muted);
   text-decoration: none;
   border-bottom: 1px solid rgba(255, 255, 255, 0.15);
   padding-bottom: 4px;
@@ -3857,8 +3873,8 @@ body:has(.homepage-snap-shell) {
 }
 
 .mimari-ghost-btn:hover {
-  color: #fff;
-  border-color: rgba(255, 255, 255, 0.6);
+  color: var(--text);
+  border-color: var(--text-soft);
 }
 
 .mimari-ghost-btn .material-symbols-outlined {
@@ -3885,7 +3901,7 @@ body:has(.homepage-snap-shell) {
   font-family: var(--font-display), sans-serif;
   font-size: 0.55rem;
   letter-spacing: 0.4em;
-  color: rgba(255, 255, 255, 0.3);
+  color: var(--text-muted);
   text-transform: uppercase;
 }
 
@@ -3910,7 +3926,7 @@ body:has(.homepage-snap-shell) {
 }
 
 .mimari-stat { display: flex; flex-direction: column; align-items: center; gap: 0.3rem; }
-.mimari-stat-num { font-family: var(--font-smooch), sans-serif; font-size: 2.5rem; font-weight: 100; color: #fff; line-height: 1; }
+.mimari-stat-num { font-family: var(--font-smooch), sans-serif; font-size: 2.5rem; font-weight: 100; color: var(--text); line-height: 1; }
 .mimari-stat-label { font-family: var(--font-display), sans-serif; font-size: 0.55rem; letter-spacing: 0.2em; color: rgba(255,255,255,0.4); text-transform: uppercase; }
 .mimari-stat-divider { width: 1px; height: 40px; background: rgba(255,255,255,0.1); margin: 0 2rem; }
 
@@ -3918,9 +3934,9 @@ body:has(.homepage-snap-shell) {
 
 /* MANIFESTO */
 .mimari-manifesto {
-  background: #0a0a0a;
+  background: var(--background);
   padding: 10rem 0;
-  border-bottom: 1px solid rgba(255,255,255,0.05);
+  border-bottom: 1px solid var(--line);
 }
 
 .mimari-manifesto-inner {
@@ -3945,7 +3961,7 @@ body:has(.homepage-snap-shell) {
   font-family: var(--font-smooch), sans-serif;
   font-size: clamp(2rem, 4.5vw, 4rem);
   font-weight: 100;
-  color: #fff;
+  color: var(--text);
   line-height: 1.2;
   margin: 0 0 3rem;
   border: none;
@@ -3957,7 +3973,7 @@ body:has(.homepage-snap-shell) {
   font-family: var(--font-body), sans-serif;
   font-size: clamp(1rem, 1.5vw, 1.15rem);
   font-weight: 300;
-  color: rgba(255,255,255,0.5);
+  color: var(--text-soft);
   line-height: 1.9;
   max-width: 700px;
   margin: 0;
@@ -3966,16 +3982,16 @@ body:has(.homepage-snap-shell) {
 /* ORTAK */
 .mimari-section-inner { max-width: 1400px; margin: 0 auto; padding: 0 5rem; }
 .mimari-section-header { margin-bottom: 6rem; }
-.mimari-section-title { font-family: var(--font-smooch), sans-serif; font-size: clamp(2.5rem, 6vw, 5rem); font-weight: 100; color: #fff; margin: 1rem 0 0; letter-spacing: 0.05em; }
+.mimari-section-title { font-family: var(--font-smooch), sans-serif; font-size: clamp(2.5rem, 6vw, 5rem); font-weight: 100; color: var(--text); margin: 1rem 0 0; letter-spacing: 0.05em; }
 
 /* PRENSİPLER */
-.mimari-principles { background: #0a0a0a; padding: 10rem 0; }
+.mimari-principles { background: var(--background); padding: 10rem 0; }
 
 .mimari-principles-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 0;
-  border: 1px solid rgba(255,255,255,0.06);
+  border: 1px solid var(--line);
 }
 
 .mimari-principle-card {
@@ -3990,7 +4006,7 @@ body:has(.homepage-snap-shell) {
 
 .mimari-principle-num { font-family: var(--font-display), sans-serif; font-size: 0.65rem; letter-spacing: 0.3em; color: #cca883; }
 .mimari-principle-line { width: 2rem; height: 1px; background: rgba(255,255,255,0.1); margin: 2rem 0; }
-.mimari-principle-title { font-family: var(--font-body), sans-serif; font-size: clamp(1.2rem, 2vw, 1.6rem); font-weight: 300; color: #fff; margin: 0 0 0.5rem; }
+.mimari-principle-title { font-family: var(--font-body), sans-serif; font-size: clamp(1.2rem, 2vw, 1.6rem); font-weight: 300; color: var(--text); margin: 0 0 0.5rem; }
 .mimari-principle-sub { display: block; font-family: var(--font-display), sans-serif; font-size: 0.6rem; letter-spacing: 0.2em; color: rgba(255,255,255,0.3); text-transform: uppercase; margin-bottom: 1.5rem; }
 .mimari-principle-desc { font-family: var(--font-body), sans-serif; font-size: 0.95rem; font-weight: 300; color: rgba(255,255,255,0.45); line-height: 1.8; margin: 0; }
 
@@ -4030,7 +4046,7 @@ body:has(.homepage-snap-shell) {
 .mimari-specialty-row:first-child { border-top: 1px solid rgba(255,255,255,0.06); }
 .mimari-specialty-row:hover { padding-left: 1rem; }
 .mimari-specialty-label { font-family: var(--font-body), sans-serif; font-size: clamp(1rem, 2.5vw, 1.8rem); font-weight: 200; color: rgba(255,255,255,0.7); min-width: 200px; transition: color 0.4s ease; }
-.mimari-specialty-row:hover .mimari-specialty-label { color: #fff; }
+.mimari-specialty-row:hover .mimari-specialty-label { color: var(--accent); }
 .mimari-specialty-line { flex: 1; height: 1px; background: rgba(255,255,255,0.06); }
 .mimari-specialty-count { font-family: var(--font-display), sans-serif; font-size: 0.65rem; letter-spacing: 0.3em; color: #cca883; text-transform: uppercase; white-space: nowrap; }
 
@@ -4050,7 +4066,7 @@ body:has(.homepage-snap-shell) {
 .mimari-step-num { font-family: var(--font-display), sans-serif; font-size: 0.65rem; letter-spacing: 0.3em; color: #cca883; }
 .mimari-step-connector { flex: 1; width: 1px; background: rgba(204,168,131,0.2); margin-top: 1rem; min-height: 40px; }
 .mimari-step-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 1.5rem; gap: 2rem; }
-.mimari-step-title { font-family: var(--font-body), sans-serif; font-size: clamp(1.2rem, 2.5vw, 1.8rem); font-weight: 200; color: #fff; margin: 0; }
+.mimari-step-title { font-family: var(--font-body), sans-serif; font-size: clamp(1.2rem, 2.5vw, 1.8rem); font-weight: 200; color: var(--text); margin: 0; }
 .mimari-step-duration { font-family: var(--font-display), sans-serif; font-size: 0.6rem; letter-spacing: 0.3em; color: rgba(255,255,255,0.3); text-transform: uppercase; white-space: nowrap; margin-top: 0.4rem; flex-shrink: 0; }
 .mimari-step-desc { font-family: var(--font-body), sans-serif; font-size: 1rem; font-weight: 300; color: rgba(255,255,255,0.45); line-height: 1.8; max-width: 700px; margin: 0; }
 
@@ -4059,13 +4075,17 @@ body:has(.homepage-snap-shell) {
 .mimari-cta-bg { position: absolute; inset: 0; }
 .mimari-cta-bg img { width: 100%; height: 100%; max-width: none; object-fit: cover; object-position: center; transition: transform 8s ease; }
 .mimari-cta-banner:hover .mimari-cta-bg img { transform: scale(1.04); }
-.mimari-cta-overlay { position: absolute; inset: 0; background: rgba(6,6,6,0.72); z-index: 1; }
+.mimari-cta-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.6); z-index: 1; }
+
+[data-theme='light'] .mimari-cta-overlay {
+  background: rgba(255, 255, 255, 0.4);
+}
 .mimari-cta-content { position: relative; z-index: 5; padding: 0 5rem; max-width: 800px; }
-.mimari-cta-title { font-family: var(--font-smooch), sans-serif; font-size: clamp(3rem, 7vw, 5rem); font-weight: 100; color: #fff; margin: 1rem 0 1.5rem; line-height: 0.95; letter-spacing: 0.05em; }
-.mimari-cta-sub { font-family: var(--font-body), sans-serif; font-size: 1rem; font-weight: 300; color: rgba(255,255,255,0.5); line-height: 1.7; max-width: 550px; margin-bottom: 3rem; }
+.mimari-cta-title { font-family: var(--font-smooch), sans-serif; font-size: clamp(3rem, 7vw, 5rem); font-weight: 100; color: var(--text); margin: 1rem 0 1.5rem; line-height: 0.95; letter-spacing: 0.05em; }
+.mimari-cta-sub { font-family: var(--font-body), sans-serif; font-size: 1rem; font-weight: 300; color: var(--text-soft); line-height: 1.7; max-width: 550px; margin-bottom: 3rem; }
 
 /* DİĞER HİZMETLER */
-.mimari-other-services { background: #0a0a0a; padding: 10rem 0; border-top: 1px solid rgba(255,255,255,0.05); }
+.mimari-other-services { background: var(--background); padding: 10rem 0; border-top: 1px solid var(--line); }
 .mimari-other-services .section-small-label { display: block; margin-bottom: 4rem; }
 .mimari-other-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.4rem; }
 .mimari-other-card { position: relative; display: block; overflow: hidden; aspect-ratio: 16 / 9; text-decoration: none; }
@@ -4073,7 +4093,7 @@ body:has(.homepage-snap-shell) {
 .mimari-other-card:hover img { transform: scale(1.06); }
 .mimari-other-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.75) 0%, transparent 60%); z-index: 1; }
 .mimari-other-copy { position: absolute; inset: 0; z-index: 2; padding: 2rem; display: flex; align-items: flex-end; justify-content: space-between; }
-.mimari-other-copy h3 { font-family: var(--font-body), sans-serif; font-size: clamp(1.2rem, 3vw, 2rem); font-weight: 200; color: #fff; margin: 0; letter-spacing: 0.05em; }
+.mimari-other-copy h3 { font-family: var(--font-body), sans-serif; font-size: clamp(1.2rem, 3vw, 2rem); font-weight: 200; color: var(--text); margin: 0; letter-spacing: 0.05em; }
 .mimari-other-copy .vertical-text { font-family: var(--font-display), sans-serif; font-size: 0.55rem; letter-spacing: 0.3em; color: rgba(255,255,255,0.4); text-transform: uppercase; }
 
 /* MİMARİ RESPONSIVE */
@@ -4155,7 +4175,7 @@ body:has(.homepage-snap-shell) {
   font-family: var(--font-smooch), sans-serif;
   font-size: clamp(3.5rem, 7vw, 6rem);
   font-weight: 100;
-  color: #fff;
+  color: var(--text);
   line-height: 0.92;
   letter-spacing: 0.04em;
   margin: 0 0 3.5rem;
@@ -4233,7 +4253,7 @@ body:has(.homepage-snap-shell) {
   font-family: var(--font-display), sans-serif;
   font-size: 0.6rem;
   letter-spacing: 0.35em;
-  color: rgba(255, 255, 255, 0.3);
+  color: var(--text-muted);
   text-transform: uppercase;
   margin-bottom: 1.8rem;
 }
@@ -4271,7 +4291,7 @@ body:has(.homepage-snap-shell) {
 }
 
 .footer-nav-link:hover {
-  color: #fff;
+  color: var(--text);
 }
 
 .footer-nav-link:hover::after {
@@ -4295,7 +4315,7 @@ body:has(.homepage-snap-shell) {
   font-family: var(--font-display), sans-serif;
   font-size: 0.6rem;
   letter-spacing: 0.2em;
-  color: rgba(255, 255, 255, 0.2);
+  color: var(--text-muted);
   text-transform: uppercase;
 }
 
@@ -4434,7 +4454,7 @@ body:has(.homepage-snap-shell) {
   font-size: 0.85rem;
   letter-spacing: 0.25em;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--text-soft);
   margin: 0;
   line-height: 1.6;
 }
@@ -4460,7 +4480,7 @@ body:has(.homepage-snap-shell) {
 .process-section {
   background: #0a0a0a;
   padding: 7rem 2rem 8.5rem;
-  color: #fff;
+  color: var(--text);
   border-top: 1px solid rgba(255, 255, 255, 0.05);
   position: relative;
   overflow: hidden;
@@ -4585,7 +4605,7 @@ body:has(.homepage-snap-shell) {
 .process-step:hover .step-id {
   background: #fff;
   color: #0a0a0a;
-  border-color: #fff;
+  border-color: var(--text);
   transform: scale(1.1);
 }
 
@@ -4602,14 +4622,14 @@ body:has(.homepage-snap-shell) {
   font-family: var(--font-body), sans-serif;
   font-size: 0.85rem;
   line-height: 1.6;
-  color: rgba(255, 255, 255, 0.5);
+  color: var(--text-muted);
   max-width: 15rem;
   margin: 0 auto;
   transition: color 0.4s ease;
 }
 
 .process-step:hover .step-content p {
-  color: rgba(255, 255, 255, 0.9);
+  color: var(--text);
 }
 
 /* Mobile Responsive */
@@ -4653,7 +4673,7 @@ body:has(.homepage-snap-shell) {
 
 .studio-page {
   background: #0a0a0a;
-  color: #fff;
+  color: var(--text);
   min-height: 100vh;
 }
 
@@ -4724,7 +4744,7 @@ body:has(.homepage-snap-shell) {
   font-family: var(--font-smooch), sans-serif;
   font-size: clamp(5rem, 16vw, 12rem);
   font-weight: 100;
-  color: #fff;
+  color: var(--text);
   letter-spacing: 0.12em;
   margin: 0;
   line-height: 0.85;
@@ -4776,7 +4796,7 @@ body:has(.homepage-snap-shell) {
 .studio-search-bar input {
   background: transparent;
   border: none;
-  color: #fff;
+  color: var(--text);
   flex: 1;
   padding: 1rem;
   font-size: 0.9rem;
@@ -4785,7 +4805,7 @@ body:has(.homepage-snap-shell) {
 }
 
 .studio-search-bar .material-symbols-outlined {
-  color: rgba(255, 255, 255, 0.4);
+  color: var(--text-muted);
 }
 
 /* Sidebar & Layout */
@@ -4832,7 +4852,7 @@ body:has(.homepage-snap-shell) {
 .filter-button {
   background: transparent;
   border: none;
-  color: rgba(255, 255, 255, 0.4);
+  color: var(--text-muted);
   font-size: 0.85rem;
   letter-spacing: 0.05em;
   cursor: pointer;
@@ -4847,7 +4867,7 @@ body:has(.homepage-snap-shell) {
 
 .filter-button:hover,
 .filter-button.active {
-  color: #fff;
+  color: var(--text);
   padding-left: 1rem;
 }
 
@@ -4962,7 +4982,7 @@ body:has(.homepage-snap-shell) {
   font-weight: 300;
   letter-spacing: 0.1em;
   margin-bottom: 1.5rem;
-  color: #fff;
+  color: var(--text);
 }
 
 .project-meta-row {
@@ -4985,13 +5005,13 @@ body:has(.homepage-snap-shell) {
 .meta-item label {
   font-size: 0.55rem;
   letter-spacing: 0.2em;
-  color: rgba(255, 255, 255, 0.3);
+  color: var(--text-muted);
   text-transform: uppercase;
 }
 
 .meta-item span {
   font-size: 0.75rem;
-  color: #fff;
+  color: var(--text);
   overflow-wrap: anywhere;
 }
 
@@ -5011,7 +5031,7 @@ body:has(.homepage-snap-shell) {
 .story-block p {
   font-size: 0.85rem;
   line-height: 1.6;
-  color: rgba(255, 255, 255, 0.6);
+  color: var(--text-soft);
   overflow-wrap: anywhere;
 }
 
@@ -5030,7 +5050,7 @@ body:has(.homepage-snap-shell) {
   font-family: inherit;
   font-size: 0.7rem;
   letter-spacing: 0.2em;
-  color: #fff;
+  color: var(--text);
   text-transform: uppercase;
   display: flex;
   align-items: center;
@@ -5056,7 +5076,7 @@ body:has(.homepage-snap-shell) {
   font-weight: 300;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: #fff;
+  color: var(--text);
 }
 
 .material-showcase-intro p,
@@ -5083,14 +5103,14 @@ body:has(.homepage-snap-shell) {
 
 .material-showcase-footer-note {
   font-size: 0.6rem;
-  color: rgba(255, 255, 255, 0.2);
+  color: var(--text-muted);
   letter-spacing: 0.1em;
 }
 
 .material-showcase-empty {
   text-align: center;
   padding: 10rem 0;
-  color: rgba(255, 255, 255, 0.3);
+  color: var(--text-muted);
 }
 
 .material-showcase-empty .material-symbols-outlined {
@@ -5126,7 +5146,7 @@ body:has(.homepage-snap-shell) {
   .mobile-filter-toggle {
     background: #111;
     border: 1px solid rgba(255, 255, 255, 0.1);
-    color: #fff;
+    color: var(--text);
     padding: 1.2rem;
     font-size: 0.7rem;
     letter-spacing: 0.3em;
@@ -5204,7 +5224,7 @@ body:has(.homepage-snap-shell) {
   .drawer-close {
     background: none;
     border: none;
-    color: #fff;
+    color: var(--text);
     cursor: pointer;
   }
 
@@ -5227,7 +5247,7 @@ body:has(.homepage-snap-shell) {
   .mobile-filter-button {
     background: none;
     border: none;
-    color: rgba(255, 255, 255, 0.4);
+    color: var(--text-muted);
     font-size: 1rem;
     letter-spacing: 0.05em;
     text-align: left;
@@ -5240,7 +5260,7 @@ body:has(.homepage-snap-shell) {
   }
 
   .mobile-filter-button.active {
-    color: #fff;
+    color: var(--text);
     font-weight: 500;
   }
 
@@ -5256,7 +5276,7 @@ body:has(.homepage-snap-shell) {
 
   .drawer-footer p {
     font-size: 0.75rem;
-    color: rgba(255, 255, 255, 0.4);
+    color: var(--text-muted);
     margin-bottom: 1.5rem;
     line-height: 1.6;
   }
@@ -5366,7 +5386,7 @@ body:has(.homepage-snap-shell) {
   font-family: var(--font-smooch), sans-serif;
   font-size: clamp(5rem, 18vw, 15rem);
   font-weight: 100;
-  color: #fff;
+  color: var(--text);
   letter-spacing: 0.15em;
   line-height: 0.8;
   margin: 0;
@@ -5378,7 +5398,7 @@ body:has(.homepage-snap-shell) {
   font-size: clamp(0.8rem, 2vw, 1.2rem);
   letter-spacing: 0.6em;
   font-weight: 300;
-  color: rgba(255, 255, 255, 0.9);
+  color: var(--text);
   text-transform: uppercase;
   margin-top: 2rem;
 }
@@ -5765,7 +5785,7 @@ body:has(.homepage-snap-shell) {
   font-family: var(--font-smooch), sans-serif;
   font-size: clamp(4rem, 12vw, 10rem);
   font-weight: 100;
-  color: #fff;
+  color: var(--text);
   letter-spacing: 0.2em;
   text-transform: uppercase;
   margin: 0;
@@ -5905,7 +5925,7 @@ body:has(.homepage-snap-shell) {
     max-width: min(78vw, 18rem);
     text-align: right;
     z-index: 2;
-    color: #fff;
+    color: var(--text);
   }
 
   .galeri-page .project-card p {

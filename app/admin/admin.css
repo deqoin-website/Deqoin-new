@@ -44,7 +44,7 @@
 .admin-logo img {
   width: 36px;
   height: 36px;
-  background: #fff;
+  background: var(--text-inverse);
   border-radius: 4px;
   padding: 6px;
   box-shadow: 0 4px 15px rgba(166, 137, 102, 0.2);
@@ -90,7 +90,8 @@
 .group-label {
   font-size: 0.55rem;
   letter-spacing: 0.25em;
-  color: rgba(166, 137, 102, 0.5);
+  color: var(--accent);
+  opacity: 0.6;
   font-weight: 800;
   padding: 0 1rem;
   text-transform: uppercase;
