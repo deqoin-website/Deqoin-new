@@ -44,12 +44,28 @@ export default function AdminProjects() {
     seoMeta: { title: '', description: '', keywords: '' },
     gallery: [] as { url: string; imageAlt: string; caption: string }[]
   });
+  const [isMigrating, setIsMigrating] = useState(false);
 
   const CATEGORIES = ["Lüks Konut", "Ticari Yapı", "Karma Kullanım", "Kurumsal Alan", "Butik Otel", "Kültür Yapısı"];
 
   useEffect(() => {
     fetchProjects();
   }, []);
+
+  const runMigration = async () => {
+    setIsMigrating(true);
+    try {
+      const res = await fetch('/api/admin/migrate/projects');
+      if (res.ok) {
+        alert("Varsayılan projeler başarıyla aktarıldı!");
+        fetchProjects();
+      }
+    } catch (e) {
+      alert("Aktarım sırasında bir hata oluştu.");
+    } finally {
+      setIsMigrating(false);
+    }
+  };
 
   const fetchProjects = async () => {
     try {
@@ -226,6 +242,19 @@ export default function AdminProjects() {
               </div>
             </motion.div>
           ))}
+          {projects.length === 0 && (
+            <div className="empty-state-container">
+              <div className="migration-helper admin-card">
+                 <FolderKanban size={40} className="icon-gold" />
+                 <h4>PROJE HAVUZU BOŞ</h4>
+                 <p>Şu an sistemde düzenlenebilir proje bulunmuyor. Web sitesindeki mevcut projeleri buraya aktararak düzenlemeye başlayabilirsiniz.</p>
+                 <button className="migrate-btn" onClick={runMigration} disabled={isMigrating}>
+                   {isMigrating ? <Loader2 className="animate-spin" size={18} /> : <ImageIcon size={18} />}
+                   {isMigrating ? 'AKTARILIYOR...' : 'VARSAYILAN PROJELERİ AKTAR'}
+                 </button>
+              </div>
+            </div>
+          )}
         </div>
       )}
 
@@ -427,9 +456,25 @@ export default function AdminProjects() {
         }
         .engine-card:hover .card-overlay { opacity: 1; }
         
-        .action-icn { width: 40px; height: 40px; border-radius: 50%; background: #fff; color: #000; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-        .action-icn:hover { transform: scale(1.05); }
+        .action-icn { width: 40px; height: 40px; border-radius: 50%; background: #fff; color: #000; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.3s; }
+        .action-icn:hover { transform: scale(1.1); box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
         .action-icn.delete:hover { background: #ff4d4d; color: #fff; }
+
+        .empty-state-container { grid-column: 1 / -1; display: flex; justify-content: center; padding: 3rem 0; }
+        .migration-helper { 
+          display: flex; flex-direction: column; align-items: center; text-align: center; gap: 1.5rem; padding: 4rem 2rem; 
+          background: var(--surface); border: 1px dashed #a68966; max-width: 500px; width: 100%; border-radius: 12px;
+        }
+        .migration-helper h4 { font-family: var(--font-display); font-size: 1rem; color: #a68966; margin: 0; letter-spacing: 0.1em; }
+        .migration-helper p { font-size: 0.85rem; color: var(--text-soft); line-height: 1.6; margin: 0; }
+        .icon-gold { color: #a68966; opacity: 0.6; }
+        .migrate-btn { 
+          background: #a68966; color: #000; border: none; padding: 1rem 2rem; border-radius: 4px; 
+          font-weight: 800; cursor: pointer; display: flex; align-items: center; gap: 0.75rem; transition: all 0.3s; 
+          font-size: 0.75rem; letter-spacing: 0.05em;
+        }
+        .migrate-btn:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(166,137,102,0.3); }
+        .migrate-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
         .card-meta { padding: 1rem; display: flex; flex-direction: column; gap: 0.5rem; }
         .card-meta h4 { margin: 0; font-size: 0.9rem; font-weight: 500; font-family: var(--font-display); color: var(--text); }
