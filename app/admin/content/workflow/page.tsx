@@ -257,57 +257,57 @@ export default function CorporateContentPage() {
         .corporate-manager { display: flex; flex-direction: column; gap: 2.5rem; }
         
         .manager-header { display: flex; justify-content: space-between; align-items: flex-end; }
-        .manager-header h2 { font-family: var(--font-display); font-size: 1.5rem; letter-spacing: 0.1em; color: #fff; margin: 0 0 0.5rem 0; }
-        .manager-header p { margin: 0; color: rgba(255,255,255,0.5); font-size: 0.85rem; }
+        .manager-header h2 { font-family: var(--font-display); font-size: 1.5rem; letter-spacing: 0.1em; color: var(--text); margin: 0 0 0.5rem 0; }
+        .manager-header p { margin: 0; color: var(--text-soft); opacity: 0.7; font-size: 0.85rem; }
 
         .save-btn { background: #a68966; color: #000; border: none; padding: 1rem 2rem; border-radius: 4px; font-weight: 800; cursor: pointer; display: flex; align-items: center; gap: 0.75rem; transition: transform 0.3s; }
         .save-btn:hover { transform: translateY(-2px); }
 
-        .tabs-nav { display: flex; gap: 0.5rem; border-bottom: 1px solid rgba(255,255,255,0.05); }
-        .tab-btn { background: transparent; border: none; color: rgba(255,255,255,0.4); padding: 1rem 1.5rem; font-size: 0.75rem; font-weight: 600; letter-spacing: 0.1em; cursor: pointer; display: flex; align-items: center; gap: 0.75rem; border-bottom: 2px solid transparent; transition: all 0.3s; }
-        .tab-btn:hover { color: #fff; }
+        .tabs-nav { display: flex; gap: 0.5rem; border-bottom: 1px solid var(--line); }
+        .tab-btn { background: transparent; border: none; color: var(--text-muted); padding: 1rem 1.5rem; font-size: 0.75rem; font-weight: 600; letter-spacing: 0.1em; cursor: pointer; display: flex; align-items: center; gap: 0.75rem; border-bottom: 2px solid transparent; transition: all 0.3s; }
+        .tab-btn:hover { color: var(--text); }
         .tab-btn.active { color: #a68966; border-bottom-color: #a68966; background: rgba(166,137,102,0.05); }
 
         .tab-content { padding: 3rem; }
         .panel { display: flex; flex-direction: column; gap: 2rem; }
 
         .form-group { display: flex; flex-direction: column; gap: 0.75rem; }
-        .form-group label { font-size: 0.65rem; color: rgba(255,255,255,0.5); letter-spacing: 0.15em; font-weight: 600; }
-        .form-group input, .form-group textarea { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); padding: 1.2rem; color: #fff; border-radius: 4px; font-family: inherit; font-size: 0.9rem; }
+        .form-group label { font-size: 0.65rem; color: var(--text-muted); letter-spacing: 0.15em; font-weight: 600; }
+        .form-group input, .form-group textarea { background: var(--background); border: 1px solid var(--line); padding: 1.2rem; color: var(--text); border-radius: 4px; font-family: inherit; font-size: 0.9rem; }
         .form-group input:focus, .form-group textarea:focus { outline: none; border-color: #a68966; }
 
         .image-upload-wrap { display: flex; flex-direction: column; gap: 1rem; }
-        .image-preview { width: 100%; height: 400px; background: rgba(255,255,255,0.02); border: 1px dashed rgba(255,255,255,0.1); border-radius: 8px; overflow: hidden; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: border-color 0.3s; }
-        .image-preview:hover { border-color: rgba(255,255,255,0.3); }
+        .image-preview { width: 100%; height: 400px; background: var(--background); border: 1px dashed var(--line); border-radius: 8px; overflow: hidden; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: border-color 0.3s; }
+        .image-preview:hover { border-color: #a68966; }
         .image-preview img { width: 100%; height: 100%; object-fit: cover; }
-        .placeholder { display: flex; flex-direction: column; align-items: center; gap: 0.5rem; color: rgba(255,255,255,0.2); }
+        .placeholder { display: flex; flex-direction: column; align-items: center; gap: 0.5rem; color: var(--text-muted); }
 
         .panel-header-inline { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
         .panel-header-inline h3 { margin: 0; font-family: var(--font-display); font-size: 1rem; letter-spacing: 0.1em; color: #a68966; }
-        .add-btn-small { background: rgba(255,255,255,0.05); color: #fff; border: 1px solid rgba(255,255,255,0.1); padding: 0.5rem 1rem; border-radius: 4px; font-size: 0.7rem; display: flex; align-items: center; gap: 0.5rem; cursor: pointer; }
+        .add-btn-small { background: var(--surface-muted); color: var(--text); border: 1px solid var(--line); padding: 0.5rem 1rem; border-radius: 4px; font-size: 0.7rem; display: flex; align-items: center; gap: 0.5rem; cursor: pointer; }
 
         .stats-grid-admin { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
-        .stat-card-admin { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); padding: 1.5rem; border-radius: 8px; display: flex; flex-direction: column; gap: 1rem; }
+        .stat-card-admin { background: var(--surface-muted); border: 1px solid var(--line); padding: 1.5rem; border-radius: 8px; display: flex; flex-direction: column; gap: 1rem; }
         .stat-card-header { display: flex; justify-content: space-between; align-items: center; }
-        .stat-num { font-size: 0.6rem; color: rgba(255,255,255,0.2); font-weight: 800; }
+        .stat-num { font-size: 0.6rem; color: var(--text-muted); font-weight: 800; }
         .delete-stat { background: transparent; border: none; color: rgba(255,77,77,0.5); cursor: pointer; transition: color 0.3s; }
         .delete-stat:hover { color: #ff4d4d; }
         
         .stat-inputs { display: flex; flex-direction: column; gap: 0.5rem; }
-        .stat-inputs input { background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.05); padding: 0.75rem; color: #fff; border-radius: 4px; font-size: 0.8rem; }
+        .stat-inputs input { background: var(--background); border: 1px solid var(--line); padding: 0.75rem; color: var(--text); border-radius: 4px; font-size: 0.8rem; }
 
-        .empty-state-placeholder { padding: 5rem; text-align: center; color: rgba(255,255,255,0.3); display: flex; flex-direction: column; align-items: center; gap: 1rem; }
-        .icon-fade { opacity: 0.1; }
+        .empty-state-placeholder { padding: 5rem; text-align: center; color: var(--text-muted); display: flex; flex-direction: column; align-items: center; gap: 1rem; }
+        .icon-fade { opacity: 0.2; }
         .add-btn-placeholder { background: rgba(166,137,102,0.1); color: #a68966; border: 1px solid rgba(166,137,102,0.3); padding: 0.75rem 1.5rem; border-radius: 4px; font-size: 0.7rem; font-weight: 800; cursor: pointer; letter-spacing: 0.1em; }
         .spin { animation: spin 2s linear infinite; }
         @keyframes spin { 100% { transform: rotate(360deg); } }
 
         /* WORKFLOW SPECIFIC */
         .workflow-list-admin { display: flex; flex-direction: column; gap: 1.5rem; }
-        .workflow-item-card { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 12px; padding: 2rem; position: relative; display: flex; gap: 2rem; align-items: flex-start; }
+        .workflow-item-card { background: var(--surface-muted); border: 1px solid var(--line); border-radius: 12px; padding: 2rem; position: relative; display: flex; gap: 2rem; align-items: flex-start; }
         .step-badge { background: #a68966; color: #000; font-size: 0.6rem; font-weight: 900; padding: 4px 10px; border-radius: 4px; letter-spacing: 0.1em; }
         .step-inputs-wrap { flex: 1; display: flex; flex-direction: column; gap: 1rem; }
-        .border-none input, .border-none textarea { background: rgba(0,0,0,0.2) !important; border: 1px solid rgba(255,255,255,0.03) !important; }
+        .border-none input, .border-none textarea { background: var(--background) !important; border: 1px solid var(--line) !important; }
         .title-input-large { font-size: 1.1rem !important; font-weight: 600; color: #a68966 !important; }
         .delete-step-btn { background: rgba(255,77,77,0.05); color: #ff4d4d; border: 1px solid rgba(255,77,77,0.1); width: 44px; height: 44px; border-radius: 8px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.3s; }
         .delete-step-btn:hover { background: #ff4d4d; color: #fff; }
