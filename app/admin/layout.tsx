@@ -45,13 +45,41 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       items: [
         { name: 'Tüm Projeler (Havuz)', icon: FolderKanban, path: '/admin/projects' },
         { 
-          name: 'Stüdyo Yönetimi', 
+          name: 'Mimari Stüdyo', 
           icon: Aperture, 
-          path: '/admin/studios',
+          path: '/admin/studios-mimari', // Not a real router, just for active state
           subItems: [
-            { name: 'Mimari Stüdyo', path: '/admin/studios/design' },
-            { name: 'Materyal Stüdyo', path: '/admin/studios/material' },
-            { name: 'Uygulama Birimi', path: '/admin/studios/execution' },
+            { name: 'Mimarlık', path: '/admin/studios/mimarlik' },
+            { name: 'İç Mimarlık', path: '/admin/studios/ic-mimarlik' },
+            { name: 'Restorasyon', path: '/admin/studios/restorasyon' },
+            { name: 'Peyzaj', path: '/admin/studios/peyzaj-mimarligi' },
+            { name: 'Mühendislik', path: '/admin/studios/insaat-muhendisligi' },
+            { name: 'Mekanik', path: '/admin/studios/elektrik-elektronik-muhendisligi' },
+          ]
+        },
+        { 
+          name: 'Materyal Stüdyo', 
+          icon: Aperture, 
+          path: '/admin/studios-materyal',
+          subItems: [
+            { name: 'Mobilya', path: '/admin/studios/mobilya' },
+            { name: 'Aydınlatma', path: '/admin/studios/aydinlatma' },
+            { name: 'İtalyan Sıvalar', path: '/admin/studios/italyan-sivalar' },
+            { name: 'Sanatsal Çalışmalar', path: '/admin/studios/sanatsal-calismalar' },
+            { name: 'Tuğla ve Taş', path: '/admin/studios/tugla-ve-tas' },
+          ]
+        },
+        { 
+          name: 'Uygulama Birimi', 
+          icon: Aperture, 
+          path: '/admin/studios-uygulama',
+          subItems: [
+            { name: 'İnşaat Ekipleri', path: '/admin/studios/insaat-ekipleri' },
+            { name: 'Sıva & Alçı Ekipleri', path: '/admin/studios/siva-ve-alci-ekipleri' },
+            { name: 'Boya Ekipleri', path: '/admin/studios/boya-ekipleri' },
+            { name: 'Duvar Sanatçıları', path: '/admin/studios/duvar-sanatcilari' },
+            { name: 'Ressamlar', path: '/admin/studios/ressamlar' },
+            { name: 'Heykeltıraşlar', path: '/admin/studios/heykeltiraslar' },
           ]
         },
       ]
