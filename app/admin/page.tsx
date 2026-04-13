@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { MessageSquare, FolderKanban, Aperture, ArrowUpRight, Clock } from 'lucide-react';
+import { MessageSquare, FolderKanban, Aperture, ArrowUpRight, Clock, Briefcase } from 'lucide-react';
 import Link from 'next/link';
 
 export default function AdminDashboard() {
