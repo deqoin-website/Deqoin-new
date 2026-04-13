@@ -36,7 +36,7 @@ export default function AboutUs() {
             margin: "1rem 0 0",
             lineHeight: "1.1"
           }}>
-            Tasarımdan Öte:<br />Yaşam Alanları
+            TASARIMDAN ÖTE:<br />BÜTÜNSEL BİR DENEYİM
           </h1>
         </div>
 
@@ -92,7 +92,7 @@ export default function AboutUs() {
                 margin: 0,
                 letterSpacing: "-0.01em"
               }}>
-                Bizler sadece fiziksel yapılar inşa etmiyor, sizin için gerçek yaşam alanları kurguluyoruz.
+                Bizler sadece fiziksel yapılar inşa etmiyor; tüm değerlerinizi ortaya koyan bütünsel bir deneyim kurguluyoruz.
               </p>
               
               <p style={{ 
@@ -103,7 +103,7 @@ export default function AboutUs() {
                 margin: 0,
                 maxWidth: "550px"
               }}>
-                Henüz kelimelere dökemediğiniz, belki de henüz farkında olmadığınız ancak deneyimlediğinizde eksikliğini hissettiğiniz o ince dokunuşu çok iyi biliyor ve size tam olarak onu sunuyoruz. Kusursuz bir mimari tasarım, en doğru malzeme ve usta işi bir uygulamayı tek bir çatı altında birleştirerek, aradığınız o bütünsel deneyimi gerçeğe dönüştürüyoruz.
+                Belki de henüz farkında dahi olmadığınız, ancak deneyimlediğinizde eksikliğini hissettiğiniz o kusursuz dokunuşu çok iyi biliyor ve projelerinizi bu öngörüyle tasarlıyoruz. Kusursuz bir mimari vizyonu, doğru malzeme koleksiyonları ve usta işi bir uygulamayı tek bir çatı altında birleştiriyoruz.
               </p>
 
               <p style={{ 
@@ -115,7 +115,7 @@ export default function AboutUs() {
                 borderLeft: "2px solid #fff",
                 paddingLeft: "2rem"
               }}>
-                Aradığınız vizyon ve kalite, tam olarak burada başlıyor.
+                Dışarıdan hiçbir usta veya ekibe ihtiyaç bırakmayan bu güçlü yapımızla; tasarımın başından inşa sürecinin sonuna kadar o kusursuz süreci bizzat yönetiyoruz. Aslında projenizin tam olarak neye ihtiyacı olduğunu çok iyi biliyor ve aradığınız o üst düzey kaliteyi tam da burada başlatıyoruz.
               </p>
             </div>
 
