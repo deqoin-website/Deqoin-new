@@ -1,9 +1,9 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { Lock, User, ArrowRight, Eye, EyeOff } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { Lock, User, ArrowRight, Eye, EyeOff, ShieldCheck } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 export default function AdminLoginPage() {
   const [username, setUsername] = useState('');
@@ -11,7 +11,12 @@ export default function AdminLoginPage() {
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
   const router = useRouter();
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -26,340 +31,319 @@ export default function AdminLoginPage() {
       });
 
       if (res.ok) {
+        // Success animation or direct redirect
         router.push('/admin');
       } else {
-        setError('Geçersiz kullanıcı adı veya şifre.');
+        setError('Erişim Reddedildi. Kimlik bilgilerini kontrol edin.');
       }
     } catch (err) {
-      setError('Bir hata oluştu. Lütfen tekrar deneyin.');
+      setError('Sistem hatası. Lütfen daha sonra tekrar deneyin.');
     } finally {
       setIsLoading(false);
     }
   };
 
-  return (
-    <div className="admin-login-layout">
+  if (!isMounted) return null;
 
-      {/* Left / Visual Side (Desktop) */}
-      <div className="login-visual-side">
-        <div className="bg-gradient"></div>
-        <div className="bg-pattern"></div>
-        <div className="visual-content">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-          >
-            <div className="visual-logo-wrapper">
-               <img src="/images/logo-new.jpeg" alt="DEQOIN" onError={(e) => e.currentTarget.style.display = 'none'} />
-            </div>
-            <h1 className="visual-title">DEQOIN STUDIO</h1>
-            <p className="visual-subtitle">Exclusive Management Portal</p>
-            <div className="visual-divider"></div>
-            <p className="visual-text">Sistem yönetimi ve içerik güncelleme merkezi. Yalnızca yetkili personel erişimine açıktır.</p>
-          </motion.div>
-        </div>
+  return (
+    <div className="premium-login-root">
+      {/* Dynamic Background */}
+      <div className="ambient-background">
+        <div className="light-orb orb-1"></div>
+        <div className="light-orb orb-2"></div>
+        <div className="grid-overlay"></div>
       </div>
 
-      {/* Right / Form Side */}
-      <div className="login-form-side">
-        <div className="login-wrapper">
-          <motion.div 
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-            className="login-box"
-          >
-            {/* Mobile Header (Hidden on Desktop) */}
-            <div className="mobile-header-section">
-              <div className="logo-container">
-                <img src="/images/logo-new.jpeg" alt="DEQOIN" onError={(e) => e.currentTarget.style.display = 'none'} />
-              </div>
-              <h2 className="mobile-page-title">DEQOIN</h2>
-              <p className="mobile-page-subtitle">Yönetim Paneli</p>
-            </div>
+      <main className="login-container">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.98, y: 10 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
+          className="glass-card"
+        >
+          {/* Decorative Corner */}
+          <div className="card-accent accent-tl"></div>
+          <div className="card-accent accent-br"></div>
 
-            <div className="form-header">
-              <h3>Hoş Geldiniz</h3>
-              <p>Devam etmek için giriş yapın</p>
-            </div>
+          <div className="content-wrapper">
+            {/* Logo & Header */}
+            <header className="login-header">
+              <motion.div 
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3, duration: 0.8 }}
+                className="brand-identity"
+              >
+                <div className="logo-box">
+                  <img src="/images/logo-new.jpeg" alt="DEQOIN" />
+                  <div className="logo-glow"></div>
+                </div>
+                <h1 className="brand-name">DEQOIN</h1>
+                <div className="brand-divider">
+                  <span>SYSTEM ACCESS</span>
+                </div>
+              </motion.div>
+            </header>
 
-            {/* Form */}
-            <form onSubmit={handleLogin} className="login-form">
-              <div className="form-field">
-                <label className="field-label">Kullanıcı Adı</label>
-                <div className="input-container">
-                  <User className="field-icon" size={18} />
-                  <input 
-                    type="text" 
-                    value={username} 
+            {/* Login Form */}
+            <form onSubmit={handleLogin} className="auth-form">
+              <div className="input-group">
+                <div className="field-wrapper">
+                  <span className="field-icon"><User size={16} /></span>
+                  <input
+                    type="text"
+                    value={username}
                     onChange={(e) => setUsername(e.target.value)}
-                    placeholder="Kullanıcı adınızı girin"
-                    className="text-input"
+                    placeholder="USERNAME"
+                    required
+                    className="premium-input"
                     autoComplete="username"
-                    required 
                   />
+                  <div className="input-line"></div>
                 </div>
               </div>
 
-              <div className="form-field">
-                <label className="field-label">Şifre</label>
-                <div className="input-container">
-                  <Lock className="field-icon" size={18} />
-                  <input 
-                    type={showPassword ? "text" : "password"} 
-                    value={password} 
+              <div className="input-group">
+                <div className="field-wrapper">
+                  <span className="field-icon"><Lock size={16} /></span>
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    placeholder="Şifrenizi girin"
-                    className="text-input"
+                    placeholder="PASSWORD"
+                    required
+                    className="premium-input"
                     autoComplete="current-password"
-                    required 
                   />
                   <button
                     type="button"
-                    className="visibility-toggle"
                     onClick={() => setShowPassword(!showPassword)}
-                    tabIndex={-1}
+                    className="password-toggle"
                   >
-                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                    {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                   </button>
+                  <div className="input-line"></div>
                 </div>
               </div>
 
-              {error && (
-                <motion.div 
-                  initial={{ opacity: 0, height: 0 }}
-                  animate={{ opacity: 1, height: 'auto' }}
-                  className="error-alert"
-                >
-                  {error}
-                </motion.div>
-              )}
+              <AnimatePresence>
+                {error && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -5 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0 }}
+                    className="error-message"
+                  >
+                    <ShieldCheck size={14} className="error-icon" />
+                    <span>{error}</span>
+                  </motion.div>
+                )}
+              </AnimatePresence>
 
-              <button 
-                type="submit" 
-                disabled={isLoading} 
-                className="login-button"
+              <button
+                type="submit"
+                disabled={isLoading}
+                className={`submit-btn ${isLoading ? 'btn-loading' : ''}`}
               >
-                <span className="button-label">
-                  {isLoading ? 'Giriş Yapılıyor...' : 'Giriş Yap'}
+                <span className="btn-text">
+                  {isLoading ? 'VERIFYING...' : 'ENTER STUDIO'}
                 </span>
-                {!isLoading && <ArrowRight className="button-arrow" size={18} />}
-                {isLoading && <span className="spinner"></span>}
+                {!isLoading && (
+                  <motion.span 
+                    animate={{ x: [0, 5, 0] }} 
+                    transition={{ repeat: Infinity, duration: 2 }}
+                    className="btn-arrow"
+                  >
+                    <ArrowRight size={18} />
+                  </motion.span>
+                )}
+                <div className="btn-shimmer"></div>
               </button>
             </form>
-            
-            {/* Footer inside form side */}
-            <div className="login-footer">
-              <p>&copy; {new Date().getFullYear()} DEQOIN</p>
-            </div>
-            
-          </motion.div>
-        </div>
-      </div>
+
+            <footer className="login-footer">
+              <p className="footer-copyright">
+                &copy; {new Date().getFullYear()} DEQOIN ARCHITECTURAL STUDIO. ALL RIGHTS RESERVED.
+              </p>
+            </footer>
+          </div>
+        </motion.div>
+      </main>
 
       <style jsx>{`
-        .admin-login-layout {
+        .premium-login-root {
           min-height: 100vh;
           min-height: 100dvh;
+          width: 100%;
+          background: #020202;
           display: flex;
-          background: #050505;
+          align-items: center;
+          justify-content: center;
+          position: relative;
+          overflow: hidden;
           color: #fff;
           font-family: inherit;
         }
 
-        /* --- VISUAL SIDE (DESKTOP) --- */
-        .login-visual-side {
-          flex: 1;
-          position: relative;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          overflow: hidden;
-          background: #0a0a0a;
-          border-right: 1px solid rgba(166, 137, 102, 0.1);
-        }
-
-        .bg-gradient {
+        /* Ambient Background */
+        .ambient-background {
           position: absolute;
           inset: 0;
-          background: 
-            radial-gradient(circle at 30% 50%, rgba(166, 137, 102, 0.15) 0%, transparent 60%),
-            radial-gradient(circle at 70% 80%, rgba(166, 137, 102, 0.1) 0%, transparent 50%);
           z-index: 0;
         }
 
-        .bg-pattern {
+        .light-orb {
+          position: absolute;
+          border-radius: 50%;
+          filter: blur(100px);
+          opacity: 0.15;
+          pointer-events: none;
+        }
+
+        .orb-1 {
+          width: 50vw;
+          height: 50vw;
+          background: #a68966;
+          top: -20%;
+          left: -10%;
+          animation: float 20s infinite alternate ease-in-out;
+        }
+
+        .orb-2 {
+          width: 40vw;
+          height: 40vw;
+          background: #bf1f5a;
+          bottom: -15%;
+          right: -5%;
+          animation: float 15s infinite alternate-reverse ease-in-out;
+        }
+
+        .grid-overlay {
           position: absolute;
           inset: 0;
           background-image: 
-            linear-gradient(rgba(166, 137, 102, 0.03) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(166, 137, 102, 0.03) 1px, transparent 1px);
-          background-size: 40px 40px;
-          z-index: 0;
+            linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+          background-size: 50px 50px;
+          mask-image: radial-gradient(circle at center, black, transparent 80%);
         }
 
-        .visual-content {
+        @keyframes float {
+          0% { transform: translate(0, 0); }
+          100% { transform: translate(5%, 5%); }
+        }
+
+        /* Container & Card */
+        .login-container {
           position: relative;
           z-index: 10;
-          max-width: 500px;
-          padding: 40px;
-        }
-
-        .visual-logo-wrapper {
-          width: 80px;
-          height: 80px;
-          margin-bottom: 30px;
-          background: #fff;
-          border-radius: 12px;
-          padding: 12px;
-          box-shadow: 0 10px 30px rgba(166, 137, 102, 0.2);
-        }
-
-        .visual-logo-wrapper img {
           width: 100%;
-          height: 100%;
-          object-fit: contain;
+          max-width: 500px;
+          padding: 24px;
         }
 
-        .visual-title {
-          font-family: var(--font-display), sans-serif;
-          font-size: 2.5rem;
-          font-weight: 700;
-          letter-spacing: 0.1em;
-          color: #a68966;
-          margin: 0 0 10px 0;
-          line-height: 1.2;
+        .glass-card {
+          position: relative;
+          background: rgba(10, 10, 10, 0.4);
+          backdrop-filter: blur(40px) saturate(180%);
+          border: 1px solid rgba(166, 137, 102, 0.2);
+          border-radius: 2px; /* Brutalist/Minimalist sharp corners */
+          overflow: hidden;
+          box-shadow: 0 40px 100px rgba(0, 0, 0, 0.8);
         }
 
-        .visual-subtitle {
-          font-size: 1rem;
-          font-weight: 500;
-          letter-spacing: 0.2em;
-          color: rgba(255, 255, 255, 0.6);
-          margin: 0 0 24px 0;
-          text-transform: uppercase;
+        .card-accent {
+          position: absolute;
+          width: 20px;
+          height: 20px;
+          border-color: #a68966;
+          border-style: solid;
+          opacity: 0.6;
         }
 
-        .visual-divider {
-          width: 60px;
-          height: 2px;
-          background: #a68966;
+        .accent-tl { top: 0; left: 0; border-width: 1px 0 0 1px; }
+        .accent-br { bottom: 0; right: 0; border-width: 0 1px 1px 0; }
+
+        .content-wrapper {
+          padding: 64px 48px;
+        }
+
+        /* Header */
+        .login-header {
+          text-align: center;
+          margin-bottom: 56px;
+        }
+
+        .brand-identity {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+        }
+
+        .logo-box {
+          width: 72px;
+          height: 72px;
+          background: #fff;
+          padding: 12px;
+          position: relative;
           margin-bottom: 24px;
         }
 
-        .visual-text {
-          font-size: 0.95rem;
-          line-height: 1.6;
-          color: rgba(255, 255, 255, 0.4);
-          max-width: 80%;
-        }
-
-        /* --- FORM SIDE --- */
-        .login-form-side {
-          flex: 0 0 45%; /* Symmetrical balance */
-          min-width: 450px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          background: #0a0a0a;
-          position: relative;
-          z-index: 10;
-        }
-
-        .login-wrapper {
-          width: 100%;
-          max-width: 440px;
-          padding: 60px 40px;
-        }
-
-        .login-box {
-          width: 100%;
-        }
-
-        /* Mobile Header */
-        .mobile-header-section {
-          display: none; /* hidden on desktop */
-          text-align: center;
-          margin-bottom: 32px;
-        }
-
-        .logo-container {
-          width: 64px;
-          height: 64px;
-          margin: 0 auto 16px;
-          background: #ffffff;
-          border-radius: 12px;
-          padding: 10px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          box-shadow: 0 8px 24px rgba(166, 137, 102, 0.2);
-        }
-
-        .logo-container img {
+        .logo-box img {
           width: 100%;
           height: 100%;
           object-fit: contain;
         }
 
-        .mobile-page-title {
+        .logo-glow {
+          position: absolute;
+          inset: -10px;
+          background: #a68966;
+          filter: blur(20px);
+          opacity: 0.1;
+          z-index: -1;
+        }
+
+        .brand-name {
           font-family: var(--font-display), sans-serif;
-          font-size: 24px;
+          font-size: 1.8rem;
           font-weight: 700;
-          letter-spacing: 0.25em;
-          color: #a68966;
-          margin: 0 0 6px 0;
-        }
-
-        .mobile-page-subtitle {
-          font-size: 11px;
-          font-weight: 500;
-          letter-spacing: 0.15em;
-          color: rgba(255, 255, 255, 0.5);
-          margin: 0;
-          text-transform: uppercase;
-        }
-
-        .form-header {
-          margin-bottom: 32px;
-        }
-
-        .form-header h3 {
-          font-size: 1.5rem;
-          font-weight: 600;
-          margin: 0 0 8px 0;
+          letter-spacing: 0.4em;
           color: #fff;
+          margin: 0 0 16px 0;
         }
 
-        .form-header p {
-          font-size: 0.9rem;
-          color: rgba(255, 255, 255, 0.4);
-          margin: 0;
+        .brand-divider {
+          display: flex;
+          align-items: center;
+          width: 100%;
+          gap: 15px;
+          color: rgba(255, 255, 255, 0.3);
+          font-size: 0.6rem;
+          letter-spacing: 0.2em;
+          font-weight: 800;
+        }
+
+        .brand-divider::before,
+        .brand-divider::after {
+          content: '';
+          flex: 1;
+          height: 1px;
+          background: linear-gradient(90deg, transparent, rgba(166, 137, 102, 0.3), transparent);
         }
 
         /* Form Controls */
-        .login-form {
+        .auth-form {
           display: flex;
           flex-direction: column;
-          gap: 20px;
+          gap: 32px;
         }
 
-        .form-field {
-          display: flex;
-          flex-direction: column;
-          gap: 8px;
+        .input-group {
+          position: relative;
         }
 
-        .field-label {
-          font-size: 11px;
-          font-weight: 600;
-          letter-spacing: 0.1em;
-          text-transform: uppercase;
-          color: rgba(255, 255, 255, 0.6);
-        }
-
-        .input-container {
+        .field-wrapper {
           position: relative;
           display: flex;
           align-items: center;
@@ -367,279 +351,193 @@ export default function AdminLoginPage() {
 
         .field-icon {
           position: absolute;
-          left: 14px;
+          left: 0;
           color: #a68966;
-          opacity: 0.7;
-          pointer-events: none;
+          opacity: 0.6;
         }
 
-        .text-input {
+        .premium-input {
           width: 100%;
-          height: 54px;
-          padding: 0 48px 0 44px;
-          background: rgba(255, 255, 255, 0.04);
-          border: 1px solid rgba(255, 255, 255, 0.08);
-          border-radius: 12px;
-          color: #ffffff;
-          font-size: 14px;
+          background: transparent;
+          border: none;
+          padding: 12px 12px 12px 32px;
+          color: #fff;
+          font-size: 0.9rem;
+          letter-spacing: 0.1em;
           font-family: inherit;
-          transition: all 0.2s ease;
-          box-sizing: border-box;
         }
 
-        .text-input::placeholder {
-          color: rgba(255, 255, 255, 0.25);
-        }
-
-        .text-input:hover {
-          background: rgba(255, 255, 255, 0.06);
-          border-color: rgba(255, 255, 255, 0.15);
-        }
-
-        .text-input:focus {
+        .premium-input:focus {
           outline: none;
-          background: rgba(255, 255, 255, 0.08);
-          border-color: #a68966;
-          box-shadow: 0 0 0 3px rgba(166, 137, 102, 0.15);
         }
 
-        .visibility-toggle {
+        .premium-input::placeholder {
+          color: rgba(255, 255, 255, 0.2);
+          font-size: 0.75rem;
+          letter-spacing: 0.2em;
+        }
+
+        .input-line {
           position: absolute;
-          right: 14px;
+          bottom: 0;
+          left: 0;
+          width: 100%;
+          height: 1px;
+          background: rgba(255, 255, 255, 0.1);
+          transition: all 0.4s ease;
+        }
+
+        .premium-input:focus ~ .input-line {
+          background: #a68966;
+          box-shadow: 0 4px 12px rgba(166, 137, 102, 0.2);
+        }
+
+        .password-toggle {
+          position: absolute;
+          right: 0;
           background: none;
           border: none;
-          color: #a68966;
-          opacity: 0.5;
+          color: rgba(255, 255, 255, 0.3);
           cursor: pointer;
           padding: 4px;
+          transition: color 0.3s ease;
+        }
+
+        .password-toggle:hover {
+          color: #a68966;
+        }
+
+        /* Error Message */
+        .error-message {
           display: flex;
           align-items: center;
-          justify-content: center;
-          transition: opacity 0.2s ease;
-        }
-
-        .visibility-toggle:hover {
-          opacity: 0.9;
-        }
-
-        /* Error */
-        .error-alert {
+          gap: 10px;
+          color: #ff4d4d;
+          font-size: 0.75rem;
+          letter-spacing: 0.05em;
+          background: rgba(255, 77, 77, 0.05);
           padding: 12px 16px;
-          background: rgba(239, 68, 68, 0.05);
-          border: 1px solid rgba(239, 68, 68, 0.2);
-          border-radius: 10px;
-          color: #ef4444;
-          font-size: 0.85rem;
-          line-height: 1.5;
-          display: flex;
-          align-items: center;
-          justify-content: center;
+          border-left: 2px solid #ff4d4d;
+          border-radius: 4px;
+        }
+
+        .error-icon {
+          flex-shrink: 0;
         }
 
         /* Submit Button */
-        .login-button {
-          margin-top: 10px;
-          height: 54px;
-          background: linear-gradient(135deg, #a68966 0%, #b89a76 100%);
+        .submit-btn {
+          position: relative;
+          height: 56px;
+          background: #a68966;
           border: none;
-          border-radius: 12px;
-          color: #050505;
-          font-family: var(--font-display), sans-serif;
-          font-size: 13px;
-          font-weight: 700;
-          letter-spacing: 0.15em;
+          color: #fff;
+          font-weight: 800;
+          font-size: 0.75rem;
+          letter-spacing: 0.25em;
           text-transform: uppercase;
           cursor: pointer;
           display: flex;
           align-items: center;
           justify-content: center;
           gap: 12px;
-          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-          position: relative;
+          transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
           overflow: hidden;
+          box-shadow: 0 10px 30px rgba(166, 137, 102, 0.2);
         }
 
-        .login-button::after {
-          content: '';
+        .submit-btn:hover:not(:disabled) {
+          background: #b89a76;
+          transform: translateY(-2px);
+          box-shadow: 0 15px 40px rgba(166, 137, 102, 0.3);
+        }
+
+        .submit-btn:active:not(:disabled) {
+          transform: translateY(0);
+        }
+
+        .submit-btn:disabled {
+          background: rgba(166, 137, 102, 0.4);
+          cursor: not-allowed;
+        }
+
+        .btn-shimmer {
           position: absolute;
           top: 0;
           left: -100%;
           width: 50%;
           height: 100%;
-          background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+          background: linear-gradient(
+            90deg,
+            transparent,
+            rgba(255, 255, 255, 0.2),
+            transparent
+          );
           transform: skewX(-20deg);
-          transition: left 0.5s ease;
+          transition: left 0.8s ease;
         }
 
-        .login-button:hover:not(:disabled)::after {
+        .submit-btn:hover .btn-shimmer {
           left: 150%;
         }
 
-        .login-button:hover:not(:disabled) {
-          transform: translateY(-2px);
-          box-shadow: 0 10px 25px rgba(166, 137, 102, 0.3);
-          background: linear-gradient(135deg, #b89a76 0%, #c5ac8c 100%);
-        }
-
-        .login-button:active:not(:disabled) {
-          transform: translateY(0);
-        }
-
-        .login-button:disabled {
-          opacity: 0.7;
-          cursor: not-allowed;
-          background: rgba(166, 137, 102, 0.5);
-          color: rgba(0,0,0,0.5);
-        }
-
-        .button-arrow {
-          transition: transform 0.2s ease;
-        }
-
-        .login-button:hover:not(:disabled) .button-arrow {
-          transform: translateX(4px);
-        }
-
-        .spinner {
-          width: 18px;
-          height: 18px;
-          border: 2px solid rgba(5, 5, 5, 0.2);
-          border-top-color: #050505;
-          border-radius: 50%;
-          animation: spin 0.8s linear infinite;
-        }
-
-        @keyframes spin {
-          to { transform: rotate(360deg); }
+        .btn-loading {
+          opacity: 0.8;
         }
 
         /* Footer */
         .login-footer {
-          margin-top: 40px;
+          margin-top: 48px;
+          border-top: 1px solid rgba(255, 255, 255, 0.05);
+          padding-top: 24px;
           text-align: center;
         }
 
-        .login-footer p {
-          font-size: 11px;
+        .footer-copyright {
+          font-size: 0.55rem;
           color: rgba(255, 255, 255, 0.2);
-          letter-spacing: 0.05em;
-          margin: 0;
+          letter-spacing: 0.15em;
+          line-height: 1.6;
         }
 
-
-        /* ================== RESPONSIVE DESIGN ================== */
-
-        /* TABLET (up to 1100px) */
-        @media (max-width: 1100px) {
-          .login-visual-side {
-            display: none;
+        /* Responsive */
+        @media (max-width: 640px) {
+          .content-wrapper {
+            padding: 48px 32px;
           }
 
-          .login-form-side {
-            flex: 1;
-            width: 100%;
-            max-width: 100%;
-            min-width: 0;
-            background: radial-gradient(circle at top right, rgba(166, 137, 102, 0.1) 0%, transparent 60%), #050505;
+          .brand-name {
+            font-size: 1.5rem;
           }
 
-          .login-wrapper {
-            background: rgba(15, 15, 15, 0.8);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(166, 137, 102, 0.15);
-            border-radius: 24px;
-            box-shadow: 0 30px 60px rgba(0,0,0,0.6);
-            max-width: 460px;
-            padding: 56px 48px;
-            margin: 20px;
-          }
-
-          .mobile-header-section {
-            display: block; /* Show header inside the form card */
-          }
-
-          .form-header {
-            display: none; /* Hide the generic 'Welcome' form header to use mobile header */
+          .submit-btn {
+            height: 52px;
           }
         }
 
-        /* MOBILE (up to 768px) */
-        @media (max-width: 768px) {
-          .admin-login-layout {
-            padding: 0;
-            background: #050505;
-          }
-
-          .login-form-side {
+        @media (max-width: 480px) {
+          .premium-login-root {
+            padding: 16px;
             align-items: flex-start;
-            padding-top: 10vh;
           }
 
-          .login-wrapper {
+          .login-container {
+            padding: 0;
+            margin-top: 5vh;
+          }
+
+          .glass-card {
             background: transparent;
             backdrop-filter: none;
             border: none;
             box-shadow: none;
-            padding: 32px 24px;
-            margin: 0;
-            max-width: 100%;
           }
 
-          .text-input {
-            height: 50px;
-            font-size: 14px;
+          .content-wrapper {
+            padding: 32px 12px;
           }
-
-          .login-button {
-            height: 50px;
-          }
-
-          .mobile-page-title {
-            font-size: 22px;
-          }
-        }
-
-        /* SMALL MOBILE (up to 480px) */
-        @media (max-width: 480px) {
-          .admin-login-layout {
-            padding: 12px;
-          }
-
-          .login-wrapper {
-            padding: 28px 20px;
-            border-radius: 12px;
-          }
-
-          .logo-container {
-            width: 56px;
-            height: 56px;
-            border-radius: 10px;
-            padding: 8px;
-            margin-bottom: 12px;
-          }
-
-          .mobile-page-title {
-            font-size: 20px;
-            letter-spacing: 0.15em;
-          }
-
-          .mobile-page-subtitle {
-            font-size: 10px;
-          }
-
-          .text-input {
-            height: 48px;
-            padding-left: 40px;
-          }
-
-          .field-icon {
-            left: 12px;
-          }
-
-          .login-button {
-            height: 48px;
-            font-size: 12px;
-          }
+          
+          .accent-tl, .accent-br { display: none; }
         }
       `}</style>
     </div>
