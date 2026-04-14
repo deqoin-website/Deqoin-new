@@ -425,12 +425,17 @@ export default function DepartmentManagerPage() {
               </div>
             </motion.div>
           )}
-           {/* PROJELER TAB */}
+          {/* PROJELER TAB */}
           {activeTab === 'projeler' && (
             <motion.div key="projeler" initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 10 }} className="tab-panel">
                <div className="panel-header">
-                <h3>Studio Portfolyosu</h3>
-                <p className="hint">Bu sayfaya (ve bu stüdyo grubuna) bağlı projeleri yönetin.</p>
+                <div>
+                  <h3>Studio Portfolyosu</h3>
+                  <p className="hint">Bu sayfaya bağlı stüdyo grubu projelerini buradan yönetin veya yenisini ekleyin.</p>
+                </div>
+                <button className="add-project-bt-v2" onClick={() => openEditModal(null)}>
+                  <Plus size={16} /> YENİ PROJE EKLE
+                </button>
               </div>
 
               {isProjectsLoading ? (
@@ -664,6 +669,15 @@ export default function DepartmentManagerPage() {
         .card-info { padding: 1rem; }
         .card-info h4 { margin: 0 0 0.25rem 0; font-size: 0.85rem; color: var(--text); font-family: var(--font-display); }
         .sc-badge { font-size: 0.6rem; color: #a68966; font-weight: 700; letter-spacing: 0.05em; }
+        
+        .add-project-bt-v2 {
+          background: #a68966; color: #000; border: none; padding: 0.8rem 1.5rem; border-radius: 4px;
+          display: flex; align-items: center; gap: 0.75rem; cursor: pointer;
+          font-family: var(--font-display); font-size: 0.75rem; font-weight: 800; letter-spacing: 0.1em;
+          transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .add-project-bt-v2:hover { background: #c5a680; transform: translateY(-2px); box-shadow: 0 8px 20px rgba(166,137,102,0.3); }
+
         .card-actions-v2 { display: flex; gap: 0.5rem; padding: 0 1rem 1rem 1rem; }
         .v2-btn { flex: 1; border: none; padding: 0.6rem; border-radius: 4px; font-size: 0.6rem; font-weight: 800; cursor: pointer; transition: 0.3s; }
         .v2-btn.edit { background: var(--surface-muted); color: var(--text); border: 1px solid var(--line); }
