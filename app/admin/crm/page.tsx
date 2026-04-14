@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Script from 'next/script';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Search, 
@@ -31,6 +32,11 @@ export default function CRMPage() {
   const [activeScope, setActiveScope] = useState<'daily' | 'weekly' | 'monthly' | 'all'>('all');
   const [bulkReportTitle, setBulkReportTitle] = useState('GENEL RANDEVU LİSTESİ');
   const [bulkLeads, setBulkLeads] = useState<any[]>([]);
+  const [libLoaded, setLibLoaded] = useState(false);
+
+  useEffect(() => {
+    fetchAppointments();
+  }, []);
 
   useEffect(() => {
     // Automatically prepare report data when scope or data changes
@@ -102,10 +108,8 @@ export default function CRMPage() {
   };
 
   const handleDownloadPDF = async (type: 'single' | 'bulk') => {
-    // @ts-ignore
-    if (typeof html2pdf === 'undefined') {
-      alert('PDF Kütüphanesi henüz yüklenmedi, lütfen bir saniye bekleyin.');
-      return;
+    if (!libLoaded) {
+      return; // Button is already in loading state
     }
 
     const element = document.querySelector('.print-view');
@@ -198,8 +202,8 @@ export default function CRMPage() {
               <button className="lux-report-btn gold-btn" onClick={() => { 
                   setIsBulkPrinting(true);
                   setTimeout(() => handleDownloadPDF('bulk'), 100);
-                }} title="PDF Olarak İndir">
-                <Download size={16} /> İNDİR
+                }} disabled={!libLoaded} title="PDF Olarak İndir">
+                {libLoaded ? <><Download size={16} /> İNDİR</> : <><Loader2 className="spinner" size={16} /> BEKLEYİN...</>}
               </button>
             </div>
           </div>
@@ -407,8 +411,8 @@ export default function CRMPage() {
                   <button className="lux-action-btn download-btn" onClick={() => {
                     setIsBulkPrinting(false);
                     setTimeout(() => handleDownloadPDF('single'), 100);
-                  }}>
-                    <Download size={20} /> İNDİR
+                  }} disabled={!libLoaded}>
+                    {libLoaded ? <><Download size={20} /> İNDİR</> : <><Loader2 className="spinner" size={16} /> ...</>}
                   </button>
                 </div>
               </div>
@@ -416,6 +420,19 @@ export default function CRMPage() {
           </div>
         )}
       </AnimatePresence>
+
+      <Script 
+        src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" 
+        strategy="afterInteractive"
+        onLoad={() => setLibLoaded(true)}
+        onError={() => {
+          // Fallback to unpkg if cdnjs fails
+          const s = document.createElement('script');
+          s.src = "https://unpkg.com/html2pdf.js@0.10.1/dist/html2pdf.bundle.min.js";
+          s.onload = () => setLibLoaded(true);
+          document.body.appendChild(s);
+        }}
+      />
 
       {/* PRINT VIEW ENGINE */}
       <div className="print-view">
