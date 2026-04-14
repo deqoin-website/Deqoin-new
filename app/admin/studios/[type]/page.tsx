@@ -744,7 +744,8 @@ export default function DepartmentManagerPage() {
         .dept-header h2 { font-family: var(--font-display); font-size: 1.5rem; letter-spacing: 0.1em; color: #000 !important; margin: 0 0 0.5rem 0; font-weight: 700; }
         .dept-header p { margin: 0; color: #000 !important; opacity: 0.7; font-size: 0.85rem; font-weight: 500; }
 
-        .save-btn-main { background: #a68966; color: #000; border: none; padding: 1rem 2rem; border-radius: 4px; font-family: var(--font-display); font-weight: 700; letter-spacing: 0.1em; font-size: 0.8rem; cursor: pointer; display: flex; align-items: center; gap: 0.75rem; transition: background 0.3s; }
+        .save-btn-main { background: #a68966; color: #000; border: none; padding: 1rem 2rem; border-radius: 4px; font-family: var(--font-display); font-weight: 700; letter-spacing: 0.1em; font-size: 0.8rem; cursor: pointer; display: flex; align-items: center; gap: 0.75rem; transition: background 0.3s; box-shadow: 0 10px 20px rgba(166,137,102,0.2); }
+        @media (max-width: 600px) { .save-btn-main { width: 100%; justify-content: center; padding: 1.25rem; font-size: 0.9rem; } }
         .save-btn-main:hover { background: #c5a680; }
         .save-btn-main:disabled { opacity: 0.7; cursor: not-allowed; }
 
@@ -764,7 +765,8 @@ export default function DepartmentManagerPage() {
         @media (max-width: 768px) { .form-grid-2 { grid-template-columns: 1fr; gap: 1.5rem; } }
         
         .form-group label { font-size: 0.65rem; color: #000 !important; letter-spacing: 0.15em; font-weight: 800; opacity: 1; }
-        .form-group input, .form-group textarea { background: #fff !important; border: 1px solid #000 !important; padding: 1rem; color: #000 !important; border-radius: 4px; font-family: inherit; resize: vertical; width: 100%; font-weight: 600; }
+        .form-group input, .form-group textarea { background: #fff !important; border: 1px solid #000 !important; padding: 1rem; color: #000 !important; border-radius: 4px; font-family: inherit; resize: vertical; width: 100%; font-weight: 600; box-sizing: border-box; }
+        @media (max-width: 600px) { .form-group input, .form-group textarea { padding: 0.85rem; font-size: 0.85rem; } }
         .form-group input::placeholder, .form-group textarea::placeholder { color: rgba(0,0,0,0.5) !important; }
         .form-group input:focus, .form-group textarea:focus { outline: none; border-color: #a68966; box-shadow: 0 0 10px rgba(166,137,102,0.2); }
 
@@ -794,9 +796,13 @@ export default function DepartmentManagerPage() {
           border-radius: 8px;
           padding: 1rem;
           font-weight: 600; 
+          width: 100%;
+          box-sizing: border-box;
         }
+        @media (max-width: 600px) { .lux-group input, .lux-group textarea { padding: 0.85rem; font-size: 0.85rem; } }
         .lux-group input::placeholder, .lux-group textarea::placeholder { color: rgba(0,0,0,0.5) !important; }
-        .lux-badge { color: #000 !important; border-color: #000 !important; font-weight: 900; background: #fff !important; }
+        .lux-badge { color: #000 !important; border-color: #000 !important; font-weight: 900; background: #fff !important; font-size: 0.55rem; padding: 0.4rem 0.8rem; border-radius: 4px; white-space: nowrap; }
+        @media (max-width: 480px) { .lux-badge { font-size: 0.5rem; padding: 0.3rem 0.6rem; } }
 
         .list-item-card { 
           display: flex; align-items: flex-start; gap: 2rem; background: rgba(255,255,255,0.01); 
