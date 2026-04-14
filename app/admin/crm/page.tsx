@@ -27,6 +27,8 @@ export default function CRMPage() {
   const [selectedLead, setSelectedLead] = useState<any | null>(null);
   const [filter, setFilter] = useState('Hepsi');
   const [isBulkPrinting, setIsBulkPrinting] = useState(false);
+  const [bulkReportTitle, setBulkReportTitle] = useState('GENEL RANDEVU LİSTESİ');
+  const [bulkLeads, setBulkLeads] = useState<any[]>([]);
 
   useEffect(() => {
     fetchAppointments();
@@ -65,6 +67,33 @@ export default function CRMPage() {
 
   const printBulkReport = () => {
     setSelectedLead(null);
+    setBulkReportTitle('GENEL RANDEVU LİSTESİ');
+    setBulkLeads(filteredLeads);
+    setIsBulkPrinting(true);
+    setTimeout(() => window.print(), 500);
+  };
+
+  const printTimeboundReport = (type: 'daily' | 'weekly' | 'monthly') => {
+    const now = new Date();
+    let startDate = new Date();
+    let title = '';
+
+    if (type === 'daily') {
+      startDate.setHours(0,0,0,0);
+      title = 'GÜNLÜK RANDEVU RAPORU';
+    } else if (type === 'weekly') {
+      startDate.setDate(now.getDate() - 7);
+      title = 'HAFTALIK RANDEVU RAPORU';
+    } else if (type === 'monthly') {
+      startDate.setDate(now.getDate() - 30);
+      title = 'AYLIK RANDEVU RAPORU';
+    }
+
+    const reportLeads = appointments.filter(a => new Date(a.createdAt) >= startDate);
+    
+    setSelectedLead(null);
+    setBulkReportTitle(title);
+    setBulkLeads(reportLeads);
     setIsBulkPrinting(true);
     setTimeout(() => window.print(), 500);
   };
@@ -112,9 +141,14 @@ export default function CRMPage() {
           <input type="text" placeholder="İsim, mail veya proje ara..." />
         </div>
         <div className="crm-header-btns">
-          <button className="lux-report-btn" onClick={printBulkReport} title="Filtreli Listeyi Yazdır / PDF">
-            <FileText size={16} /> GENEL PDF RAPORU
-          </button>
+          <div className="report-group">
+            <button className="lux-report-btn secondary" onClick={() => printTimeboundReport('daily')}>GÜNLÜK</button>
+            <button className="lux-report-btn secondary" onClick={() => printTimeboundReport('weekly')}>HAFTALIK</button>
+            <button className="lux-report-btn secondary" onClick={() => printTimeboundReport('monthly')}>AYLIK</button>
+            <button className="lux-report-btn" onClick={printBulkReport} title="Filtreli Listeyi Yazdır / PDF">
+              <FileText size={16} /> GENEL PDF
+            </button>
+          </div>
         </div>
         <div className="filter-group-scroll">
           <div className="filter-group">
@@ -367,29 +401,59 @@ export default function CRMPage() {
         {/* BULK REPORT */}
         {isBulkPrinting && (
           <div className="pdf-bulk-document">
-            <h2 className="pdf-title">RANDEVU LİSTESİ - {filter.toUpperCase()}</h2>
+            <h2 className="pdf-title">{bulkReportTitle}</h2>
+            
+            {/* Summary Analysis */}
+            <div className="pdf-summary-analysis">
+              <div className="summary-item">
+                <span className="s-label">TOPLAM KAYIT</span>
+                <span className="s-val">{bulkLeads.length}</span>
+              </div>
+              <div className="summary-item">
+                <span className="s-label">YENİ TALEPLER</span>
+                <span className="s-val">{bulkLeads.filter(l => l.status === 'Yeni').length}</span>
+              </div>
+              <div className="summary-item">
+                <span className="s-label">İncelenen / İşlemde</span>
+                <span className="s-val">{bulkLeads.filter(l => l.status !== 'Yeni' && l.status !== 'Arşivlendi').length}</span>
+              </div>
+            </div>
+
             <table className="pdf-table">
               <thead>
                 <tr>
-                  <th>TARİH</th>
-                  <th>MÜŞTERİ</th>
+                  <th>TARİH / SAAT</th>
+                  <th>MÜŞTERİ BİLGİSİ</th>
                   <th>İLETİŞİM</th>
-                  <th>BİRİM</th>
+                  <th>İLGİLİ BİRİM</th>
                   <th>DURUM</th>
                 </tr>
               </thead>
               <tbody>
-                {filteredLeads.map((lead) => (
+                {bulkLeads.map((lead) => (
                   <tr key={lead._id}>
-                    <td>{new Date(lead.createdAt).toLocaleDateString('tr-TR')}</td>
-                    <td>{lead.name} {lead.surname}</td>
+                    <td>{new Date(lead.createdAt).toLocaleDateString('tr-TR')}<br/><small>{new Date(lead.createdAt).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })}</small></td>
+                    <td><strong>{lead.name} {lead.surname}</strong><br/>{lead.city}</td>
                     <td>{lead.phone}<br/>{lead.email}</td>
                     <td>{lead.interestedDepartment}</td>
-                    <td>{lead.status}</td>
+                    <td className="pdf-status-cell">{lead.status}</td>
                   </tr>
                 ))}
               </tbody>
             </table>
+
+            <div className="pdf-signature-area">
+              <div className="sig-box">
+                <p>HAZIRLAYAN</p>
+                <div className="sig-line"></div>
+                <span>Dijital CRM Sistemi</span>
+              </div>
+              <div className="sig-box">
+                <p>ONAY / İMZA</p>
+                <div className="sig-line"></div>
+                <span>Deqoin Yönetim</span>
+              </div>
+            </div>
           </div>
         )}
 
@@ -421,8 +485,11 @@ export default function CRMPage() {
         
         /* NEW HEADER BTN */
         .crm-header-btns { margin-left: auto; margin-right: 1.5rem; }
-        .lux-report-btn { background: #fff; color: #000; border: none; padding: 0.75rem 1.5rem; border-radius: 8px; font-size: 0.7rem; font-weight: 800; cursor: pointer; display: flex; align-items: center; gap: 0.75rem; transition: all 0.3s; }
-        .lux-report-btn:hover { background: #a68966; color: #fff; transform: translateY(-2px); }
+        .report-group { display: flex; gap: 0.5rem; background: rgba(0,0,0,0.1); padding: 4px; border-radius: 10px; border: 1px solid var(--line); }
+        .lux-report-btn { background: #fff; color: #000; border: none; padding: 0.6rem 1.25rem; border-radius: 8px; font-size: 0.65rem; font-weight: 800; cursor: pointer; display: flex; align-items: center; gap: 0.75rem; transition: all 0.3s; }
+        .lux-report-btn.secondary { background: transparent; color: var(--text-muted); border: 1px solid transparent; }
+        .lux-report-btn.secondary:hover { background: rgba(255,255,255,0.05); color: #fff; border-color: var(--line); }
+        .lux-report-btn:not(.secondary):hover { background: #a68966; color: #fff; transform: translateY(-2px); }
 
         .filter-group { display: flex; gap: 0.5rem; }
         .filter-btn { background: var(--surface-muted); border: 1px solid var(--line); color: var(--text-muted); padding: 0.6rem 1.25rem; border-radius: 40px; font-size: 0.65rem; font-weight: 700; cursor: pointer; letter-spacing: 0.05em; transition: all 0.3s; }
@@ -535,11 +602,17 @@ export default function CRMPage() {
           }
 
           .pdf-header { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 2px solid #000; padding-bottom: 5mm; margin-bottom: 8mm; }
-          .pdf-brand-box h1 { margin: 0; font-size: 24pt; letter-spacing: 5px; font-weight: 900; }
-          .pdf-brand-box p { margin: 2mm 0 0 0; font-size: 8pt; color: #666; letter-spacing: 2px; }
-          .pdf-meta { display: flex; flex-direction: column; align-items: flex-end; gap: 1mm; font-size: 8pt; text-align: right; }
+          .pdf-brand-box h1 { margin: 0; font-size: 28pt; letter-spacing: 8px; font-weight: 900; font-family: serif; }
+          .pdf-brand-box p { margin: 2mm 0 0 0; font-size: 9pt; color: #444; letter-spacing: 3px; font-weight: 600; }
+          .pdf-meta { display: flex; flex-direction: column; align-items: flex-end; gap: 1mm; font-size: 9pt; text-align: right; }
           
-          .pdf-title { text-align: center; font-size: 14pt; letter-spacing: 3px; margin: 5mm 0 10mm 0; text-decoration: underline; }
+          .pdf-title { text-align: center; font-size: 16pt; letter-spacing: 4px; margin: 8mm 0 10mm 0; border-top: 1px double #000; border-bottom: 1px double #000; padding: 3mm 0; font-weight: 300; }
+          
+          /* Summary Analysis */
+          .pdf-summary-analysis { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5mm; margin-bottom: 10mm; }
+          .summary-item { border: 1px solid #ddd; padding: 4mm; display: flex; flex-direction: column; align-items: center; }
+          .s-label { font-size: 8pt; color: #666; font-weight: 800; letter-spacing: 1px; margin-bottom: 2mm; text-transform: uppercase; }
+          .s-val { font-size: 16pt; font-weight: 300; }
           
           /* Single Report Style */
           .pdf-form-body { display: grid; grid-template-columns: 1fr 1fr; gap: 10mm; }
@@ -552,9 +625,16 @@ export default function CRMPage() {
 
           /* Bulk Table Style */
           .pdf-table { width: 100%; border-collapse: collapse; margin-top: 5mm; }
-          .pdf-table th { background: #f0f0f0; border: 1px solid #000; padding: 3mm; text-align: left; font-size: 8pt; }
-          .pdf-table td { border: 1px solid #eee; padding: 3mm; font-size: 8pt; vertical-align: top; }
-          .pdf-table tr:nth-child(even) { background: #fafafa; }
+          .pdf-table th { background: #000; border: 1px solid #000; padding: 4mm 3mm; text-align: left; font-size: 8pt; color: #fff; letter-spacing: 1px; }
+          .pdf-table td { border: 1px solid #eee; padding: 4mm 3mm; font-size: 9pt; vertical-align: middle; line-height: 1.4; }
+          .pdf-table tr:nth-child(even) { background: #f9f9f9; }
+          .pdf-status-cell { font-weight: 900; text-transform: uppercase; font-size: 7.5pt; }
+
+          .pdf-signature-area { margin-top: 20mm; display: flex; justify-content: space-between; padding-top: 10mm; }
+          .sig-box { width: 60mm; text-align: center; }
+          .sig-box p { font-size: 8pt; font-weight: 800; margin-bottom: 12mm; letter-spacing: 1px; }
+          .sig-line { border-bottom: 1px solid #000; margin-bottom: 3mm; }
+          .sig-box span { font-size: 7pt; color: #666; }
 
           .pdf-footer { margin-top: auto; padding-top: 10mm; text-align: center; font-size: 7pt; color: #888; }
           .pdf-footer p { margin-bottom: 2mm; }
