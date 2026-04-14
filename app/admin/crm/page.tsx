@@ -28,22 +28,41 @@ export default function CRMPage() {
   const [selectedLead, setSelectedLead] = useState<any | null>(null);
   const [filter, setFilter] = useState('Hepsi');
   const [isBulkPrinting, setIsBulkPrinting] = useState(false);
+  const [activeScope, setActiveScope] = useState<'daily' | 'weekly' | 'monthly' | 'all'>('all');
   const [bulkReportTitle, setBulkReportTitle] = useState('GENEL RANDEVU LİSTESİ');
   const [bulkLeads, setBulkLeads] = useState<any[]>([]);
 
   useEffect(() => {
-    fetchAppointments();
-    
-    // Load html2pdf from CDN
-    const script = document.createElement('script');
-    script.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js';
-    script.async = true;
-    document.body.appendChild(script);
+    // Automatically prepare report data when scope or data changes
+    prepareReportData();
+  }, [activeScope, appointments, filter]);
 
-    return () => {
-      document.body.removeChild(script);
-    };
-  }, []);
+  const prepareReportData = () => {
+    const now = new Date();
+    let startDate = new Date();
+    let title = '';
+    let data = [];
+
+    if (activeScope === 'daily') {
+      startDate.setHours(0,0,0,0);
+      title = 'GÜNLÜK RANDEVU RAPORU';
+      data = appointments.filter(a => new Date(a.createdAt) >= startDate);
+    } else if (activeScope === 'weekly') {
+      startDate.setDate(now.getDate() - 7);
+      title = 'HAFTALIK RANDEVU RAPORU';
+      data = appointments.filter(a => new Date(a.createdAt) >= startDate);
+    } else if (activeScope === 'monthly') {
+      startDate.setDate(now.getDate() - 30);
+      title = 'AYLIK RANDEVU RAPORU';
+      data = appointments.filter(a => new Date(a.createdAt) >= startDate);
+    } else {
+      title = `GENEL RANDEVU LİSTESİ (${filter.toUpperCase()})`;
+      data = appointments.filter(lead => filter === 'Hepsi' || lead.status === filter);
+    }
+
+    setBulkReportTitle(title);
+    setBulkLeads(data);
+  };
 
   const fetchAppointments = async () => {
     try {
@@ -78,33 +97,6 @@ export default function CRMPage() {
 
   const printBulkReport = () => {
     setSelectedLead(null);
-    setBulkReportTitle('GENEL RANDEVU LİSTESİ');
-    setBulkLeads(filteredLeads);
-    setIsBulkPrinting(true);
-    setTimeout(() => window.print(), 500);
-  };
-
-  const printTimeboundReport = (type: 'daily' | 'weekly' | 'monthly') => {
-    const now = new Date();
-    let startDate = new Date();
-    let title = '';
-
-    if (type === 'daily') {
-      startDate.setHours(0,0,0,0);
-      title = 'GÜNLÜK RANDEVU RAPORU';
-    } else if (type === 'weekly') {
-      startDate.setDate(now.getDate() - 7);
-      title = 'HAFTALIK RANDEVU RAPORU';
-    } else if (type === 'monthly') {
-      startDate.setDate(now.getDate() - 30);
-      title = 'AYLIK RANDEVU RAPORU';
-    }
-
-    const reportLeads = appointments.filter(a => new Date(a.createdAt) >= startDate);
-    
-    setSelectedLead(null);
-    setBulkReportTitle(title);
-    setBulkLeads(reportLeads);
     setIsBulkPrinting(true);
     setTimeout(() => window.print(), 500);
   };
@@ -191,21 +183,25 @@ export default function CRMPage() {
           <input type="text" placeholder="İsim, mail veya proje ara..." />
         </div>
         <div className="crm-header-btns">
-          <div className="report-group">
-            <button className="lux-report-btn secondary" onClick={() => printTimeboundReport('daily')}>GÜNLÜK</button>
-            <button className="lux-report-btn secondary" onClick={() => printTimeboundReport('weekly')}>HAFTALIK</button>
-            <button className="lux-report-btn secondary" onClick={() => printTimeboundReport('monthly')}>AYLIK</button>
-            <button className="lux-report-btn" onClick={printBulkReport} title="Filtreli Listeyi Yazdır">
-              <FileText size={16} /> YAZDIR
-            </button>
-            <button className="lux-report-btn gold-btn" onClick={() => { 
-                setBulkReportTitle('GENEL RANDEVU LİSTESİ');
-                setBulkLeads(filteredLeads);
-                setIsBulkPrinting(true);
-                setTimeout(() => handleDownloadPDF('bulk'), 100);
-              }} title="PDF Olarak İndir">
-              <Download size={16} /> İNDİR
-            </button>
+          <div className="report-ux-wrapper">
+            <div className="scope-picker">
+              <span className="scope-label-mini">KAPSAM:</span>
+              <button className={`scope-btn ${activeScope === 'daily' ? 'active' : ''}`} onClick={() => setActiveScope('daily')}>GÜNLÜK</button>
+              <button className={`scope-btn ${activeScope === 'weekly' ? 'active' : ''}`} onClick={() => setActiveScope('weekly')}>HAFTALIK</button>
+              <button className={`scope-btn ${activeScope === 'monthly' ? 'active' : ''}`} onClick={() => setActiveScope('monthly')}>AYLIK</button>
+              <button className={`scope-btn ${activeScope === 'all' ? 'active' : ''}`} onClick={() => setActiveScope('all')}>GENEL</button>
+            </div>
+            <div className="report-actions">
+              <button className="lux-report-btn" onClick={printBulkReport} title="Seçili Listeyi Yazdır">
+                <FileText size={16} /> YAZDIR
+              </button>
+              <button className="lux-report-btn gold-btn" onClick={() => { 
+                  setIsBulkPrinting(true);
+                  setTimeout(() => handleDownloadPDF('bulk'), 100);
+                }} title="PDF Olarak İndir">
+                <Download size={16} /> İNDİR
+              </button>
+            </div>
           </div>
         </div>
         <div className="filter-group-scroll">
@@ -548,14 +544,20 @@ export default function CRMPage() {
         .search-box input { background: transparent; border: none; color: #fff; font-family: inherit; font-size: 0.9rem; flex: 1; outline: none; }
         
         /* NEW HEADER BTN */
-        .crm-header-btns { margin-left: auto; margin-right: 1.5rem; }
-        .report-group { display: flex; gap: 0.5rem; background: rgba(0,0,0,0.1); padding: 4px; border-radius: 10px; border: 1px solid var(--line); }
+        .crm-header-btns { margin-left: auto; }
+        .report-ux-wrapper { display: flex; align-items: center; gap: 1.5rem; background: rgba(0,0,0,0.1); padding: 6px 12px; border-radius: 12px; border: 1px solid var(--line); }
+        
+        .scope-picker { display: flex; align-items: center; gap: 0.25rem; }
+        .scope-label-mini { font-size: 0.55rem; font-weight: 900; color: var(--text-muted); margin-right: 0.5rem; letter-spacing: 0.1em; }
+        .scope-btn { background: transparent; border: none; color: var(--text-soft); padding: 0.5rem 1rem; border-radius: 6px; font-size: 0.65rem; font-weight: 700; cursor: pointer; transition: all 0.3s; }
+        .scope-btn:hover { color: #fff; background: rgba(255,255,255,0.03); }
+        .scope-btn.active { background: #a68966; color: #fff; }
+
+        .report-actions { display: flex; gap: 0.5rem; border-left: 1px solid var(--line); padding-left: 1.5rem; }
         .lux-report-btn { background: #fff; color: #000; border: none; padding: 0.6rem 1.25rem; border-radius: 8px; font-size: 0.65rem; font-weight: 800; cursor: pointer; display: flex; align-items: center; gap: 0.75rem; transition: all 0.3s; }
-        .lux-report-btn.secondary { background: transparent; color: var(--text-muted); border: 1px solid transparent; }
-        .lux-report-btn.secondary:hover { background: rgba(255,255,255,0.05); color: #fff; border-color: var(--line); }
-        .lux-report-btn:not(.secondary):hover { background: #a68966; color: #fff; transform: translateY(-2px); }
         .lux-report-btn.gold-btn { background: #a68966; color: #fff; }
         .lux-report-btn.gold-btn:hover { background: #fff; color: #000; }
+        .lux-report-btn:not(.gold-btn):hover { background: #eee; transform: translateY(-2px); }
 
         .filter-group { display: flex; gap: 0.5rem; }
         .filter-btn { background: var(--surface-muted); border: 1px solid var(--line); color: var(--text-muted); padding: 0.6rem 1.25rem; border-radius: 40px; font-size: 0.65rem; font-weight: 700; cursor: pointer; letter-spacing: 0.05em; transition: all 0.3s; }
