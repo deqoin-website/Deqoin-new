@@ -203,11 +203,11 @@ body:has(.homepage-snap-shell) {
   letter-spacing: 0.2em;
   font-size: 0.65rem;
   font-weight: 800;
-  color: var(--text) !important;
+  color: #fff !important;
 }
 
 .topbar-links a {
-  color: var(--text) !important;
+  color: #fff !important;
   text-decoration: none;
 }
 
@@ -247,7 +247,7 @@ body:has(.homepage-snap-shell) {
 
 .brand-mark {
   font-family: var(--font-display), sans-serif;
-  color: var(--text) !important;
+  color: #fff !important;
   letter-spacing: 0.35em;
   text-transform: uppercase;
   font-size: 0.9rem;
@@ -267,7 +267,7 @@ body:has(.homepage-snap-shell) {
 .icon-button {
   border: 0;
   background: transparent;
-  color: var(--text) !important;
+  color: #fff !important;
   cursor: pointer;
   transition: transform 0.3s ease, opacity 0.3s ease;
 }
@@ -278,7 +278,7 @@ body:has(.homepage-snap-shell) {
 
 .icon-button span {
   font-size: 2rem;
-  color: var(--text) !important;
+  color: #fff !important;
 }
 
 /* Mobile Menu Overlay */
