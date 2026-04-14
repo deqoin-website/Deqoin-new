@@ -72,7 +72,7 @@ export default function HomeServicesAdmin() {
     showToast("Değişiklikler geri alındı.", "info");
   };
 
-  const updateCard = (index: number, field: string, value: string) => {
+  const updateCard = (index: number, field: string, value: any) => {
     const newCards = [...cards];
     newCards[index][field] = value;
     setCards(newCards);
@@ -176,7 +176,14 @@ export default function HomeServicesAdmin() {
                   : "https://lh3.googleusercontent.com/aida-public/AB6AXuBg-MKl4zF6vfhExOXkEX-PKVlktOgQYI9EevfKIIYXVJ2wtmRpvybiQLaOtQdeYc_lIPrntEOUrCatq_Efo6fw-z-0-6TilLvAsA4tcYK-QcbjqdetFT2T2EreDjugTzsElsUeoEqEM9i_daWDWBBOJXiZvrjMKWtS2z5I5ZuzOLXWozpZ8MroEnEj5yRtFuaubPctxfeO_ZAZ5E5Tawo9b6yB5w0pmG4_axQCW--XoR8nAAImAE_M5UpM2vFx3tuR2ePYvZ-VmaY";
                 
                 return (card.image || fallbackImg) ? (
-                  <img src={card.image || fallbackImg} alt={card.title} />
+                  <img 
+                    src={card.image || fallbackImg} 
+                    alt={card.title} 
+                    style={{ 
+                      filter: `blur(${card.blur || 0}px)`,
+                      transition: 'filter 0.3s ease'
+                    }}
+                  />
                 ) : (
                   <div className="img-placeholder">
                     <ImageIcon size={32} />
@@ -184,6 +191,15 @@ export default function HomeServicesAdmin() {
                   </div>
                 );
               })()}
+              <div 
+                className="img-live-overlay" 
+                style={{ 
+                  background: `rgba(0,0,0,${(card.overlay ?? 30) / 100})`,
+                  position: 'absolute',
+                  inset: 0,
+                  pointerEvents: 'none'
+                }} 
+              />
               <input 
                 id={`img-${idx}`} 
                 type="file" 
@@ -211,6 +227,28 @@ export default function HomeServicesAdmin() {
                   placeholder="Kısa Açıklama..."
                   onChange={(e) => updateCard(idx, 'description', e.target.value)} 
                 />
+              </div>
+
+              <div className="effect-controls">
+                <div className="effect-header">GÖRSEL EFEKTLER</div>
+                <div className="effect-row">
+                  <div className="effect-col">
+                    <label>BULANIKLIK (Blur) <span>{card.blur || 0}px</span></label>
+                    <input 
+                      type="range" min="0" max="20" step="1"
+                      value={card.blur || 0}
+                      onChange={(e) => updateCard(idx, 'blur', parseInt(e.target.value))}
+                    />
+                  </div>
+                  <div className="effect-col">
+                    <label>KARANLIK (Darkness) <span>%{card.overlay || 30}</span></label>
+                    <input 
+                      type="range" min="0" max="100" step="5"
+                      value={card.overlay || 30}
+                      onChange={(e) => updateCard(idx, 'overlay', parseInt(e.target.value))}
+                    />
+                  </div>
+                </div>
               </div>
             </div>
           </motion.div>
@@ -264,6 +302,21 @@ export default function HomeServicesAdmin() {
         .card-fields { display: flex; flex-direction: column; gap: 1.2rem; background: rgba(255,255,255,0.01); padding: 1rem; border-radius: 12px; border: 1px solid rgba(255,255,255,0.03); }
         .lux-group { display: flex; flex-direction: column; gap: 0.6rem; }
         .lux-group label { font-size: 0.55rem; color: #a68966; font-weight: 900; letter-spacing: 0.2em; opacity: 0.8; }
+        
+        /* Effect Sliders */
+        .effect-controls { margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(166,137,102,0.1); }
+        .effect-header { font-size: 0.55rem; color: #a68966; font-weight: 900; letter-spacing: 0.25em; margin-bottom: 1.2rem; opacity: 0.9; }
+        .effect-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+        .effect-col { display: flex; flex-direction: column; gap: 0.75rem; }
+        .effect-col label { display: flex; justify-content: space-between; font-size: 0.5rem; letter-spacing: 0.1em; color: var(--text-soft); }
+        .effect-col label span { color: #a68966; font-weight: 700; }
+        .effect-col input[type="range"] { 
+          -webkit-appearance: none; width: 100%; height: 4px; background: rgba(166,137,102,0.15); border-radius: 2px; outline: none; cursor: pointer;
+        }
+        .effect-col input[type="range"]::-webkit-slider-thumb { 
+          -webkit-appearance: none; width: 14px; height: 14px; background: #a68966; border-radius: 50%; border: 2px solid #000; box-shadow: 0 0 10px rgba(166,137,102,0.3);
+        }
+
         .lux-group input { 
           background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.08); 
           padding: 1rem; color: var(--text); border-radius: 8px; font-size: 0.85rem; 

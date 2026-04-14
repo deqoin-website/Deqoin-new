@@ -118,7 +118,9 @@ export default function Page() {
                 title: card.title,
                 subTitle: card.description,
                 image: card.image || (card.studioType === 'design' ? '/images/slider/mimari_slide.png' : card.studioType === 'material' ? '/images/slider/tasarim_slide.png' : '/images/slider/uygulama_slide.png'),
-                sideLabel: card.studioType === 'design' ? 'Structural Integrity' : card.studioType === 'material' ? 'Aesthetic Soul' : 'Precision Craft'
+                sideLabel: card.studioType === 'design' ? 'Structural Integrity' : card.studioType === 'material' ? 'Aesthetic Soul' : 'Precision Craft',
+                blur: card.blur || 0,
+                overlay: card.overlay ?? 30
              }));
              setServiceCards(mapped);
           }
@@ -602,8 +604,15 @@ export default function Page() {
         <div className="services-grid">
           {serviceCards.map((card) => (
             <a key={card.title} href={card.href} className="service-card">
-              <img src={card.image} alt={card.title} />
-              <div className="service-overlay" />
+              <img 
+                src={card.image} 
+                alt={card.title} 
+                style={{ filter: `blur(${card.blur || 0}px)` }}
+              />
+              <div 
+                className="service-overlay" 
+                style={{ background: `rgba(0,0,0,${(card.overlay ?? 30) / 100})` }}
+              />
               <div className="service-copy">
                 <div>
                   <h3>{card.title}</h3>

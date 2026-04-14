@@ -12,6 +12,8 @@ const StudioCardSchema = new mongoose.Schema(
     description: { type: String },
     icon: { type: String }, // e.g. "PenTool", "Layers", "Hammer" for Lucide integration
     image: { type: String }, // Optional image instead of icon
+    blur: { type: Number, default: 0 },
+    overlay: { type: Number, default: 30 },
     order: { type: Number, default: 0 }, // Sürükle bırak (Drag&Drop) sıralama için
   },
   { timestamps: true }
