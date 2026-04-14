@@ -68,13 +68,8 @@ export default async function RootLayout({
           __html: `
             (function() {
               try {
-                var isAdmin = window.location.pathname.startsWith('/admin');
-                var theme = localStorage.getItem('deqoin_theme');
-                if (isAdmin && theme) {
-                  document.documentElement.setAttribute('data-theme', theme);
-                } else {
-                  document.documentElement.setAttribute('data-theme', 'light');
-                }
+                var theme = localStorage.getItem('deqoin_theme') || 'dark';
+                document.documentElement.setAttribute('data-theme', theme);
               } catch (e) {}
             })();
           `

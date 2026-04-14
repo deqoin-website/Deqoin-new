@@ -58,7 +58,7 @@ export default function AboutUs() {
         
         {/* HEADER */}
         <div style={{ marginBottom: "8rem", textAlign: "left" }}>
-          <span className="section-small-label" style={{ letterSpacing: "0.5em", color: "var(--text-muted)" }}>
+          <span className="section-small-label" style={{ letterSpacing: "0.5em", color: "rgba(255,255,255,0.4)" }}>
             {subtitle}
           </span>
           <h1 style={{ 
@@ -105,7 +105,7 @@ export default function AboutUs() {
             <div style={{ 
               position: "absolute", 
               inset: 0, 
-              background: "linear-gradient(to top, var(--background), transparent)" 
+              background: "linear-gradient(to top, rgba(10,10,10,0.8), transparent)" 
             }} />
           </div>
 
@@ -145,18 +145,18 @@ export default function AboutUs() {
           gridTemplateColumns: `repeat(${stats.length}, 1fr)`, 
           marginTop: "12rem",
           padding: "7rem 0", 
-          borderTop: "1px solid var(--line)", 
-          borderBottom: "1px solid var(--line)" 
+          borderTop: "1px solid rgba(255,255,255,0.1)", 
+          borderBottom: "1px solid rgba(255,255,255,0.1)" 
         }}>
           {stats.map((stat: any, idx: number) => (
             <div key={idx} className="stat-col" style={{ 
               alignItems: "center", 
               borderTop: "none", 
               padding: 0,
-              borderLeft: idx !== 0 ? "1px solid var(--line)" : "none"
+              borderLeft: idx !== 0 ? "1px solid rgba(255,255,255,0.1)" : "none"
             }}>
               <span className="stat-label">{stat.label}</span>
-              <span className="stat-value" style={{ fontSize: "3.5rem", fontFamily: "var(--font-smooch)", color: "var(--accent)" }}>{stat.value}</span>
+              <span className="stat-value" style={{ fontSize: "3.5rem", fontFamily: "var(--font-smooch)", color: "#fff" }}>{stat.value}</span>
             </div>
           ))}
         </div>
@@ -187,8 +187,8 @@ export default function AboutUs() {
                     gap: "4rem", 
                     alignItems: "flex-start",
                     padding: "4rem",
-                    background: "var(--surface-muted)",
-                    border: "1px solid var(--line)",
+                    background: "rgba(255,255,255,0.02)",
+                    border: "1px solid rgba(255,255,255,0.05)",
                     borderRadius: "20px",
                     position: "relative",
                     overflow: "hidden"
@@ -205,7 +205,7 @@ export default function AboutUs() {
                    </div>
                    <div style={{ flex: 1 }}>
                      <h4 style={{ 
-                       color: "#a68966", 
+                       color: "#fff", 
                        fontSize: "1.25rem", 
                        letterSpacing: "0.15em", 
                        marginBottom: "1.5rem",

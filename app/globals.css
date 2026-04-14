@@ -4474,10 +4474,10 @@ body:has(.homepage-snap-shell) {
    PREMIUM PROCESS SECTION (DESIGN & BUILD)
    ============================================= */
 .process-section {
-  background: var(--background);
+  background: #0a0a0a;
   padding: 7rem 2rem 8.5rem;
   color: var(--text);
-  border-top: 1px solid var(--line);
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
   position: relative;
   overflow: hidden;
   display: flex;
@@ -4492,7 +4492,7 @@ body:has(.homepage-snap-shell) {
 
 .process-header h2 {
   font-family: var(--font-smooch), sans-serif;
-  color: var(--text);
+  font-size: clamp(4rem, 10vw, 8rem);
   font-weight: 100;
   text-transform: uppercase;
   letter-spacing: 0.1em;
@@ -4549,7 +4549,7 @@ body:has(.homepage-snap-shell) {
   position: relative;
   width: 5rem;
   height: 5rem;
-  background: var(--surface-muted);
+  background: #0a0a0a;
   border: 1px solid rgba(204, 168, 131, 0.2);
   border-radius: 50%;
   display: flex;
@@ -4581,7 +4581,7 @@ body:has(.homepage-snap-shell) {
   font-family: var(--font-headline), serif;
   font-size: 0.65rem;
   color: #cca883;
-  background: var(--surface);
+  background: #0f0f0f;
   width: 1.8rem;
   height: 1.8rem;
   display: flex;
