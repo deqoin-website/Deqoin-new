@@ -283,7 +283,7 @@ export default function UsersPage() {
         
         .admin-form { display: flex; flex-direction: column; gap: 1.75rem; }
         .form-group-premium { display: flex; flex-direction: column; gap: 0.75rem; }
-        .form-group-premium label { font-size: 0.65rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--text-soft); font-weight: 800; display: flex; align-items: center; gap: 0.6rem; }
+        .form-group-premium label { font-size: 0.65rem; letter-spacing: 0.15em; text-transform: uppercase; color: #fff; opacity: 0.8; font-weight: 800; display: flex; align-items: center; gap: 0.6rem; }
         
         .input-with-icn { position: relative; }
         .input-with-icn input, .select-wrapper select { width: 100%; background: var(--background); border: 1px solid var(--line); border-radius: 8px; padding: 1rem 1.25rem; color: var(--text); font-family: inherit; font-size: 0.9rem; transition: all 0.3s; }

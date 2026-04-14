@@ -433,7 +433,7 @@ export default function TeamManagementPage() {
         .modal-form { padding: 2rem; display: flex; flex-direction: column; gap: 1.5rem; }
         .form-row-split { display: flex; gap: 2rem; }
         .photo-upload-side { width: 140px; display: flex; flex-direction: column; gap: 0.75rem; }
-        .photo-upload-side label { font-size: 0.6rem; color: rgba(255,255,255,0.4); font-weight: 700; }
+         .photo-upload-side label { font-size: 0.6rem; color: #fff; font-weight: 700; letter-spacing: 0.1em; opacity: 0.8; }
         .upload-preview { width: 140px; height: 160px; background: var(--background); border: 1px dashed var(--line); border-radius: 8px; cursor: pointer; overflow: hidden; display: flex; align-items: center; justify-content: center; }
         .upload-preview img { width: 100%; height: 100%; object-fit: cover; }
         .upload-placeholder { display: flex; flex-direction: column; align-items: center; gap: 0.5rem; color: var(--text-muted); opacity: 0.4; font-size: 0.7rem; }
@@ -442,7 +442,7 @@ export default function TeamManagementPage() {
         .form-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
         
         .form-group { display: flex; flex-direction: column; gap: 0.6rem; }
-        .form-group label { font-size: 0.65rem; color: var(--text-muted); font-weight: 600; letter-spacing: 0.1em; }
+        .form-group label { font-size: 0.65rem; color: #fff; font-weight: 600; letter-spacing: 0.1em; opacity: 0.8; }
         .form-group input, .form-group select, .form-group textarea { background: var(--background); border: 1px solid var(--line); padding: 0.85rem; color: var(--text); border-radius: 4px; font-family: inherit; font-size: 0.85rem; }
         .form-group input:focus, .form-group select:focus, .form-group textarea:focus { outline: none; border-color: #a68966; }
 
