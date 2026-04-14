@@ -904,10 +904,24 @@ export default function CRMPage() {
           .pdf-footer { margin-top: auto; padding-top: 12mm; text-align: center; font-size: 7.5pt; color: #aaa; letter-spacing: 1px; }
 
         /* RESPONSIVE CSS */
-        @media (max-width: 1200px) {
-          .crm-stats-grid { grid-template-columns: repeat(2, 1fr); }
+        /* RESPONSIVE BREAKPOINTS */
+        
+        /* TABLETS & SMALL LAPTOPS (601px - 1024px) */
+        @media (min-width: 601px) and (max-width: 1024px) {
+          .crm-container { padding: 1.5rem !important; }
+          .crm-stats-grid { grid-template-columns: repeat(2, 1fr) !important; gap: 1rem !important; }
+          .desktop-only { display: none !important; }
+          .mobile-only { display: block !important; }
+          .mobile-card-grid { display: grid !important; grid-template-columns: 1fr 1fr !important; gap: 1rem !important; }
+          .drawer-content { width: 70% !important; max-width: 600px !important; }
+          
+          .preview-paper { 
+            transform: scale(0.65) !important; transform-origin: top center !important;
+            margin-bottom: -100mm !important;
+          }
         }
 
+        /* MOBILE (900px and below) */
         @media (max-width: 900px) {
           .crm-header { flex-direction: column !important; align-items: stretch !important; gap: 1rem !important; }
           .crm-header-btns { margin-left: 0 !important; width: 100% !important; }
@@ -940,26 +954,25 @@ export default function CRMPage() {
           .sidebar-item { border-radius: 12px; margin-bottom: 1rem; }
           
           /* Preview Modal Mobile */
-          .preview-container { width: 100%; height: 100vh; border-radius: 0; border: none; }
-          .preview-content-scroll { padding: 1.5rem 1rem; }
+          .preview-container { width: 100% !important; height: 100vh !important; border-radius: 0 !important; border: none !important; }
+          .preview-content-scroll { padding: 1.5rem 1rem !important; }
           .preview-paper { 
             width: 100%; min-width: 210mm; /* Force A4 for render, but scale it down */
             transform: scale(0.45); transform-origin: top center;
             margin-bottom: -150mm; /* Offset scale shrink */
           }
-          .preview-toolbar { padding: 1rem; flex-direction: column; gap: 1rem; }
-          .toolbar-actions { width: 100%; display: grid; grid-template-columns: 1fr 1fr 44px; gap: 0.5rem; }
-          .tool-btn { padding: 0.75rem 0.5rem; font-size: 0.6rem; justify-content: center; }
+          .preview-toolbar { padding: 1rem !important; flex-direction: column !important; gap: 1rem !important; }
+          .toolbar-actions { width: 100% !important; display: grid !important; grid-template-columns: 1fr 1fr 44px !important; gap: 0.5rem !important; }
+          .tool-btn { padding: 0.75rem 0.5rem !important; font-size: 0.6rem !important; justify-content: center !important; }
+          
+          .drawer-content { width: 100% !important; }
         }
 
+        /* VERY SMALL MOBILE */
         @media (max-width: 600px) {
           .crm-stats-grid { grid-template-columns: 1fr !important; gap: 0.5rem !important; }
           .filter-btn { flex: 1 1 100% !important; }
-          
           .preview-paper { transform: scale(0.35) !important; margin-bottom: -180mm !important; }
-        }
-          .pdf-footer p { margin-bottom: 2mm; }
-          .pdf-footer-line { height: 1px; background: #eee; margin: 3mm auto; width: 50%; }
         }
       `}</style>
     </div>
