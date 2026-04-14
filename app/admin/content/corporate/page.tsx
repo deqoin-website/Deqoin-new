@@ -19,6 +19,7 @@ export default function CorporateAboutAdmin() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [activeTab, setActiveTab] = useState('main'); // 'main', 'stats', 'workflow'
+  const [isDragging, setIsDragging] = useState(false);
 
   useEffect(() => {
     fetchContent();
@@ -75,7 +76,10 @@ export default function CorporateAboutAdmin() {
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
+    uploadFile(file);
+  };
 
+  const uploadFile = async (file: File) => {
     try {
       const res = await fetch(`/api/upload?filename=${file.name}`, {
         method: 'POST',
@@ -85,6 +89,15 @@ export default function CorporateAboutAdmin() {
       setData({ ...data, image: blob.url });
     } catch (err) {
       alert("Görsel yüklenemedi.");
+    }
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(false);
+    const file = e.dataTransfer.files[0];
+    if (file) {
+      uploadFile(file);
     }
   };
 
@@ -150,7 +163,13 @@ export default function CorporateAboutAdmin() {
 
               <section className="lux-card">
                 <div className="card-label">GÖRSEL VE AÇIKLAMA</div>
-                <div className="media-upload-zone" onClick={() => document.getElementById('about-img')?.click()}>
+                <div 
+                  className={`media-upload-zone ${isDragging ? 'drag-active' : ''}`}
+                  onClick={() => document.getElementById('about-img')?.click()}
+                  onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
+                  onDragLeave={() => setIsDragging(false)}
+                  onDrop={handleDrop}
+                >
                   {data.image ? (
                     <img src={data.image} alt="About Us" className="preview-img" />
                   ) : (

@@ -68,6 +68,10 @@ export default function AdminProjects() {
     }
   };
 
+  const [uploading, setUploading] = useState(false);
+  const [dragOverCover, setDragOverCover] = useState(false);
+  const [dragOverGallery, setDragOverGallery] = useState<number | null>(null);
+
   const fetchProjects = async () => {
     try {
       const res = await fetch('/api/projects');
@@ -77,6 +81,57 @@ export default function AdminProjects() {
       console.error(err);
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleDropCover = async (e: React.DragEvent) => {
+    e.preventDefault();
+    setDragOverCover(false);
+    const file = e.dataTransfer.files[0];
+    if (file) {
+      setUploading(true);
+      try {
+        const res = await fetch(`/api/upload?filename=${file.name}`, {
+          method: 'POST',
+          body: file
+        });
+        const blob = await res.json();
+        setFormData({ ...formData, coverImage: blob.url });
+      } catch (err) {
+        alert("Yükleme başarısız.");
+      } finally {
+        setUploading(false);
+      }
+    }
+  };
+
+  const handleDropGallery = async (e: React.DragEvent) => {
+    e.preventDefault();
+    setDragOverGallery(null);
+    const files = Array.from(e.dataTransfer.files);
+    if (files.length > 0) {
+      setUploading(true);
+      try {
+        const uploads = await Promise.all(
+          files.map(async (file) => {
+            const res = await fetch(`/api/upload?filename=${file.name}`, {
+              method: 'POST',
+              body: file
+            });
+            return res.json();
+          })
+        );
+        
+        const newItems = uploads.map(blob => ({ url: blob.url, imageAlt: '', caption: '' }));
+        setFormData({ 
+          ...formData, 
+          gallery: [...formData.gallery, ...newItems] 
+        });
+      } catch (err) {
+        alert("Bazı görseller yüklenemedi.");
+      } finally {
+        setUploading(false);
+      }
     }
   };
 
@@ -342,7 +397,13 @@ export default function AdminProjects() {
                        <div className="media-grid">
                           <div className="cover-upload-zone">
                             <label className="section-label">ANA KAPAK GÖRSELİ</label>
-                            <div className="lux-cover-preview" onClick={() => document.getElementById('cover-up')?.click()}>
+                            <div 
+                              className={`lux-cover-preview ${dragOverCover ? 'drag-active' : ''}`} 
+                              onClick={() => document.getElementById('cover-up')?.click()}
+                              onDragOver={(e) => { e.preventDefault(); setDragOverCover(true); }}
+                              onDragLeave={() => setDragOverCover(false)}
+                              onDrop={handleDropCover}
+                            >
                               {formData.coverImage ? (
                                 <div className="img-wrapper">
                                   <img src={formData.coverImage} alt="Cover" />
@@ -374,7 +435,14 @@ export default function AdminProjects() {
                                    </div>
                                  ))}
                                </div>
-                               <button type="button" className="lux-add-photo-btn" onClick={() => document.getElementById('gal-up')?.click()}>
+                               <button 
+                                 type="button" 
+                                 className={`lux-add-photo-btn ${dragOverGallery === 99 ? 'drag-active' : ''}`} 
+                                 onClick={() => document.getElementById('gal-up')?.click()}
+                                 onDragOver={(e) => { e.preventDefault(); setDragOverGallery(99); }}
+                                 onDragLeave={() => setDragOverGallery(null)}
+                                 onDrop={handleDropGallery}
+                               >
                                  <Plus size={18} /> YENİ GÖRSEL EKLE
                                </button>
                              </div>

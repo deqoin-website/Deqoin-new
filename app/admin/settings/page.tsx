@@ -24,6 +24,8 @@ export default function SettingsPage() {
   const [isSaving, setIsSaving] = useState(false);
   const [activeTab, setActiveTab] = useState('genel');
   const [uploadLoading, setUploadLoading] = useState(false);
+  const [isDraggingLogo, setIsDraggingLogo] = useState(false);
+  const [isDraggingFavicon, setIsDraggingFavicon] = useState(false);
 
   useEffect(() => {
     fetchSettings();
@@ -44,7 +46,10 @@ export default function SettingsPage() {
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>, field: string) => {
     const file = e.target.files?.[0];
     if (!file) return;
+    uploadFile(file, field);
+  };
 
+  const uploadFile = async (file: File, field: string) => {
     setUploadLoading(true);
     try {
       const res = await fetch(`/api/upload?filename=${file.name}`, {
@@ -57,6 +62,16 @@ export default function SettingsPage() {
       alert("Yüklenemedi.");
     } finally {
       setUploadLoading(false);
+    }
+  };
+
+  const handleDrop = (e: React.DragEvent, field: string) => {
+    e.preventDefault();
+    setIsDraggingLogo(false);
+    setIsDraggingFavicon(false);
+    const file = e.dataTransfer.files[0];
+    if (file) {
+      uploadFile(file, field);
     }
   };
 
@@ -107,7 +122,13 @@ export default function SettingsPage() {
                 <div className="logo-section-grid">
                   <div className="logo-upload-wrap">
                     <label>ANA LOGO</label>
-                    <div className="logo-preview-box" onClick={() => document.getElementById('logo-file')?.click()}>
+                    <div 
+                      className={`logo-preview-box ${isDraggingLogo ? 'drag-active' : ''}`} 
+                      onClick={() => document.getElementById('logo-file')?.click()}
+                      onDragOver={(e) => { e.preventDefault(); setIsDraggingLogo(true); }}
+                      onDragLeave={() => setIsDraggingLogo(false)}
+                      onDrop={(e) => handleDrop(e, 'logoUrl')}
+                    >
                       {settings.logoUrl ? <img src={settings.logoUrl} alt="Logo" /> : <Camera size={24} />}
                       {uploadLoading && <div className="upload-overlay"><Loader2 className="animate-spin" /></div>}
                     </div>
@@ -116,8 +137,15 @@ export default function SettingsPage() {
                   </div>
                   <div className="logo-upload-wrap">
                     <label>FAVICON</label>
-                    <div className="logo-preview-box square" onClick={() => document.getElementById('favicon-file')?.click()}>
+                    <div 
+                      className={`logo-preview-box square ${isDraggingFavicon ? 'drag-active' : ''}`} 
+                      onClick={() => document.getElementById('favicon-file')?.click()}
+                      onDragOver={(e) => { e.preventDefault(); setIsDraggingFavicon(true); }}
+                      onDragLeave={() => setIsDraggingFavicon(false)}
+                      onDrop={(e) => handleDrop(e, 'faviconUrl')}
+                    >
                       {settings.faviconUrl ? <img src={settings.faviconUrl} alt="Favicon" /> : <Camera size={20} />}
+                      {uploadLoading && <div className="upload-overlay"><Loader2 className="animate-spin" /></div>}
                     </div>
                     <input id="favicon-file" type="file" className="hidden" onChange={e => handleImageUpload(e, 'faviconUrl')} />
                     <button type="button" className="upload-btn-mini" onClick={() => document.getElementById('favicon-file')?.click()}>DEĞİŞTİR</button>

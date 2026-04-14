@@ -16,6 +16,7 @@ export default function HomeServicesAdmin() {
   const [cards, setCards] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [draggingCard, setDraggingCard] = useState<number | null>(null);
 
   useEffect(() => {
     fetchCards();
@@ -62,7 +63,10 @@ export default function HomeServicesAdmin() {
   const handleImageUpload = async (index: number, e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
+    uploadFile(index, file);
+  };
 
+  const uploadFile = async (index: number, file: File) => {
     try {
       const res = await fetch(`/api/upload?filename=${file.name}`, {
         method: 'POST',
@@ -72,6 +76,15 @@ export default function HomeServicesAdmin() {
       updateCard(index, 'image', blob.url);
     } catch (err) {
       alert("Görsel yüklenemedi.");
+    }
+  };
+
+  const handleDrop = (e: React.DragEvent, index: number) => {
+    e.preventDefault();
+    setDraggingCard(null);
+    const file = e.dataTransfer.files[0];
+    if (file) {
+      uploadFile(index, file);
     }
   };
 
@@ -106,7 +119,13 @@ export default function HomeServicesAdmin() {
               <span>{card.studioType.toUpperCase()} STUDIO</span>
             </div>
 
-            <div className="card-image-preview" onClick={() => document.getElementById(`img-${idx}`)?.click()}>
+            <div 
+              className={`card-image-preview ${draggingCard === idx ? 'drag-active' : ''}`} 
+              onClick={() => document.getElementById(`img-${idx}`)?.click()}
+              onDragOver={(e) => { e.preventDefault(); setDraggingCard(idx); }}
+              onDragLeave={() => setDraggingCard(null)}
+              onDrop={(e) => handleDrop(e, idx)}
+            >
               {card.image ? (
                 <img src={card.image} alt={card.title} />
               ) : (

@@ -18,6 +18,9 @@ export default function DepartmentManagerPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingProject, setEditingProject] = useState<any>(null);
   const [showAdvancedPanel, setShowAdvancedPanel] = useState(false);
+  const [dragOverHero, setDragOverHero] = useState(false);
+  const [dragOverCover, setDragOverCover] = useState(false);
+  const [dragOverGallery, setDragOverGallery] = useState<number | null>(null);
 
   // Department State
   const [data, setData] = useState({
@@ -180,6 +183,10 @@ export default function DepartmentManagerPage() {
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>, field: 'image' | 'cover' | 'gallery') => {
     const file = e.target.files?.[0];
     if (!file) return;
+    uploadFile(file, field);
+  };
+
+  const uploadFile = async (file: File, field: 'image' | 'cover' | 'gallery') => {
     try {
       const res = await fetch(`/api/upload?filename=${file.name}`, { method: 'POST', body: file });
       const blob = await res.json();
@@ -194,6 +201,21 @@ export default function DepartmentManagerPage() {
       }
     } catch (err) {
       alert("Yükleme başarısız.");
+    }
+  };
+
+  const handleDrop = (e: React.DragEvent, field: 'image' | 'cover' | 'gallery') => {
+    e.preventDefault();
+    setDragOverHero(false);
+    setDragOverCover(false);
+    setDragOverGallery(null);
+    
+    if (field === 'gallery') {
+        const files = Array.from(e.dataTransfer.files);
+        files.forEach(file => uploadFile(file, 'gallery'));
+    } else {
+        const file = e.dataTransfer.files[0];
+        if (file) uploadFile(file, field);
     }
   };
 
@@ -313,7 +335,13 @@ export default function DepartmentManagerPage() {
 
               <div className="hero-upload-section">
                 <label>KAPAK MEDYASI (VİDEO YADA GÖRSEL)</label>
-                <div className="hero-preview" onClick={() => document.getElementById('hero-img-upload')?.click()}>
+                <div 
+                  className={`hero-preview ${dragOverHero ? 'drag-active' : ''}`} 
+                  onClick={() => document.getElementById('hero-img-upload')?.click()}
+                  onDragOver={(e) => { e.preventDefault(); setDragOverHero(true); }}
+                  onDragLeave={() => setDragOverHero(false)}
+                  onDrop={(e) => handleDrop(e, 'image')}
+                >
                   {data.image ? (
                     data.mediaType === 'video' ? (
                       <video src={data.image} autoPlay muted loop className="preview-media" />
@@ -538,7 +566,13 @@ export default function DepartmentManagerPage() {
                        <div className="media-grid">
                           <div className="cover-upload-zone">
                             <label className="section-label">KAPAK MEDYASI</label>
-                            <div className="lux-cover-preview" onClick={() => document.getElementById('proj-cover')?.click()}>
+                            <div 
+                              className={`lux-cover-preview ${dragOverCover ? 'drag-active' : ''}`} 
+                              onClick={() => document.getElementById('proj-cover')?.click()}
+                              onDragOver={(e) => { e.preventDefault(); setDragOverCover(true); }}
+                              onDragLeave={() => setDragOverCover(false)}
+                              onDrop={(e) => handleDrop(e, 'cover')}
+                            >
                               {formData.coverImage ? (
                                 <div className="img-wrapper">
                                   <img src={formData.coverImage} alt="Cover" />
@@ -569,7 +603,14 @@ export default function DepartmentManagerPage() {
                                    </div>
                                  ))}
                                </div>
-                               <button type="button" className="lux-add-photo-btn" onClick={() => document.getElementById('proj-gal')?.click()}>
+                               <button 
+                                 type="button" 
+                                 className={`lux-add-photo-btn ${dragOverGallery === 99 ? 'drag-active' : ''}`} 
+                                 onClick={() => document.getElementById('proj-gal')?.click()}
+                                 onDragOver={(e) => { e.preventDefault(); setDragOverGallery(99); }}
+                                 onDragLeave={() => setDragOverGallery(null)}
+                                 onDrop={(e) => handleDrop(e, 'gallery')}
+                               >
                                  <Plus size={18} /> GÖRSEL EKLE
                                </button>
                              </div>
