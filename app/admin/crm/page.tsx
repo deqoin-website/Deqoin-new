@@ -18,7 +18,8 @@ import {
   Archive,
   CheckCircle2,
   Trash2,
-  ArrowRight
+  ArrowRight,
+  Download
 } from 'lucide-react';
 
 export default function CRMPage() {
@@ -32,6 +33,16 @@ export default function CRMPage() {
 
   useEffect(() => {
     fetchAppointments();
+    
+    // Load html2pdf from CDN
+    const script = document.createElement('script');
+    script.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js';
+    script.async = true;
+    document.body.appendChild(script);
+
+    return () => {
+      document.body.removeChild(script);
+    };
   }, []);
 
   const fetchAppointments = async () => {
@@ -98,6 +109,45 @@ export default function CRMPage() {
     setTimeout(() => window.print(), 500);
   };
 
+  const handleDownloadPDF = async (type: 'single' | 'bulk') => {
+    // @ts-ignore
+    if (typeof html2pdf === 'undefined') {
+      alert('PDF Kütüphanesi henüz yüklenmedi, lütfen bir saniye bekleyin.');
+      return;
+    }
+
+    const element = document.querySelector('.print-view');
+    if (!element) return;
+
+    // Temporarily show for capture
+    const originalDisplay = (element as HTMLElement).style.display;
+    (element as HTMLElement).style.display = 'flex';
+
+    let filename = 'Deqoin_Rapor.pdf';
+    if (type === 'single' && selectedLead) {
+      filename = `Musteri_${selectedLead.name}_${selectedLead.surname}.pdf`;
+    } else {
+      filename = `${bulkReportTitle.replace(/ /g, '_')}_${new Date().toLocaleDateString('tr-TR')}.pdf`;
+    }
+
+    const opt = {
+      margin: 10,
+      filename: filename,
+      image: { type: 'jpeg', quality: 0.98 },
+      html2canvas: { scale: 2, useCORS: true, letterRendering: true },
+      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+    };
+
+    try {
+      // @ts-ignore
+      await html2pdf().set(opt).from(element).save();
+    } catch (e) {
+      console.error('PDF Download Error:', e);
+    } finally {
+      (element as HTMLElement).style.display = originalDisplay;
+    }
+  };
+
   const filteredLeads = appointments.filter(lead => filter === 'Hepsi' || lead.status === filter);
 
   const stats = {
@@ -145,8 +195,16 @@ export default function CRMPage() {
             <button className="lux-report-btn secondary" onClick={() => printTimeboundReport('daily')}>GÜNLÜK</button>
             <button className="lux-report-btn secondary" onClick={() => printTimeboundReport('weekly')}>HAFTALIK</button>
             <button className="lux-report-btn secondary" onClick={() => printTimeboundReport('monthly')}>AYLIK</button>
-            <button className="lux-report-btn" onClick={printBulkReport} title="Filtreli Listeyi Yazdır / PDF">
-              <FileText size={16} /> GENEL PDF
+            <button className="lux-report-btn" onClick={printBulkReport} title="Filtreli Listeyi Yazdır">
+              <FileText size={16} /> YAZDIR
+            </button>
+            <button className="lux-report-btn gold-btn" onClick={() => { 
+                setBulkReportTitle('GENEL RANDEVU LİSTESİ');
+                setBulkLeads(filteredLeads);
+                setIsBulkPrinting(true);
+                setTimeout(() => handleDownloadPDF('bulk'), 100);
+              }} title="PDF Olarak İndir">
+              <Download size={16} /> İNDİR
             </button>
           </div>
         </div>
@@ -348,7 +406,13 @@ export default function CRMPage() {
                     <MessageCircle size={20} /> WHATSAPP MESAJI GÖNDER
                   </a>
                   <button className="lux-action-btn pdf" onClick={() => printLeadAsPDF(selectedLead)}>
-                    <FileText size={20} /> PDF RAPORU OLUŞTUR
+                    <FileText size={20} /> YAZDIR
+                  </button>
+                  <button className="lux-action-btn download-btn" onClick={() => {
+                    setIsBulkPrinting(false);
+                    setTimeout(() => handleDownloadPDF('single'), 100);
+                  }}>
+                    <Download size={20} /> İNDİR
                   </button>
                 </div>
               </div>
@@ -490,6 +554,8 @@ export default function CRMPage() {
         .lux-report-btn.secondary { background: transparent; color: var(--text-muted); border: 1px solid transparent; }
         .lux-report-btn.secondary:hover { background: rgba(255,255,255,0.05); color: #fff; border-color: var(--line); }
         .lux-report-btn:not(.secondary):hover { background: #a68966; color: #fff; transform: translateY(-2px); }
+        .lux-report-btn.gold-btn { background: #a68966; color: #fff; }
+        .lux-report-btn.gold-btn:hover { background: #fff; color: #000; }
 
         .filter-group { display: flex; gap: 0.5rem; }
         .filter-btn { background: var(--surface-muted); border: 1px solid var(--line); color: var(--text-muted); padding: 0.6rem 1.25rem; border-radius: 40px; font-size: 0.65rem; font-weight: 700; cursor: pointer; letter-spacing: 0.05em; transition: all 0.3s; }
@@ -557,6 +623,8 @@ export default function CRMPage() {
         .lux-action-btn.wa:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(37,211,102,0.2); }
         .lux-action-btn.pdf { background: #fff; color: #000; }
         .lux-action-btn.pdf:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(255,255,255,0.1); }
+        .lux-action-btn.download-btn { background: #a68966; color: #fff; }
+        .lux-action-btn.download-btn:hover { background: #fff; color: #000; transform: translateY(-3px); box-shadow: 0 10px 20px rgba(166,137,102,0.3); }
 
         @media (max-width: 1024px) {
           .crm-stats-grid { grid-template-columns: 1fr; }
