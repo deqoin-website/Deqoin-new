@@ -26,6 +26,7 @@ export default function CRMPage() {
   const [loading, setLoading] = useState(true);
   const [selectedLead, setSelectedLead] = useState<any | null>(null);
   const [filter, setFilter] = useState('Hepsi');
+  const [isBulkPrinting, setIsBulkPrinting] = useState(false);
 
   useEffect(() => {
     fetchAppointments();
@@ -57,8 +58,15 @@ export default function CRMPage() {
   };
 
   const printLeadAsPDF = (lead: any) => {
+    setIsBulkPrinting(false);
     setSelectedLead(lead);
-    setTimeout(() => window.print(), 500); // Wait for state to update render
+    setTimeout(() => window.print(), 500); 
+  };
+
+  const printBulkReport = () => {
+    setSelectedLead(null);
+    setIsBulkPrinting(true);
+    setTimeout(() => window.print(), 500);
   };
 
   const filteredLeads = appointments.filter(lead => filter === 'Hepsi' || lead.status === filter);
@@ -102,6 +110,11 @@ export default function CRMPage() {
         <div className="search-box">
           <Search size={18} />
           <input type="text" placeholder="İsim, mail veya proje ara..." />
+        </div>
+        <div className="crm-header-btns">
+          <button className="lux-report-btn" onClick={printBulkReport} title="Filtreli Listeyi Yazdır / PDF">
+            <FileText size={16} /> GENEL PDF RAPORU
+          </button>
         </div>
         <div className="filter-group-scroll">
           <div className="filter-group">
@@ -310,27 +323,81 @@ export default function CRMPage() {
         )}
       </AnimatePresence>
 
-      {/* HIDDEN PRINT VIEW */}
+      {/* PRINT VIEW ENGINE */}
       <div className="print-view">
-        {selectedLead && (
+        <div className="pdf-header">
+          <div className="pdf-brand-box">
+            <h1>DEQOIN STUDIO</h1>
+            <p>ARCHITECTURAL & DESIGN SOLUTIONS</p>
+          </div>
+          <div className="pdf-meta">
+            <span><strong>RAPOR TARİHİ:</strong> {new Date().toLocaleDateString('tr-TR')}</span>
+            <span><strong>BİRİM:</strong> CRM / RANDEVU YÖNETİMİ</span>
+          </div>
+        </div>
+
+        {/* SINGLE REPORT */}
+        {selectedLead && !isBulkPrinting && (
           <div className="pdf-document">
-            <div className="pdf-header">
-              <h1>DEQOIN STUDIO</h1>
-              <p>MÜŞTERİ TALEP BİLGİ FORMU</p>
-            </div>
-            <div className="pdf-body">
-              <div className="pdf-row"><strong>Tarih:</strong> {new Date(selectedLead.createdAt).toLocaleDateString()}</div>
-              <div className="pdf-row"><strong>Ad Soyad:</strong> {selectedLead.name} {selectedLead.surname}</div>
-              <div className="pdf-row"><strong>İletişim:</strong> {selectedLead.phone} / {selectedLead.email}</div>
-              <div className="pdf-row"><strong>Şehir:</strong> {selectedLead.city}</div>
-              <div className="pdf-row"><strong>İlgili Birim:</strong> {selectedLead.interestedDepartment}</div>
-              <div className="pdf-row desc-box"><strong>Proje Detayı:</strong><br/>{selectedLead.projectDetails}</div>
-            </div>
-            <div className="pdf-footer">
-              BU BELGE DEQOIN ARCHITECTURAL STUDIO TARAFINDAN OTOMATİK OLUŞTURULMUŞTUR.
+            <h2 className="pdf-title">MÜŞTERİ TALEP BİLGİ FORMU</h2>
+            <div className="pdf-form-body">
+              <div className="pdf-section">
+                <h3>KİŞİSEL BİLGİLER</h3>
+                <div className="pdf-data-row"><strong>AD SOYAD:</strong> {selectedLead.name} {selectedLead.surname}</div>
+                <div className="pdf-data-row"><strong>TELEFON:</strong> {selectedLead.phone}</div>
+                <div className="pdf-data-row"><strong>E-POSTA:</strong> {selectedLead.email}</div>
+                <div className="pdf-data-row"><strong>ŞEHİR:</strong> {selectedLead.city}</div>
+              </div>
+              <div className="pdf-section">
+                <h3>TALEB DETAYLARI</h3>
+                <div className="pdf-data-row"><strong>İLGİLİ BİRİM:</strong> {selectedLead.interestedDepartment}</div>
+                <div className="pdf-data-row"><strong>DURUM:</strong> {selectedLead.status}</div>
+                <div className="pdf-data-row"><strong>TALEP TARİHİ:</strong> {new Date(selectedLead.createdAt).toLocaleString('tr-TR')}</div>
+              </div>
+              <div className="pdf-section full">
+                <h3>PROJE AÇIKLAMASI / MESAJ</h3>
+                <div className="pdf-message-box">
+                  {selectedLead.projectDetails || "Bir açıklama eklenmemiş."}
+                </div>
+              </div>
             </div>
           </div>
         )}
+
+        {/* BULK REPORT */}
+        {isBulkPrinting && (
+          <div className="pdf-bulk-document">
+            <h2 className="pdf-title">RANDEVU LİSTESİ - {filter.toUpperCase()}</h2>
+            <table className="pdf-table">
+              <thead>
+                <tr>
+                  <th>TARİH</th>
+                  <th>MÜŞTERİ</th>
+                  <th>İLETİŞİM</th>
+                  <th>BİRİM</th>
+                  <th>DURUM</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredLeads.map((lead) => (
+                  <tr key={lead._id}>
+                    <td>{new Date(lead.createdAt).toLocaleDateString('tr-TR')}</td>
+                    <td>{lead.name} {lead.surname}</td>
+                    <td>{lead.phone}<br/>{lead.email}</td>
+                    <td>{lead.interestedDepartment}</td>
+                    <td>{lead.status}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+
+        <div className="pdf-footer">
+          <p>BU BELGE DEQOIN ARCHITECTURAL STUDIO DİJİTAL SİSTEMLERİ TARAFINDAN OTOMATİK OLARAK OLUŞTURULMUŞTUR.</p>
+          <div className="pdf-footer-line"></div>
+          <span>www.deqoin.com • Deqoin Design Studio</span>
+        </div>
       </div>
 
       <style jsx>{`
@@ -352,6 +419,11 @@ export default function CRMPage() {
         .search-box { display: flex; align-items: center; gap: 1rem; background: var(--background); border: 1px solid var(--line); border-radius: 8px; padding: 0.75rem 1.25rem; width: 350px; }
         .search-box input { background: transparent; border: none; color: #fff; font-family: inherit; font-size: 0.9rem; flex: 1; outline: none; }
         
+        /* NEW HEADER BTN */
+        .crm-header-btns { margin-left: auto; margin-right: 1.5rem; }
+        .lux-report-btn { background: #fff; color: #000; border: none; padding: 0.75rem 1.5rem; border-radius: 8px; font-size: 0.7rem; font-weight: 800; cursor: pointer; display: flex; align-items: center; gap: 0.75rem; transition: all 0.3s; }
+        .lux-report-btn:hover { background: #a68966; color: #fff; transform: translateY(-2px); }
+
         .filter-group { display: flex; gap: 0.5rem; }
         .filter-btn { background: var(--surface-muted); border: 1px solid var(--line); color: var(--text-muted); padding: 0.6rem 1.25rem; border-radius: 40px; font-size: 0.65rem; font-weight: 700; cursor: pointer; letter-spacing: 0.05em; transition: all 0.3s; }
         .filter-btn.active { background: #a68966; color: #000; border-color: #a68966; box-shadow: 0 5px 15px rgba(166,137,102,0.2); }
@@ -372,8 +444,8 @@ export default function CRMPage() {
         .status-badge-premium { padding: 0.4rem 1rem; border-radius: 20px; font-size: 0.6rem; font-weight: 900; letter-spacing: 0.1em; display: inline-flex; border: 1px solid transparent; }
         .status-badge-premium.yeni { background: rgba(166,137,102,0.1); color: #a68966; border-color: rgba(166,137,102,0.3); }
         .status-badge-premium.incelendi { background: rgba(59,130,246,0.1); color: #3b82f6; border-color: rgba(59,130,246,0.2); }
-        .status-badge-premium.iletisi me-ge-ildi { background: rgba(16,185,129,0.1); color: #10b981; border-color: rgba(16,185,129,0.2); }
-        .status-badge-premium.ar-ivlendi { background: var(--surface-muted); color: var(--text-soft); border-color: var(--line); }
+        .status-badge-premium.iletisive-gecildi { background: rgba(16,185,129,0.1); color: #10b981; border-color: rgba(16,185,129,0.2); }
+        .status-badge-premium.arsivlendi { background: var(--surface-muted); color: var(--text-soft); border-color: var(--line); }
 
         .action-buttons { display: flex; gap: 0.5rem; }
         .icon-btn { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: var(--surface-muted); color: var(--text-muted); border: 1px solid var(--line); cursor: pointer; transition: all 0.3s; }
@@ -397,7 +469,7 @@ export default function CRMPage() {
         
         .status-badge-lg { padding: 0.75rem 2rem; border-radius: 40px; font-size: 0.8rem; font-weight: 900; letter-spacing: 0.1em; display: inline-flex; border: 1px solid rgba(255,255,255,0.1); }
         .status-badge-lg.yeni { border-color: #a68966; color: #a68966; }
-        .status-badge-lg.iletisi me-ge-ildi { border-color: #10b981; color: #10b981; }
+        .status-badge-lg.iletisive-gecildi { border-color: #10b981; color: #10b981; }
 
         .detail-status-edit { display: flex; flex-direction: column; gap: 1rem; }
         .detail-status-edit label { font-size: 0.6rem; letter-spacing: 0.2em; color: var(--text-muted); font-weight: 800; }
@@ -447,17 +519,46 @@ export default function CRMPage() {
           .drawer-footer-actions { grid-template-columns: 1fr; }
         }
 
+        /* PRINT ENGINE STYLES (ENHANCED) */
+        .print-view { display: none; }
+        
         @media print {
-          body * { visibility: hidden; }
+          @page { size: A4; margin: 15mm; }
+          body * { visibility: hidden; pointer-events: none; }
           .print-view, .print-view * { visibility: visible; }
-          .print-view { position: absolute; left: 0; top: 0; width: 100%; padding: 2cm; background: white !important; color: black !important; }
-          .pdf-document { text-align: left; }
-          .pdf-header { text-align: center; border-bottom: 2px solid black; padding-bottom: 20px; margin-bottom: 40px; }
-          .pdf-header h1 { font-size: 24px; margin: 0 0 10px 0; letter-spacing: 4px; }
-          .pdf-header p { font-size: 14px; margin: 0; color: #555; }
-          .pdf-row { margin-bottom: 15px; font-size: 12pt; line-height: 1.5; }
-          .desc-box { margin-top: 30px; padding: 20px; border: 1px solid #ccc; }
-          .pdf-footer { margin-top: 50px; text-align: center; font-size: 10px; color: #999; border-top: 1px solid #eee; padding-top: 20px; }
+          
+          .print-view {
+            position: absolute; left: 0; top: 0; width: 210mm; min-height: 297mm;
+            background: #fff !important; color: #000 !important;
+            display: flex !important; flex-direction: column;
+            padding: 10mm; font-family: sans-serif;
+          }
+
+          .pdf-header { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 2px solid #000; padding-bottom: 5mm; margin-bottom: 8mm; }
+          .pdf-brand-box h1 { margin: 0; font-size: 24pt; letter-spacing: 5px; font-weight: 900; }
+          .pdf-brand-box p { margin: 2mm 0 0 0; font-size: 8pt; color: #666; letter-spacing: 2px; }
+          .pdf-meta { display: flex; flex-direction: column; align-items: flex-end; gap: 1mm; font-size: 8pt; text-align: right; }
+          
+          .pdf-title { text-align: center; font-size: 14pt; letter-spacing: 3px; margin: 5mm 0 10mm 0; text-decoration: underline; }
+          
+          /* Single Report Style */
+          .pdf-form-body { display: grid; grid-template-columns: 1fr 1fr; gap: 10mm; }
+          .pdf-section { display: flex; flex-direction: column; gap: 3mm; margin-bottom: 8mm; }
+          .pdf-section.full { grid-column: 1 / -1; }
+          .pdf-section h3 { margin: 0 0 2mm 0; font-size: 9pt; border-bottom: 1px solid #ddd; padding-bottom: 1mm; color: #333; }
+          .pdf-data-row { font-size: 10pt; line-height: 1.5; }
+          .pdf-data-row strong { width: 100px; display: inline-block; }
+          .pdf-message-box { padding: 5mm; border: 1px solid #eee; background: #fafafa; font-size: 10pt; line-height: 1.6; white-space: pre-wrap; }
+
+          /* Bulk Table Style */
+          .pdf-table { width: 100%; border-collapse: collapse; margin-top: 5mm; }
+          .pdf-table th { background: #f0f0f0; border: 1px solid #000; padding: 3mm; text-align: left; font-size: 8pt; }
+          .pdf-table td { border: 1px solid #eee; padding: 3mm; font-size: 8pt; vertical-align: top; }
+          .pdf-table tr:nth-child(even) { background: #fafafa; }
+
+          .pdf-footer { margin-top: auto; padding-top: 10mm; text-align: center; font-size: 7pt; color: #888; }
+          .pdf-footer p { margin-bottom: 2mm; }
+          .pdf-footer-line { height: 1px; background: #eee; margin: 3mm auto; width: 50%; }
         }
       `}</style>
     </div>
