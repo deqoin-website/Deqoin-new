@@ -405,15 +405,15 @@ export default function CRMPage() {
         
         /* STATS */
         .crm-stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
-        .stat-lux-card { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); padding: 1.5rem; border-radius: 12px; display: flex; align-items: center; gap: 1.25rem; transition: transform 0.3s; }
-        .stat-lux-card:hover { transform: translateY(-3px); border-color: rgba(166,137,102,0.3); }
+        .stat-lux-card { background: var(--surface); border: 1px solid var(--line); padding: 1.5rem; border-radius: 12px; display: flex; align-items: center; gap: 1.25rem; transition: transform 0.3s; box-shadow: var(--shadow); }
+        .stat-lux-card:hover { transform: translateY(-3px); border-color: #a68966; }
         .stat-icon-wrap { width: 44px; height: 44px; border-radius: 10px; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.03); }
         .stat-icon-wrap.blue { color: #3b82f6; background: rgba(59,130,246,0.1); }
         .stat-icon-wrap.gold { color: #a68966; background: rgba(166,137,102,0.1); }
         .stat-icon-wrap.green { color: #10b981; background: rgba(16,185,129,0.1); }
         .stat-info { display: flex; flex-direction: column; }
-        .stat-label { font-size: 0.6rem; letter-spacing: 0.15em; color: var(--text-soft); font-weight: 800; }
-        .stat-val { font-size: 1.25rem; font-weight: 300; color: #fff; font-family: var(--font-display); }
+        .stat-label { font-size: 0.6rem; letter-spacing: 0.15em; color: var(--text-muted); font-weight: 800; opacity: 0.7; }
+        .stat-val { font-size: 1.25rem; font-weight: 300; color: var(--text); font-family: var(--font-display); }
 
         .crm-actions { display: flex; justify-content: space-between; align-items: center; padding: 1.25rem; }
         .search-box { display: flex; align-items: center; gap: 1rem; background: var(--background); border: 1px solid var(--line); border-radius: 8px; padding: 0.75rem 1.25rem; width: 350px; }
