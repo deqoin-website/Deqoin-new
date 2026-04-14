@@ -885,26 +885,28 @@ export default function DepartmentManagerPage() {
         }
 
         @media (max-width: 900px) {
-          .hybrid-modal-overlay { padding: 0; align-items: flex-start; }
+          .hybrid-modal-overlay { padding: 0; align-items: flex-start; overflow-y: auto; }
           .hybrid-modal-content { 
             width: 100vw !important; 
             max-width: 100vw !important; 
-            height: 100dvh !important; 
+            height: auto !important; 
+            min-height: 100dvh !important;
             border-radius: 0;
-            position: fixed;
-            top: 0;
-            left: 0;
+            display: block;
           }
-          .premium-modal-header { padding: 1.25rem; z-index: 100; }
-          .premium-modal-form { padding: 1.25rem; gap: 1.25rem; }
-          .header-main { gap: 0.75rem; }
-          .header-actions { gap: 0.75rem; }
+          .premium-modal-header { padding: 1rem 1.5rem; position: sticky; top: 0; z-index: 100; }
+          .header-main h3 { font-size: 1.1rem; }
+          .premium-modal-form { padding: 1.5rem; gap: 1.5rem; }
+          .header-main { gap: 0.5rem; flex-wrap: wrap; }
+          .header-actions { gap: 0.5rem; flex: 1; justify-content: flex-end; }
+          .premium-toggle-btn { padding: 0.4rem 0.8rem; font-size: 0.6rem; }
           .premium-toggle-btn span { display: none; }
           .form-cols-3, .form-cols-2 { grid-template-columns: 1fr !important; gap: 1.25rem !important; }
           .media-grid { grid-template-columns: 1fr !important; gap: 1.5rem !important; }
           .premium-advanced-grid { grid-template-columns: 1fr !important; gap: 1.5rem !important; }
-          .lux-modal-footer { margin-top: 2rem; padding: 2rem 1.25rem; }
-          .lux-save-btn { width: 100%; padding: 1.25rem; }
+          .lux-modal-footer { margin-top: 2rem; padding: 2rem 1.5rem; border-top: 1px solid rgba(166,137,102,0.1); }
+          .lux-save-btn { width: 100%; padding: 1.25rem; font-size: 0.8rem; justify-content: center; }
+          .lux-gallery-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)) !important; gap: 1rem !important; }
         }
 
         .modal-inner-scroll { overflow-y: auto; height: 100%; display: flex; flex-direction: column; }
