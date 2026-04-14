@@ -68,8 +68,9 @@ export default async function RootLayout({
           __html: `
             (function() {
               try {
+                var isAdmin = window.location.pathname.startsWith('/admin');
                 var theme = localStorage.getItem('deqoin_theme');
-                if (theme) {
+                if (isAdmin && theme) {
                   document.documentElement.setAttribute('data-theme', theme);
                 } else {
                   document.documentElement.setAttribute('data-theme', 'dark');
