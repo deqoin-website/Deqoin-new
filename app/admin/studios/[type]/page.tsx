@@ -735,9 +735,10 @@ export default function DepartmentManagerPage() {
         .dept-manager-layout { display: flex; flex-direction: column; gap: 2rem; }
         
         .dept-header { display: flex; justify-content: space-between; align-items: flex-end; gap: 1.5rem; }
-        @media (max-width: 768px) {
-          .dept-header { flex-direction: column; align-items: stretch; text-align: center; }
-          .save-btn-main { justify-content: center; }
+        @media (max-width: 900px) {
+          .dept-header { flex-direction: column; align-items: stretch; text-align: center; gap: 1rem; }
+          .save-btn-main { justify-content: center; width: 100%; }
+          .dept-header h2 { font-size: 1.25rem; }
         }
 
         .dept-header h2 { font-family: var(--font-display); font-size: 1.5rem; letter-spacing: 0.1em; color: var(--text); margin: 0 0 0.5rem 0; }
@@ -770,12 +771,14 @@ export default function DepartmentManagerPage() {
         .hero-upload-section { display: flex; flex-direction: column; gap: 0.75rem; }
         .hero-upload-section label { font-size: 0.65rem; color: #fff; letter-spacing: 0.15em; font-weight: 600; }
         .hero-preview { width: 100%; height: 300px; background: var(--background); border: 1px dashed var(--line); border-radius: 8px; overflow: hidden; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: border-color 0.3s; }
+        @media (max-width: 600px) { .hero-preview { height: 220px; } }
         .hero-preview:hover { border-color: var(--accent); }
         .hero-preview img { width: 100%; height: 100%; object-fit: cover; }
         .placeholder { display: flex; flex-direction: column; align-items: center; gap: 0.5rem; color: var(--text-muted); font-size: 0.8rem; }
 
         /* LIST PANELS */
-        .panel-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--line); padding-bottom: 1rem; }
+        .panel-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--line); padding-bottom: 1rem; gap: 1rem; }
+        @media (max-width: 600px) { .panel-header { flex-direction: column; align-items: flex-start; } .add-item-btn { width: 100%; justify-content: center; } }
         .panel-header h3 { margin: 0; color: #a68966; font-family: var(--font-display); font-size: 1.1rem; letter-spacing: 0.1em; }
         
         .add-item-btn { background: var(--surface-muted); border: 1px solid var(--line); color: var(--text); padding: 0.5rem 1rem; border-radius: 4px; display: flex; align-items: center; gap: 0.5rem; font-size: 0.75rem; cursor: pointer; transition: background 0.3s; }
@@ -786,6 +789,10 @@ export default function DepartmentManagerPage() {
           display: flex; align-items: flex-start; gap: 2rem; background: rgba(255,255,255,0.01); 
           border: 1px solid rgba(255,255,255,0.05); padding: 2rem; border-radius: 16px; 
           position: relative; transition: all 0.3s;
+        }
+        @media (max-width: 768px) { 
+          .list-item-card { flex-direction: column; padding: 1.5rem; gap: 1.5rem; } 
+          .card-badge-row { width: 100%; flex-direction: row; justify-content: space-between; }
         }
         .list-item-card:hover { background: rgba(255,255,255,0.02); border-color: rgba(166,137,102,0.3); }
         
@@ -808,7 +815,7 @@ export default function DepartmentManagerPage() {
         .remove-btn { background: rgba(255,77,77,0.05); color: #ff4d4d; border: 1px solid rgba(255,77,77,0.1); width: 44px; height: 44px; border-radius: 8px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.3s; }
         .remove-btn:hover { background: #ff4d4d; color: #fff; transform: scale(1.05); }
 
-        .items-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 2rem; margin-top: 1.5rem; }
+        .items-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem; margin-top: 1.5rem; }
         .grid-item-card { 
           display: flex; flex-direction: column; gap: 1.5rem; background: rgba(255,255,255,0.01); 
           border: 1px solid rgba(255,255,255,0.05); padding: 2rem; border-radius: 16px; transition: all 0.3s;
