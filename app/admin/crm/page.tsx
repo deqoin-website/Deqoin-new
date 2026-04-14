@@ -201,7 +201,7 @@ export default function CRMPage() {
               </button>
               <button className="lux-report-btn gold-btn" onClick={() => { 
                   setIsBulkPrinting(true);
-                  setTimeout(() => handleDownloadPDF('bulk'), 100);
+                  setTimeout(() => handleDownloadPDF('bulk'), 500);
                 }} disabled={!libLoaded} title="PDF Olarak İndir">
                 {libLoaded ? <><Download size={16} /> İNDİR</> : <><Loader2 className="spinner" size={16} /> BEKLEYİN...</>}
               </button>
@@ -410,7 +410,7 @@ export default function CRMPage() {
                   </button>
                   <button className="lux-action-btn download-btn" onClick={() => {
                     setIsBulkPrinting(false);
-                    setTimeout(() => handleDownloadPDF('single'), 100);
+                    setTimeout(() => handleDownloadPDF('single'), 500);
                   }} disabled={!libLoaded}>
                     {libLoaded ? <><Download size={20} /> İNDİR</> : <><Loader2 className="spinner" size={16} /> ...</>}
                   </button>
@@ -509,7 +509,7 @@ export default function CRMPage() {
                 </tr>
               </thead>
               <tbody>
-                {bulkLeads.map((lead) => (
+                {bulkLeads.length > 0 ? bulkLeads.map((lead) => (
                   <tr key={lead._id}>
                     <td>
                       <span className="pdf-date">{new Date(lead.createdAt).toLocaleDateString('tr-TR')}</span>
@@ -520,7 +520,13 @@ export default function CRMPage() {
                     <td><span className="pdf-dept-tag">{lead.interestedDepartment}</span></td>
                     <td><div className="pdf-status-pill">{lead.status}</div></td>
                   </tr>
-                ))}
+                )) : (
+                  <tr>
+                    <td colSpan={5} style={{ textAlign: 'center', padding: '20mm', color: '#888' }}>
+                      Seçili zaman aralığında veya kriterlerde herhangi bir randevu kaydı bulunmamaktadır.
+                    </td>
+                  </tr>
+                )}
               </tbody>
             </table>
 
