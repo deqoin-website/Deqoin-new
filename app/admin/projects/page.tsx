@@ -610,18 +610,26 @@ export default function AdminProjects() {
         }
 
         @media (max-width: 900px) {
-          .hybrid-modal-overlay { padding: 0.5rem; }
-          .hybrid-modal-content { height: 100vh; border-radius: 0; }
-          .premium-modal-header { padding: 1.5rem; }
-          .premium-modal-form { padding: 1.5rem; gap: 2rem; }
-          .header-main { flex-direction: column; align-items: flex-start; gap: 1rem; }
-          .header-actions { width: 100%; justify-content: space-between; }
+          .hybrid-modal-overlay { padding: 0; align-items: flex-start; }
+          .hybrid-modal-content { 
+            width: 100vw !important; 
+            max-width: 100vw !important; 
+            height: 100dvh !important; 
+            border-radius: 0;
+            position: fixed;
+            top: 0;
+            left: 0;
+          }
+          .premium-modal-header { padding: 1.25rem; }
+          .premium-modal-form { padding: 1.25rem; gap: 1.5rem; }
+          .header-main { gap: 0.75rem; }
+          .header-actions { gap: 0.75rem; }
           .premium-toggle-btn span { display: none; }
-          .form-cols-3, .form-cols-2 { grid-template-columns: 1fr; gap: 1.5rem; }
-          .media-grid { grid-template-columns: 1fr; gap: 2rem; }
-          .premium-advanced-grid { grid-template-columns: 1fr; gap: 2rem; }
-          .lux-modal-footer { margin-top: 2rem; padding-top: 2rem; }
-          .lux-save-btn { width: 100%; padding: 1.25rem 2rem; }
+          .form-cols-3, .form-cols-2 { grid-template-columns: 1fr !important; gap: 1.25rem !important; }
+          .media-grid { grid-template-columns: 1fr !important; gap: 1.5rem !important; }
+          .premium-advanced-grid { grid-template-columns: 1fr !important; gap: 1.5rem !important; }
+          .lux-modal-footer { margin-top: 2rem; padding: 2rem 1.25rem; }
+          .lux-save-btn { width: 100%; padding: 1.25rem; }
           .item-thumb { width: 60px; height: 60px; }
         }
 
