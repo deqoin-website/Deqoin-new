@@ -4498,6 +4498,7 @@ body:has(.homepage-snap-shell) {
   letter-spacing: 0.1em;
   line-height: 0.9;
   margin-bottom: 0.5rem;
+  color: #fff;
 }
 
 .process-header .section-line {
