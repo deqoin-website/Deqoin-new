@@ -277,7 +277,13 @@ export default function CorporateAboutAdmin() {
                   <div className="empty-state">Henüz bir adım eklenmemiş.</div>
                 )}
               </div>
-            </motion.div        .lux-admin-container { display: flex; flex-direction: column; gap: 3rem; max-width: 1000px; }
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+
+      <style jsx>{`
+        .lux-admin-container { display: flex; flex-direction: column; gap: 3rem; max-width: 1000px; }
         
         .lux-header { display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 1px solid rgba(166,137,102,0.2); padding-bottom: 2.5rem; gap: 1.5rem; }
         @media (max-width: 768px) {
@@ -297,7 +303,6 @@ export default function CorporateAboutAdmin() {
         .lux-tabs button { background: transparent; border: none; border-bottom: 2px solid transparent; color: var(--text-muted); padding: 1rem 1.5rem; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.1em; cursor: pointer; transition: 0.3s; display: flex; align-items: center; gap: 0.75rem; white-space: nowrap; }
         .lux-tabs button:hover { color: var(--text); }
         .lux-tabs button.active { color: #a68966; border-color: #a68966; background: rgba(166,137,102,0.05); }
-olor: #a68966; border-color: #a68966; background: rgba(166,137,102,0.05); }
 
         .lux-card-stack { display: flex; flex-direction: column; gap: 2rem; }
         .lux-card { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 16px; padding: 2.5rem; position: relative; }
