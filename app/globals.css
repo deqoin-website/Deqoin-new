@@ -4079,8 +4079,8 @@ body:has(.homepage-snap-shell) {
   background: rgba(255, 255, 255, 0.4);
 }
 .mimari-cta-content { position: relative; z-index: 5; padding: 0 5rem; max-width: 800px; }
-.mimari-cta-title { font-family: var(--font-smooch), sans-serif; font-size: clamp(3rem, 7vw, 5rem); font-weight: 100; color: var(--text); margin: 1rem 0 1.5rem; line-height: 0.95; letter-spacing: 0.05em; }
-.mimari-cta-sub { font-family: var(--font-body), sans-serif; font-size: 1rem; font-weight: 300; color: var(--text-soft); line-height: 1.7; max-width: 550px; margin-bottom: 3rem; }
+.mimari-cta-title { font-family: var(--font-smooch), sans-serif; font-size: clamp(3rem, 7vw, 5rem); font-weight: 100; color: #fff; margin: 1rem 0 1.5rem; line-height: 0.95; letter-spacing: 0.05em; }
+.mimari-cta-sub { font-family: var(--font-body), sans-serif; font-size: 1rem; font-weight: 300; color: rgba(255, 255, 255, 0.7); line-height: 1.7; max-width: 550px; margin-bottom: 3rem; }
 
 /* DİĞER HİZMETLER */
 .mimari-other-services { background: var(--background); padding: 10rem 0; border-top: 1px solid var(--line); }
@@ -5411,7 +5411,7 @@ body:has(.homepage-snap-shell) {
   font-family: var(--font-smooch), sans-serif;
   font-size: clamp(5rem, 18vw, 15rem);
   font-weight: 100;
-  color: var(--text);
+  color: #fff;
   letter-spacing: 0.15em;
   line-height: 0.8;
   margin: 0;
@@ -5423,7 +5423,7 @@ body:has(.homepage-snap-shell) {
   font-size: clamp(0.8rem, 2vw, 1.2rem);
   letter-spacing: 0.6em;
   font-weight: 300;
-  color: var(--text);
+  color: #fff;
   text-transform: uppercase;
   margin-top: 2rem;
 }
