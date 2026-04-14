@@ -39,6 +39,30 @@ const heroSlides = [
   }
 ];
 
+export default function Page() {
+  const [heroIndex, setHeroIndex] = useState(0);
+  const [heroDirection, setHeroDirection] = useState(0);
+  const [isConsultationOpen, setIsConsultationOpen] = useState(false);
+  const [activeTeamFilter, setActiveTeamFilter] = useState<(typeof teamFilters)[number]["key"]>("all");
+  const [slides, setSlides] = useState<any[]>(heroSlides);
+  const [projectIndex, setProjectIndex] = useState(0);
+  const [projectDirection, setProjectDirection] = useState(1);
+  const [projectProgressKey, setProjectProgressKey] = useState(0);
+  const [activeProjectPanelSlug, setActiveProjectPanelSlug] = useState<string | null>(null);
+  const [teamSlideIndex, setTeamSlideIndex] = useState(0);
+  const [teamSlideDirection, setTeamSlideDirection] = useState(1);
+  const heroTouchStartX = useRef<number | null>(null);
+  const heroTouchStartY = useRef<number | null>(null);
+  const projectTouchStartX = useRef<number | null>(null);
+  const projectTouchStartY = useRef<number | null>(null);
+  const projectIndexRef = useRef(0);
+  const homepageSnapLockRef = useRef(false);
+  const homepageTouchStartYRef = useRef<number | null>(null);
+  const teamTouchStartX = useRef<number | null>(null);
+  const teamTouchStartY = useRef<number | null>(null);
+  const projectWheelLockRef = useRef(false);
+  const teamWheelLockRef = useRef(false);
+
   const [serviceCards, setServiceCards] = useState<any[]>([
     {
       href: "/mimari",
@@ -119,9 +143,11 @@ const heroSlides = [
     return () => window.clearInterval(interval);
   }, []);
 
-
-
   const filteredProjects = useMemo(() => projectsData, []);
+  useEffect(() => {
+    projectIndexRef.current = projectIndex;
+  }, [projectIndex]);
+
   const selectedProject = useMemo(
     () => filteredProjects.find((project) => project.slug === activeProjectPanelSlug) ?? null,
     [activeProjectPanelSlug, filteredProjects],
