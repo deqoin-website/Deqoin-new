@@ -734,7 +734,12 @@ export default function DepartmentManagerPage() {
       <style jsx>{`
         .dept-manager-layout { display: flex; flex-direction: column; gap: 2rem; }
         
-        .dept-header { display: flex; justify-content: space-between; align-items: flex-end; }
+        .dept-header { display: flex; justify-content: space-between; align-items: flex-end; gap: 1.5rem; }
+        @media (max-width: 768px) {
+          .dept-header { flex-direction: column; align-items: stretch; text-align: center; }
+          .save-btn-main { justify-content: center; }
+        }
+
         .dept-header h2 { font-family: var(--font-display); font-size: 1.5rem; letter-spacing: 0.1em; color: var(--text); margin: 0 0 0.5rem 0; }
         .dept-header p { margin: 0; color: var(--text-soft); opacity: 0.7; font-size: 0.85rem; }
 
@@ -742,19 +747,24 @@ export default function DepartmentManagerPage() {
         .save-btn-main:hover { background: #c5a680; }
         .save-btn-main:disabled { opacity: 0.7; cursor: not-allowed; }
 
-        .tabs-nav { display: flex; gap: 0.5rem; border-bottom: 1px solid var(--line); padding-bottom: 1rem; }
-        .tab-btn { background: transparent; border: none; color: var(--text-muted); padding: 0.75rem 1.5rem; border-radius: 4px; font-size: 0.75rem; font-weight: 600; letter-spacing: 0.1em; cursor: pointer; transition: all 0.3s; }
+        .tabs-nav { display: flex; gap: 0.5rem; border-bottom: 1px solid var(--line); padding-bottom: 1rem; overflow-x: auto; scrollbar-width: none; -ms-overflow-style: none; }
+        .tabs-nav::-webkit-scrollbar { display: none; }
+        
+        .tab-btn { background: transparent; border: none; color: var(--text-muted); padding: 0.75rem 1.5rem; border-radius: 4px; font-size: 0.75rem; font-weight: 600; letter-spacing: 0.1em; cursor: pointer; transition: all 0.3s; white-space: nowrap; }
         .tab-btn:hover { color: var(--text); background: var(--surface-muted); }
         .tab-btn.active { background: rgba(166,137,102,0.1); color: #a68966; }
 
         .tab-content-area { padding: 3rem; min-height: 400px; }
+        @media (max-width: 900px) { .tab-content-area { padding: 1.5rem; } }
         
         .tab-panel { display: flex; flex-direction: column; gap: 2rem; }
 
         .form-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+        @media (max-width: 768px) { .form-grid-2 { grid-template-columns: 1fr; gap: 1.5rem; } }
+        
         .form-group { display: flex; flex-direction: column; gap: 0.75rem; }
         .form-group label { font-size: 0.65rem; color: var(--text-muted); letter-spacing: 0.15em; font-weight: 600; }
-        .form-group input, .form-group textarea { background: var(--background); border: 1px solid var(--line); padding: 1rem; color: var(--text); border-radius: 4px; font-family: inherit; resize: vertical; }
+        .form-group input, .form-group textarea { background: var(--background); border: 1px solid var(--line); padding: 1rem; color: var(--text); border-radius: 4px; font-family: inherit; resize: vertical; width: 100%; }
         .form-group input:focus, .form-group textarea:focus { outline: none; border-color: #a68966; }
 
         .hero-upload-section { display: flex; flex-direction: column; gap: 0.75rem; }
@@ -816,6 +826,11 @@ export default function DepartmentManagerPage() {
           display: flex; align-items: center; gap: 1.5rem; background: rgba(255,255,255,0.01); 
           border: 1px solid rgba(255,255,255,0.05); padding: 1.25rem; border-radius: 12px; transition: 0.3s;
         }
+        @media (max-width: 600px) {
+          .category-row { flex-direction: column; align-items: stretch; gap: 1rem; }
+          .arrow { display: none; }
+          .ml-auto { margin-left: 0; align-self: flex-end; }
+        }
         .category-row:hover { background: rgba(255,255,255,0.02); border-color: rgba(166,137,102,0.3); }
         .arrow { color: #a68966; font-weight: 800; opacity: 0.5; margin-top: 1.5rem; }
         .flex-1 { flex: 1; }
@@ -867,6 +882,21 @@ export default function DepartmentManagerPage() {
           background: rgba(15,15,15,0.7); border: 1px solid rgba(166,137,102,0.2); width: 100%; max-width: 1100px;
           height: 90vh; border-radius: 24px; display: flex; flex-direction: column; overflow: hidden;
           box-shadow: 0 40px 100px rgba(0,0,0,0.8);
+        }
+
+        @media (max-width: 900px) {
+          .hybrid-modal-overlay { padding: 0.5rem; }
+          .hybrid-modal-content { height: 100vh; border-radius: 0; }
+          .premium-modal-header { padding: 1.5rem; z-index: 100; }
+          .premium-modal-form { padding: 1.5rem; gap: 1.5rem; }
+          .header-main { flex-direction: column; align-items: flex-start; gap: 1rem; }
+          .header-actions { width: 100%; justify-content: space-between; }
+          .premium-toggle-btn span { display: none; }
+          .form-cols-3, .form-cols-2 { grid-template-columns: 1fr; gap: 1.25rem; }
+          .media-grid { grid-template-columns: 1fr; gap: 2rem; }
+          .premium-advanced-grid { grid-template-columns: 1fr; gap: 2rem; }
+          .lux-modal-footer { margin-top: 2rem; padding-top: 2rem; }
+          .lux-save-btn { width: 100%; padding: 1.25rem 2rem; }
         }
 
         .modal-inner-scroll { overflow-y: auto; height: 100%; display: flex; flex-direction: column; }

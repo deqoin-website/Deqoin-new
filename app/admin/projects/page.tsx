@@ -544,20 +544,20 @@ export default function AdminProjects() {
         .engine-header {
           display: flex; justify-content: space-between; align-items: flex-end;
           padding: 1.5rem 2rem; background: var(--surface); border: 1px solid var(--line); border-radius: 12px;
+          gap: 1.5rem;
         }
 
-        .header-text p { font-family: var(--font-display); font-size: 0.8rem; letter-spacing: 0.2em; color: #a68966; margin: 0 0 5px 0; font-weight: 700; }
-        .header-text span { font-size: 0.75rem; color: var(--text-soft); opacity: 0.7; }
-
-        .add-engine-btn {
-          background: #fff; color: #000; border: none; padding: 0.8rem 1.5rem; display: flex; align-items: center; gap: 0.5rem;
-          font-family: var(--font-display), sans-serif; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em; cursor: pointer; border-radius: 4px;
+        @media (max-width: 768px) {
+          .engine-header { flex-direction: column; align-items: stretch; padding: 1.5rem; }
+          .add-engine-btn { justify-content: center; }
         }
-        .add-engine-btn:hover { background: #e0e0e0; }
 
         .loader-wrap { display: flex; justify-content: center; padding: 5rem; color: #a68966; }
 
         .engine-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem; }
+        @media (max-width: 480px) {
+          .engine-grid { grid-template-columns: 1fr; }
+        }
 
         .engine-card {
           background: var(--surface); border: 1px solid var(--line); border-radius: 12px; overflow: hidden;
@@ -607,6 +607,22 @@ export default function AdminProjects() {
           background: rgba(15,15,15,0.7); border: 1px solid rgba(166,137,102,0.2); width: 100%; max-width: 1100px;
           height: 90vh; border-radius: 24px; display: flex; flex-direction: column; overflow: hidden;
           box-shadow: 0 40px 100px rgba(0,0,0,0.8);
+        }
+
+        @media (max-width: 900px) {
+          .hybrid-modal-overlay { padding: 0.5rem; }
+          .hybrid-modal-content { height: 100vh; border-radius: 0; }
+          .premium-modal-header { padding: 1.5rem; }
+          .premium-modal-form { padding: 1.5rem; gap: 2rem; }
+          .header-main { flex-direction: column; align-items: flex-start; gap: 1rem; }
+          .header-actions { width: 100%; justify-content: space-between; }
+          .premium-toggle-btn span { display: none; }
+          .form-cols-3, .form-cols-2 { grid-template-columns: 1fr; gap: 1.5rem; }
+          .media-grid { grid-template-columns: 1fr; gap: 2rem; }
+          .premium-advanced-grid { grid-template-columns: 1fr; gap: 2rem; }
+          .lux-modal-footer { margin-top: 2rem; padding-top: 2rem; }
+          .lux-save-btn { width: 100%; padding: 1.25rem 2rem; }
+          .item-thumb { width: 60px; height: 60px; }
         }
 
         .modal-inner-scroll { overflow-y: auto; height: 100%; display: flex; flex-direction: column; }

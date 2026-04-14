@@ -277,15 +277,14 @@ export default function CorporateAboutAdmin() {
                   <div className="empty-state">Henüz bir adım eklenmemiş.</div>
                 )}
               </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
-
-      <style jsx>{`
-        .lux-admin-container { display: flex; flex-direction: column; gap: 3rem; max-width: 1000px; }
+            </motion.div        .lux-admin-container { display: flex; flex-direction: column; gap: 3rem; max-width: 1000px; }
         
-        .lux-header { display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 1px solid rgba(166,137,102,0.2); padding-bottom: 2.5rem; }
+        .lux-header { display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 1px solid rgba(166,137,102,0.2); padding-bottom: 2.5rem; gap: 1.5rem; }
+        @media (max-width: 768px) {
+          .lux-header { flex-direction: column; align-items: stretch; text-align: center; }
+          .lux-save-btn { justify-content: center; }
+        }
+
         .header-text h1 { font-family: var(--font-display), sans-serif; font-size: 1.5rem; letter-spacing: 0.3em; color: #a68966; margin: 0; }
         .header-text p { font-size: 0.85rem; color: var(--text-muted); margin-top: 0.5rem; }
         
@@ -293,13 +292,16 @@ export default function CorporateAboutAdmin() {
         .lux-save-btn:hover { background: #d4b591; transform: translateY(-2px); }
         .lux-save-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
 
-        .lux-tabs { display: flex; gap: 1rem; border-bottom: 1px solid rgba(255,255,255,0.05); }
-        .lux-tabs button { background: transparent; border: none; border-bottom: 2px solid transparent; color: var(--text-muted); padding: 1rem 1.5rem; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.1em; cursor: pointer; transition: 0.3s; display: flex; align-items: center; gap: 0.75rem; }
+        .lux-tabs { display: flex; gap: 1rem; border-bottom: 1px solid rgba(255,255,255,0.05); overflow-x: auto; scrollbar-width: none; -ms-overflow-style: none; }
+        .lux-tabs::-webkit-scrollbar { display: none; }
+        .lux-tabs button { background: transparent; border: none; border-bottom: 2px solid transparent; color: var(--text-muted); padding: 1rem 1.5rem; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.1em; cursor: pointer; transition: 0.3s; display: flex; align-items: center; gap: 0.75rem; white-space: nowrap; }
         .lux-tabs button:hover { color: var(--text); }
         .lux-tabs button.active { color: #a68966; border-color: #a68966; background: rgba(166,137,102,0.05); }
+olor: #a68966; border-color: #a68966; background: rgba(166,137,102,0.05); }
 
         .lux-card-stack { display: flex; flex-direction: column; gap: 2rem; }
         .lux-card { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 16px; padding: 2.5rem; position: relative; }
+        @media (max-width: 600px) { .lux-card { padding: 1.5rem; } .card-label { left: 16px; font-size: 0.5rem; } }
         .card-label { position: absolute; top: -12px; left: 24px; background: #a68966; color: #000; font-family: var(--font-display); font-size: 0.55rem; font-weight: 900; letter-spacing: 0.2em; padding: 4px 12px; border-radius: 4px; }
         
         .lux-group { display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 2rem; }
@@ -316,13 +318,16 @@ export default function CorporateAboutAdmin() {
         
         .stats-editor-grid { display: grid; grid-template-columns: 1fr; gap: 2rem; }
         .stat-edit-group { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; padding: 1.5rem; background: rgba(255,255,255,0.03); border-radius: 12px; }
+        @media (max-width: 600px) { .stat-edit-group { grid-template-columns: 1fr; gap: 1rem; } }
 
         .card-header-flex { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; }
+        @media (max-width: 600px) { .card-header-flex { flex-direction: column; align-items: flex-start; gap: 1rem; } }
         .add-step-btn { background: transparent; border: 1px solid #a68966; color: #a68966; padding: 0.6rem 1.2rem; border-radius: 4px; font-size: 0.7rem; font-weight: 800; cursor: pointer; display: flex; align-items: center; gap: 0.5rem; transition: 0.3s; }
         .add-step-btn:hover { background: #a68966; color: #000; }
 
         .workflow-editor-list { display: flex; flex-direction: column; gap: 1.5rem; }
         .workflow-edit-item { display: flex; gap: 1.5rem; padding: 1.5rem; background: rgba(255,255,255,0.03); border-radius: 12px; align-items: flex-start; }
+        @media (max-width: 600px) { .workflow-edit-item { flex-direction: column; gap: 1rem; position: relative; } .remove-step-btn { position: absolute; top: 1rem; right: 1rem; } }
         .step-num { font-family: var(--font-display); font-size: 2rem; color: rgba(166,137,102,0.2); line-height: 1; }
         .step-fields { flex: 1; display: flex; flex-direction: column; gap: 1rem; }
         .step-fields input { background: transparent; border: none; border-bottom: 1px solid rgba(255,255,255,0.1); color: #a68966; font-weight: 700; font-size: 1rem; padding: 0.5rem 0; width: 100%; }

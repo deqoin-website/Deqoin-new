@@ -22,6 +22,7 @@ import './admin.css';
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [openSubmenus, setOpenSubmenus] = useState<string[]>([]);
   const pathname = usePathname();
   const router = useRouter();
@@ -127,13 +128,19 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   return (
     <div className="admin-layout">
       {/* SIDEBAR */}
-      <aside className={`admin-sidebar ${isSidebarOpen ? 'open' : 'closed'}`}>
+      <aside className={`admin-sidebar ${isSidebarOpen ? 'open' : 'closed'} ${isMobileMenuOpen ? 'mobile-show' : ''}`}>
         <div className="sidebar-header">
           <div className="admin-logo">
             <img src="/images/logo-new.jpeg" alt="DEQOIN" />
             {isSidebarOpen && <motion.span initial={{ opacity: 0 }} animate={{ opacity: 1 }}>STUDIO ADMIN</motion.span>}
           </div>
-          <button onClick={() => setIsSidebarOpen(!isSidebarOpen)} className="sidebar-toggle">
+          <button onClick={() => {
+            if (window.innerWidth <= 900) {
+                setIsMobileMenuOpen(false);
+            } else {
+                setIsSidebarOpen(!isSidebarOpen);
+            }
+          }} className="sidebar-toggle">
             {isSidebarOpen ? <ChevronLeft size={20} /> : <Menu size={20} />}
           </button>
         </div>
@@ -141,7 +148,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         <nav className="sidebar-nav">
           {menuGroups.map((group) => (
             <div key={group.group} className="sidebar-group">
-              {isSidebarOpen && <span className="group-label">{group.group}</span>}
+              {(isSidebarOpen || window.innerWidth <= 900) && <span className="group-label">{group.group}</span>}
               <div className="group-items">
                 {group.items.map((item) => {
                   const hasSubItems = item.subItems && item.subItems.length > 0;
@@ -157,7 +164,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                           style={{ cursor: 'pointer' }}
                         >
                           <item.icon size={20} className="nav-icon" />
-                          {isSidebarOpen && (
+                          {(isSidebarOpen || window.innerWidth <= 900) && (
                             <>
                               <span>{item.name}</span>
                               <ChevronLeft 
@@ -176,16 +183,19 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                         <Link 
                           href={item.path}
                           className={`nav-item ${pathname === item.path ? 'active' : ''}`}
+                          onClick={() => {
+                            if (window.innerWidth <= 900) setIsMobileMenuOpen(false);
+                          }}
                         >
                           <item.icon size={20} className="nav-icon" />
-                          {isSidebarOpen && <span>{item.name}</span>}
-                          {pathname === item.path && <motion.div layoutId="nav-active" className="nav-active-indicator" />}
+                          {(isSidebarOpen || window.innerWidth <= 900) && <span>{item.name}</span>}
+                          {pathname === item.path && (isSidebarOpen || window.innerWidth <= 900) && <motion.div layoutId="nav-active" className="nav-active-indicator" />}
                         </Link>
                       )}
 
                       {/* SUB ITEMS */}
                       <AnimatePresence>
-                        {hasSubItems && isOpen && isSidebarOpen && (
+                        {hasSubItems && isOpen && (isSidebarOpen || window.innerWidth <= 900) && (
                           <motion.div 
                             initial={{ height: 0, opacity: 0 }}
                             animate={{ height: 'auto', opacity: 1 }}
@@ -197,6 +207,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                                 key={sub.path} 
                                 href={sub.path}
                                 className={`sub-nav-item ${pathname === sub.path ? 'active' : ''}`}
+                                onClick={() => {
+                                  if (window.innerWidth <= 900) setIsMobileMenuOpen(false);
+                                }}
                               >
                                 {sub.name}
                               </Link>
@@ -215,22 +228,42 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         <div className="sidebar-footer">
           <button onClick={handleLogout} className="nav-item logout-btn">
             <LogOut size={20} className="nav-icon" />
-            {isSidebarOpen && <span>Sistemi Kapat</span>}
+            {(isSidebarOpen || window.innerWidth <= 900) && <span>Sistemi Kapat</span>}
           </button>
         </div>
       </aside>
 
+      {/* OVERLAY FOR MOBILE */}
+      <AnimatePresence>
+        {isMobileMenuOpen && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setIsMobileMenuOpen(false)}
+            className="mobile-sidebar-overlay"
+          />
+        )}
+      </AnimatePresence>
+
       {/* MAIN CONTENT */}
       <main className="admin-main">
         <header className="admin-top-bar">
-          <div className="page-info">
-            <span className="page-breadcrumb">Yönetim Paneli / {currentPathItem?.name || 'Dashboard'}</span>
-            <h1>{currentPathItem?.name || 'Dashboard'}</h1>
+          <div className="top-bar-left">
+            <button className="mobile-menu-toggle" onClick={() => setIsMobileMenuOpen(true)}>
+              <Menu size={24} />
+            </button>
+            <div className="page-info">
+              <span className="page-breadcrumb">Yönetim Paneli / {currentPathItem?.name || 'Dashboard'}</span>
+              <h1>{currentPathItem?.name || 'Dashboard'}</h1>
+            </div>
           </div>
           <div className="top-bar-actions">
-            <ThemeToggle />
+            <div className="desktop-actions">
+                <ThemeToggle />
+            </div>
             <div className="user-profile">
-              <span>SİSTEM YÖNETİCİSİ</span>
+              <span className="user-name-desktop">SİSTEM YÖNETİCİSİ</span>
               <div className="avatar">DQ</div>
             </div>
           </div>

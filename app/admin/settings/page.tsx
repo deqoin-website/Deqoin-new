@@ -102,13 +102,13 @@ export default function SettingsPage() {
         </div>
         <button className="save-btn" onClick={saveSettings} disabled={isSaving}>
           {isSaving ? <Loader2 className="animate-spin" size={18} /> : <Save size={18} />}
-          <span>DEĞİŞİKLİKLERİ KAYDET</span>
+          <span>KAYDET</span>
         </button>
       </div>
 
       <div className="tabs-navigation">
         <button className={activeTab === 'genel' ? 'active' : ''} onClick={() => setActiveTab('genel')}><SettingsIcon size={14}/> GENEL</button>
-        <button className={activeTab === 'seo' ? 'active' : ''} onClick={() => setActiveTab('seo')}><Globe size={14}/> SEO & ANALİTİK</button>
+        <button className={activeTab === 'seo' ? 'active' : ''} onClick={() => setActiveTab('seo')}><Globe size={14}/> SEO</button>
         <button className={activeTab === 'iletisim' ? 'active' : ''} onClick={() => setActiveTab('iletisim')}><Phone size={14}/> İLETİŞİM</button>
         <button className={activeTab === 'sistem' ? 'active' : ''} onClick={() => setActiveTab('sistem')}><Shield size={14}/> SİSTEM</button>
       </div>
@@ -255,13 +255,19 @@ export default function SettingsPage() {
           align-items: flex-end;
           border-bottom: 1px solid rgba(255, 255, 255, 0.05);
           padding-bottom: 2rem;
+          gap: 1.5rem;
+        }
+        @media (max-width: 768px) {
+          .settings-header { flex-direction: column; align-items: stretch; text-align: center; }
+          .save-btn { justify-content: center; }
         }
 
         .header-text p { font-family: var(--font-display), sans-serif; font-size: 0.75rem; letter-spacing: 0.3em; color: #a68966; margin: 0; }
         .header-text span { font-size: 0.85rem; color: var(--text-soft); opacity: 0.7; display: block; margin-top: 0.5rem; }
 
-        .tabs-navigation { display: flex; gap: 1rem; margin-top: -1rem; }
-        .tabs-navigation button { background: transparent; border: none; border-bottom: 2px solid transparent; color: var(--text-muted); padding: 0.75rem 1rem; font-size: 0.7rem; font-weight: 800; letter-spacing: 0.1em; cursor: pointer; transition: all 0.3s; display: flex; align-items: center; gap: 0.5rem; }
+        .tabs-navigation { display: flex; gap: 0.5rem; margin-top: -1rem; overflow-x: auto; scrollbar-width: none; -ms-overflow-style: none; }
+        .tabs-navigation::-webkit-scrollbar { display: none; }
+        .tabs-navigation button { background: transparent; border: none; border-bottom: 2px solid transparent; color: var(--text-muted); padding: 0.75rem 1rem; font-size: 0.7rem; font-weight: 800; letter-spacing: 0.1em; cursor: pointer; transition: all 0.3s; display: flex; align-items: center; gap: 0.5rem; white-space: nowrap; }
         .tabs-navigation button:hover { color: var(--text); }
         .tabs-navigation button.active { color: #a68966; border-color: #a68966; }
 
@@ -300,6 +306,7 @@ export default function SettingsPage() {
         .card-header p { font-size: 0.8rem; color: var(--text-soft); opacity: 0.7; margin-top: 0.5rem; }
 
         .logo-section-grid { display: flex; gap: 2.5rem; align-items: flex-end; }
+        @media (max-width: 600px) { .logo-section-grid { flex-direction: column; align-items: flex-start; gap: 2rem; } .info-inputs { width: 100%; } }
         .logo-upload-wrap { display: flex; flex-direction: column; gap: 0.75rem; }
         .logo-upload-wrap label { font-size: 0.6rem; font-weight: 900; color: var(--text-muted); }
         .logo-preview-box { width: 140px; height: 100px; background: #fff; border-radius: 4px; display: flex; align-items: center; justify-content: center; cursor: pointer; padding: 10px; position: relative; }
