@@ -543,13 +543,23 @@ export default function AdminProjects() {
         
         .engine-header {
           display: flex; justify-content: space-between; align-items: flex-end;
-          padding: 1.5rem 2rem; background: var(--surface); border: 1px solid var(--line); border-radius: 12px;
-          gap: 1.5rem;
+          padding: 2.5rem 3rem; background: rgba(255,255,255,0.02); border-bottom: 1px solid rgba(166,137,102,0.2);
+          gap: 2rem;
         }
+        .header-text p { font-family: var(--font-display), sans-serif; font-size: 1.5rem; letter-spacing: 0.3em; color: #a68966; margin: 0; font-weight: 500; }
+        .header-text span { font-size: 0.85rem; color: var(--text-muted); display: block; margin-top: 0.5rem; opacity: 0.8; }
+
+        .add-engine-btn { 
+          background: #a68966; color: #000; border: none; padding: 1rem 2rem; border-radius: 4px; 
+          font-family: var(--font-display); font-weight: 800; letter-spacing: 0.15em; font-size: 0.75rem; 
+          cursor: pointer; display: flex; align-items: center; gap: 1rem; transition: all 0.3s; 
+          box-shadow: 0 10px 30px rgba(166,137,102,0.3);
+        }
+        .add-engine-btn:hover { background: #d4b591; transform: translateY(-2px); }
 
         @media (max-width: 768px) {
-          .engine-header { flex-direction: column; align-items: stretch; padding: 1.5rem; }
-          .add-engine-btn { justify-content: center; }
+          .engine-header { flex-direction: column; align-items: stretch; padding: 2rem 1.5rem; text-align: center; }
+          .add-engine-btn { justify-content: center; margin-top: 1rem; }
         }
 
         .loader-wrap { display: flex; justify-content: center; padding: 5rem; color: #a68966; }
