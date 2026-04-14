@@ -125,9 +125,9 @@ export default function CRMPage() {
     const opt = {
       margin: 10,
       filename: filename,
-      image: { type: 'jpeg', quality: 0.98 },
-      html2canvas: { scale: 2, useCORS: true, letterRendering: true },
-      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+      image: { type: 'jpeg', quality: 1.0 },
+      html2canvas: { scale: 3, useCORS: true, letterRendering: true, logging: false },
+      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait', precision: 32 }
     };
 
     try {
@@ -424,7 +424,9 @@ export default function CRMPage() {
             <h1>Deqoin Design Studio</h1>
             <p>ARCHITECTURAL & DESIGN SOLUTIONS</p>
           </div>
+          <div className="pdf-header-divider"></div>
           <div className="pdf-meta">
+            <span><strong>DÖKÜMAN NO:</strong> DQ-{Math.floor(1000 + Math.random() * 9000)}</span>
             <span><strong>RAPOR TARİHİ:</strong> {new Date().toLocaleDateString('tr-TR')}</span>
             <span><strong>BİRİM:</strong> CRM / RANDEVU YÖNETİMİ</span>
           </div>
@@ -482,21 +484,24 @@ export default function CRMPage() {
             <table className="pdf-table">
               <thead>
                 <tr>
-                  <th>TARİH / SAAT</th>
-                  <th>MÜŞTERİ BİLGİSİ</th>
-                  <th>İLETİŞİM</th>
-                  <th>İLGİLİ BİRİM</th>
-                  <th>DURUM</th>
+                  <th style={{ width: '15%' }}>TARİH / SAAT</th>
+                  <th style={{ width: '25%' }}>MÜŞTERİ BİLGİSİ</th>
+                  <th style={{ width: '25%' }}>İLETİŞİM BİLGİLERİ</th>
+                  <th style={{ width: '15%' }}>İLGİLİ BİRİM</th>
+                  <th style={{ width: '20%' }}>GÜNCEL DURUM</th>
                 </tr>
               </thead>
               <tbody>
                 {bulkLeads.map((lead) => (
                   <tr key={lead._id}>
-                    <td>{new Date(lead.createdAt).toLocaleDateString('tr-TR')}<br/><small>{new Date(lead.createdAt).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })}</small></td>
-                    <td><strong>{lead.name} {lead.surname}</strong><br/>{lead.city}</td>
-                    <td>{lead.phone}<br/>{lead.email}</td>
-                    <td>{lead.interestedDepartment}</td>
-                    <td className="pdf-status-cell">{lead.status}</td>
+                    <td>
+                      <span className="pdf-date">{new Date(lead.createdAt).toLocaleDateString('tr-TR')}</span>
+                      <span className="pdf-time">{new Date(lead.createdAt).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })}</span>
+                    </td>
+                    <td><div className="pdf-txt-bold">{lead.name} {lead.surname}</div><div className="pdf-txt-small">{lead.city}</div></td>
+                    <td><div className="pdf-txt-main">{lead.phone}</div><div className="pdf-txt-small">{lead.email}</div></td>
+                    <td><span className="pdf-dept-tag">{lead.interestedDepartment}</span></td>
+                    <td><div className="pdf-status-pill">{lead.status}</div></td>
                   </tr>
                 ))}
               </tbody>
@@ -671,42 +676,54 @@ export default function CRMPage() {
             padding: 10mm; font-family: sans-serif;
           }
 
-          .pdf-header { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 2px solid #000; padding-bottom: 5mm; margin-bottom: 8mm; }
-          .pdf-brand-box h1 { margin: 0; font-size: 28pt; letter-spacing: 2px; font-weight: 900; font-family: serif; }
-          .pdf-brand-box p { margin: 2mm 0 0 0; font-size: 9pt; color: #444; letter-spacing: 3px; font-weight: 600; }
-          .pdf-meta { display: flex; flex-direction: column; align-items: flex-end; gap: 1mm; font-size: 9pt; text-align: right; }
+          .pdf-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 0.5pt solid #eee; padding-bottom: 6mm; margin-bottom: 8mm; position: relative; }
+          .pdf-brand-box h1 { margin: 0; font-size: 24pt; letter-spacing: 2px; font-weight: 900; font-family: serif; color: #000; line-height: 1; }
+          .pdf-brand-box p { margin: 2mm 0 0 0; font-size: 8pt; color: #666; letter-spacing: 3px; font-weight: 600; text-transform: uppercase; }
           
-          .pdf-title { text-align: center; font-size: 16pt; letter-spacing: 4px; margin: 8mm 0 10mm 0; border-top: 1px double #000; border-bottom: 1px double #000; padding: 3mm 0; font-weight: 300; }
+          .pdf-header-divider { position: absolute; bottom: -1px; left: 0; width: 40mm; height: 2px; background: #a68966; }
+          .pdf-meta { display: flex; flex-direction: column; align-items: flex-end; gap: 1.5mm; font-size: 8.5pt; text-align: right; color: #333; }
+          .pdf-meta strong { color: #a68966; margin-right: 2mm; font-weight: 800; }
           
-          /* Summary Analysis */
-          .pdf-summary-analysis { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5mm; margin-bottom: 10mm; }
-          .summary-item { border: 1px solid #ddd; padding: 4mm; display: flex; flex-direction: column; align-items: center; }
-          .s-label { font-size: 8pt; color: #666; font-weight: 800; letter-spacing: 1px; margin-bottom: 2mm; text-transform: uppercase; }
-          .s-val { font-size: 16pt; font-weight: 300; }
+          .pdf-title { text-align: center; font-size: 14pt; letter-spacing: 5px; margin: 8mm 0 10mm 0; border: 1px solid #000; padding: 4mm 0; font-weight: 400; text-transform: uppercase; background: #fafafa; }
           
-          /* Single Report Style */
-          .pdf-form-body { display: grid; grid-template-columns: 1fr 1fr; gap: 10mm; }
-          .pdf-section { display: flex; flex-direction: column; gap: 3mm; margin-bottom: 8mm; }
+          /* Summary Analysis Dashboard */
+          .pdf-summary-analysis { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8mm; margin-bottom: 12mm; page-break-inside: avoid; }
+          .summary-item { border: 1px solid #eee; padding: 6mm 4mm; display: flex; flex-direction: column; align-items: center; background: #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.02); border-top: 3px solid #eee; }
+          .summary-item:first-child { border-top-color: #a68966; }
+          .s-label { font-size: 7.5pt; color: #888; font-weight: 800; letter-spacing: 1.5px; margin-bottom: 3mm; text-transform: uppercase; }
+          .s-val { font-size: 18pt; font-weight: 300; color: #000; font-family: serif; }
+          
+          /* Single Report Perfect Alignment */
+          .pdf-form-body { display: grid; grid-template-columns: 1fr 1fr; gap: 12mm; }
+          .pdf-section { display: flex; flex-direction: column; gap: 3.5mm; margin-bottom: 10mm; page-break-inside: avoid; }
           .pdf-section.full { grid-column: 1 / -1; }
-          .pdf-section h3 { margin: 0 0 2mm 0; font-size: 9pt; border-bottom: 1px solid #ddd; padding-bottom: 1mm; color: #333; }
-          .pdf-data-row { font-size: 10pt; line-height: 1.5; }
-          .pdf-data-row strong { width: 100px; display: inline-block; }
-          .pdf-message-box { padding: 5mm; border: 1px solid #eee; background: #fafafa; font-size: 10pt; line-height: 1.6; white-space: pre-wrap; }
+          .pdf-section h3 { margin: 0 0 3mm 0; font-size: 9.5pt; border-bottom: 1px solid #a68966; padding-bottom: 1.5mm; color: #a68966; font-weight: 800; letter-spacing: 1px; }
+          .pdf-data-row { font-size: 10.5pt; line-height: 1.6; border-bottom: 1px solid #f9f9f9; padding: 1mm 0; }
+          .pdf-data-row strong { width: 120px; display: inline-block; color: #555; font-size: 9pt; }
+          .pdf-message-box { padding: 8mm; border: 1px solid #eee; background: #fdfdfd; font-size: 10.5pt; line-height: 1.8; white-space: pre-wrap; color: #333; }
 
-          /* Bulk Table Style */
-          .pdf-table { width: 100%; border-collapse: collapse; margin-top: 5mm; }
-          .pdf-table th { background: #000; border: 1px solid #000; padding: 4mm 3mm; text-align: left; font-size: 8pt; color: #fff; letter-spacing: 1px; }
-          .pdf-table td { border: 1px solid #eee; padding: 4mm 3mm; font-size: 9pt; vertical-align: middle; line-height: 1.4; }
-          .pdf-table tr:nth-child(even) { background: #f9f9f9; }
-          .pdf-status-cell { font-weight: 900; text-transform: uppercase; font-size: 7.5pt; }
+          /* Bulk Table Perfection */
+          .pdf-table { width: 100%; border-collapse: collapse; margin-top: 5mm; table-layout: fixed; border: 1px solid #000; }
+          .pdf-table th { background: #000; border: 1px solid #000; padding: 4.5mm 3mm; text-align: left; font-size: 8pt; color: #fff; letter-spacing: 1.5px; font-weight: 800; text-transform: uppercase; }
+          .pdf-table td { border: 1px solid #eee; padding: 4.5mm 3mm; font-size: 9.5pt; vertical-align: middle; line-height: 1.5; overflow: hidden; word-wrap: break-word; }
+          .pdf-table tr:nth-child(even) { background: #fcfcfc; }
+          .pdf-table tr { page-break-inside: avoid; }
 
-          .pdf-signature-area { margin-top: 20mm; display: flex; justify-content: space-between; padding-top: 10mm; }
-          .sig-box { width: 60mm; text-align: center; }
-          .sig-box p { font-size: 8pt; font-weight: 800; margin-bottom: 12mm; letter-spacing: 1px; }
-          .sig-line { border-bottom: 1px solid #000; margin-bottom: 3mm; }
-          .sig-box span { font-size: 7pt; color: #666; }
+          .pdf-date { display: block; font-weight: 700; color: #000; font-size: 9pt; }
+          .pdf-time { display: block; font-size: 7.5pt; color: #a68966; font-weight: 800; }
+          .pdf-txt-bold { font-weight: 700; color: #000; font-size: 10pt; }
+          .pdf-txt-main { color: #333; font-weight: 500; }
+          .pdf-txt-small { font-size: 8pt; color: #888; margin-top: 1mm; }
+          .pdf-dept-tag { font-size: 7pt; font-weight: 900; color: #a68966; text-transform: uppercase; border: 0.5pt solid #a68966; padding: 1mm 2mm; border-radius: 2px; }
+          .pdf-status-pill { font-size: 7.5pt; font-weight: 900; background: #eee; padding: 1.5mm 3mm; border-radius: 40px; display: inline-block; text-transform: uppercase; border: 0.5pt solid #ddd; }
 
-          .pdf-footer { margin-top: auto; padding-top: 10mm; text-align: center; font-size: 7pt; color: #888; }
+          .pdf-signature-area { margin-top: 25mm; display: flex; justify-content: space-between; padding-top: 10mm; page-break-inside: avoid; }
+          .sig-box { width: 65mm; text-align: center; }
+          .sig-box p { font-size: 8.5pt; font-weight: 800; margin-bottom: 15mm; letter-spacing: 2px; text-transform: uppercase; color: #000; }
+          .sig-line { border-bottom: 1.5pt solid #000; margin-bottom: 4mm; }
+          .sig-box span { font-size: 7.5pt; color: #666; font-weight: 600; }
+
+          .pdf-footer { margin-top: auto; padding-top: 12mm; text-align: center; font-size: 7.5pt; color: #aaa; letter-spacing: 1px; }
           .pdf-footer p { margin-bottom: 2mm; }
           .pdf-footer-line { height: 1px; background: #eee; margin: 3mm auto; width: 50%; }
         }
