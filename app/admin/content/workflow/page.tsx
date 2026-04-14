@@ -316,14 +316,14 @@ export default function CorporateContentPage() {
         .tab-btn.active { color: #a68966; border-bottom-color: #a68966; background: rgba(166,137,102,0.05); }
 
         .tab-content { padding: 3rem; }
-        .panel { display: flex; flex-direction: column; gap: 2rem; }
+        .panel { display: flex; flex-direction: column; gap: 3rem; }
 
-        .form-group { display: flex; flex-direction: column; gap: 0.75rem; }
-        .form-group label { font-size: 0.65rem; color: var(--text-muted); letter-spacing: 0.15em; font-weight: 600; }
-        .form-group input, .form-group textarea { background: var(--background); border: 1px solid var(--line); padding: 1.2rem; color: var(--text); border-radius: 4px; font-family: inherit; font-size: 0.9rem; }
-        .form-group input:focus, .form-group textarea:focus { outline: none; border-color: #a68966; }
+        .form-group { display: flex; flex-direction: column; gap: 1rem; }
+        .form-group label, .image-upload-wrap label { font-size: 0.65rem; color: #a68966; letter-spacing: 0.2em; font-weight: 800; text-transform: uppercase; }
+        .form-group input, .form-group textarea { background: var(--background); border: 1px solid var(--line); padding: 1.2rem; color: var(--text); border-radius: 4px; font-family: inherit; font-size: 0.9rem; transition: border-color 0.3s; }
+        .form-group input:focus, .form-group textarea:focus { outline: none; border-color: #a68966; background: rgba(166,137,102,0.02); }
 
-        .image-upload-wrap { display: flex; flex-direction: column; gap: 1rem; }
+        .image-upload-wrap { display: flex; flex-direction: column; gap: 1.5rem; }
         .image-preview { width: 100%; height: 400px; background: var(--background); border: 1px dashed var(--line); border-radius: 8px; overflow: hidden; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: border-color 0.3s; }
         .image-preview:hover { border-color: #a68966; }
         .image-preview img { width: 100%; height: 100%; object-fit: cover; }
