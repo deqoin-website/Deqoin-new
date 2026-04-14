@@ -245,7 +245,7 @@ export default function HomeServicesAdmin() {
         .service-admin-card { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 20px; padding: 2rem; display: flex; flex-direction: column; gap: 1.5rem; position: relative; overflow: hidden; }
         .service-admin-card::before { content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%; background: #a68966; opacity: 0.3; }
         
-        .card-type-header { display: flex; align-items: center; justify-content: space-between; color: #a68966; font-family: var(--font-display); font-size: 0.75rem; letter-spacing: 0.1em; font-weight: 800; }
+        .card-type-header { display: flex; align-items: center; justify-content: space-between; color: #a68966; font-family: var(--font-display); font-size: 0.75rem; letter-spacing: 0.1em; font-weight: 800; margin-bottom: 2rem; }
         .type-left { display: flex; align-items: center; gap: 0.75rem; }
         .lux-order-badge { 
           background: rgba(166, 137, 102, 0.1); border: 1px solid rgba(166, 137, 102, 0.3);
