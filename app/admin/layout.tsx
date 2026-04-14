@@ -18,6 +18,7 @@ import {
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import ThemeToggle from '@/components/ThemeToggle';
+import { AdminNotificationProvider } from '@/components/admin/AdminNotificationProvider';
 import './admin.css';
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
@@ -126,161 +127,163 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   }
 
   return (
-    <div className="admin-layout">
-      {/* SIDEBAR */}
-      <aside className={`admin-sidebar ${isSidebarOpen ? 'open' : 'closed'} ${isMobileMenuOpen ? 'mobile-show' : ''}`}>
-        <div className="sidebar-header">
-          <div className="admin-logo">
-            <img src="/images/logo-new.jpeg" alt="DEQOIN" />
-            {isSidebarOpen && <motion.span initial={{ opacity: 0 }} animate={{ opacity: 1 }}>STUDIO ADMIN</motion.span>}
+    <AdminNotificationProvider>
+      <div className="admin-layout">
+        {/* SIDEBAR */}
+        <aside className={`admin-sidebar ${isSidebarOpen ? 'open' : 'closed'} ${isMobileMenuOpen ? 'mobile-show' : ''}`}>
+          <div className="sidebar-header">
+            <div className="admin-logo">
+              <img src="/images/logo-new.jpeg" alt="DEQOIN" />
+              {isSidebarOpen && <motion.span initial={{ opacity: 0 }} animate={{ opacity: 1 }}>STUDIO ADMIN</motion.span>}
+            </div>
+            <button onClick={() => {
+              if (window.innerWidth <= 900) {
+                  setIsMobileMenuOpen(false);
+              } else {
+                  setIsSidebarOpen(!isSidebarOpen);
+              }
+            }} className="sidebar-toggle">
+              {isSidebarOpen ? <ChevronLeft size={20} /> : <Menu size={20} />}
+            </button>
           </div>
-          <button onClick={() => {
-            if (window.innerWidth <= 900) {
-                setIsMobileMenuOpen(false);
-            } else {
-                setIsSidebarOpen(!isSidebarOpen);
-            }
-          }} className="sidebar-toggle">
-            {isSidebarOpen ? <ChevronLeft size={20} /> : <Menu size={20} />}
-          </button>
-        </div>
 
-        <nav className="sidebar-nav">
-          {menuGroups.map((group) => (
-            <div key={group.group} className="sidebar-group">
-              {(isSidebarOpen || window.innerWidth <= 900) && <span className="group-label">{group.group}</span>}
-              <div className="group-items">
-                {group.items.map((item) => {
-                  const hasSubItems = item.subItems && item.subItems.length > 0;
-                  const isOpen = openSubmenus.includes(item.name);
-                  const isActive = pathname === item.path || item.subItems?.some(s => s.path === pathname);
+          <nav className="sidebar-nav">
+            {menuGroups.map((group) => (
+              <div key={group.group} className="sidebar-group">
+                {(isSidebarOpen || window.innerWidth <= 900) && <span className="group-label">{group.group}</span>}
+                <div className="group-items">
+                  {group.items.map((item) => {
+                    const hasSubItems = item.subItems && item.subItems.length > 0;
+                    const isOpen = openSubmenus.includes(item.name);
+                    const isActive = pathname === item.path || item.subItems?.some(s => s.path === pathname);
 
-                  return (
-                    <div key={item.name} className="nav-wrapper">
-                      {hasSubItems ? (
-                        <div 
-                          className={`nav-item ${isActive ? 'active' : ''}`}
-                          onClick={() => toggleSubmenu(item)}
-                          style={{ cursor: 'pointer' }}
-                        >
-                          <item.icon size={20} className="nav-icon" />
-                          {(isSidebarOpen || window.innerWidth <= 900) && (
-                            <>
-                              <span>{item.name}</span>
-                              <ChevronLeft 
-                                size={14} 
-                                style={{ 
-                                  marginLeft: 'auto', 
-                                  transform: isOpen ? 'rotate(-90deg)' : 'none',
-                                  transition: 'transform 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
-                                  opacity: 0.5
-                                }} 
-                              />
-                            </>
-                          )}
-                        </div>
-                      ) : (
-                        <Link 
-                          href={item.path}
-                          className={`nav-item ${pathname === item.path ? 'active' : ''}`}
-                          onClick={() => {
-                            if (window.innerWidth <= 900) setIsMobileMenuOpen(false);
-                          }}
-                        >
-                          <item.icon size={20} className="nav-icon" />
-                          {(isSidebarOpen || window.innerWidth <= 900) && <span>{item.name}</span>}
-                          {pathname === item.path && (isSidebarOpen || window.innerWidth <= 900) && <motion.div layoutId="nav-active" className="nav-active-indicator" />}
-                        </Link>
-                      )}
-
-                      {/* SUB ITEMS */}
-                      <AnimatePresence>
-                        {hasSubItems && isOpen && (isSidebarOpen || window.innerWidth <= 900) && (
-                          <motion.div 
-                            initial={{ height: 0, opacity: 0 }}
-                            animate={{ height: 'auto', opacity: 1 }}
-                            exit={{ height: 0, opacity: 0 }}
-                            className="sub-items-container"
+                    return (
+                      <div key={item.name} className="nav-wrapper">
+                        {hasSubItems ? (
+                          <div 
+                            className={`nav-item ${isActive ? 'active' : ''}`}
+                            onClick={() => toggleSubmenu(item)}
+                            style={{ cursor: 'pointer' }}
                           >
-                            {item.subItems?.map(sub => (
-                              <Link 
-                                key={sub.path} 
-                                href={sub.path}
-                                className={`sub-nav-item ${pathname === sub.path ? 'active' : ''}`}
-                                onClick={() => {
-                                  if (window.innerWidth <= 900) setIsMobileMenuOpen(false);
-                                }}
-                              >
-                                {sub.name}
-                              </Link>
-                            ))}
-                          </motion.div>
+                            <item.icon size={20} className="nav-icon" />
+                            {(isSidebarOpen || window.innerWidth <= 900) && (
+                              <>
+                                <span>{item.name}</span>
+                                <ChevronLeft 
+                                  size={14} 
+                                  style={{ 
+                                    marginLeft: 'auto', 
+                                    transform: isOpen ? 'rotate(-90deg)' : 'none',
+                                    transition: 'transform 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
+                                    opacity: 0.5
+                                  }} 
+                                />
+                              </>
+                            )}
+                          </div>
+                        ) : (
+                          <Link 
+                            href={item.path}
+                            className={`nav-item ${pathname === item.path ? 'active' : ''}`}
+                            onClick={() => {
+                              if (window.innerWidth <= 900) setIsMobileMenuOpen(false);
+                            }}
+                          >
+                            <item.icon size={20} className="nav-icon" />
+                            {(isSidebarOpen || window.innerWidth <= 900) && <span>{item.name}</span>}
+                            {pathname === item.path && (isSidebarOpen || window.innerWidth <= 900) && <motion.div layoutId="nav-active" className="nav-active-indicator" />}
+                          </Link>
                         )}
-                      </AnimatePresence>
-                    </div>
-                  );
-                })}
+
+                        {/* SUB ITEMS */}
+                        <AnimatePresence>
+                          {hasSubItems && isOpen && (isSidebarOpen || window.innerWidth <= 900) && (
+                            <motion.div 
+                              initial={{ height: 0, opacity: 0 }}
+                              animate={{ height: 'auto', opacity: 1 }}
+                              exit={{ height: 0, opacity: 0 }}
+                              className="sub-items-container"
+                            >
+                              {item.subItems?.map(sub => (
+                                <Link 
+                                  key={sub.path} 
+                                  href={sub.path}
+                                  className={`sub-nav-item ${pathname === sub.path ? 'active' : ''}`}
+                                  onClick={() => {
+                                    if (window.innerWidth <= 900) setIsMobileMenuOpen(false);
+                                  }}
+                                >
+                                  {sub.name}
+                                </Link>
+                              ))}
+                            </motion.div>
+                          )}
+                        </AnimatePresence>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            ))}
+          </nav>
+
+          <div className="sidebar-footer">
+            <button onClick={handleLogout} className="nav-item logout-btn">
+              <LogOut size={20} className="nav-icon" />
+              {(isSidebarOpen || window.innerWidth <= 900) && <span>Sistemi Kapat</span>}
+            </button>
+          </div>
+        </aside>
+
+        {/* OVERLAY FOR MOBILE */}
+        <AnimatePresence>
+          {isMobileMenuOpen && (
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="mobile-sidebar-overlay"
+            />
+          )}
+        </AnimatePresence>
+
+        {/* MAIN CONTENT */}
+        <main className="admin-main">
+          <header className="admin-top-bar">
+            <div className="top-bar-left">
+              <button className="mobile-menu-toggle" onClick={() => setIsMobileMenuOpen(true)}>
+                <Menu size={24} />
+              </button>
+              <div className="page-info">
+                <span className="page-breadcrumb">Yönetim Paneli / {currentPathItem?.name || 'Dashboard'}</span>
+                <h1>{currentPathItem?.name || 'Dashboard'}</h1>
               </div>
             </div>
-          ))}
-        </nav>
-
-        <div className="sidebar-footer">
-          <button onClick={handleLogout} className="nav-item logout-btn">
-            <LogOut size={20} className="nav-icon" />
-            {(isSidebarOpen || window.innerWidth <= 900) && <span>Sistemi Kapat</span>}
-          </button>
-        </div>
-      </aside>
-
-      {/* OVERLAY FOR MOBILE */}
-      <AnimatePresence>
-        {isMobileMenuOpen && (
-          <motion.div 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={() => setIsMobileMenuOpen(false)}
-            className="mobile-sidebar-overlay"
-          />
-        )}
-      </AnimatePresence>
-
-      {/* MAIN CONTENT */}
-      <main className="admin-main">
-        <header className="admin-top-bar">
-          <div className="top-bar-left">
-            <button className="mobile-menu-toggle" onClick={() => setIsMobileMenuOpen(true)}>
-              <Menu size={24} />
-            </button>
-            <div className="page-info">
-              <span className="page-breadcrumb">Yönetim Paneli / {currentPathItem?.name || 'Dashboard'}</span>
-              <h1>{currentPathItem?.name || 'Dashboard'}</h1>
+            <div className="top-bar-actions">
+              <ThemeToggle />
+              <div className="user-profile">
+                <span className="user-name-desktop">SİSTEM YÖNETİCİSİ</span>
+                <div className="avatar">DQ</div>
+              </div>
             </div>
+          </header>
+          
+          <div className="admin-content-inner">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={pathname}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+              >
+                {children}
+              </motion.div>
+            </AnimatePresence>
           </div>
-          <div className="top-bar-actions">
-            <ThemeToggle />
-            <div className="user-profile">
-              <span className="user-name-desktop">SİSTEM YÖNETİCİSİ</span>
-              <div className="avatar">DQ</div>
-            </div>
-          </div>
-        </header>
-        
-        <div className="admin-content-inner">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={pathname}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-            >
-              {children}
-            </motion.div>
-          </AnimatePresence>
-        </div>
-      </main>
-    </div>
+        </main>
+      </div>
+    </AdminNotificationProvider>
   );
 }

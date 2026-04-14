@@ -13,8 +13,10 @@ import {
   FolderKanban
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useNotification } from '@/components/admin/AdminNotificationProvider';
 
 export default function AdminProjects() {
+  const { showToast, confirm: premiumConfirm } = useNotification();
   const [projects, setProjects] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -58,11 +60,11 @@ export default function AdminProjects() {
     try {
       const res = await fetch('/api/admin/migrate/projects');
       if (res.ok) {
-        alert("Varsayılan projeler başarıyla aktarıldı!");
+        showToast("Varsayılan projeler başarıyla aktarıldı!", "success");
         fetchProjects();
       }
     } catch (e) {
-      alert("Aktarım sırasında bir hata oluştu.");
+      showToast("Aktarım sırasında bir hata oluştu.", "error");
     } finally {
       setIsMigrating(false);
     }
@@ -98,7 +100,7 @@ export default function AdminProjects() {
         const blob = await res.json();
         setFormData({ ...formData, coverImage: blob.url });
       } catch (err) {
-        alert("Yükleme başarısız.");
+        showToast("Yükleme başarısız.", "error");
       } finally {
         setUploading(false);
       }
@@ -128,7 +130,7 @@ export default function AdminProjects() {
           gallery: [...formData.gallery, ...newItems] 
         });
       } catch (err) {
-        alert("Bazı görseller yüklenemedi.");
+        showToast("Bazı görseller yüklenemedi.", "error");
       } finally {
         setUploading(false);
       }
@@ -155,7 +157,7 @@ export default function AdminProjects() {
         });
       }
     } catch (err) {
-      alert("Yükleme başarısız.");
+      showToast("Yükleme başarısız.", "error");
     }
   };
 
@@ -184,12 +186,12 @@ export default function AdminProjects() {
     setFormData({ ...formData, gallery: updatedGallery });
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleProjectSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
 
     const url = editingProject ? `/api/projects/${editingProject._id}` : '/api/projects';
-    const method = editingProject ? 'PATCH' : 'POST'; // Assuming the API handles PATCH like PUT
+    const method = editingProject ? 'PATCH' : 'POST';
 
     try {
       const res = await fetch(url, {
@@ -202,22 +204,39 @@ export default function AdminProjects() {
         setIsModalOpen(false);
         fetchProjects();
         resetForm();
+        showToast(editingProject ? "Proje başarıyla güncellendi." : "Yeni proje başarıyla eklendi.", "success");
+      } else {
+        showToast("Proje kaydedilirken hata oluştu.", "error");
       }
     } catch (err) {
       console.error(err);
+      showToast("Bağlantı hatası oluştu.", "error");
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  const handleDelete = async (id: string) => {
-    if (!confirm('Bu projeyi tamamen havuzdan silmek istediğinize emin misiniz?')) return;
+  const handleProjectDelete = async (id: string) => {
+    const ok = await premiumConfirm({
+      title: 'PROJEYİ SİL',
+      message: 'Bu projeyi tamamen havuzdan silmek istediğinize emin misiniz?',
+      confirmText: 'SİL',
+      isDanger: true
+    });
+    
+    if (!ok) return;
     
     try {
-      await fetch(`/api/projects/${id}`, { method: 'DELETE' });
-      fetchProjects();
+      const res = await fetch(`/api/projects/${id}`, { method: 'DELETE' });
+      if (res.ok) {
+        fetchProjects();
+        showToast("Proje başarıyla silindi.", "success");
+      } else {
+        showToast("Silme işlemi sırasında hata oluştu.", "error");
+      }
     } catch (err) {
       console.error(err);
+      showToast("Silme işlemi başarısız.", "error");
     }
   };
 
@@ -306,7 +325,7 @@ export default function AdminProjects() {
                  <button 
                   onClick={(e) => {
                     e.stopPropagation();
-                    handleDelete(project._id);
+                    handleProjectDelete(project._id);
                   }} 
                   className="v2-btn delete"
                  >

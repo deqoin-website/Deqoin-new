@@ -3,9 +3,11 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useNotification } from '@/components/admin/AdminNotificationProvider';
 import { Save, Plus, Trash2, GripVertical, Image as ImageIcon, Upload, Loader2, X, Settings } from 'lucide-react';
 
 export default function DepartmentManagerPage() {
+  const { showToast, confirm: premiumConfirm } = useNotification();
   const params = useParams();
   const rawType = params?.type; 
   const slug = Array.isArray(rawType) ? rawType[0] : rawType || 'mimarlik';
@@ -152,9 +154,12 @@ export default function DepartmentManagerPage() {
       if (res.ok) {
         setIsModalOpen(false);
         fetchStudioProjects();
+        showToast("Proje başarıyla kaydedildi.", "success");
+      } else {
+        showToast("Proje kaydedilemedi.", "error");
       }
     } catch (err) {
-      console.error(err);
+      showToast("Bir hata oluştu.", "error");
     } finally {
       setIsSubmitting(false);
     }
@@ -169,12 +174,12 @@ export default function DepartmentManagerPage() {
         body: JSON.stringify(data)
       });
       if (res.ok) {
-        alert("Başarıyla Kaydedildi!");
+        showToast("Ayarlar başarıyla kaydedildi.", "success");
       } else {
-        alert("Kaydetme sırasında bir hata oluştu.");
+        showToast("Kayıt sırasında bir hata oluştu.", "error");
       }
-    } catch (e) {
-      console.error(e);
+    } catch (err) {
+      showToast("Bağlantı hatası.", "error");
     } finally {
       setIsSaving(false);
     }
@@ -200,7 +205,7 @@ export default function DepartmentManagerPage() {
         setFormData(prev => ({ ...prev, gallery: [...prev.gallery, { url: blob.url, imageAlt: '', caption: '' }] }));
       }
     } catch (err) {
-      alert("Yükleme başarısız.");
+      showToast("Yükleme başarısız.", "error");
     }
   };
 
@@ -256,9 +261,17 @@ export default function DepartmentManagerPage() {
   };
 
   const handleProjectDelete = async (id: string) => {
-    if (!confirm("Bu projeyi silmek istediğinize emin misiniz?")) return;
-    await fetch(`/api/projects/${id}`, { method: 'DELETE' });
-    fetchStudioProjects();
+    const ok = await premiumConfirm({
+      title: 'PROJEYİ SİL',
+      message: 'Bu projeyi silmek istediğinize emin misiniz?',
+      confirmText: 'SİL',
+      isDanger: true
+    });
+    if (ok) {
+      await fetch(`/api/projects/${id}`, { method: 'DELETE' });
+      fetchStudioProjects();
+      showToast("Proje silindi.", "success");
+    }
   };
 
   const addItem = (field: 'process' | 'focusAreas' | 'categories', emptyItem: any) => {

@@ -16,8 +16,10 @@ import {
   Eye,
   GripVertical
 } from 'lucide-react';
+import { useNotification } from '@/components/admin/AdminNotificationProvider';
 
 export default function SliderConfigPage() {
+  const { showToast, confirm: premiumConfirm } = useNotification();
   const [slides, setSlides] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
@@ -61,16 +63,26 @@ export default function SliderConfigPage() {
   };
 
   const removeSlide = async (id: string, isTemporary?: boolean) => {
-    if (!confirm("Bu sahneyi silmek istediğinize emin misiniz?")) return;
+    const ok = await premiumConfirm({
+      title: 'SAHNEYİ SİL',
+      message: 'Bu sahneyi silmek istediğinize emin misiniz?',
+      confirmText: 'SİL',
+      isDanger: true
+    });
+    if (!ok) return;
+
     if (isTemporary) {
       setSlides(slides.filter(s => s._id !== id));
       return;
     }
     try {
       const res = await fetch(`/api/admin/slides/${id}`, { method: 'DELETE' });
-      if (res.ok) fetchSlides();
+      if (res.ok) {
+        fetchSlides();
+        showToast("Sahne silindi.", "success");
+      }
     } catch (e) {
-      console.error(e);
+      showToast("Silme hatası.", "error");
     }
   };
 
@@ -91,11 +103,10 @@ export default function SliderConfigPage() {
           body: JSON.stringify(saveBody)
         });
       }
-      alert("Tüm sahneler başarıyla kaydedildi!");
+      showToast("Tüm sahneler başarıyla kaydedildi!", "success");
       fetchSlides();
     } catch (e) {
-      console.error(e);
-      alert("Kayıt sırasında bir hata oluştu.");
+      showToast("Kayıt sırasında bir hata oluştu.", "error");
     } finally {
       setIsSaving(false);
     }
@@ -116,7 +127,7 @@ export default function SliderConfigPage() {
         mediaType: isVideo ? 'video' : 'image' 
       } : s));
     } catch (err) {
-      alert("Yükleme başarısız.");
+      showToast("Yükleme başarısız.", "error");
     }
   };
 
@@ -125,11 +136,11 @@ export default function SliderConfigPage() {
     try {
       const res = await fetch('/api/admin/migrate/slides');
       if (res.ok) {
-        alert("Varsayılan sahneler başarıyla aktarıldı!");
+        showToast("Varsayılan sahneler başarıyla aktarıldı!", "success");
         fetchSlides();
       }
     } catch (e) {
-      alert("Aktarım sırasında bir hata oluştu.");
+      showToast("Aktarım sırasında bir hata oluştu.", "error");
     } finally {
       setIsSaving(false);
     }
