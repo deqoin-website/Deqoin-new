@@ -639,29 +639,38 @@ export default function AdminProjects() {
         }
 
         @media (max-width: 900px) {
-          .hybrid-modal-overlay { padding: 0; align-items: flex-start; overflow-y: auto; }
+          .hybrid-modal-overlay { padding: 0.5rem; align-items: flex-start; overflow-y: auto; }
           .hybrid-modal-content { 
-            width: 100vw !important; 
-            max-width: 100vw !important; 
+            width: 100% !important; 
+            max-width: 100% !important; 
             height: auto !important; 
-            min-height: 100dvh !important;
-            border-radius: 0;
-            display: block; /* Disable flex for natural flow on mobile if needed, or adjust */
+            min-height: calc(100vh - 1rem) !important;
+            border-radius: 16px;
+            display: flex;
+            flex-direction: column;
           }
-          .premium-modal-header { padding: 1rem 1.5rem; position: sticky; top: 0; }
-          .header-main h3 { font-size: 1.1rem; }
+          .premium-modal-header { padding: 1.5rem; position: sticky; top: 0; }
+          .header-main { flex-direction: column; align-items: flex-start; gap: 1rem; }
+          .header-main h3 { font-size: 1.1rem; line-height: 1.4; }
+          .header-actions { width: 100%; justify-content: space-between; gap: 0.5rem; }
+          .premium-toggle-btn { flex: 1; padding: 0.6rem; font-size: 0.6rem; justify-content: center; }
+          .premium-toggle-btn span { display: inline; font-size: 0.55rem; }
+          
           .premium-modal-form { padding: 1.5rem; gap: 2rem; }
-          .header-main { gap: 0.5rem; flex-wrap: wrap; }
-          .header-actions { gap: 0.5rem; flex: 1; justify-content: flex-end; }
-          .premium-toggle-btn { padding: 0.4rem 0.8rem; font-size: 0.6rem; }
-          .premium-toggle-btn span { display: none; }
           .form-cols-3, .form-cols-2 { grid-template-columns: 1fr !important; gap: 1.5rem !important; }
+          
           .media-grid { grid-template-columns: 1fr !important; gap: 2rem !important; }
+          .cover-upload-zone { width: 100%; }
+          .gallery-upload-zone { width: 100%; }
+          
           .premium-advanced-grid { grid-template-columns: 1fr !important; gap: 2rem !important; }
+          
           .lux-modal-footer { margin-top: 2rem; padding: 2rem 1.5rem; border-top: 1px solid rgba(166,137,102,0.1); }
           .lux-save-btn { width: 100%; padding: 1.25rem; font-size: 0.8rem; justify-content: center; }
-          .item-thumb { width: 60px; height: 60px; }
+          
           .lux-gallery-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)) !important; gap: 1rem !important; }
+          .lux-gallery-item { flex-direction: column; align-items: stretch; }
+          .item-thumb { width: 100%; height: 120px; }
         }
 
         .modal-inner-scroll { overflow-y: auto; height: 100%; display: flex; flex-direction: column; }

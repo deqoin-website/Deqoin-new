@@ -8,12 +8,18 @@ import {
   PenTool, 
   Layers, 
   Hammer,
-  ArrowRight
+  ArrowRight,
+  RotateCcw
 } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useNotification } from '@/components/admin/AdminNotificationProvider';
+import { AdminSaveBar } from '@/components/admin/AdminSaveBar';
 
 export default function HomeServicesAdmin() {
+  const { showToast } = useNotification();
   const [cards, setCards] = useState<any[]>([]);
+  const [initialCards, setInitialCards] = useState<any[]>([]);
+  const [isDirty, setIsDirty] = useState(false);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [draggingCard, setDraggingCard] = useState<number | null>(null);
@@ -28,9 +34,11 @@ export default function HomeServicesAdmin() {
       if (res.ok) {
         const data = await res.json();
         setCards(data);
+        setInitialCards(JSON.parse(JSON.stringify(data)));
       }
     } catch (err) {
       console.error(err);
+      showToast("Kartlar yüklenemedi.", "error");
     } finally {
       setLoading(false);
     }
@@ -45,19 +53,30 @@ export default function HomeServicesAdmin() {
         body: JSON.stringify(cards)
       });
       if (res.ok) {
-        alert("Kartlar başarıyla güncellendi!");
+        showToast("Kartlar başarıyla güncellendi!", "success");
+        setInitialCards(JSON.parse(JSON.stringify(cards)));
+        setIsDirty(false);
+      } else {
+        showToast("Kayıt sırasında hata oluştu.", "error");
       }
     } catch (err) {
-      alert("Hata oluştu.");
+      showToast("Bağlantı hatası.", "error");
     } finally {
       setSaving(false);
     }
+  };
+
+  const handleCancel = () => {
+    setCards(JSON.parse(JSON.stringify(initialCards)));
+    setIsDirty(false);
+    showToast("Değişiklikler geri alındı.", "info");
   };
 
   const updateCard = (index: number, field: string, value: string) => {
     const newCards = [...cards];
     newCards[index][field] = value;
     setCards(newCards);
+    setIsDirty(true);
   };
 
   const handleImageUpload = async (index: number, e: React.ChangeEvent<HTMLInputElement>) => {
@@ -74,8 +93,9 @@ export default function HomeServicesAdmin() {
       });
       const blob = await res.json();
       updateCard(index, 'image', blob.url);
+      setIsDirty(true);
     } catch (err) {
-      alert("Görsel yüklenemedi.");
+      showToast("Görsel yüklenemedi.", "error");
     }
   };
 
@@ -97,11 +117,30 @@ export default function HomeServicesAdmin() {
           <h1>STÜDYO SEÇİM KARTLARI</h1>
           <p>Ana sayfada yer alan Design, Material ve Execution kartlarını yönetin.</p>
         </div>
-        <button className="lux-save-btn" onClick={handleSave} disabled={saving}>
-          {saving ? <Loader2 className="animate-spin" size={18} /> : <Save size={18} />}
-          <span>KARTLARI GÜNCELLE</span>
-        </button>
+        <div style={{ display: 'flex', gap: '1rem' }}>
+          {isDirty && (
+            <button 
+              className="lux-save-btn" 
+              style={{ background: 'transparent', border: '1px solid rgba(166,137,102,0.4)', color: '#a68966', boxShadow: 'none' }}
+              onClick={handleCancel}
+            >
+              <RotateCcw size={18} />
+              <span>SIFIRLA</span>
+            </button>
+          )}
+          <button className={`lux-save-btn ${isDirty ? 'dirty-pulse' : ''}`} onClick={handleSave} disabled={saving}>
+            {saving ? <Loader2 className="animate-spin" size={18} /> : <Save size={18} />}
+            <span>{isDirty ? 'KAYDETMEYİ UNUTMAYIN' : 'KARTLARI GÜNCELLE'}</span>
+          </button>
+        </div>
       </div>
+
+      <AdminSaveBar 
+        isVisible={isDirty} 
+        onSave={handleSave} 
+        onCancel={handleCancel}
+        isSaving={saving}
+      />
 
       <div className="services-admin-grid">
         {cards.map((card, idx) => (
@@ -178,15 +217,28 @@ export default function HomeServicesAdmin() {
         ))}
       </div>
 
+      <div className="bottom-save-section">
+        <button className={`lux-save-btn wide ${isDirty ? 'dirty-pulse' : ''}`} onClick={handleSave} disabled={saving}>
+          {saving ? <Loader2 className="animate-spin" size={18} /> : <Save size={18} />}
+          <span>{isDirty ? 'DEĞİŞİKLİKLERİ ŞİMDİ KAYDET' : 'HİÇBİR DEĞİŞİKLİK YOK'}</span>
+        </button>
+      </div>
+
       <style jsx>{`
         .lux-admin-container { display: flex; flex-direction: column; gap: 3rem; }
         
         .lux-header { display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 1px solid rgba(166,137,102,0.2); padding-bottom: 2.5rem; }
         .header-text h1 { font-family: var(--font-display), sans-serif; font-size: 1.5rem; letter-spacing: 0.3em; color: #a68966; margin: 0; }
-        .header-text p { font-size: 0.85rem; color: var(--text-muted); margin-top: 0.5rem; }
+        .header-text p { font-size: 0.85rem; color: var(--text-soft); opacity: 0.7; margin-top: 0.5rem; }
         
+        .lux-save-btn.dirty-pulse { background: #a68966; box-shadow: 0 0 20px rgba(166,137,102,0.4); animation: pulse-border 2s infinite; }
+        @keyframes pulse-border { 0% { box-shadow: 0 0 0 0 rgba(166,137,102,0.4); } 70% { box-shadow: 0 0 0 10px rgba(166,137,102,0); } 100% { box-shadow: 0 0 0 0 rgba(166,137,102,0); } }
+
         .lux-save-btn { background: #a68966; color: #000; border: none; padding: 1rem 2rem; border-radius: 4px; font-family: var(--font-display); font-weight: 800; letter-spacing: 0.15em; font-size: 0.75rem; cursor: pointer; display: flex; align-items: center; gap: 1rem; transition: all 0.3s; box-shadow: 0 10px 30px rgba(166,137,102,0.3); }
+        .lux-save-btn.wide { width: 100%; justify-content: center; padding: 1.5rem; font-size: 0.9rem; }
         .lux-save-btn:hover { background: #d4b591; transform: translateY(-2px); }
+
+        .bottom-save-section { margin-top: 4rem; padding-top: 2rem; border-top: 1px solid rgba(166,137,102,0.1); }
 
         .services-admin-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2.5rem; }
         
