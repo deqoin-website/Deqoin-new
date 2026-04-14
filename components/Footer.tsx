@@ -1,55 +1,23 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Link from "next/link";
 import { usePathname } from "next/navigation";
+import Link from "next/link";
 import ConsultationModal from "./ConsultationModal";
 
-const footerNav = [
-  {
-    label: "Hizmetler",
-    links: [
-      { href: "/mimari", text: "Design Studio" },
-      { href: "/materyal-studyo", text: "Material Studio" },
-      { href: "/uygulama", text: "Execution Studio" },
-    ],
-  },
-  {
-    label: "Kurumsal",
-    links: [
-      { href: "/hakkimizda", text: "Hakkımızda" },
-      { href: "/departman-ekipleri", text: "Departman Ekipleri" },
-      { href: "/faaliyet-alanlarimiz", text: "Design & Collection" },
-      { href: "/galeri", text: "Galeri" },
-    ],
-  },
-  {
-    label: "Randevu",
-    links: [
-      { href: "/iletisim", text: "Randevu Talep Et" },
-      { href: "mailto:randevu@deqoin.com", text: "randevu@deqoin.com" },
-      { href: "mailto:info@deqoin.com", text: "info@deqoin.com" },
-    ],
-  },
-];
-
 export default function Footer() {
-  const [logoUrl, setLogoUrl] = useState("");
+  const [settings, setSettings] = useState<any>(null);
   const [isConsultationOpen, setIsConsultationOpen] = useState(false);
   const pathname = usePathname();
   const year = new Date().getFullYear();
 
   useEffect(() => {
-    // Check cache first
-    const cachedLogo = localStorage.getItem('deqoin_logo');
-    if (cachedLogo) setLogoUrl(cachedLogo);
-
     const fetchSettings = async () => {
       try {
         const res = await fetch('/api/settings');
         const data = await res.json();
+        setSettings(data);
         if (data.logoUrl) {
-          setLogoUrl(data.logoUrl);
           localStorage.setItem('deqoin_logo', data.logoUrl);
         }
       } catch (err) {
@@ -62,6 +30,39 @@ export default function Footer() {
   if (pathname.startsWith('/admin')) {
     return null;
   }
+
+  // Fallback defaults
+  const logoUrl = settings?.logoUrl || "/images/logo-new.jpeg";
+  const address = settings?.address || "350 Evler Mah. Ali Dirikoç Blv. Sena Apartmanı No: 13 İç Kapı No: Z01 Merkez / NEVŞEHİR";
+  const tagline = settings?.studioName ? `${settings.studioName} Studio` : "Mimari, Tasarım ve Uygulama alanlarında dünya standartları.";
+  const social = settings?.socialLinks || {};
+
+  const footerNav = [
+    {
+      label: "Hizmetler",
+      links: [
+        { href: "/mimari", text: "Design Studio" },
+        { href: "/materyal-studyo", text: "Material Studio" },
+        { href: "/uygulama", text: "Execution Studio" },
+      ],
+    },
+    {
+      label: "Kurumsal",
+      links: [
+        { href: "/hakkimizda", text: "Hakkımızda" },
+        { href: "/departman-ekipleri", text: "Departman Ekipleri" },
+        { href: "/faaliyet-alanlarimiz", text: "Design & Collection" },
+        { href: "/galeri", text: "Galeri" },
+      ],
+    },
+    {
+      label: "Randevu",
+      links: [
+        { href: "/iletisim", text: "Randevu Talep Et" },
+        { href: `mailto:${settings?.contactEmail || 'info@deqoin.com'}`, text: settings?.contactEmail || "info@deqoin.com" },
+      ],
+    },
+  ];
 
   return (
     <footer className={`site-footer ${pathname === "/" ? "homepage-footer-snap" : ""}`.trim()}>
@@ -87,11 +88,8 @@ export default function Footer() {
 
           <div className="footer-address-block">
             <span className="footer-nav-label">Ofis Adresimiz</span>
-            <address className="footer-address">
-              350 Evler Mah. Ali Dirikoç Blv.<br />
-              Sena Apartmanı No: 13<br />
-              İç Kapı No: Z01<br />
-              Merkez / NEVŞEHİR
+            <address className="footer-address" style={{ whiteSpace: 'pre-wrap' }}>
+              {address}
             </address>
           </div>
         </div>
@@ -112,28 +110,34 @@ export default function Footer() {
             />
           </Link>
           <p className="footer-tagline">
-            Mimari, Tasarım ve Uygulama<br />alanlarında dünya standartları.
+            {tagline}
           </p>
           <div className="footer-socials">
-            <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="footer-social-link" aria-label="Instagram">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
-                <circle cx="12" cy="12" r="4"/>
-                <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/>
-              </svg>
-            </a>
-            <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="footer-social-link" aria-label="LinkedIn">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6z"/>
-                <rect x="2" y="9" width="4" height="12"/>
-                <circle cx="4" cy="4" r="2"/>
-              </svg>
-            </a>
-            <a href="https://pinterest.com" target="_blank" rel="noopener noreferrer" className="footer-social-link" aria-label="Pinterest">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M12 2C6.477 2 2 6.477 2 12c0 4.236 2.636 7.855 6.356 9.312-.088-.791-.167-2.005.035-2.868.181-.78 1.172-4.97 1.172-4.97s-.299-.598-.299-1.482c0-1.388.806-2.428 1.808-2.428.852 0 1.265.64 1.265 1.408 0 .858-.546 2.14-.828 3.33-.236.995.499 1.806 1.476 1.806 1.772 0 2.977-2.3 2.977-5.023 0-2.07-1.39-3.62-3.913-3.62-2.859 0-4.641 2.14-4.641 4.54 0 .825.24 1.408.619 1.855.174.206.198.288.135.524-.045.174-.149.598-.191.764-.063.24-.25.325-.46.236-1.29-.528-1.89-1.942-1.89-3.54 0-2.64 2.237-5.86 6.68-5.86 3.608 0 5.985 2.63 5.985 5.453 0 3.752-2.086 6.579-5.14 6.579-1.031 0-2.001-.557-2.334-1.185l-.637 2.454c-.208.783-.608 1.566-.972 2.178.73.224 1.504.344 2.306.344 5.523 0 10-4.477 10-10S17.523 2 12 2z"/>
-              </svg>
-            </a>
+            {social.instagram && (
+              <a href={social.instagram} target="_blank" rel="noopener noreferrer" className="footer-social-link" aria-label="Instagram">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                  <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+                  <circle cx="12" cy="12" r="4"/>
+                  <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/>
+                </svg>
+              </a>
+            )}
+            {social.linkedin && (
+              <a href={social.linkedin} target="_blank" rel="noopener noreferrer" className="footer-social-link" aria-label="LinkedIn">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6z"/>
+                  <rect x="2" y="9" width="4" height="12"/>
+                  <circle cx="4" cy="4" r="2"/>
+                </svg>
+              </a>
+            )}
+            {social.facebook && (
+              <a href={social.facebook} target="_blank" rel="noopener noreferrer" className="footer-social-link" aria-label="Facebook">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/>
+                </svg>
+              </a>
+            )}
           </div>
         </div>
 
@@ -157,7 +161,7 @@ export default function Footer() {
       {/* ── BOTTOM BAR ── */}
       <div className="footer-bottom">
         <span className="footer-copy">
-          © {year} DEQOIN Architectural Studio. Tüm hakları saklıdır.
+          © {year} {settings?.studioName || 'DEQOIN'} Architectural Studio. Tüm hakları saklıdır.
         </span>
         <span className="footer-bottom-tag">
           Nevşehir, Türkiye — Est. 2014

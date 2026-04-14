@@ -39,55 +39,29 @@ const heroSlides = [
   }
 ];
 
-const serviceCards = [
-  {
-    href: "/mimari",
-    title: "Design Studio",
-    subTitle: "Mimari Tasarım",
-    sideLabel: "Structural Integrity",
-    image:
-      "https://lh3.googleusercontent.com/aida-public/AB6AXuDbQTBOayjmIt4JzHbORA9-NQOes7Uaoo4WrcuGAAwzEXJzUo0V4OeCDNGGyxzFDBzG1_DbgXDr5aROetwtqZ4iPhEiaV39HyWZ67_PbpZY6a2KYJHEC2_-3JaDiLZ_71qMkfLsbA991AHjCOdDh70fnYJ3lWy-tXN7nbh5DnUk-PZt4xV5nniOugFFMI4ACHWAkPu85H_YU43TPpuqCiveXM-RLOTvgub4LA47ECVZBRKJhuyDW83lyXynnNyLY1ieUH6-gh23YZs",
-  },
-  {
-    href: "/materyal-studyo",
-    title: "Material Studio",
-    subTitle: "Ürün ve Malzeme",
-    sideLabel: "Aesthetic Soul",
-    image:
-      "https://lh3.googleusercontent.com/aida-public/AB6AXuCVUCHLvB4gqKIu87ZlNcr3oZLDY1XgwMEMQcp-pzAUlFS1Nn-nmjan1oheeXLiJ94VJmZA_oBfMSPF7jZZuVG47cEkP7h1goKj5Y9WgqVshN-x4CHN0Cdm1zFfAK5KszWNO6pl8w1-gfW6Wb3njqQOsjkQ8-pCuF6dDd8ggmvjFL-N9m4Fe4Lj-pi8WbEEAKONv-Sz-Yl9wNOSPvazMnMZ5Gjdm2myTHVi_vIL4aoeENqkME8bn_RKrHn4r6XvpVXXxsRugi5gKPU",
-  },
-  {
-    href: "/uygulama",
-    title: "Execution Studio",
-    subTitle: "Uygulama Hizmetleri",
-    sideLabel: "Precision Craft",
-    image:
-      "https://lh3.googleusercontent.com/aida-public/AB6AXuBg-MKl4zF6vfhExOXkEX-PKVlktOgQYI9EevfKIIYXVJ2wtmRpvybiQLaOtQdeYc_lIPrntEOUrCatq_Efo6fw-z-0-6TilLvAsA4tcYK-QcbjqdetFT2T2EreDjugTzsElsUeoEqEM9i_daWDWBBOJXiZvrjMKWtS2z5I5ZuzOLXWozpZ8MroEnEj5yRtFuaubPctxfeO_ZAZ5E5Tawo9b6yB5w0pmG4_axQCW--XoR8nAAImAE_M5UpM2vFx3tuR2ePYvZ-VmaY",
-  },
-];
-export default function Page() {
-  const [heroIndex, setHeroIndex] = useState(0);
-  const [heroDirection, setHeroDirection] = useState(0);
-  const [isConsultationOpen, setIsConsultationOpen] = useState(false);
-  const [activeTeamFilter, setActiveTeamFilter] = useState<(typeof teamFilters)[number]["key"]>("all");
-  const [slides, setSlides] = useState<any[]>(heroSlides);
-  const [projectIndex, setProjectIndex] = useState(0);
-  const [projectDirection, setProjectDirection] = useState(1);
-  const [projectProgressKey, setProjectProgressKey] = useState(0);
-  const [activeProjectPanelSlug, setActiveProjectPanelSlug] = useState<string | null>(null);
-  const [teamSlideIndex, setTeamSlideIndex] = useState(0);
-  const [teamSlideDirection, setTeamSlideDirection] = useState(1);
-  const heroTouchStartX = useRef<number | null>(null);
-  const heroTouchStartY = useRef<number | null>(null);
-  const projectTouchStartX = useRef<number | null>(null);
-  const projectTouchStartY = useRef<number | null>(null);
-  const projectIndexRef = useRef(0);
-  const homepageSnapLockRef = useRef(false);
-  const homepageTouchStartYRef = useRef<number | null>(null);
-  const teamTouchStartX = useRef<number | null>(null);
-  const teamTouchStartY = useRef<number | null>(null);
-  const projectWheelLockRef = useRef(false);
-  const teamWheelLockRef = useRef(false);
+  const [serviceCards, setServiceCards] = useState<any[]>([
+    {
+      href: "/mimari",
+      title: "Design Studio",
+      subTitle: "Mimari Tasarım",
+      sideLabel: "Structural Integrity",
+      image: "https://lh3.googleusercontent.com/aida-public/AB6AXuDbQTBOayjmIt4JzHbORA9-NQOes7Uaoo4WrcuGAAwzEXJzUo0V4OeCDNGGyxzFDBzG1_DbgXDr5aROetwtqZ4iPhEiaV39HyWZ67_PbpZY6a2KYJHEC2_-3JaDiLZ_71qMkfLsbA991AHjCOdDh70fnYJ3lWy-tXN7nbh5DnUk-PZt4xV5nniOugFFMI4ACHWAkPu85H_YU43TPpuqCiveXM-RLOTvgub4LA47ECVZBRKJhuyDW83lyXynnNyLY1ieUH6-gh23YZs",
+    },
+    {
+      href: "/materyal-studyo",
+      title: "Material Studio",
+      subTitle: "Ürün ve Malzeme",
+      sideLabel: "Aesthetic Soul",
+      image: "https://lh3.googleusercontent.com/aida-public/AB6AXuCVUCHLvB4gqKIu87ZlNcr3oZLDY1XgwMEMQcp-pzAUlFS1Nn-nmjan1oheeXLiJ94VJmZA_oBfMSPF7jZZuVG47cEkP7h1goKj5Y9WgqVshN-x4CHN0Cdm1zFfAK5KszWNO6pl8w1-gfW6Wb3njqQOsjkQ8-pCuF6dDd8ggmvjFL-N9m4Fe4Lj-pi8WbEEAKONv-Sz-Yl9wNOSPvazMnMZ5Gjdm2myTHVi_vIL4aoeENqkME8bn_RKrHn4r6XvpVXXxsRugi5gKPU",
+    },
+    {
+      href: "/uygulama",
+      title: "Execution Studio",
+      subTitle: "Uygulama Hizmetleri",
+      sideLabel: "Precision Craft",
+      image: "https://lh3.googleusercontent.com/aida-public/AB6AXuBg-MKl4zF6vfhExOXkEX-PKVlktOgQYI9EevfKIIYXVJ2wtmRpvybiQLaOtQdeYc_lIPrntEOUrCatq_Efo6fw-z-0-6TilLvAsA4tcYK-QcbjqdetFT2T2EreDjugTzsElsUeoEqEM9i_daWDWBBOJXiZvrjMKWtS2z5I5ZuzOLXWozpZ8MroEnEj5yRtFuaubPctxfeO_ZAZ5E5Tawo9b6yB5w0pmG4_axQCW--XoR8nAAImAE_M5UpM2vFx3tuR2ePYvZ-VmaY",
+    },
+  ]);
 
   useEffect(() => {
     const fetchSlides = async () => {
@@ -98,7 +72,7 @@ export default function Page() {
           if (data.length > 0) {
             setSlides(data.map((s: any) => ({
               ...s,
-              image: s.mediaUrl, // Mapping fields for compatibility
+              image: s.mediaUrl, 
               motto: s.subtitle,
               mediaType: s.mediaType || 'image'
             })));
@@ -108,7 +82,30 @@ export default function Page() {
         console.error("Failed to fetch dynamic slides:", err);
       }
     };
+
+    const fetchServiceCards = async () => {
+      try {
+        const res = await fetch('/api/admin/content/home/services');
+        if (res.ok) {
+          const data = await res.json();
+          if (data.length > 0) {
+             const mapped = data.map((card: any) => ({
+                href: card.studioType === 'design' ? '/mimari' : card.studioType === 'material' ? '/materyal-studyo' : '/uygulama',
+                title: card.title,
+                subTitle: card.description,
+                image: card.image || (card.studioType === 'design' ? '/images/slider/mimari_slide.png' : card.studioType === 'material' ? '/images/slider/tasarim_slide.png' : '/images/slider/uygulama_slide.png'),
+                sideLabel: card.studioType === 'design' ? 'Structural Integrity' : card.studioType === 'material' ? 'Aesthetic Soul' : 'Precision Craft'
+             }));
+             setServiceCards(mapped);
+          }
+        }
+      } catch (err) {
+        console.error("Failed to fetch studio cards:", err);
+      }
+    };
+
     fetchSlides();
+    fetchServiceCards();
 
     const interval = window.setInterval(() => {
       setSlides(current => {
