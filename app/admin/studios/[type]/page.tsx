@@ -3,16 +3,21 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Save, Plus, Trash2, GripVertical, Image as ImageIcon, Upload, Loader2, X } from 'lucide-react';
+import { Save, Plus, Trash2, GripVertical, Image as ImageIcon, Upload, Loader2, X, Settings } from 'lucide-react';
 
 export default function DepartmentManagerPage() {
   const params = useParams();
   const rawType = params?.type; 
   const slug = Array.isArray(rawType) ? rawType[0] : rawType || 'mimarlik';
 
-  const [activeTab, setActiveTab] = useState<'genel' | 'surec' | 'odak' | 'kategoriler'>('genel');
+  const [activeTab, setActiveTab] = useState<'genel' | 'surec' | 'odak' | 'kategoriler' | 'projeler'>('genel');
   const [loading, setLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
+  const [isProjectsLoading, setIsProjectsLoading] = useState(false);
+  const [projects, setProjects] = useState<any[]>([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingProject, setEditingProject] = useState<any>(null);
+  const [showAdvancedPanel, setShowAdvancedPanel] = useState(false);
 
   // Department State
   const [data, setData] = useState({
@@ -27,9 +32,61 @@ export default function DepartmentManagerPage() {
     categories: [] as { label: string; value: string }[]
   });
 
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [formData, setFormData] = useState({
+    title: '',
+    label: '',
+    categories: [] as string[],
+    publishTargets: {
+      designStudio: true,
+      materialStudio: false,
+      executionStudio: false
+    },
+    coverImage: '',
+    description: '',
+    client: '',
+    year: '',
+    area: '',
+    vision: '',
+    techDetails: '',
+    story: '',
+    seoMeta: { title: '', description: '', keywords: '' },
+    gallery: [] as { url: string; imageAlt: string; caption: string }[]
+  });
+
+  const CATEGORIES = ["Lüks Konut", "Ticari Yapı", "Karma Kullanım", "Kurumsal Alan", "Butik Otel", "Kültür Yapısı"];
+
   useEffect(() => {
     fetchDepartmentData();
-  }, [slug]);
+    if (activeTab === 'projeler') {
+      fetchStudioProjects();
+    }
+  }, [slug, activeTab]);
+
+  const getTargetFromSlug = (s: string) => {
+    const designSlugs = ['mimarlik', 'ic-mimarlik', 'restorasyon', 'peyzaj-mimarligi', 'insaat-muhendisligi', 'elektrik-elektronik-muhendisligi'];
+    const materialSlugs = ['mobilya', 'aydinlatma', 'italyan-sivalar', 'sanatsal-calismalar', 'tugla-ve-tas'];
+    const executionSlugs = ['insaat-ekipleri', 'siva-ve-alci-ekipleri', 'boya-ekipleri', 'duvar-sanatcilari', 'ressamlar', 'heykeltiraslar'];
+    
+    if (designSlugs.includes(s)) return 'designStudio';
+    if (materialSlugs.includes(s)) return 'materialStudio';
+    if (executionSlugs.includes(s)) return 'executionStudio';
+    return 'designStudio';
+  };
+
+  const fetchStudioProjects = async () => {
+    setIsProjectsLoading(true);
+    try {
+      const target = getTargetFromSlug(slug);
+      const res = await fetch(`/api/projects?target=${target}`);
+      const json = await res.json();
+      setProjects(json);
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setIsProjectsLoading(false);
+    }
+  };
 
   const fetchDepartmentData = async () => {
     try {
@@ -47,14 +104,56 @@ export default function DepartmentManagerPage() {
           focusAreas: json.focusAreas || [],
           categories: json.categories || []
         });
-      } else {
-        // Fallback for new empty slug setup
-        if (slug === 'design') setData(prev => ({...prev, title: 'Mimari Studio'}));
       }
     } catch (e) {
       console.error(e);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const toggleCategory = (cat: string) => {
+    setFormData(prev => {
+      const currentCats = (prev as any).categories || [];
+      const newCats = currentCats.includes(cat) ? currentCats.filter((c: string) => c !== cat) : [...currentCats, cat];
+      return { ...prev, categories: newCats };
+    });
+  };
+
+  const togglePublishTarget = (target: string) => {
+    setFormData(prev => {
+      const targets = (prev as any).publishTargets || { designStudio: false, materialStudio: false, executionStudio: false };
+      return { ...prev, publishTargets: { ...targets, [target]: !targets[target] } };
+    });
+  };
+
+  const updateGalleryItem = (index: number, key: string, value: string) => {
+    setFormData(prev => {
+      const newGallery = [...prev.gallery];
+      newGallery[index] = { ...newGallery[index], [key]: value };
+      return { ...prev, gallery: newGallery };
+    });
+  };
+
+  const handleProjectSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    const url = editingProject ? `/api/projects/${editingProject._id}` : '/api/projects';
+    const method = editingProject ? 'PATCH' : 'POST';
+    try {
+      const res = await fetch(url, {
+        method,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData)
+      });
+      if (res.ok) {
+        setIsModalOpen(false);
+        fetchStudioProjects();
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -78,25 +177,68 @@ export default function DepartmentManagerPage() {
     }
   };
 
-  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>, field: 'image') => {
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>, field: 'image' | 'cover' | 'gallery') => {
     const file = e.target.files?.[0];
     if (!file) return;
     try {
       const res = await fetch(`/api/upload?filename=${file.name}`, { method: 'POST', body: file });
       const blob = await res.json();
       
-      const isVideo = file.type.startsWith('video/');
-      setData(prev => ({ 
-        ...prev, 
-        [field]: blob.url,
-        mediaType: isVideo ? 'video' : 'image'
-      }));
+      if (field === 'image') {
+        const isVideo = file.type.startsWith('video/');
+        setData(prev => ({ ...prev, image: blob.url, mediaType: isVideo ? 'video' : 'image' }));
+      } else if (field === 'cover') {
+        setFormData(prev => ({ ...prev, coverImage: blob.url }));
+      } else if (field === 'gallery') {
+        setFormData(prev => ({ ...prev, gallery: [...prev.gallery, { url: blob.url, imageAlt: '', caption: '' }] }));
+      }
     } catch (err) {
       alert("Yükleme başarısız.");
     }
   };
 
-  // Array Handlers
+  const openEditModal = (project: any = null) => {
+    if (project) {
+      setEditingProject(project);
+      setFormData({
+        title: project.title || '',
+        label: project.label || '',
+        categories: project.categories || [],
+        publishTargets: project.publishTargets || { designStudio: true, materialStudio: false, executionStudio: false },
+        coverImage: project.coverImage || '',
+        description: project.description || '',
+        client: project.client || '',
+        year: project.year || '',
+        area: project.area || '',
+        vision: project.vision || '',
+        techDetails: project.techDetails || '',
+        story: project.story || '',
+        seoMeta: project.seoMeta || { title: '', description: '', keywords: '' },
+        gallery: project.gallery?.map((g: any) => typeof g === 'string' ? { url: g, imageAlt: '', caption: '' } : g) || []
+      });
+    } else {
+      setEditingProject(null);
+      setFormData({
+        title: '', label: '', categories: [],
+        publishTargets: {
+          designStudio: getTargetFromSlug(slug) === 'designStudio',
+          materialStudio: getTargetFromSlug(slug) === 'materialStudio',
+          executionStudio: getTargetFromSlug(slug) === 'executionStudio'
+        },
+        coverImage: '', description: '', client: '', year: '', area: '', vision: '', techDetails: '', story: '',
+        seoMeta: { title: '', description: '', keywords: '' },
+        gallery: []
+      });
+    }
+    setIsModalOpen(true);
+  };
+
+  const handleProjectDelete = async (id: string) => {
+    if (!confirm("Bu projeyi silmek istediğinize emin misiniz?")) return;
+    await fetch(`/api/projects/${id}`, { method: 'DELETE' });
+    fetchStudioProjects();
+  };
+
   const addItem = (field: 'process' | 'focusAreas' | 'categories', emptyItem: any) => {
     setData(prev => ({ ...prev, [field]: [...prev[field], emptyItem] }));
   };
@@ -117,11 +259,10 @@ export default function DepartmentManagerPage() {
 
   return (
     <div className="dept-manager-layout">
-      {/* HEADER */}
       <div className="dept-header">
         <div>
           <h2>"{slug.toUpperCase()}" DİNAMİK YÖNETİM PANELİ</h2>
-          <p>Seçili departmanın web sitesindeki görünen tüm verilerini (Genel Ayarlar, İş Akışı, Odak Noktaları) yönetin.</p>
+          <p>Seçili departmanın web sitesindeki görünen tüm verilerini yönetin.</p>
         </div>
         <button className="save-btn-main" onClick={handleSave} disabled={isSaving}>
           {isSaving ? <Loader2 className="animate-spin" size={18} /> : <Save size={18} />}
@@ -129,13 +270,13 @@ export default function DepartmentManagerPage() {
         </button>
       </div>
 
-      {/* TABS NAVIGATION */}
       <div className="tabs-nav">
         {[
           { id: 'genel', label: 'GENEL BİLGİLER & MEDYA' },
           { id: 'surec', label: 'İŞ AKIŞI (PROCESS)' },
           { id: 'odak', label: 'ODAK ALANLARI (CARDS)' },
-          { id: 'kategoriler', label: 'PROJE KATEGORİSİ' }
+          { id: 'kategoriler', label: 'PROJE KATEGORİSİ' },
+          { id: 'projeler', label: 'PROJELER (PORTFOLIO)' }
         ].map(tab => (
           <button 
             key={tab.id}
@@ -284,8 +425,160 @@ export default function DepartmentManagerPage() {
               </div>
             </motion.div>
           )}
+           {/* PROJELER TAB */}
+          {activeTab === 'projeler' && (
+            <motion.div key="projeler" initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 10 }} className="tab-panel">
+               <div className="panel-header">
+                <h3>Studio Portfolyosu</h3>
+                <p className="hint">Bu sayfaya (ve bu stüdyo grubuna) bağlı projeleri yönetin.</p>
+              </div>
+
+              {isProjectsLoading ? (
+                <div className="loader-wrap-sm"><Loader2 className="animate-spin" /></div>
+              ) : (
+                <div className="studio-projects-grid">
+                  {projects.map((project: any) => (
+                    <motion.div layout key={project._id} className="engine-card">
+                      <div className="card-clickable-area" onClick={() => openEditModal(project)}>
+                        <div className="card-thumb">
+                          {project.coverImage && <img src={project.coverImage} alt={project.title} />}
+                          <div className="thumb-overlay">
+                            <ImageIcon size={24} />
+                            <span>DÜZENLE</span>
+                          </div>
+                        </div>
+                        <div className="card-info">
+                          <h4>{project.title}</h4>
+                          <span className="sc-badge">{project.label}</span>
+                        </div>
+                      </div>
+                      <div className="card-actions-v2">
+                         <button onClick={() => openEditModal(project)} className="v2-btn edit">DÜZENLE</button>
+                         <button onClick={(e) => { e.stopPropagation(); handleProjectDelete(project._id); }} className="v2-btn delete">SİL</button>
+                      </div>
+                    </motion.div>
+                  ))}
+                  {projects.length === 0 && <p className="empty">Bu stüdyo grubu için henüz proje eklenmemiş.</p>}
+                </div>
+              )}
+            </motion.div>
+          )}
         </AnimatePresence>
       </div>
+
+      {/* EDIT MODAL INTEGRATION */}
+      <AnimatePresence>
+        {isModalOpen && (
+          <div className="hybrid-modal-overlay">
+            <motion.div initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: 20, opacity: 0 }} className={`hybrid-modal-content ${showAdvancedPanel ? 'advanced-open' : ''}`}>
+              <div className="modal-inner-scroll">
+                <div className="modal-header">
+                  <h3>{editingProject ? 'PROJE BİLGİLERİNİ DÜZENLE' : 'YENİ PROJE'}</h3>
+                  <div className="header-actions">
+                    <button className="text-btn" onClick={() => setShowAdvancedPanel(!showAdvancedPanel)}>
+                      <Settings size={16} /> {showAdvancedPanel ? 'TEMEL AYARLAR' : 'GELİŞMİŞ & SEO'}
+                    </button>
+                    <button onClick={() => setIsModalOpen(false)} className="close-btn"><X size={20} /></button>
+                  </div>
+                </div>
+
+                <form onSubmit={handleProjectSubmit} className="modal-form">
+                   <div className="main-form-content" style={{ display: showAdvancedPanel ? 'none' : 'flex' }}>
+                    <div className="form-cols-3">
+                       <div className="group">
+                         <label>PROJE ADI</label>
+                         <input type="text" value={formData.title} onChange={e => setFormData({...formData, title: e.target.value})} required />
+                       </div>
+                       <div className="group">
+                         <label>MÜŞTERİ</label>
+                         <input type="text" value={formData.client} onChange={e => setFormData({...formData, client: e.target.value})} />
+                       </div>
+                       <div className="group">
+                         <label>ETİKET</label>
+                         <input type="text" value={formData.label} onChange={e => setFormData({...formData, label: e.target.value})} required />
+                       </div>
+                    </div>
+
+                    <div className="form-cols-2">
+                       <div className="group">
+                         <label>YIL</label>
+                         <input type="text" value={formData.year} onChange={e => setFormData({...formData, year: e.target.value})} />
+                       </div>
+                       <div className="group">
+                         <label>ALAN (m²)</label>
+                         <input type="text" value={formData.area} onChange={e => setFormData({...formData, area: e.target.value})} />
+                       </div>
+                    </div>
+
+                    <div className="upload-sections">
+                      <div className="upload-box">
+                        <label>KAPAK GÖRSELİ</label>
+                        <div className="cover-preview" onClick={() => document.getElementById('proj-cover')?.click()}>
+                          {formData.coverImage ? <img src={formData.coverImage} alt="Cover" /> : <div className="placeholder"><Upload size={20} /></div>}
+                        </div>
+                        <input id="proj-cover" type="file" className="hidden" onChange={e => handleImageUpload(e, 'cover')} />
+                      </div>
+
+                      <div className="upload-box flex-1">
+                        <label>GALERİ</label>
+                        <div className="advanced-gallery">
+                          {formData.gallery.map((item, i) => (
+                            <div key={i} className="gallery-card">
+                               <img src={item.url} alt="Gallery item" />
+                               <div className="gallery-fields">
+                                  <input type="text" placeholder="Alt Etiketi" value={item.imageAlt} onChange={e => updateGalleryItem(i, 'imageAlt', e.target.value)} />
+                                  <input type="text" placeholder="Altyazı" value={item.caption} onChange={e => updateGalleryItem(i, 'caption', e.target.value)} />
+                               </div>
+                               <button type="button" className="remove-btn" onClick={() => setFormData({...formData, gallery: formData.gallery.filter((_, idx)=>idx!==i)})}><Trash2 size={12}/></button>
+                            </div>
+                          ))}
+                          <button type="button" className="add-photo-btn" onClick={() => document.getElementById('proj-gal')?.click()}>GÖRSEL EKLE</button>
+                        </div>
+                        <input id="proj-gal" type="file" className="hidden" onChange={e => handleImageUpload(e, 'gallery')} />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="advanced-form-content" style={{ display: showAdvancedPanel ? 'flex' : 'none' }}>
+                    <div className="advanced-grid">
+                      <div className="adv-left">
+                        <div className="advanced-section">
+                          <h4>MİMARİ ANLATIM</h4>
+                          <div className="group mb-4"><label>HİKAYE</label><textarea value={formData.story} onChange={e => setFormData({...formData, story: e.target.value})} rows={3} /></div>
+                          <div className="group mb-4"><label>VİZYON</label><textarea value={formData.vision} onChange={e => setFormData({...formData, vision: e.target.value})} rows={3} /></div>
+                          <div className="group"><label>TEKNİK</label><textarea value={formData.techDetails} onChange={e => setFormData({...formData, techDetails: e.target.value})} rows={3} /></div>
+                        </div>
+                      </div>
+                      <div className="adv-right">
+                        <div className="advanced-section">
+                          <h4>DEPARTMAN</h4>
+                          <div className="checkbox-grid">
+                            <label className="custom-cb"><input type="checkbox" checked={formData.publishTargets.designStudio} onChange={() => togglePublishTarget('designStudio')} /><span className="cb-mark"></span> Design</label>
+                            <label className="custom-cb"><input type="checkbox" checked={formData.publishTargets.materialStudio} onChange={() => togglePublishTarget('materialStudio')} /><span className="cb-mark"></span> Material</label>
+                            <label className="custom-cb"><input type="checkbox" checked={formData.publishTargets.executionStudio} onChange={() => togglePublishTarget('executionStudio')} /><span className="cb-mark"></span> Execution</label>
+                          </div>
+                        </div>
+                        <div className="advanced-section mt-4">
+                          <h4>KATEGORİLER</h4>
+                          <div className="checkbox-grid">
+                            {CATEGORIES.map(cat => (
+                              <label key={cat} className="custom-cb"><input type="checkbox" checked={formData.categories.includes(cat)} onChange={() => toggleCategory(cat)} /><span className="cb-mark"></span> {cat}</label>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="modal-footer">
+                     <button type="submit" className="action-btn-main" disabled={isSubmitting}>{isSubmitting ? 'KAYDEDİLİYOR...' : 'GÜNCELLE'}</button>
+                  </div>
+                </form>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
 
       <style jsx>{`
         .dept-manager-layout { display: flex; flex-direction: column; gap: 2rem; }
@@ -355,6 +648,59 @@ export default function DepartmentManagerPage() {
         .empty { text-align: center; color: var(--text-muted); font-size: 0.85rem; padding: 2rem; border: 1px dashed var(--line); border-radius: 8px; margin-top: 1rem; }
         .hidden { display: none; }
         .loader-wrap { height: 60vh; display: flex; align-items: center; justify-content: center; color: #a68966; }
+        .loader-wrap-sm { padding: 5rem; display: flex; justify-content: center; color: #a68966; }
+
+        /* PROJECTS GRID */
+        .studio-projects-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 1.5rem; margin-top: 1rem; }
+        .engine-card { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; transition: all 0.3s; }
+        .engine-card:hover { transform: translateY(-5px); border-color: #a68966; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
+        .card-clickable-area { cursor: pointer; }
+        .card-thumb { aspect-ratio: 16/10; position: relative; overflow: hidden; }
+        .card-thumb img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s; }
+        .engine-card:hover img { transform: scale(1.05); }
+        .thumb-overlay { position: absolute; inset: 0; background: rgba(166,137,102,0.9); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.5rem; opacity: 0; transition: 0.3s; color: #000; }
+        .thumb-overlay span { font-size: 0.7rem; font-weight: 800; letter-spacing: 0.1em; }
+        .card-clickable-area:hover .thumb-overlay { opacity: 1; }
+        .card-info { padding: 1rem; }
+        .card-info h4 { margin: 0 0 0.25rem 0; font-size: 0.85rem; color: var(--text); font-family: var(--font-display); }
+        .sc-badge { font-size: 0.6rem; color: #a68966; font-weight: 700; letter-spacing: 0.05em; }
+        .card-actions-v2 { display: flex; gap: 0.5rem; padding: 0 1rem 1rem 1rem; }
+        .v2-btn { flex: 1; border: none; padding: 0.6rem; border-radius: 4px; font-size: 0.6rem; font-weight: 800; cursor: pointer; transition: 0.3s; }
+        .v2-btn.edit { background: var(--surface-muted); color: var(--text); border: 1px solid var(--line); }
+        .v2-btn.edit:hover { background: #a68966; color: #000; }
+        .v2-btn.delete { background: rgba(255,77,77,0.05); color: #ff4d4d; border: 1px solid rgba(255,77,77,0.1); }
+        .v2-btn.delete:hover { background: #ff4d4d; color: #fff; }
+
+        /* MODAL */
+        .hybrid-modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(10px); z-index: 2000; display: flex; align-items: center; justify-content: center; padding: 2rem; }
+        .hybrid-modal-content { background: var(--surface); border: 1px solid var(--line); width: 100%; max-width: 900px; height: 85vh; border-radius: 12px; overflow: hidden; }
+        .modal-inner-scroll { overflow-y: auto; height: 100%; }
+        .modal-header { padding: 1.5rem 2rem; border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; background: var(--surface); z-index: 10; }
+        .group label { font-size: 0.65rem; color: var(--text-muted); font-weight: 700; letter-spacing: 0.1em; margin-bottom: 0.5rem; display: block; }
+        .group input, .group textarea { width: 100%; background: var(--background); border: 1px solid var(--line); padding: 0.8rem; color: var(--text); border-radius: 4px; font-size: 0.85rem; }
+        .group input:focus { border-color: #a68966; outline: none; }
+        .form-cols-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem; }
+        .form-cols-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem; }
+        .upload-sections { display: flex; gap: 2rem; margin-top: 2rem; }
+        .cover-preview { width: 220px; aspect-ratio: 16/10; border: 1px dashed var(--line); border-radius: 4px; overflow: hidden; cursor: pointer; display: flex; align-items: center; justify-content: center; background: var(--background); }
+        .cover-preview img { width: 100%; height: 100%; object-fit: cover; }
+        .advanced-gallery { display: flex; flex-direction: column; gap: 0.75rem; }
+        .gallery-card { display: flex; gap: 1rem; background: var(--surface-muted); padding: 0.75rem; border-radius: 4px; align-items: center; border: 1px solid var(--line); }
+        .gallery-card img { width: 60px; height: 60px; object-fit: cover; border-radius: 4px; }
+        .gallery-fields { flex: 1; display: flex; flex-direction: column; gap: 0.4rem; }
+        .gallery-fields input { padding: 0.4rem; font-size: 0.75rem; }
+        .add-photo-btn { background: var(--surface-muted); color: var(--text); border: 1px dashed var(--line); padding: 0.75rem; cursor: pointer; border-radius: 4px; font-size: 0.75rem; }
+        .advanced-grid { display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 2rem; padding: 2rem; }
+        .advanced-section h4 { font-size: 0.8rem; color: #a68966; border-bottom: 1px solid rgba(166,137,102,0.2); padding-bottom: 0.5rem; margin-bottom: 1rem; font-family: var(--font-display); }
+        .checkbox-grid { display: grid; grid-template-columns: 1fr; gap: 0.75rem; }
+        .custom-cb { display: flex; align-items: center; gap: 0.5rem; font-size: 0.8rem; cursor: pointer; }
+        .cb-mark { width: 16px; height: 16px; border: 1px solid var(--line); border-radius: 3px; }
+        .custom-cb input:checked + .cb-mark { background: #a68966; border-color: #a68966; }
+        .modal-footer { padding: 2rem; border-top: 1px solid var(--line); display: flex; justify-content: flex-end; }
+        .action-btn-main { background: #a68966; color: #000; border: none; padding: 1rem 3rem; border-radius: 4px; font-weight: 700; cursor: pointer; }
+        .text-btn { background: none; border: none; color: #a68966; font-size: 0.7rem; cursor: pointer; display: flex; align-items: center; gap: 0.4rem; }
+        .close-btn { background: none; border: none; color: var(--text-muted); cursor: pointer; }
+        .mb-4 { margin-bottom: 1rem; }
       `}</style>
     </div>
   );

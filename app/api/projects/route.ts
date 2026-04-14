@@ -7,6 +7,7 @@ export async function GET(request: Request) {
     await connectToDatabase();
     const { searchParams } = new URL(request.url);
     const slug = searchParams.get("slug");
+    const target = searchParams.get("target");
     
     if (slug) {
       const project = await Project.findOne({ slug });
@@ -14,7 +15,12 @@ export async function GET(request: Request) {
       return NextResponse.json(project);
     }
 
-    const projects = await Project.find({}).sort({ createdAt: -1 });
+    let query = {};
+    if (target) {
+      query = { [`publishTargets.${target}`]: true };
+    }
+
+    const projects = await Project.find(query).sort({ createdAt: -1 });
     return NextResponse.json(projects);
   } catch (error) {
     return NextResponse.json({ error: "Failed to fetch projects" }, { status: 500 });
