@@ -785,6 +785,10 @@ export default function DepartmentManagerPage() {
         .add-item-btn:hover { background: var(--line); }
 
         .items-list { display: flex; flex-direction: column; gap: 1.5rem; margin-top: 1.5rem; }
+        .list-panel .panel-header h3 { color: #000 !important; font-weight: 800; }
+        .list-panel .lux-group label { color: #000 !important; font-weight: 800; opacity: 1; }
+        .list-panel .lux-group input, .list-panel .lux-group textarea { color: #000 !important; font-weight: 500; }
+
         .list-item-card { 
           display: flex; align-items: flex-start; gap: 2rem; background: rgba(255,255,255,0.01); 
           border: 1px solid rgba(255,255,255,0.05); padding: 2rem; border-radius: 16px; 
