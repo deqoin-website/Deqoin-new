@@ -3,11 +3,16 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Save, Loader2, BarChart3, Type, Image as ImageIcon, Upload, Plus, Trash2 } from 'lucide-react';
+import { useNotification } from '@/components/admin/AdminNotificationProvider';
+import { AdminSaveBar } from '@/components/admin/AdminSaveBar';
 
 export default function CorporateContentPage() {
+  const { showToast } = useNotification();
   const [activeTab, setActiveTab] = useState<'hakkimizda' | 'rakamlar' | 'is-akisi'>('hakkimizda');
   const [loading, setLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
+  const [isDirty, setIsDirty] = useState(false);
+  const [initialData, setInitialData] = useState<any>(null);
 
   const [data, setData] = useState({
     title: '',
@@ -27,17 +32,20 @@ export default function CorporateContentPage() {
       const res = await fetch('/api/admin/content/corporate/about');
       if (res.ok) {
         const json = await res.json();
-        setData({
+        const formattedData = {
           title: json.title || '',
           subtitle: json.subtitle || '',
           description: json.description || '',
           image: json.image || '',
           stats: json.stats || [],
           sections: json.sections || []
-        });
+        };
+        setData(formattedData);
+        setInitialData(JSON.parse(JSON.stringify(formattedData)));
       }
     } catch (e) {
       console.error(e);
+      showToast("İerik yüklenemedi.", "error");
     } finally {
       setLoading(false);
     }
@@ -48,11 +56,11 @@ export default function CorporateContentPage() {
     try {
       const res = await fetch('/api/admin/migrate/corporate');
       if (res.ok) {
-        alert("Kurumsal içerikler ve iş akışı başarıyla aktarıldı!");
+        showToast("Kurumsal içerikler ve iş akışı başarıyla aktarıldı!", "success");
         fetchContent();
       }
     } catch (e) {
-      alert("Aktarım sırasında bir hata oluştu.");
+      showToast("Aktarım sırasında bir hata oluştu.", "error");
     } finally {
       setIsSaving(false);
     }
@@ -67,13 +75,24 @@ export default function CorporateContentPage() {
         body: JSON.stringify(data)
       });
       if (res.ok) {
-        alert("Kurumsal içerikler başarıyla güncellendi!");
+        showToast("Kurumsal içerikler başarıyla güncellendi!", "success");
+        setInitialData(JSON.parse(JSON.stringify(data)));
+        setIsDirty(false);
+      } else {
+        showToast("Kayıt sırasında hata oluştu.", "error");
       }
     } catch (e) {
       console.error(e);
+      showToast("Bağlantı hatası.", "error");
     } finally {
       setIsSaving(false);
     }
+  };
+
+  const handleCancel = () => {
+    setData(JSON.parse(JSON.stringify(initialData)));
+    setIsDirty(false);
+    showToast("Değişiklikler geri alındı.", "info");
   };
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -83,13 +102,15 @@ export default function CorporateContentPage() {
       const res = await fetch(`/api/upload?filename=${file.name}`, { method: 'POST', body: file });
       const blob = await res.json();
       setData(prev => ({ ...prev, image: blob.url }));
+      setIsDirty(true);
     } catch (err) {
-      alert("Fotoğraf yükleme başarısız.");
+      showToast("Fotoğraf yükleme başarısız.", "error");
     }
   };
 
   const addStat = () => {
     setData(prev => ({ ...prev, stats: [...prev.stats, { label: '', value: '' }] }));
+    setIsDirty(true);
   };
 
   const updateStat = (index: number, key: string, value: string) => {
@@ -98,14 +119,17 @@ export default function CorporateContentPage() {
       (newStats[index] as any)[key] = value;
       return { ...prev, stats: newStats };
     });
+    setIsDirty(true);
   };
 
   const removeStat = (index: number) => {
     setData(prev => ({ ...prev, stats: prev.stats.filter((_, i) => i !== index) }));
+    setIsDirty(true);
   };
 
   const addWorkflowStep = () => {
     setData(prev => ({ ...prev, sections: [...prev.sections, { title: '', content: '' }] }));
+    setIsDirty(true);
   };
 
   const updateWorkflowStep = (index: number, key: string, value: string) => {
@@ -114,10 +138,12 @@ export default function CorporateContentPage() {
       (newSections[index] as any)[key] = value;
       return { ...prev, sections: newSections };
     });
+    setIsDirty(true);
   };
 
   const removeWorkflowStep = (index: number) => {
     setData(prev => ({ ...prev, sections: prev.sections.filter((_, i) => i !== index) }));
+    setIsDirty(true);
   };
 
   if (loading) return <div className="loader-wrap"><Loader2 className="animate-spin" /></div>;
@@ -129,11 +155,29 @@ export default function CorporateContentPage() {
           <h2>KURUMSAL İÇERİK & İŞ AKIŞI</h2>
           <p>Hakkımızda sayfası vizyon metinlerini, istatistikleri ve kurumsal görselleri buradan yönetin.</p>
         </div>
-        <button className="save-btn" onClick={handleSave} disabled={isSaving}>
-          {isSaving ? <Loader2 className="animate-spin" size={18} /> : <Save size={18} />}
-          {isSaving ? 'KAYDEDİLİYOR...' : 'DEĞİŞİKLİKLERİ KAYDET'}
-        </button>
+        <div style={{ display: 'flex', gap: '1rem' }}>
+          {isDirty && (
+            <button 
+              className="save-btn" 
+              style={{ background: 'transparent', border: '1px solid var(--line)', color: 'var(--text-muted)' }}
+              onClick={handleCancel}
+            >
+              SIFIRLA
+            </button>
+          )}
+          <button className={`save-btn ${isDirty ? 'dirty-pulse' : ''}`} onClick={handleSave} disabled={isSaving}>
+            {isSaving ? <Loader2 className="animate-spin" size={18} /> : <Save size={18} />}
+            {isSaving ? 'KAYDEDİLİYOR...' : (isDirty ? 'KAYDETMEYİ UNUTMAYIN' : 'DEĞİŞİKLİKLERİ KAYDET')}
+          </button>
+        </div>
       </div>
+
+      <AdminSaveBar 
+        isVisible={isDirty} 
+        onSave={handleSave} 
+        onCancel={handleCancel}
+        isSaving={isSaving}
+      />
 
       <div className="tabs-nav">
         {[
@@ -158,15 +202,15 @@ export default function CorporateContentPage() {
             <motion.div key="about" initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 10 }} className="panel">
               <div className="form-group">
                 <label>ANA BAŞLIK (H1)</label>
-                <input type="text" value={data.title} onChange={e => setData({...data, title: e.target.value})} placeholder="Örn: TASARIMDAN ÖTE: BÜTÜNSEL BİR DENEYİM" />
+                <input type="text" value={data.title} onChange={e => { setData({...data, title: e.target.value}); setIsDirty(true); }} placeholder="Örn: TASARIMDAN ÖTE: BÜTÜNSEL BİR DENEYİM" />
               </div>
               <div className="form-group">
                 <label>ALT ETİKET (EYEBROW)</label>
-                <input type="text" value={data.subtitle} onChange={e => setData({...data, subtitle: e.target.value})} placeholder="Örn: BİZ KİMİZ" />
+                <input type="text" value={data.subtitle} onChange={e => { setData({...data, subtitle: e.target.value}); setIsDirty(true); }} placeholder="Örn: BİZ KİMİZ" />
               </div>
               <div className="form-group">
                 <label>VİZYON AÇIKLAMASI</label>
-                <textarea rows={8} value={data.description} onChange={e => setData({...data, description: e.target.value})} placeholder="Kurumsal kimliğinizi ve yaklaşımınızı anlatan ana metin..." />
+                <textarea rows={8} value={data.description} onChange={e => { setData({...data, description: e.target.value}); setIsDirty(true); }} placeholder="Kurumsal kimliğinizi ve yaklaşımınızı anlatan ana metin..." />
               </div>
 
               <div className="image-upload-wrap">
@@ -259,6 +303,9 @@ export default function CorporateContentPage() {
         .manager-header { display: flex; justify-content: space-between; align-items: flex-end; }
         .manager-header h2 { font-family: var(--font-display); font-size: 1.5rem; letter-spacing: 0.1em; color: var(--text); margin: 0 0 0.5rem 0; }
         .manager-header p { margin: 0; color: var(--text-soft); opacity: 0.7; font-size: 0.85rem; }
+
+        .save-btn.dirty-pulse { background: #a68966; box-shadow: 0 0 20px rgba(166,137,102,0.4); animation: pulse-border 2s infinite; }
+        @keyframes pulse-border { 0% { box-shadow: 0 0 0 0 rgba(166,137,102,0.4); } 70% { box-shadow: 0 0 0 10px rgba(166,137,102,0); } 100% { box-shadow: 0 0 0 0 rgba(166,137,102,0); } }
 
         .save-btn { background: #a68966; color: #000; border: none; padding: 1rem 2rem; border-radius: 4px; font-weight: 800; cursor: pointer; display: flex; align-items: center; gap: 0.75rem; transition: transform 0.3s; }
         .save-btn:hover { transform: translateY(-2px); }

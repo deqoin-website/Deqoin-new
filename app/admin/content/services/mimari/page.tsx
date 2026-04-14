@@ -13,9 +13,14 @@ import {
   PlusCircle,
   X
 } from 'lucide-react';
+import { useNotification } from '@/components/admin/AdminNotificationProvider';
+import { AdminSaveBar } from '@/components/admin/AdminSaveBar';
 
 export default function MimariEditor() {
+  const { showToast, confirm: premiumConfirm } = useNotification();
   const [content, setContent] = useState<any>(null);
+  const [initialContent, setInitialContent] = useState<any>(null);
+  const [isDirty, setIsDirty] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -31,9 +36,11 @@ export default function MimariEditor() {
       const data = await res.json();
       if (data && data.sections) {
         setContent(data);
+        setInitialContent(JSON.parse(JSON.stringify(data)));
       }
     } catch (err) {
       console.error(err);
+      showToast("İçerik yüklenemedi.", "error");
     } finally {
       setIsLoading(false);
     }
@@ -61,13 +68,14 @@ export default function MimariEditor() {
         section.slides.push(blob.url);
       }
       setContent(newContent);
+      setIsDirty(true);
     } catch (err) {
-      alert("Görsel yüklenemedi.");
+      showToast("Görsel yüklenemedi.", "error");
     }
   };
 
   const addService = async () => {
-    if (!newService.title || !newService.slug) return alert("Başlık ve Slug zorunludur.");
+    if (!newService.title || !newService.slug) return showToast("Başlık ve Slug zorunludur.", "error");
     
     const newContent = { ...content };
     const catSection = newContent.sections.find((s: any) => s.id === 'categories');
@@ -78,32 +86,52 @@ export default function MimariEditor() {
     });
     
     setContent(newContent);
+    setIsDirty(true);
     setIsAddModalOpen(false);
     setNewService({ title: '', sideLabel: '', slug: '', image: '/images/slider/mimari_slide.png' });
   };
 
-  const removeService = (index: number) => {
-    if (!confirm("Bu hizmet alanını silmek istediğinize emin misiniz?")) return;
+  const removeService = async (index: number) => {
+    const ok = await premiumConfirm({
+      title: 'HİZMET SİLME',
+      message: 'Bu hizmet alanını silmek istediğinize emin misiniz?',
+      confirmText: 'SİL',
+      isDanger: true
+    });
+    if (!ok) return;
     const newContent = { ...content };
     const catSection = newContent.sections.find((s: any) => s.id === 'categories');
     catSection.items.splice(index, 1);
     setContent(newContent);
+    setIsDirty(true);
   };
 
   const saveContent = async () => {
     setIsSaving(true);
     try {
-      await fetch('/api/content', {
+      const res = await fetch('/api/content', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(content)
       });
-      alert("Değişiklikler başarıyla kaydedildi!");
+      if (res.ok) {
+        showToast("Değişiklikler başarıyla kaydedildi!", "success");
+        setInitialContent(JSON.parse(JSON.stringify(content)));
+        setIsDirty(false);
+      } else {
+        showToast("Kayıt sırasında hata oluştu.", "error");
+      }
     } catch (err) {
-      alert("Kaydedilemedi.");
+      showToast("Bağlantı hatası.", "error");
     } finally {
       setIsSaving(false);
     }
+  };
+
+  const handleCancel = () => {
+    setContent(JSON.parse(JSON.stringify(initialContent)));
+    setIsDirty(false);
+    showToast("Değişiklikler geri alındı.", "info");
   };
 
   if (isLoading) return <div className="loader-wrap"><Loader2 className="animate-spin" /></div>;
@@ -119,11 +147,29 @@ export default function MimariEditor() {
           <h1>Mimari Stüdyo Yönetimi</h1>
           <p>Tüm hizmet alanlarını ve ana girişi buradan yönetin.</p>
         </div>
-        <button className="save-btn" onClick={saveContent} disabled={isSaving}>
-          {isSaving ? <Loader2 className="animate-spin" size={18} /> : <Save size={18} />}
-          <span>DEĞİŞİKLİKLERİ KAYDET</span>
-        </button>
+        <div style={{ display: 'flex', gap: '1rem' }}>
+          {isDirty && (
+            <button 
+              className="save-btn" 
+              style={{ background: 'transparent', border: '1px solid var(--line)', color: 'var(--text-muted)' }}
+              onClick={handleCancel}
+            >
+              SIFIRLA
+            </button>
+          )}
+          <button className={`save-btn ${isDirty ? 'dirty-pulse' : ''}`} onClick={saveContent} disabled={isSaving}>
+            {isSaving ? <Loader2 className="animate-spin" size={18} /> : <Save size={18} />}
+            <span>{isDirty ? 'KAYDETMEYİ UNUTMAYIN' : 'DEĞİŞİKLİKLERİ KAYDET'}</span>
+          </button>
+        </div>
       </div>
+
+      <AdminSaveBar 
+        isVisible={isDirty} 
+        onSave={saveContent} 
+        onCancel={handleCancel}
+        isSaving={isSaving}
+      />
 
       <div className="editor-sections">
         {/* HERO SECTION */}
@@ -142,6 +188,7 @@ export default function MimariEditor() {
                   const nc = {...content};
                   nc.sections.find((s:any)=>s.id==='hero').title = e.target.value;
                   setContent(nc);
+                  setIsDirty(true);
                 }} 
               />
             </div>
@@ -154,6 +201,7 @@ export default function MimariEditor() {
                   const nc = {...content};
                   nc.sections.find((s:any)=>s.id==='hero').subtitle = e.target.value;
                   setContent(nc);
+                  setIsDirty(true);
                 }} 
               />
             </div>
@@ -166,6 +214,7 @@ export default function MimariEditor() {
                   const nc = {...content};
                   nc.sections.find((s:any)=>s.id==='hero').slides.splice(idx,1);
                   setContent(nc);
+                  setIsDirty(true);
                 }}><Trash2 size={12} /></button>
               </div>
             ))}
@@ -202,11 +251,13 @@ export default function MimariEditor() {
                     const nc = {...content};
                     nc.sections.find((s:any)=>s.id==='categories').items[idx].title = e.target.value;
                     setContent(nc);
+                    setIsDirty(true);
                   }} />
                   <input className="cat-label-input" value={item.sideLabel} onChange={e => {
                     const nc = {...content};
                     nc.sections.find((s:any)=>s.id==='categories').items[idx].sideLabel = e.target.value;
                     setContent(nc);
+                    setIsDirty(true);
                   }} />
                   <div className="cat-actions">
                     <a href={`/admin/content/services/mimari/${item.slug}`} className="detail-edit-link">
@@ -252,6 +303,9 @@ export default function MimariEditor() {
         .editor-header { display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 1px solid var(--line); padding-bottom: 2rem; }
         .header-info h1 { font-family: var(--font-display), sans-serif; font-size: 1.5rem; letter-spacing: 0.1em; color: var(--text); }
         .header-info p { font-size: 0.9rem; color: var(--text-soft); opacity: 0.7; margin-top: 0.5rem; }
+
+        .save-btn.dirty-pulse { background: #a68966; box-shadow: 0 0 20px rgba(166,137,102,0.4); animation: pulse-border 2s infinite; }
+        @keyframes pulse-border { 0% { box-shadow: 0 0 0 0 rgba(166,137,102,0.4); } 70% { box-shadow: 0 0 0 10px rgba(166,137,102,0); } 100% { box-shadow: 0 0 0 0 rgba(166,137,102,0); } }
 
         .save-btn { background: #a68966; color: #080808; border: none; padding: 1rem 2.5rem; display: flex; align-items: center; gap: 1rem; font-family: var(--font-display), sans-serif; font-weight: 700; font-size: 0.75rem; letter-spacing: 0.2em; cursor: pointer; transition: 0.3s; }
         .save-btn:hover { background: #c2a785; transform: translateY(-2px); }

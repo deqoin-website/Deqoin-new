@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNotification } from '@/components/admin/AdminNotificationProvider';
+import { AdminSaveBar } from '@/components/admin/AdminSaveBar';
 import { Save, Plus, Trash2, GripVertical, Image as ImageIcon, Upload, Loader2, X, Settings } from 'lucide-react';
 
 export default function DepartmentManagerPage() {
@@ -15,6 +16,8 @@ export default function DepartmentManagerPage() {
   const [activeTab, setActiveTab] = useState<'genel' | 'surec' | 'odak' | 'kategoriler' | 'projeler'>('genel');
   const [loading, setLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
+  const [isDirty, setIsDirty] = useState(false);
+  const [initialData, setInitialData] = useState<any>(null);
   const [isProjectsLoading, setIsProjectsLoading] = useState(false);
   const [projects, setProjects] = useState<any[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -98,7 +101,7 @@ export default function DepartmentManagerPage() {
       const res = await fetch(`/api/admin/departments/${slug}`);
       if (res.ok) {
         const json = await res.json();
-        setData({
+        const loadedData = {
           title: json.title || '',
           sideLabel: json.sideLabel || '',
           description: json.description || '',
@@ -108,7 +111,9 @@ export default function DepartmentManagerPage() {
           process: json.process || [],
           focusAreas: json.focusAreas || [],
           categories: json.categories || []
-        });
+        };
+        setData(loadedData);
+        setInitialData(JSON.parse(JSON.stringify(loadedData)));
       }
     } catch (e) {
       console.error(e);
@@ -175,6 +180,8 @@ export default function DepartmentManagerPage() {
       });
       if (res.ok) {
         showToast("Ayarlar başarıyla kaydedildi.", "success");
+        setInitialData(JSON.parse(JSON.stringify(data)));
+        setIsDirty(false);
       } else {
         showToast("Kayıt sırasında bir hata oluştu.", "error");
       }
@@ -183,6 +190,12 @@ export default function DepartmentManagerPage() {
     } finally {
       setIsSaving(false);
     }
+  };
+
+  const handleCancel = () => {
+    setData(JSON.parse(JSON.stringify(initialData)));
+    setIsDirty(false);
+    showToast("Değişiklikler geri alındı.", "info");
   };
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>, field: 'image' | 'cover' | 'gallery') => {
@@ -199,6 +212,7 @@ export default function DepartmentManagerPage() {
       if (field === 'image') {
         const isVideo = file.type.startsWith('video/');
         setData(prev => ({ ...prev, image: blob.url, mediaType: isVideo ? 'video' : 'image' }));
+        setIsDirty(true);
       } else if (field === 'cover') {
         setFormData(prev => ({ ...prev, coverImage: blob.url }));
       } else if (field === 'gallery') {
@@ -276,10 +290,12 @@ export default function DepartmentManagerPage() {
 
   const addItem = (field: 'process' | 'focusAreas' | 'categories', emptyItem: any) => {
     setData(prev => ({ ...prev, [field]: [...prev[field], emptyItem] }));
+    setIsDirty(true);
   };
 
   const removeItem = (field: 'process' | 'focusAreas' | 'categories', index: number) => {
     setData(prev => ({ ...prev, [field]: prev[field].filter((_, i) => i !== index) }));
+    setIsDirty(true);
   };
 
   const updateItem = (field: 'process' | 'focusAreas' | 'categories', index: number, key: string, value: string) => {
@@ -288,6 +304,7 @@ export default function DepartmentManagerPage() {
       (newArray[index] as any)[key] = value;
       return { ...prev, [field]: newArray };
     });
+    setIsDirty(true);
   };
 
   if (loading) return <div className="loader-wrap"><Loader2 className="animate-spin" /></div>;
@@ -299,11 +316,14 @@ export default function DepartmentManagerPage() {
           <h2>"{slug.toUpperCase()}" DİNAMİK YÖNETİM PANELİ</h2>
           <p>Seçili departmanın web sitesindeki görünen tüm verilerini yönetin.</p>
         </div>
-        <button className="save-btn-main" onClick={handleSave} disabled={isSaving}>
-          {isSaving ? <Loader2 className="animate-spin" size={18} /> : <Save size={18} />}
-          {isSaving ? 'KAYDEDİLİYOR...' : 'TÜMÜNÜ KAYDET'}
-        </button>
       </div>
+
+      <AdminSaveBar 
+        isVisible={isDirty} 
+        onSave={handleSave} 
+        onCancel={handleCancel}
+        isSaving={isSaving}
+      />
 
       <div className="tabs-nav">
         {[
@@ -333,17 +353,17 @@ export default function DepartmentManagerPage() {
               <div className="form-grid-2">
                 <div className="form-group">
                   <label>SAYFA BAŞLIĞI</label>
-                  <input type="text" value={data.title} onChange={e => setData({...data, title: e.target.value})} placeholder="Örn: Mimarlık" />
+                  <input type="text" value={data.title} onChange={e => { setData({...data, title: e.target.value}); setIsDirty(true); }} placeholder="Örn: Mimarlık" />
                 </div>
                 <div className="form-group">
                   <label>YAN/ALT BAŞLIK (İngilizce/Tematik)</label>
-                  <input type="text" value={data.sideLabel} onChange={e => setData({...data, sideLabel: e.target.value})} placeholder="Örn: Structural Form" />
+                  <input type="text" value={data.sideLabel} onChange={e => { setData({...data, sideLabel: e.target.value}); setIsDirty(true); }} placeholder="Örn: Structural Form" />
                 </div>
               </div>
               
               <div className="form-group">
                 <label>GENEL AÇIKLAMA METNİ</label>
-                <textarea rows={6} value={data.description} onChange={e => setData({...data, description: e.target.value})} placeholder="Departmanın vizyonunu ve nasıl çalıştığını anlatan ana paragraf..." />
+                <textarea rows={6} value={data.description} onChange={e => { setData({...data, description: e.target.value}); setIsDirty(true); }} placeholder="Departmanın vizyonunu ve nasıl çalıştığını anlatan ana paragraf..." />
               </div>
 
               <div className="hero-upload-section">
@@ -375,6 +395,7 @@ export default function DepartmentManagerPage() {
                        const url = e.target.value;
                        const isVideo = url.toLowerCase().match(/\.(mp4|webm|ogg)$/) !== null;
                        setData({...data, image: url, mediaType: isVideo ? 'video' : 'image'});
+                       setIsDirty(true);
                      }}
                      style={{ flex: 1, padding: '0.85rem', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff', borderRadius: '4px' }}
                    />
@@ -750,17 +771,11 @@ export default function DepartmentManagerPage() {
         .dept-header { display: flex; justify-content: space-between; align-items: flex-end; gap: 1.5rem; }
         @media (max-width: 900px) {
           .dept-header { flex-direction: column; align-items: stretch; text-align: center; gap: 1rem; }
-          .save-btn-main { justify-content: center; width: 100%; }
           .dept-header h2 { font-size: 1.25rem; }
         }
 
         .dept-header h2 { font-family: var(--font-display); font-size: 1.5rem; letter-spacing: 0.1em; color: #000 !important; margin: 0 0 0.5rem 0; font-weight: 700; }
         .dept-header p { margin: 0; color: #000 !important; opacity: 0.7; font-size: 0.85rem; font-weight: 500; }
-
-        .save-btn-main { background: #a68966; color: #000; border: none; padding: 1rem 2rem; border-radius: 4px; font-family: var(--font-display); font-weight: 700; letter-spacing: 0.1em; font-size: 0.8rem; cursor: pointer; display: flex; align-items: center; gap: 0.75rem; transition: background 0.3s; box-shadow: 0 10px 20px rgba(166,137,102,0.2); }
-        @media (max-width: 600px) { .save-btn-main { width: 100%; justify-content: center; padding: 1.25rem; font-size: 0.9rem; } }
-        .save-btn-main:hover { background: #c5a680; }
-        .save-btn-main:disabled { opacity: 0.7; cursor: not-allowed; }
 
         .tabs-nav { display: flex; gap: 0.5rem; border-bottom: 1px solid var(--line); padding-bottom: 1rem; overflow-x: auto; scrollbar-width: none; -ms-overflow-style: none; }
         .tabs-nav::-webkit-scrollbar { display: none; }

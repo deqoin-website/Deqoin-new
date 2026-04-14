@@ -13,9 +13,14 @@ import {
   FileText
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useNotification } from '@/components/admin/AdminNotificationProvider';
+import { AdminSaveBar } from '@/components/admin/AdminSaveBar';
 
 export default function CorporateAboutAdmin() {
+  const { showToast } = useNotification();
   const [data, setData] = useState<any>(null);
+  const [initialData, setInitialData] = useState<any>(null);
+  const [isDirty, setIsDirty] = useState(false);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [activeTab, setActiveTab] = useState('main'); // 'main', 'stats', 'workflow'
@@ -31,9 +36,11 @@ export default function CorporateAboutAdmin() {
       if (res.ok) {
         const json = await res.json();
         setData(json);
+        setInitialData(JSON.parse(JSON.stringify(json)));
       }
     } catch (err) {
       console.error(err);
+      showToast("İçerik yüklenemedi.", "error");
     } finally {
       setLoading(false);
     }
@@ -48,29 +55,42 @@ export default function CorporateAboutAdmin() {
         body: JSON.stringify(data)
       });
       if (res.ok) {
-        alert("İçerik başarıyla güncellendi!");
+        showToast("İçerik başarıyla güncellendi!", "success");
+        setInitialData(JSON.parse(JSON.stringify(data)));
+        setIsDirty(false);
+      } else {
+        showToast("Güncelleme sırasında hata oluştu.", "error");
       }
     } catch (err) {
-      alert("Hata oluştu.");
+      showToast("Bağlantı hatası.", "error");
     } finally {
       setSaving(false);
     }
   };
 
+  const handleCancel = () => {
+    setData(JSON.parse(JSON.stringify(initialData)));
+    setIsDirty(false);
+    showToast("Değişiklikler geri alındı.", "info");
+  };
+
   const addWorkflowStep = () => {
     const newSections = [...(data.sections || []), { title: 'Yeni Adım', content: '' }];
     setData({ ...data, sections: newSections });
+    setIsDirty(true);
   };
 
   const removeWorkflowStep = (index: number) => {
     const newSections = data.sections.filter((_: any, i: number) => i !== index);
     setData({ ...data, sections: newSections });
+    setIsDirty(true);
   };
 
   const updateWorkflowStep = (index: number, field: string, value: string) => {
     const newSections = [...data.sections];
     newSections[index][field] = value;
     setData({ ...data, sections: newSections });
+    setIsDirty(true);
   };
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -87,8 +107,9 @@ export default function CorporateAboutAdmin() {
       });
       const blob = await res.json();
       setData({ ...data, image: blob.url });
+      setIsDirty(true);
     } catch (err) {
-      alert("Görsel yüklenemedi.");
+      showToast("Görsel yüklenemedi.", "error");
     }
   };
 
@@ -110,11 +131,29 @@ export default function CorporateAboutAdmin() {
           <h1>KURUMSAL FİLOZOFi</h1>
           <p>Hakkımızda sayfası içeriklerini ve profesyonel iş akışını yönetin.</p>
         </div>
-        <button className="lux-save-btn" onClick={handleSave} disabled={saving}>
-          {saving ? <Loader2 className="animate-spin" size={18} /> : <Save size={18} />}
-          <span>DEĞİŞİKLİKLERİ YAYINLA</span>
-        </button>
+        <div style={{ display: 'flex', gap: '1rem' }}>
+          {isDirty && (
+            <button 
+              className="lux-save-btn" 
+              style={{ background: 'transparent', border: '1px solid var(--line)', color: 'var(--text-muted)', boxShadow: 'none' }}
+              onClick={handleCancel}
+            >
+              SIFIRLA
+            </button>
+          )}
+          <button className={`lux-save-btn ${isDirty ? 'dirty-pulse' : ''}`} onClick={handleSave} disabled={saving}>
+            {saving ? <Loader2 className="animate-spin" size={18} /> : <Save size={18} />}
+            <span>{isDirty ? 'KAYDETMEYİ UNUTMAYIN' : 'DEĞİŞİKLİKLERİ YAYINLA'}</span>
+          </button>
+        </div>
       </div>
+
+      <AdminSaveBar 
+        isVisible={isDirty} 
+        onSave={handleSave} 
+        onCancel={handleCancel}
+        isSaving={saving}
+      />
 
       <div className="lux-tabs">
         <button className={activeTab === 'main' ? 'active' : ''} onClick={() => setActiveTab('main')}>
@@ -145,7 +184,7 @@ export default function CorporateAboutAdmin() {
                   <input 
                     type="text" 
                     value={data.subtitle} 
-                    onChange={e => setData({...data, subtitle: e.target.value})} 
+                    onChange={e => { setData({...data, subtitle: e.target.value}); setIsDirty(true); }} 
                     placeholder="BİZ KİMİZ"
                   />
                 </div>
@@ -154,7 +193,7 @@ export default function CorporateAboutAdmin() {
                   <textarea 
                     rows={2}
                     value={data.title} 
-                    onChange={e => setData({...data, title: e.target.value})}
+                    onChange={e => { setData({...data, title: e.target.value}); setIsDirty(true); }}
                     placeholder="TASARIMDAN ÖTE: BÜTÜNSEL BİR DENEYİM"
                   />
                   <span>Fikir: Satır atlamak için metin içinde uygun yerlerde bırakabilirsiniz.</span>
@@ -185,7 +224,7 @@ export default function CorporateAboutAdmin() {
                   <textarea 
                     rows={6}
                     value={data.description} 
-                    onChange={e => setData({...data, description: e.target.value})}
+                    onChange={e => { setData({...data, description: e.target.value}); setIsDirty(true); }}
                     placeholder="Şirket vizyonu ve felsefesi..."
                   />
                 </div>
@@ -214,6 +253,7 @@ export default function CorporateAboutAdmin() {
                           const newStats = [...data.stats];
                           newStats[idx].label = e.target.value;
                           setData({...data, stats: newStats});
+                          setIsDirty(true);
                         }}
                       />
                     </div>
@@ -226,6 +266,7 @@ export default function CorporateAboutAdmin() {
                           const newStats = [...data.stats];
                           newStats[idx].value = e.target.value;
                           setData({...data, stats: newStats});
+                          setIsDirty(true);
                         }}
                       />
                     </div>
@@ -297,6 +338,9 @@ export default function CorporateAboutAdmin() {
         .lux-save-btn { background: #a68966; color: #000; border: none; padding: 1rem 2rem; border-radius: 4px; font-family: var(--font-display); font-weight: 800; letter-spacing: 0.15em; font-size: 0.75rem; cursor: pointer; display: flex; align-items: center; gap: 1rem; transition: all 0.3s; box-shadow: 0 10px 30px rgba(166,137,102,0.3); }
         .lux-save-btn:hover { background: #d4b591; transform: translateY(-2px); }
         .lux-save-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+        .lux-save-btn.dirty-pulse { background: #a68966; box-shadow: 0 0 20px rgba(166,137,102,0.4); animation: pulse-border 2s infinite; }
+        @keyframes pulse-border { 0% { box-shadow: 0 0 0 0 rgba(166,137,102,0.4); } 70% { box-shadow: 0 0 0 10px rgba(166,137,102,0); } 100% { box-shadow: 0 0 0 0 rgba(166,137,102,0); } }
 
         .lux-tabs { display: flex; gap: 1rem; border-bottom: 1px solid rgba(255,255,255,0.05); overflow-x: auto; scrollbar-width: none; -ms-overflow-style: none; }
         .lux-tabs::-webkit-scrollbar { display: none; }

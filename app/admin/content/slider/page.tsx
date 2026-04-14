@@ -17,10 +17,13 @@ import {
   GripVertical
 } from 'lucide-react';
 import { useNotification } from '@/components/admin/AdminNotificationProvider';
+import { AdminSaveBar } from '@/components/admin/AdminSaveBar';
 
 export default function SliderConfigPage() {
   const { showToast, confirm: premiumConfirm } = useNotification();
   const [slides, setSlides] = useState<any[]>([]);
+  const [initialSlides, setInitialSlides] = useState<any[]>([]);
+  const [isDirty, setIsDirty] = useState(false);
   const [loading, setLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [activePreviewId, setActivePreviewId] = useState<string | null>(null);
@@ -35,10 +38,12 @@ export default function SliderConfigPage() {
       if (res.ok) {
         const data = await res.json();
         setSlides(data);
+        setInitialSlides(JSON.parse(JSON.stringify(data)));
         if (data.length > 0) setActivePreviewId(data[0]._id);
       }
     } catch (e) {
       console.error(e);
+      showToast("Sahneler yüklenemedi.", "error");
     } finally {
       setLoading(false);
     }
@@ -55,17 +60,20 @@ export default function SliderConfigPage() {
       order: slides.length,
       active: true
     };
-    setSlides([...slides, { ...newSlide, _temporary: true, _id: Date.now().toString() }]);
+    const newSlides = [...slides, { ...newSlide, _temporary: true, _id: Date.now().toString() }];
+    setSlides(newSlides);
+    setIsDirty(true);
   };
 
   const updateSlide = (id: string, key: string, value: any) => {
     setSlides(slides.map(s => s._id === id ? { ...s, [key]: value } : s));
+    setIsDirty(true);
   };
 
   const removeSlide = async (id: string, isTemporary?: boolean) => {
     const ok = await premiumConfirm({
       title: 'SAHNEYİ SİL',
-      message: 'Bu sahneyi silmek istediğinize emin misiniz?',
+      message: 'Bu sahneyi silmek istediğinize emin misiniz? (Değişiklikleri kaydetmeniz gerekecek)',
       confirmText: 'SİL',
       isDanger: true
     });
@@ -73,13 +81,21 @@ export default function SliderConfigPage() {
 
     if (isTemporary) {
       setSlides(slides.filter(s => s._id !== id));
+      setIsDirty(true);
       return;
     }
+    
+    // Non-temporary slides will be marked for deletion in the UI or deleted immediately?
+    // Based on original code, it was deleted immediately via API.
+    // To match "dirty state" pattern, we should strictly delete on "Save", 
+    // but the original code has a separate DELETE endpoint.
+    // I will keep original behavior but mark as dirty if we want bulk save.
+    
     try {
       const res = await fetch(`/api/admin/slides/${id}`, { method: 'DELETE' });
       if (res.ok) {
+        showToast("Sahne veritabanından silindi.", "success");
         fetchSlides();
-        showToast("Sahne silindi.", "success");
       }
     } catch (e) {
       showToast("Silme hatası.", "error");
@@ -89,8 +105,6 @@ export default function SliderConfigPage() {
   const handleSave = async () => {
     setIsSaving(true);
     try {
-      // Logic: Save each slide. Optimized version would be a bulk update API.
-      // For now, we'll save them one by one for simplicity and robustness.
       for (const slide of slides) {
         const method = slide._temporary ? 'POST' : 'PUT';
         const url = slide._temporary ? '/api/admin/slides' : `/api/admin/slides/${slide._id}`;
@@ -104,12 +118,19 @@ export default function SliderConfigPage() {
         });
       }
       showToast("Tüm sahneler başarıyla kaydedildi!", "success");
+      setIsDirty(false);
       fetchSlides();
     } catch (e) {
       showToast("Kayıt sırasında bir hata oluştu.", "error");
     } finally {
       setIsSaving(false);
     }
+  };
+
+  const handleCancel = () => {
+    setSlides(JSON.parse(JSON.stringify(initialSlides)));
+    setIsDirty(false);
+    showToast("Değişiklikler geri alındı.", "info");
   };
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>, slideId: string) => {
@@ -120,12 +141,12 @@ export default function SliderConfigPage() {
       const blob = await res.json();
       
       const isVideo = file.type.startsWith('video/');
-      
       setSlides(slides.map(s => s._id === slideId ? { 
         ...s, 
         mediaUrl: blob.url, 
         mediaType: isVideo ? 'video' : 'image' 
       } : s));
+      setIsDirty(true);
     } catch (err) {
       showToast("Yükleme başarısız.", "error");
     }
@@ -157,12 +178,30 @@ export default function SliderConfigPage() {
         </div>
         <div className="header-actions">
            <button className="add-btn-outline" onClick={addSlide}><Plus size={18} /> YENİ SAHNE</button>
-           <button className="save-btn" onClick={handleSave} disabled={isSaving}>
-              {isSaving ? <Loader2 className="animate-spin" size={18} /> : <Save size={18} />}
-              {isSaving ? 'KAYDEDİLİYOR...' : 'TÜMÜNÜ KAYDET'}
-           </button>
+           <div style={{ display: 'flex', gap: '1rem' }}>
+              {isDirty && (
+                <button 
+                  className="save-btn" 
+                  style={{ background: 'transparent', border: '1px solid var(--line)', color: '#000', boxShadow: 'none' }}
+                  onClick={handleCancel}
+                >
+                  SIFIRLA
+                </button>
+              )}
+              <button className={`save-btn ${isDirty ? 'dirty-pulse' : ''}`} onClick={handleSave} disabled={isSaving}>
+                  {isSaving ? <Loader2 className="animate-spin" size={18} /> : <Save size={18} />}
+                  {isSaving ? 'KAYDEDİLİYOR...' : (isDirty ? 'KAYDETMEYİ UNUTMAYIN' : 'TÜMÜNÜ KAYDET')}
+              </button>
+           </div>
         </div>
       </div>
+
+      <AdminSaveBar 
+        isVisible={isDirty} 
+        onSave={handleSave} 
+        onCancel={handleCancel}
+        isSaving={isSaving}
+      />
 
       <div className="slides-layout">
         <div className="slides-list">
@@ -310,6 +349,10 @@ export default function SliderConfigPage() {
 
         .header-actions { display: flex; gap: 1rem; }
         .add-btn-outline { background: #fff !important; border: 1px solid #000 !important; color: #000 !important; padding: 0.85rem 1.5rem; border-radius: 4px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 0.75rem; font-size: 0.75rem; }
+
+        .save-btn.dirty-pulse { background: #a68966; box-shadow: 0 0 20px rgba(166,137,102,0.4); animation: pulse-border 2s infinite; }
+        @keyframes pulse-border { 0% { box-shadow: 0 0 0 0 rgba(166,137,102,0.4); } 70% { box-shadow: 0 0 0 10px rgba(166,137,102,0); } 100% { box-shadow: 0 0 0 0 rgba(166,137,102,0); } }
+
         .save-btn { background: #a68966; color: #000; border: none; padding: 0.85rem 2rem; border-radius: 4px; font-weight: 800; cursor: pointer; display: flex; align-items: center; gap: 0.75rem; font-size: 0.75rem; transition: all 0.3s; box-shadow: 0 10px 20px rgba(166,137,102,0.2); }
         .save-btn:hover { background: #c5a680; transform: translateY(-2px); }
 

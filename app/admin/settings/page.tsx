@@ -17,9 +17,14 @@ import {
   UserCheck
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useNotification } from '@/components/admin/AdminNotificationProvider';
+import { AdminSaveBar } from '@/components/admin/AdminSaveBar';
 
 export default function SettingsPage() {
+  const { showToast } = useNotification();
   const [settings, setSettings] = useState<any>(null);
+  const [initialSettings, setInitialSettings] = useState<any>(null);
+  const [isDirty, setIsDirty] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [activeTab, setActiveTab] = useState('genel');
@@ -36,8 +41,10 @@ export default function SettingsPage() {
       const res = await fetch('/api/settings');
       const data = await res.json();
       setSettings(data);
+      setInitialSettings(JSON.parse(JSON.stringify(data)));
     } catch (err) {
       console.error(err);
+      showToast("Ayarlar yüklenemedi.", "error");
     } finally {
       setIsLoading(false);
     }
@@ -58,8 +65,9 @@ export default function SettingsPage() {
       });
       const blob = await res.json();
       setSettings({ ...settings, [field]: blob.url });
+      setIsDirty(true);
     } catch (err) {
-      alert("Yüklenemedi.");
+      showToast("Görsel yüklenemedi.", "error");
     } finally {
       setUploadLoading(false);
     }
@@ -78,17 +86,29 @@ export default function SettingsPage() {
   const saveSettings = async () => {
     setIsSaving(true);
     try {
-      await fetch('/api/settings', {
+      const res = await fetch('/api/settings', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(settings)
       });
-      alert("Ayarlar başarıyla kaydedildi!");
+      if (res.ok) {
+        showToast("Ayarlar başarıyla kaydedildi!", "success");
+        setInitialSettings(JSON.parse(JSON.stringify(settings)));
+        setIsDirty(false);
+      } else {
+        showToast("Kaydetme sırasında bir hata oluştu.", "error");
+      }
     } catch (err) {
-      alert("Kaydedilemedi.");
+      showToast("Bağlantı hatası.", "error");
     } finally {
       setIsSaving(false);
     }
+  };
+
+  const handleCancel = () => {
+    setSettings(JSON.parse(JSON.stringify(initialSettings)));
+    setIsDirty(false);
+    showToast("Değişiklikler geri alındı.", "info");
   };
 
   if (isLoading) return <div className="loader-wrap"><Loader2 className="animate-spin" /></div>;
@@ -100,11 +120,23 @@ export default function SettingsPage() {
           <p>SİTE YÖNETİM MERKEZİ</p>
           <span>Kimlik, SEO, İletişim ve Sistem ayarlarını buradan yönetin.</span>
         </div>
-        <button className="save-btn" onClick={saveSettings} disabled={isSaving}>
-          {isSaving ? <Loader2 className="animate-spin" size={18} /> : <Save size={18} />}
-          <span>KAYDET</span>
-        </button>
+        <div style={{ display: 'flex', gap: '1rem' }}>
+          {isDirty && (
+            <button className="cancel-btn-header" onClick={handleCancel}>SIFIRLA</button>
+          )}
+          <button className={`save-btn ${isDirty ? 'dirty-pulse' : ''}`} onClick={saveSettings} disabled={isSaving}>
+            {isSaving ? <Loader2 className="animate-spin" size={18} /> : <Save size={18} />}
+            <span>{isDirty ? 'KAYDETMEYİ UNUTMAYIN' : 'KAYDET'}</span>
+          </button>
+        </div>
       </div>
+
+      <AdminSaveBar 
+        isVisible={isDirty} 
+        onSave={saveSettings} 
+        onCancel={handleCancel}
+        isSaving={isSaving}
+      />
 
       <div className="tabs-navigation">
         <button className={activeTab === 'genel' ? 'active' : ''} onClick={() => setActiveTab('genel')}><SettingsIcon size={14}/> GENEL</button>
@@ -153,7 +185,10 @@ export default function SettingsPage() {
                   <div className="info-inputs">
                     <div className="form-group">
                       <label>STÜDYO İSMİ</label>
-                      <input type="text" value={settings.studioName} onChange={e => setSettings({ ...settings, studioName: e.target.value })} />
+                      <input type="text" value={settings.studioName} onChange={e => {
+                        setSettings({ ...settings, studioName: e.target.value });
+                        setIsDirty(true);
+                      }} />
                     </div>
                   </div>
                 </div>
@@ -162,10 +197,10 @@ export default function SettingsPage() {
               <section className="settings-card">
                 <div className="card-header"><h3>Sosyal Medya Linkleri</h3></div>
                 <div className="form-grid-2">
-                  <div className="form-group"><label><Globe size={14}/> INSTAGRAM</label><input type="text" value={settings.socialLinks?.instagram || ''} onChange={e => setSettings({...settings, socialLinks: {...settings.socialLinks, instagram: e.target.value}})} /></div>
-                  <div className="form-group"><label><Share2 size={14}/> LINKEDIN</label><input type="text" value={settings.socialLinks?.linkedin || ''} onChange={e => setSettings({...settings, socialLinks: {...settings.socialLinks, linkedin: e.target.value}})} /></div>
-                  <div className="form-group"><label><Globe size={14}/> FACEBOOK</label><input type="text" value={settings.socialLinks?.facebook || ''} onChange={e => setSettings({...settings, socialLinks: {...settings.socialLinks, facebook: e.target.value}})} /></div>
-                  <div className="form-group"><label><Share2 size={14}/> X / TWITTER</label><input type="text" value={settings.socialLinks?.x || ''} onChange={e => setSettings({...settings, socialLinks: {...settings.socialLinks, x: e.target.value}})} /></div>
+                  <div className="form-group"><label><Globe size={14}/> INSTAGRAM</label><input type="text" value={settings.socialLinks?.instagram || ''} onChange={e => { setSettings({...settings, socialLinks: {...settings.socialLinks, instagram: e.target.value}}); setIsDirty(true); }} /></div>
+                  <div className="form-group"><label><Share2 size={14}/> LINKEDIN</label><input type="text" value={settings.socialLinks?.linkedin || ''} onChange={e => { setSettings({...settings, socialLinks: {...settings.socialLinks, linkedin: e.target.value}}); setIsDirty(true); }} /></div>
+                  <div className="form-group"><label><Globe size={14}/> FACEBOOK</label><input type="text" value={settings.socialLinks?.facebook || ''} onChange={e => { setSettings({...settings, socialLinks: {...settings.socialLinks, facebook: e.target.value}}); setIsDirty(true); }} /></div>
+                  <div className="form-group"><label><Share2 size={14}/> X / TWITTER</label><input type="text" value={settings.socialLinks?.x || ''} onChange={e => { setSettings({...settings, socialLinks: {...settings.socialLinks, x: e.target.value}}); setIsDirty(true); }} /></div>
                 </div>
               </section>
             </motion.div>
@@ -177,15 +212,15 @@ export default function SettingsPage() {
                 <div className="card-header"><h3>Arama Motoru Optimizasyonu (SEO)</h3></div>
                 <div className="form-group">
                   <label><Hash size={14}/> VARSAYILAN SAYFA BAŞLIĞI</label>
-                  <input type="text" value={settings.metaTitle || ''} onChange={e => setSettings({ ...settings, metaTitle: e.target.value })} placeholder="Örn: Deqoin | Architectural Design Studio" />
+                  <input type="text" value={settings.metaTitle || ''} onChange={e => { setSettings({ ...settings, metaTitle: e.target.value }); setIsDirty(true); }} placeholder="Örn: Deqoin | Architectural Design Studio" />
                 </div>
                 <div className="form-group">
                   <label><Mail size={14}/> META AÇIKLAMASI</label>
-                  <textarea rows={4} value={settings.metaDescription || ''} onChange={e => setSettings({ ...settings, metaDescription: e.target.value })} placeholder="Siteniz hakkında arama sonuçlarında görünecek kısa açıklama..." />
+                  <textarea rows={4} value={settings.metaDescription || ''} onChange={e => { setSettings({ ...settings, metaDescription: e.target.value }); setIsDirty(true); }} placeholder="Siteniz hakkında arama sonuçlarında görünecek kısa açıklama..." />
                 </div>
                 <div className="form-group">
                   <label><Hash size={14}/> ANAHTAR KELİMELER</label>
-                  <input type="text" value={settings.keywords || ''} onChange={e => setSettings({ ...settings, keywords: e.target.value })} placeholder="mimari, iç mimari, tasarım, istanbul..." />
+                  <input type="text" value={settings.keywords || ''} onChange={e => { setSettings({ ...settings, keywords: e.target.value }); setIsDirty(true); }} placeholder="mimari, iç mimari, tasarım, istanbul..." />
                 </div>
               </section>
 
@@ -194,11 +229,11 @@ export default function SettingsPage() {
                 <div className="form-grid-2">
                   <div className="form-group">
                     <label><Activity size={14}/> GOOGLE ANALYTICS (GA4) ID</label>
-                    <input type="text" value={settings.googleAnalyticsId || ''} onChange={e => setSettings({ ...settings, googleAnalyticsId: e.target.value })} placeholder="G-XXXXXXXXXX" />
+                    <input type="text" value={settings.googleAnalyticsId || ''} onChange={e => { setSettings({ ...settings, googleAnalyticsId: e.target.value }); setIsDirty(true); }} placeholder="G-XXXXXXXXXX" />
                   </div>
                   <div className="form-group">
                     <label><UserCheck size={14}/> META PIXEL ID</label>
-                    <input type="text" value={settings.metaPixelId || ''} onChange={e => setSettings({ ...settings, metaPixelId: e.target.value })} placeholder="123456789012345" />
+                    <input type="text" value={settings.metaPixelId || ''} onChange={e => { setSettings({ ...settings, metaPixelId: e.target.value }); setIsDirty(true); }} placeholder="123456789012345" />
                   </div>
                 </div>
               </section>
@@ -209,14 +244,14 @@ export default function SettingsPage() {
             <motion.div key="iletisim" initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 10 }} className="settings-grid">
               <section className="settings-card">
                 <div className="card-header"><h3>İletişim Kanalları</h3></div>
-                <div className="form-group"><label><Mail size={14}/> E-POSTA</label><input type="email" value={settings.contactEmail} onChange={e => setSettings({ ...settings, contactEmail: e.target.value })} /></div>
-                <div className="form-group"><label><Phone size={14}/> TELEFON</label><input type="text" value={settings.phone || ''} onChange={e => setSettings({ ...settings, phone: e.target.value })} /></div>
-                <div className="form-group"><label><Phone size={14}/> WHATSAPP</label><input type="text" value={settings.whatsapp || ''} onChange={e => setSettings({ ...settings, whatsapp: e.target.value })} /></div>
+                <div className="form-group"><label><Mail size={14}/> E-POSTA</label><input type="email" value={settings.contactEmail} onChange={e => { setSettings({ ...settings, contactEmail: e.target.value }); setIsDirty(true); }} /></div>
+                <div className="form-group"><label><Phone size={14}/> TELEFON</label><input type="text" value={settings.phone || ''} onChange={e => { setSettings({ ...settings, phone: e.target.value }); setIsDirty(true); }} /></div>
+                <div className="form-group"><label><Phone size={14}/> WHATSAPP</label><input type="text" value={settings.whatsapp || ''} onChange={e => { setSettings({ ...settings, whatsapp: e.target.value }); setIsDirty(true); }} /></div>
               </section>
               <section className="settings-card">
                 <div className="card-header"><h3>Adres Bilgileri</h3></div>
-                <div className="form-group"><label><MapPin size={14}/> FİZİKSEL ADRES</label><textarea rows={2} value={settings.address || ''} onChange={e => setSettings({ ...settings, address: e.target.value })} /></div>
-                <div className="form-group"><label><Globe size={14}/> GOOGLE MAPS URL</label><input type="text" value={settings.googleMapsUrl || ''} onChange={e => setSettings({ ...settings, googleMapsUrl: e.target.value })} /></div>
+                <div className="form-group"><label><MapPin size={14}/> FİZİKSEL ADRES</label><textarea rows={2} value={settings.address || ''} onChange={e => { setSettings({ ...settings, address: e.target.value }); setIsDirty(true); }} /></div>
+                <div className="form-group"><label><Globe size={14}/> GOOGLE MAPS URL</label><input type="text" value={settings.googleMapsUrl || ''} onChange={e => { setSettings({ ...settings, googleMapsUrl: e.target.value }); setIsDirty(true); }} /></div>
               </section>
             </motion.div>
           )}
@@ -229,7 +264,7 @@ export default function SettingsPage() {
                       <h3>Bakım Modu</h3>
                       <p>Aktif edildiğinde ziyaretçiler siteyi göremez, sadece "Bakımdayız" mesajı ile karşılaşırlar.</p>
                    </div>
-                   <div className={`status-toggle ${settings.maintenanceMode ? 'active' : ''}`} onClick={() => setSettings({...settings, maintenanceMode: !settings.maintenanceMode})}>
+                   <div className={`status-toggle ${settings.maintenanceMode ? 'active' : ''}`} onClick={() => { setSettings({...settings, maintenanceMode: !settings.maintenanceMode}); setIsDirty(true); }}>
                       <div className="toggle-bullet" />
                    </div>
                 </div>
@@ -264,6 +299,12 @@ export default function SettingsPage() {
 
         .header-text p { font-family: var(--font-display), sans-serif; font-size: 0.75rem; letter-spacing: 0.3em; color: #a68966; margin: 0; }
         .header-text span { font-size: 0.85rem; color: var(--text-soft); opacity: 0.7; display: block; margin-top: 0.5rem; }
+
+        .cancel-btn-header { background: transparent; border: 1px solid var(--line); color: var(--text-muted); padding: 0.5rem 1.5rem; font-size: 0.7rem; font-weight: 700; cursor: pointer; transition: 0.3s; }
+        .cancel-btn-header:hover { background: rgba(255,255,255,0.05); color: #fff; }
+
+        .save-btn.dirty-pulse { background: #a68966; box-shadow: 0 0 20px rgba(166,137,102,0.4); animation: pulse-border 2s infinite; }
+        @keyframes pulse-border { 0% { box-shadow: 0 0 0 0 rgba(166,137,102,0.4); } 70% { box-shadow: 0 0 0 10px rgba(166,137,102,0); } 100% { box-shadow: 0 0 0 0 rgba(166,137,102,0); } }
 
         .tabs-navigation { display: flex; gap: 0.5rem; margin-top: -1rem; overflow-x: auto; scrollbar-width: none; -ms-overflow-style: none; }
         .tabs-navigation::-webkit-scrollbar { display: none; }
