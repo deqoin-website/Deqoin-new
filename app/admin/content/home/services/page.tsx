@@ -113,10 +113,13 @@ export default function HomeServicesAdmin() {
             transition={{ delay: idx * 0.1 }}
           >
             <div className="card-type-header">
-              {card.studioType === 'design' && <PenTool size={20} />}
-              {card.studioType === 'material' && <Layers size={20} />}
-              {card.studioType === 'execution' && <Hammer size={20} />}
-              <span>{card.studioType.toUpperCase()} STUDIO</span>
+              <div className="type-left">
+                {card.studioType === 'design' && <PenTool size={18} />}
+                {card.studioType === 'material' && <Layers size={18} />}
+                {card.studioType === 'execution' && <Hammer size={18} />}
+                <span>{card.studioType.toUpperCase()} STUDIO</span>
+              </div>
+              <div className="lux-order-badge">SIRA: {idx + 1}</div>
             </div>
 
             <div 
@@ -153,25 +156,23 @@ export default function HomeServicesAdmin() {
 
             <div className="card-fields">
               <div className="lux-group">
-                <label>BAŞLIK (Title)</label>
+                <label>BAŞLIK (TITLE)</label>
                 <input 
                   type="text" 
                   value={card.title} 
+                  placeholder="Kart Başlığı..."
                   onChange={(e) => updateCard(idx, 'title', e.target.value)} 
                 />
               </div>
               <div className="lux-group">
-                <label>ALT METİN (Sub Title)</label>
+                <label>ALT METİN (SUB TITLE)</label>
                 <input 
                   type="text" 
                   value={card.description} 
+                  placeholder="Kısa Açıklama..."
                   onChange={(e) => updateCard(idx, 'description', e.target.value)} 
                 />
               </div>
-            </div>
-
-            <div className="card-footer-info">
-              <span>Sıra: {idx + 1}</span>
             </div>
           </motion.div>
         ))}
@@ -192,23 +193,38 @@ export default function HomeServicesAdmin() {
         .service-admin-card { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 20px; padding: 2rem; display: flex; flex-direction: column; gap: 1.5rem; position: relative; overflow: hidden; }
         .service-admin-card::before { content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%; background: #a68966; opacity: 0.3; }
         
-        .card-type-header { display: flex; align-items: center; gap: 1rem; color: #a68966; font-family: var(--font-display); font-size: 0.75rem; letter-spacing: 0.1em; font-weight: 800; }
+        .card-type-header { display: flex; align-items: center; justify-content: space-between; color: #a68966; font-family: var(--font-display); font-size: 0.75rem; letter-spacing: 0.1em; font-weight: 800; }
+        .type-left { display: flex; align-items: center; gap: 0.75rem; }
+        .lux-order-badge { 
+          background: rgba(166, 137, 102, 0.1); border: 1px solid rgba(166, 137, 102, 0.3);
+          padding: 0.3rem 0.8rem; border-radius: 4px; font-size: 0.6rem; color: #a68966; letter-spacing: 0.1em;
+        }
         
-        .card-image-preview { width: 100%; aspect-ratio: 4/3; background: rgba(0,0,0,0.4); border-radius: 12px; overflow: hidden; cursor: pointer; position: relative; border: 1px dashed rgba(255,255,255,0.1); }
+        .card-image-preview { width: 100%; aspect-ratio: 16/10; background: rgba(0,0,0,0.4); border-radius: 12px; overflow: hidden; cursor: pointer; position: relative; border: 1px dashed rgba(166,137,102,0.3); transition: all 0.4s; }
+        .card-image-preview:hover { border-color: #a68966; transform: scale(1.02); box-shadow: 0 10px 30px rgba(0,0,0,0.4); }
         .card-image-preview img { width: 100%; height: 100%; object-fit: cover; }
         .img-placeholder { height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.75rem; color: var(--text-soft); }
-        .img-placeholder p { font-size: 0.75rem; }
+        .img-placeholder p { font-size: 0.7rem; letter-spacing: 0.1em; }
         
-        .img-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.6); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 800; letter-spacing: 0.2em; opacity: 0; transition: 0.3s; }
+        .img-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.6); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 0.65rem; font-weight: 800; letter-spacing: 0.2em; opacity: 0; transition: 0.3s; backdrop-filter: blur(5px); }
         .card-image-preview:hover .img-overlay { opacity: 1; }
 
-        .card-fields { display: flex; flex-direction: column; gap: 1.5rem; }
-        .lux-group { display: flex; flex-direction: column; gap: 0.5rem; }
-        .lux-group label { font-size: 0.6rem; color: var(--text-muted); font-weight: 900; letter-spacing: 0.1em; }
-        .lux-group input { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); padding: 0.9rem; color: var(--text); border-radius: 6px; font-size: 0.85rem; transition: 0.3s; }
-        .lux-group input:focus { outline: none; border-color: #a68966; background: rgba(255,255,255,0.05); }
+        .card-fields { display: flex; flex-direction: column; gap: 1.2rem; background: rgba(255,255,255,0.01); padding: 1rem; border-radius: 12px; border: 1px solid rgba(255,255,255,0.03); }
+        .lux-group { display: flex; flex-direction: column; gap: 0.6rem; }
+        .lux-group label { font-size: 0.55rem; color: #a68966; font-weight: 900; letter-spacing: 0.2em; opacity: 0.8; }
+        .lux-group input { 
+          background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.08); 
+          padding: 1rem; color: var(--text); border-radius: 8px; font-size: 0.85rem; 
+          transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+          font-family: inherit;
+        }
+        .lux-group input:focus { 
+          outline: none; border-color: #a68966; background: rgba(0,0,0,0.4); 
+          box-shadow: 0 0 20px rgba(166, 137, 102, 0.15);
+          transform: translateY(-1px);
+        }
 
-        .card-footer-info { border-top: 1px solid rgba(255,255,255,0.05); padding-top: 1rem; display: flex; justify-content: space-between; font-size: 0.65rem; color: var(--text-muted); }
+        .card-footer-info { display: none; }
 
         .loader-wrap { height: 400px; display: flex; align-items: center; justify-content: center; color: #a68966; }
         .hidden { display: none; }
