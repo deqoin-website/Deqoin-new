@@ -763,12 +763,12 @@ export default function DepartmentManagerPage() {
         @media (max-width: 768px) { .form-grid-2 { grid-template-columns: 1fr; gap: 1.5rem; } }
         
         .form-group { display: flex; flex-direction: column; gap: 0.75rem; }
-        .form-group label { font-size: 0.65rem; color: var(--text-muted); letter-spacing: 0.15em; font-weight: 600; }
-        .form-group input, .form-group textarea { background: var(--background); border: 1px solid var(--line); padding: 1rem; color: var(--text); border-radius: 4px; font-family: inherit; resize: vertical; width: 100%; }
+        .lux-group label { font-size: 0.65rem; color: #fff; letter-spacing: 0.15em; font-weight: 800; opacity: 0.8; }
+        .form-group input, .form-group textarea { background: var(--background); border: 1px solid var(--line); padding: 1rem; color: #fff; border-radius: 4px; font-family: inherit; resize: vertical; width: 100%; }
         .form-group input:focus, .form-group textarea:focus { outline: none; border-color: #a68966; }
 
         .hero-upload-section { display: flex; flex-direction: column; gap: 0.75rem; }
-        .hero-upload-section label { font-size: 0.65rem; color: var(--text-muted); letter-spacing: 0.15em; font-weight: 600; }
+        .hero-upload-section label { font-size: 0.65rem; color: #fff; letter-spacing: 0.15em; font-weight: 600; }
         .hero-preview { width: 100%; height: 300px; background: var(--background); border: 1px dashed var(--line); border-radius: 8px; overflow: hidden; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: border-color 0.3s; }
         .hero-preview:hover { border-color: var(--accent); }
         .hero-preview img { width: 100%; height: 100%; object-fit: cover; }
@@ -914,7 +914,7 @@ export default function DepartmentManagerPage() {
         .premium-modal-header { padding: 2rem 3rem; background: rgba(166,137,102,0.05); border-bottom: 1px solid rgba(166,137,102,0.1); position: sticky; top: 0; z-index: 10; backdrop-filter: blur(10px); }
         .header-badge { font-family: var(--font-display); font-size: 0.6rem; color: #a68966; letter-spacing: 0.3em; margin-bottom: 0.5rem; font-weight: 800; }
         .header-main { display: flex; justify-content: space-between; align-items: center; }
-        .header-main h3 { margin: 0; font-family: var(--font-display); font-size: 1.4rem; letter-spacing: 0.1em; color: var(--text); }
+        .header-main h3 { margin: 0; font-family: var(--font-display); font-size: 1.4rem; letter-spacing: 0.1em; color: #fff; }
         .header-actions { display: flex; align-items: center; gap: 2rem; }
         
         .premium-toggle-btn { 
@@ -935,9 +935,9 @@ export default function DepartmentManagerPage() {
         .form-cols-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
         
         .lux-group { display: flex; flex-direction: column; gap: 0.75rem; }
-        .lux-group label { font-size: 0.65rem; color: var(--text-muted); letter-spacing: 0.15em; font-weight: 800; }
-        .lux-group input, .lux-group textarea { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); padding: 1.2rem; color: var(--text); border-radius: 8px; font-family: inherit; font-size: 0.9rem; transition: all 0.3s; }
-        .lux-group input:focus, .lux-group textarea:focus { outline: none; border-color: #a68966; background: rgba(255,255,255,0.05); box-shadow: 0 0 20px rgba(166,137,102,0.1); }
+        .lux-group label { font-size: 0.65rem; color: rgba(255,255,255,0.5); letter-spacing: 0.15em; font-weight: 800; }
+        .lux-group input, .lux-group textarea { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); padding: 1.2rem; color: #fff; border-radius: 8px; font-family: inherit; font-size: 0.9rem; transition: all 0.3s; }
+        .lux-group input:focus, .lux-group textarea:focus { outline: none; border-color: #a68966; background: rgba(255,255,255,0.05); box-shadow: 0 0 20px rgba(166,137,102,0.1); color: #fff; }
         .mb-6 { margin-bottom: 1.5rem; }
 
         .media-grid { display: grid; grid-template-columns: 1fr; gap: 3rem; }
@@ -959,8 +959,8 @@ export default function DepartmentManagerPage() {
         .img-wrapper:hover .change-overlay { opacity: 1; }
         
         .lux-placeholder { height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1rem; color: var(--text-muted); text-align: center; padding: 2rem; }
-        .lux-placeholder p { font-size: 0.85rem; margin: 0; color: var(--text); }
-        .lux-placeholder span { font-size: 0.65rem; opacity: 0.5; }
+        .lux-placeholder p { font-size: 0.85rem; margin: 0; color: #fff; }
+        .lux-placeholder span { font-size: 0.65rem; color: rgba(255,255,255,0.5); }
         .pulse-icon { color: #a68966; animation: pulse 2s infinite; }
         @keyframes pulse { 0% { transform: scale(1); opacity: 0.5; } 50% { transform: scale(1.1); opacity: 1; } 100% { transform: scale(1); opacity: 0.5; } }
 
@@ -993,7 +993,7 @@ export default function DepartmentManagerPage() {
         .lux-cb input { position: absolute; opacity: 0; }
         .cb-inner { 
           flex: 1; padding: 1.2rem; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); 
-          border-radius: 12px; font-size: 0.85rem; color: var(--text-soft); transition: all 0.3s;
+          border-radius: 12px; font-size: 0.85rem; color: #fff; transition: all 0.3s;
           display: flex; justify-content: space-between; align-items: center;
         }
         .lux-cb input:checked + .cb-inner { border-color: #a68966; background: rgba(166,137,102,0.15); color: #fff; }
@@ -1001,7 +1001,7 @@ export default function DepartmentManagerPage() {
 
         .lux-chip-grid { display: flex; flex-wrap: wrap; gap: 0.75rem; }
         .lux-chip { 
-          background: rgba(255,255,255,0.05); color: var(--text-muted); border: 1px solid rgba(255,255,255,0.1);
+          background: rgba(255,255,255,0.05); color: #fff; border: 1px solid rgba(255,255,255,0.1);
           padding: 0.6rem 1.2rem; border-radius: 100px; font-size: 0.7rem; font-weight: 700; cursor: pointer; transition: all 0.3s;
         }
         .lux-chip:hover { border-color: #a68966; color: #a68966; }
