@@ -909,20 +909,20 @@ export default function CRMPage() {
         }
 
         @media (max-width: 900px) {
-          .crm-header { flex-direction: column; align-items: stretch; gap: 1rem; }
-          .crm-header-btns { margin-left: 0; width: 100%; }
-          .report-ux-wrapper { flex-direction: column; align-items: stretch; gap: 1rem; padding: 1.25rem; border-radius: 12px; width: 100%; background: rgba(0,0,0,0.2); }
+          .crm-header { flex-direction: column !important; align-items: stretch !important; gap: 1rem !important; }
+          .crm-header-btns { margin-left: 0 !important; width: 100% !important; }
+          .report-ux-wrapper { flex-direction: column !important; align-items: stretch !important; gap: 1rem !important; padding: 1.25rem !important; border-radius: 12px !important; width: 100% !important; background: rgba(0,0,0,0.2) !important; display: flex !important; }
           
-          .scope-picker { display: flex; flex-direction: column; gap: 0.5rem; width: 100%; }
-          .scope-label-mini { margin-bottom: 0.5rem; text-align: center; font-size: 0.65rem; color: #a68966; }
-          .scope-btn { width: 100%; padding: 1rem; font-size: 0.8rem; text-align: center; background: rgba(255,255,255,0.05); border: 1px solid var(--line); border-radius: 8px; }
-          .scope-btn.active { background: #a68966; border-color: #a68966; color: #fff; }
+          .scope-picker { display: flex !important; flex-direction: column !important; gap: 0.5rem !important; width: 100% !important; }
+          .scope-label-mini { margin-bottom: 0.5rem !important; text-align: center !important; font-size: 0.7rem !important; color: #a68966 !important; display: block !important; }
+          .scope-btn { width: 100% !important; padding: 1rem !important; font-size: 0.85rem !important; text-align: center !important; background: rgba(255,255,255,0.05) !important; border: 1px solid var(--line) !important; border-radius: 8px !important; display: block !important; }
+          .scope-btn.active { background: #a68966 !important; border-color: #a68966 !important; color: #fff !important; }
           
-          .report-actions { border-left: none; border-top: 1px solid var(--line); padding-left: 0; padding-top: 1.25rem; margin-top: 0.5rem; width: 100%; }
-          .lux-report-btn { width: 100%; justify-content: center; padding: 1.25rem; font-size: 0.85rem; letter-spacing: 2px; font-weight: 900; }
+          .report-actions { border-left: none !important; border-top: 1px solid var(--line) !important; padding-left: 0 !important; padding-top: 1.25rem !important; margin-top: 0.5rem !important; width: 100% !important; display: flex !important; }
+          .lux-report-btn { width: 100% !important; justify-content: center !important; padding: 1.25rem !important; font-size: 0.85rem !important; letter-spacing: 2px !important; font-weight: 900 !important; }
 
-          .desktop-only { display: none; }
-          .mobile-only { display: block; }
+          .desktop-only { display: none !important; }
+          .mobile-only { display: block !important; }
           
           .mobile-lead-card { background: var(--surface-muted); border: 1px solid var(--line); border-radius: 12px; padding: 1.25rem; margin-bottom: 1rem; cursor: pointer; transition: all 0.3s; }
           .mobile-lead-card:active { transform: scale(0.98); background: rgba(255,255,255,0.05); }
