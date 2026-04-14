@@ -375,7 +375,7 @@ export default function AdminProjects() {
                   </div>
                 </div>
 
-                <form onSubmit={handleSubmit} className="premium-modal-form">
+                <form onSubmit={handleProjectSubmit} className="premium-modal-form">
                   <div className="main-form-content" style={{ display: showAdvancedPanel ? 'none' : 'flex' }}>
                     
                     <div className="form-section-card">
