@@ -33,6 +33,8 @@ export default function CRMPage() {
   const [bulkReportTitle, setBulkReportTitle] = useState('GENEL RANDEVU LİSTESİ');
   const [bulkLeads, setBulkLeads] = useState<any[]>([]);
   const [libLoaded, setLibLoaded] = useState(false);
+  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
+  const [isBulkMode, setIsBulkMode] = useState(false);
 
   useEffect(() => {
     fetchAppointments();
@@ -101,26 +103,24 @@ export default function CRMPage() {
     setTimeout(() => window.print(), 500); 
   };
 
-  const printBulkReport = () => {
-    setSelectedLead(null);
-    setIsBulkPrinting(true);
-    setTimeout(() => window.print(), 500);
+  const openPreview = (mode: 'single' | 'bulk') => {
+    setIsBulkMode(mode === 'bulk');
+    if (mode === 'bulk') {
+      setSelectedLead(null);
+    }
+    setIsBulkPrinting(mode === 'bulk');
+    setIsPreviewOpen(true);
   };
 
-  const handleDownloadPDF = async (type: 'single' | 'bulk') => {
-    if (!libLoaded) {
-      return; // Button is already in loading state
-    }
+  const handleDownloadPDF = async () => {
+    if (!libLoaded) return;
 
-    const element = document.querySelector('.print-view');
+    // Target the specific preview paper inside the modal
+    const element = document.querySelector('.preview-paper');
     if (!element) return;
 
-    // Temporarily show for capture
-    const originalDisplay = (element as HTMLElement).style.display;
-    (element as HTMLElement).style.display = 'flex';
-
     let filename = 'Deqoin_Rapor.pdf';
-    if (type === 'single' && selectedLead) {
+    if (!isBulkMode && selectedLead) {
       filename = `Musteri_${selectedLead.name}_${selectedLead.surname}.pdf`;
     } else {
       filename = `${bulkReportTitle.replace(/ /g, '_')}_${new Date().toLocaleDateString('tr-TR')}.pdf`;
@@ -139,8 +139,6 @@ export default function CRMPage() {
       await html2pdf().set(opt).from(element).save();
     } catch (e) {
       console.error('PDF Download Error:', e);
-    } finally {
-      (element as HTMLElement).style.display = originalDisplay;
     }
   };
 
@@ -196,14 +194,8 @@ export default function CRMPage() {
               <button className={`scope-btn ${activeScope === 'all' ? 'active' : ''}`} onClick={() => setActiveScope('all')}>GENEL</button>
             </div>
             <div className="report-actions">
-              <button className="lux-report-btn" onClick={printBulkReport} title="Seçili Listeyi Yazdır">
-                <FileText size={16} /> YAZDIR
-              </button>
-              <button className="lux-report-btn gold-btn" onClick={() => { 
-                  setIsBulkPrinting(true);
-                  setTimeout(() => handleDownloadPDF('bulk'), 500);
-                }} disabled={!libLoaded} title="PDF Olarak İndir">
-                {libLoaded ? <><Download size={16} /> İNDİR</> : <><Loader2 className="spinner" size={16} /> BEKLEYİN...</>}
+              <button className="lux-report-btn" onClick={() => openPreview('bulk')} title="Raporu Önizle">
+                <FileText size={16} /> RAPORU GÖR (ÖNİZLE)
               </button>
             </div>
           </div>
@@ -405,15 +397,156 @@ export default function CRMPage() {
                   >
                     <MessageCircle size={20} /> WHATSAPP MESAJI GÖNDER
                   </a>
-                  <button className="lux-action-btn pdf" onClick={() => printLeadAsPDF(selectedLead)}>
-                    <FileText size={20} /> YAZDIR
+                  <button className="lux-action-btn pdf" onClick={() => openPreview('single')}>
+                    <FileText size={20} /> FORMU ÖNİZLE & İNDİR
                   </button>
-                  <button className="lux-action-btn download-btn" onClick={() => {
-                    setIsBulkPrinting(false);
-                    setTimeout(() => handleDownloadPDF('single'), 500);
-                  }} disabled={!libLoaded}>
-                    {libLoaded ? <><Download size={20} /> İNDİR</> : <><Loader2 className="spinner" size={16} /> ...</>}
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* PREVIEW MODAL */}
+      <AnimatePresence>
+        {isPreviewOpen && (
+          <div className="preview-overlay" onClick={() => setIsPreviewOpen(false)}>
+            <motion.div 
+              className="preview-container"
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              onClick={e => e.stopPropagation()}
+            >
+              <div className="preview-toolbar">
+                <div className="toolbar-left">
+                  <h3>PDF ÖNİZLEME</h3>
+                  <span className="toolbar-badge">A4 KURUMSAL FORMAT</span>
+                </div>
+                <div className="toolbar-actions">
+                  <button className="tool-btn" onClick={() => window.print()}>
+                    <FileText size={16} /> YAZDIR
                   </button>
+                  <button className="tool-btn gold" onClick={handleDownloadPDF} disabled={!libLoaded}>
+                    <Download size={16} /> {libLoaded ? 'PDF İNDİR' : 'YÜKLENİYOR...'}
+                  </button>
+                  <button className="tool-btn close" onClick={() => setIsPreviewOpen(false)}>
+                    <X size={20} />
+                  </button>
+                </div>
+              </div>
+              
+              <div className="preview-content-scroll">
+                <div className="preview-paper">
+                    <div className="pdf-header">
+                      <div className="pdf-brand-box">
+                        <h1>Deqoin Design Studio</h1>
+                        <p>ARCHITECTURAL & DESIGN SOLUTIONS</p>
+                      </div>
+                      <div className="pdf-header-divider"></div>
+                      <div className="pdf-meta">
+                        <span><strong>DÖKÜMAN NO:</strong> DQ-{Math.floor(1000 + Math.random() * 9000)}</span>
+                        <span><strong>RAPOR TARİHİ:</strong> {new Date().toLocaleDateString('tr-TR')}</span>
+                        <span><strong>BİRİM:</strong> CRM / RANDEVU YÖNETİMİ</span>
+                      </div>
+                    </div>
+
+                    {isBulkMode ? (
+                      <div className="pdf-bulk-document">
+                        <h2 className="pdf-title">{bulkReportTitle}</h2>
+                        
+                        <div className="pdf-summary-analysis">
+                          <div className="summary-item">
+                            <span className="s-label">TOPLAM KAYIT</span>
+                            <span className="s-val">{bulkLeads.length}</span>
+                          </div>
+                          <div className="summary-item">
+                            <span className="s-label">YENİ TALEPLER</span>
+                            <span className="s-val">{bulkLeads.filter(l => l.status === 'Yeni').length}</span>
+                          </div>
+                          <div className="summary-item">
+                            <span className="s-label">İncelenen / İşlemde</span>
+                            <span className="s-val">{bulkLeads.filter(l => l.status !== 'Yeni' && l.status !== 'Arşivlendi').length}</span>
+                          </div>
+                        </div>
+
+                        <table className="pdf-table">
+                          <thead>
+                            <tr>
+                              <th style={{ width: '15%' }}>TARİH / SAAT</th>
+                              <th style={{ width: '25%' }}>MÜŞTERİ BİLGİSİ</th>
+                              <th style={{ width: '25%' }}>İLETİŞİM BİLGİLERİ</th>
+                              <th style={{ width: '15%' }}>İLGİLİ BİRİM</th>
+                              <th style={{ width: '20%' }}>GÜNCEL DURUM</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {bulkLeads.length > 0 ? bulkLeads.map((lead) => (
+                              <tr key={lead._id}>
+                                <td>
+                                  <span className="pdf-date">{new Date(lead.createdAt).toLocaleDateString('tr-TR')}</span>
+                                  <span className="pdf-time">{new Date(lead.createdAt).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })}</span>
+                                </td>
+                                <td><div className="pdf-txt-bold">{lead.name} {lead.surname}</div><div className="pdf-txt-small">{lead.city}</div></td>
+                                <td><div className="pdf-txt-main">{lead.phone}</div><div className="pdf-txt-small">{lead.email}</div></td>
+                                <td><span className="pdf-dept-tag">{lead.interestedDepartment}</span></td>
+                                <td><div className="pdf-status-pill">{lead.status}</div></td>
+                              </tr>
+                            )) : (
+                              <tr>
+                                <td colSpan={5} style={{ textAlign: 'center', padding: '20mm', color: '#888' }}>
+                                  Seçili zaman aralığında veya kriterlerde herhangi bir randevu kaydı bulunmamaktadır.
+                                </td>
+                              </tr>
+                            )}
+                          </tbody>
+                        </table>
+                      </div>
+                    ) : selectedLead && (
+                      <div className="pdf-document">
+                        <h2 className="pdf-title">MÜŞTERİ TALEP BİLGİ FORMU</h2>
+                        <div className="pdf-form-body">
+                          <div className="pdf-section">
+                            <h3>KİŞİSEL BİLGİLER</h3>
+                            <div className="pdf-data-row"><strong>AD SOYAD:</strong> {selectedLead.name} {selectedLead.surname}</div>
+                            <div className="pdf-data-row"><strong>TELEFON:</strong> {selectedLead.phone}</div>
+                            <div className="pdf-data-row"><strong>E-POSTA:</strong> {selectedLead.email}</div>
+                            <div className="pdf-data-row"><strong>ŞEHİR:</strong> {selectedLead.city}</div>
+                          </div>
+                          <div className="pdf-section">
+                            <h3>TALEB DETAYLARI</h3>
+                            <div className="pdf-data-row"><strong>İLGİLİ BİRİM:</strong> {selectedLead.interestedDepartment}</div>
+                            <div className="pdf-data-row"><strong>DURUM:</strong> {selectedLead.status}</div>
+                            <div className="pdf-data-row"><strong>TALEP TARİHİ:</strong> {new Date(selectedLead.createdAt).toLocaleString('tr-TR')}</div>
+                          </div>
+                          <div className="pdf-section full">
+                            <h3>PROJE AÇIKLAMASI / MESAJ</h3>
+                            <div className="pdf-message-box">
+                              {selectedLead.projectDetails || "Bir açıklama eklenmemiş."}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    <div className="pdf-signature-area">
+                      <div className="sig-box">
+                        <p>HAZIRLAYAN</p>
+                        <div className="sig-line"></div>
+                        <span>Dijital CRM Sistemi</span>
+                      </div>
+                      <div className="sig-box">
+                        <p>ONAY / İMZA</p>
+                        <div className="sig-line"></div>
+                        <span>Deqoin Yönetim</span>
+                      </div>
+                    </div>
+
+                    <div className="pdf-footer">
+                      <p>BU BELGE DEQOIN ARCHITECTURAL STUDIO DİJİTAL SİSTEMLERİ TARAFINDAN OTOMATİK OLARAK OLUŞTURULMUŞTUR.</p>
+                      <div className="pdf-footer-line"></div>
+                      <span>www.deqoin.com • Deqoin Design Studio</span>
+                    </div>
                 </div>
               </div>
             </motion.div>
@@ -582,10 +715,30 @@ export default function CRMPage() {
         .scope-btn.active { background: #a68966; color: #fff; }
 
         .report-actions { display: flex; gap: 0.5rem; border-left: 1px solid var(--line); padding-left: 1.5rem; }
-        .lux-report-btn { background: #fff; color: #000; border: none; padding: 0.6rem 1.25rem; border-radius: 8px; font-size: 0.65rem; font-weight: 800; cursor: pointer; display: flex; align-items: center; gap: 0.75rem; transition: all 0.3s; }
-        .lux-report-btn.gold-btn { background: #a68966; color: #fff; }
-        .lux-report-btn.gold-btn:hover { background: #fff; color: #000; }
-        .lux-report-btn:not(.gold-btn):hover { background: #eee; transform: translateY(-2px); }
+        .lux-report-btn { background: #a68966; color: #fff; border: none; padding: 0.6rem 1.5rem; border-radius: 8px; font-size: 0.65rem; font-weight: 800; cursor: pointer; display: flex; align-items: center; gap: 0.75rem; transition: all 0.3s; }
+        .lux-report-btn:hover { background: #fff; color: #000; transform: translateY(-2px); }
+
+        /* PREVIEW MODAL STYLES */
+        .preview-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.9); backdrop-filter: blur(15px); z-index: 2000; display: flex; align-items: center; justify-content: center; padding: 2rem; }
+        .preview-container { width: 1000px; height: 95vh; background: var(--surface); border: 1px solid var(--line); border-radius: 16px; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 25px 50px rgba(0,0,0,0.5); }
+        .preview-toolbar { padding: 1.5rem 2rem; border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.03); }
+        .preview-toolbar h3 { margin: 0; font-size: 0.9rem; letter-spacing: 0.2rem; color: #a68966; font-weight: 900; }
+        .toolbar-badge { font-size: 0.55rem; font-weight: 900; color: var(--text-muted); background: rgba(255,255,255,0.05); padding: 3px 8px; border-radius: 4px; margin-left: 1rem; }
+        
+        .toolbar-actions { display: flex; gap: 0.75rem; }
+        .tool-btn { background: var(--surface-muted); color: #fff; border: 1px solid var(--line); padding: 0.6rem 1.25rem; border-radius: 8px; font-size: 0.7rem; font-weight: 800; cursor: pointer; display: flex; align-items: center; gap: 0.5rem; transition: all 0.3s; }
+        .tool-btn:hover { transform: translateY(-2px); border-color: #a68966; }
+        .tool-btn.gold { background: #a68966; border-color: #a68966; }
+        .tool-btn.close { background: rgba(239,68,68,0.1); color: #ef4444; border-color: rgba(239,68,68,0.2); }
+
+        .preview-content-scroll { flex: 1; overflow-y: auto; padding: 3rem; background: rgba(0,0,0,0.2); display: flex; justify-content: center; }
+        .preview-paper { 
+            width: 210mm; min-height: 297mm; background: #fff; color: #000; padding: 15mm; 
+            box-shadow: 0 10px 40px rgba(0,0,0,0.4); border-radius: 2px;
+            display: flex; flex-direction: column;
+        }
+
+        /* PRINT MEDIA (KEEP ORIGINAL FOR WINDOW.PRINT) */
 
         .filter-group { display: flex; gap: 0.5rem; }
         .filter-btn { background: var(--surface-muted); border: 1px solid var(--line); color: var(--text-muted); padding: 0.6rem 1.25rem; border-radius: 40px; font-size: 0.65rem; font-weight: 700; cursor: pointer; letter-spacing: 0.05em; transition: all 0.3s; }
