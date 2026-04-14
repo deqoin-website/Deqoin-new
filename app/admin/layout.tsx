@@ -259,9 +259,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             </div>
           </div>
           <div className="top-bar-actions">
-            <div className="desktop-actions">
-                <ThemeToggle />
-            </div>
+            <ThemeToggle />
             <div className="user-profile">
               <span className="user-name-desktop">SİSTEM YÖNETİCİSİ</span>
               <div className="avatar">DQ</div>
