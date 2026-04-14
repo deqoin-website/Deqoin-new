@@ -361,7 +361,7 @@ export default function CRMPage() {
       <div className="print-view">
         <div className="pdf-header">
           <div className="pdf-brand-box">
-            <h1>Deqoin Studio</h1>
+            <h1>Deqoin Design Studio</h1>
             <p>ARCHITECTURAL & DESIGN SOLUTIONS</p>
           </div>
           <div className="pdf-meta">
