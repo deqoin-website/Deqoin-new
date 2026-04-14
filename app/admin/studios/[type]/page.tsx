@@ -741,8 +741,8 @@ export default function DepartmentManagerPage() {
           .dept-header h2 { font-size: 1.25rem; }
         }
 
-        .dept-header h2 { font-family: var(--font-display); font-size: 1.5rem; letter-spacing: 0.1em; color: var(--text); margin: 0 0 0.5rem 0; }
-        .dept-header p { margin: 0; color: var(--text-soft); opacity: 0.7; font-size: 0.85rem; }
+        .dept-header h2 { font-family: var(--font-display); font-size: 1.5rem; letter-spacing: 0.1em; color: #000 !important; margin: 0 0 0.5rem 0; font-weight: 700; }
+        .dept-header p { margin: 0; color: #000 !important; opacity: 0.7; font-size: 0.85rem; font-weight: 500; }
 
         .save-btn-main { background: #a68966; color: #000; border: none; padding: 1rem 2rem; border-radius: 4px; font-family: var(--font-display); font-weight: 700; letter-spacing: 0.1em; font-size: 0.8rem; cursor: pointer; display: flex; align-items: center; gap: 0.75rem; transition: background 0.3s; }
         .save-btn-main:hover { background: #c5a680; }
@@ -763,10 +763,10 @@ export default function DepartmentManagerPage() {
         .form-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
         @media (max-width: 768px) { .form-grid-2 { grid-template-columns: 1fr; gap: 1.5rem; } }
         
-        .form-group { display: flex; flex-direction: column; gap: 0.75rem; }
-        .lux-group label { font-size: 0.65rem; color: var(--text-muted); letter-spacing: 0.15em; font-weight: 800; }
-        .form-group input, .form-group textarea { background: var(--background); border: 1px solid var(--line); padding: 1rem; color: var(--text); border-radius: 4px; font-family: inherit; resize: vertical; width: 100%; }
-        .form-group input:focus, .form-group textarea:focus { outline: none; border-color: #a68966; }
+        .form-group label { font-size: 0.65rem; color: #000 !important; letter-spacing: 0.15em; font-weight: 800; opacity: 1; }
+        .form-group input, .form-group textarea { background: #fff !important; border: 1px solid #000 !important; padding: 1rem; color: #000 !important; border-radius: 4px; font-family: inherit; resize: vertical; width: 100%; font-weight: 600; }
+        .form-group input::placeholder, .form-group textarea::placeholder { color: rgba(0,0,0,0.5) !important; }
+        .form-group input:focus, .form-group textarea:focus { outline: none; border-color: #a68966; box-shadow: 0 0 10px rgba(166,137,102,0.2); }
 
         .hero-upload-section { display: flex; flex-direction: column; gap: 0.75rem; }
         .hero-upload-section label { font-size: 0.65rem; color: var(--text-muted); letter-spacing: 0.15em; font-weight: 600; }
@@ -777,24 +777,26 @@ export default function DepartmentManagerPage() {
         .placeholder { display: flex; flex-direction: column; align-items: center; gap: 0.5rem; color: var(--text-muted); font-size: 0.8rem; }
 
         /* LIST PANELS */
-        .panel-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--line); padding-bottom: 1rem; gap: 1rem; }
+        .panel-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #000; padding-bottom: 1rem; gap: 1rem; }
         @media (max-width: 600px) { .panel-header { flex-direction: column; align-items: flex-start; } .add-item-btn { width: 100%; justify-content: center; } }
-        .panel-header h3 { margin: 0; color: #a68966; font-family: var(--font-display); font-size: 1.1rem; letter-spacing: 0.1em; }
+        .panel-header h3 { margin: 0; color: #000 !important; font-family: var(--font-display); font-size: 1.1rem; letter-spacing: 0.1em; font-weight: 800; }
         
         .add-item-btn { background: var(--surface-muted); border: 1px solid var(--line); color: var(--text); padding: 0.5rem 1rem; border-radius: 4px; display: flex; align-items: center; gap: 0.5rem; font-size: 0.75rem; cursor: pointer; transition: background 0.3s; }
         .add-item-btn:hover { background: var(--line); }
 
         .items-list { display: flex; flex-direction: column; gap: 1.5rem; margin-top: 1.5rem; }
         .list-panel .panel-header h3 { color: #000 !important; font-weight: 800; }
-        .list-panel .lux-group label { color: #000 !important; font-weight: 800; opacity: 1; }
-        .list-panel .lux-group input, .list-panel .lux-group textarea { 
+        .lux-group label { color: #000 !important; font-weight: 800; opacity: 1; margin-bottom: 0.5rem; display: block; }
+        .lux-group input, .lux-group textarea { 
           color: #000 !important; 
           background: #fff !important; 
           border: 1px solid #000 !important; 
+          border-radius: 8px;
+          padding: 1rem;
           font-weight: 600; 
         }
-        .list-panel .lux-group input::placeholder, .list-panel .lux-group textarea::placeholder { color: rgba(0,0,0,0.4) !important; }
-        .list-panel .lux-badge { color: #000 !important; border-color: #000 !important; font-weight: 800; }
+        .lux-group input::placeholder, .lux-group textarea::placeholder { color: rgba(0,0,0,0.5) !important; }
+        .lux-badge { color: #000 !important; border-color: #000 !important; font-weight: 900; background: #fff !important; }
 
         .list-item-card { 
           display: flex; align-items: flex-start; gap: 2rem; background: rgba(255,255,255,0.01); 
