@@ -911,15 +911,19 @@ export default function CRMPage() {
         @media (max-width: 900px) {
           .crm-header { flex-direction: column !important; align-items: stretch !important; gap: 1rem !important; }
           .crm-header-btns { margin-left: 0 !important; width: 100% !important; }
-          .report-ux-wrapper { flex-direction: column !important; align-items: stretch !important; gap: 1rem !important; padding: 1.25rem !important; border-radius: 12px !important; width: 100% !important; background: rgba(0,0,0,0.2) !important; display: flex !important; }
+          .report-ux-wrapper { flex-direction: column !important; align-items: stretch !important; gap: 1rem !important; padding: 1rem !important; border-radius: 12px !important; width: 100% !important; background: rgba(0,0,0,0.2) !important; display: flex !important; margin-bottom: 0.5rem !important; }
           
-          .scope-picker { display: flex !important; flex-direction: column !important; gap: 0.5rem !important; width: 100% !important; }
-          .scope-label-mini { margin-bottom: 0.5rem !important; text-align: center !important; font-size: 0.7rem !important; color: #a68966 !important; display: block !important; }
-          .scope-btn { width: 100% !important; padding: 1rem !important; font-size: 0.85rem !important; text-align: center !important; background: rgba(255,255,255,0.05) !important; border: 1px solid var(--line) !important; border-radius: 8px !important; display: block !important; }
+          .scope-picker { display: grid !important; grid-template-columns: 1fr 1fr !important; gap: 0.5rem !important; width: 100% !important; }
+          .scope-label-mini { grid-column: 1 / -1 !important; margin-bottom: 0.25rem !important; text-align: center !important; font-size: 0.7rem !important; color: #a68966 !important; display: block !important; }
+          .scope-btn { width: 100% !important; padding: 0.75rem !important; font-size: 0.75rem !important; text-align: center !important; background: rgba(255,255,255,0.05) !important; border: 1px solid var(--line) !important; border-radius: 8px !important; display: block !important; }
           .scope-btn.active { background: #a68966 !important; border-color: #a68966 !important; color: #fff !important; }
           
-          .report-actions { border-left: none !important; border-top: 1px solid var(--line) !important; padding-left: 0 !important; padding-top: 1.25rem !important; margin-top: 0.5rem !important; width: 100% !important; display: flex !important; }
-          .lux-report-btn { width: 100% !important; justify-content: center !important; padding: 1.25rem !important; font-size: 0.85rem !important; letter-spacing: 2px !important; font-weight: 900 !important; }
+          .report-actions { border-left: none !important; border-top: 1px solid var(--line) !important; padding-left: 0 !important; padding-top: 1rem !important; margin-top: 0.25rem !important; width: 100% !important; display: flex !important; }
+          .lux-report-btn { width: 100% !important; justify-content: center !important; padding: 1rem !important; font-size: 0.8rem !important; letter-spacing: 1.5px !important; font-weight: 900 !important; }
+
+          .filter-group-scroll { overflow: visible !important; width: 100% !important; }
+          .filter-group { display: flex !important; flex-wrap: wrap !important; gap: 0.5rem !important; width: 100% !important; }
+          .filter-btn { flex: 1 1 calc(50% - 0.5rem) !important; min-width: 120px !important; text-align: center !important; padding: 0.75rem 0.5rem !important; }
 
           .desktop-only { display: none !important; }
           .mobile-only { display: block !important; }
@@ -949,11 +953,10 @@ export default function CRMPage() {
         }
 
         @media (max-width: 600px) {
-          .crm-stats-grid { grid-template-columns: 1fr; }
-          .filter-group-scroll { overflow-x: auto; padding-bottom: 10px; -webkit-overflow-scrolling: touch; }
-          .filter-btn { white-space: nowrap; }
+          .crm-stats-grid { grid-template-columns: 1fr !important; gap: 0.5rem !important; }
+          .filter-btn { flex: 1 1 100% !important; }
           
-          .preview-paper { transform: scale(0.35); margin-bottom: -180mm; }
+          .preview-paper { transform: scale(0.35) !important; margin-bottom: -180mm !important; }
         }
           .pdf-footer p { margin-bottom: 2mm; }
           .pdf-footer-line { height: 1px; background: #eee; margin: 3mm auto; width: 50%; }
