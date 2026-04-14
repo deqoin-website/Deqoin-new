@@ -911,14 +911,15 @@ export default function CRMPage() {
         @media (max-width: 900px) {
           .crm-header { flex-direction: column; align-items: stretch; gap: 1rem; }
           .crm-header-btns { margin-left: 0; width: 100%; }
-          .report-ux-wrapper { flex-direction: column; align-items: stretch; gap: 0.75rem; padding: 0.75rem; border-radius: 8px; width: 100%; }
+          .report-ux-wrapper { flex-direction: column; align-items: stretch; gap: 1rem; padding: 1.25rem; border-radius: 12px; width: 100%; background: rgba(0,0,0,0.2); }
           
-          .scope-picker { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.5rem; width: 100%; }
-          .scope-label-mini { grid-column: 1 / -1; margin-bottom: 0.25rem; text-align: center; }
-          .scope-btn { width: 100%; padding: 0.75rem 0.25rem; font-size: 0.6rem; text-align: center; background: rgba(255,255,255,0.03); border: 1px solid var(--line); }
+          .scope-picker { display: flex; flex-direction: column; gap: 0.5rem; width: 100%; }
+          .scope-label-mini { margin-bottom: 0.5rem; text-align: center; font-size: 0.65rem; color: #a68966; }
+          .scope-btn { width: 100%; padding: 1rem; font-size: 0.8rem; text-align: center; background: rgba(255,255,255,0.05); border: 1px solid var(--line); border-radius: 8px; }
+          .scope-btn.active { background: #a68966; border-color: #a68966; color: #fff; }
           
-          .report-actions { border-left: none; border-top: 1px solid var(--line); padding-left: 0; padding-top: 0.75rem; margin-top: 0.25rem; width: 100%; }
-          .lux-report-btn { width: 100%; justify-content: center; padding: 1rem; font-size: 0.75rem; letter-spacing: 1px; }
+          .report-actions { border-left: none; border-top: 1px solid var(--line); padding-left: 0; padding-top: 1.25rem; margin-top: 0.5rem; width: 100%; }
+          .lux-report-btn { width: 100%; justify-content: center; padding: 1.25rem; font-size: 0.85rem; letter-spacing: 2px; font-weight: 900; }
 
           .desktop-only { display: none; }
           .mobile-only { display: block; }
