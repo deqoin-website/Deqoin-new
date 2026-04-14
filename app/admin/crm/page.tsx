@@ -222,7 +222,7 @@ export default function CRMPage() {
         ) : (
           <>
             {/* Desktop Table View */}
-            <div className="desktop-view admin-card">
+            <div className="desktop-view admin-card desktop-only">
               <table className="crm-table">
                 <thead>
                   <tr>
@@ -281,32 +281,31 @@ export default function CRMPage() {
               </table>
             </div>
 
-            {/* Mobile Card View */}
-            <div className="mobile-view">
+            {/* Mobile View */}
+            <div className="mobile-only">
               <div className="mobile-card-grid">
                 {filteredLeads.map((lead) => (
                   <motion.div 
                     key={lead._id}
-                    className="lead-mobile-card admin-card"
+                    className="mobile-lead-card"
                     whileTap={{ scale: 0.98 }}
                     onClick={() => setSelectedLead(lead)}
                   >
-                    <div className="m-card-header">
-                      <div className="m-date">{new Date(lead.createdAt).toLocaleDateString('tr-TR')}</div>
-                      <div className={`status-badge-small ${lead.status.toLowerCase().replace(' ', '-')}`}>
+                    <div className="card-header">
+                      <div className="card-id">{new Date(lead.createdAt).toLocaleDateString('tr-TR')}</div>
+                      <div className={`status-badge-premium ${lead.status.toLowerCase().replace(' ', '-')}`}>
                         {lead.status}
                       </div>
                     </div>
-                    <div className="m-card-body">
+                    <div className="card-body">
                       <h3>{lead.name} {lead.surname}</h3>
-                      <p>{lead.interestedDepartment} • {lead.city}</p>
-                    </div>
-                    <div className="m-card-footer">
-                      <div className="m-contact-info">{lead.phone}</div>
-                      <div className="m-actions">
-                        <a href={`tel:${lead.phone}`} onClick={e => e.stopPropagation()} className="m-action-btn"><Users size={16}/></a>
-                        <button className="m-action-btn gold" onClick={e => { e.stopPropagation(); setSelectedLead(lead); }}><ArrowRight size={16}/></button>
+                      <p className="card-dept">{lead.interestedDepartment} • {lead.city}</p>
+                      <div className="card-meta">
+                        <span>{lead.phone}</span>
                       </div>
+                    </div>
+                    <div className="card-footer">
+                      <button className="btn-card-action">HIZLI İNCELE</button>
                     </div>
                   </motion.div>
                 ))}
@@ -336,8 +335,8 @@ export default function CRMPage() {
               onClick={e => e.stopPropagation()}
             >
               <div className="drawer-header">
-                <h2>Talep Detayları</h2>
-                <button onClick={() => setSelectedLead(null)} className="close-btn"><X size={20} /></button>
+                <h2>TALEP DETAYLARI</h2>
+                <button onClick={() => setSelectedLead(null)} className="close-btn"><X size={24} /></button>
               </div>
               <div className="drawer-body">
                 <div className="detail-hero">
@@ -856,6 +855,9 @@ export default function CRMPage() {
           .pdf-brand-box h1 { margin: 0; font-size: 24pt; letter-spacing: 2px; font-weight: 900; font-family: serif; color: #000; line-height: 1; }
           .pdf-brand-box p { margin: 2mm 0 0 0; font-size: 8pt; color: #666; letter-spacing: 3px; font-weight: 600; text-transform: uppercase; }
           
+          /* Force A4 in PDF generation */
+          .preview-paper, .print-view { width: 210mm; min-height: 297mm; background: #fff !important; color: #000 !important; }
+          
           .pdf-header-divider { position: absolute; bottom: -1px; left: 0; width: 40mm; height: 2px; background: #a68966; }
           .pdf-meta { display: flex; flex-direction: column; align-items: flex-end; gap: 1.5mm; font-size: 8.5pt; text-align: right; color: #333; }
           .pdf-meta strong { color: #a68966; margin-right: 2mm; font-weight: 800; }
@@ -900,6 +902,55 @@ export default function CRMPage() {
           .sig-box span { font-size: 7.5pt; color: #666; font-weight: 600; }
 
           .pdf-footer { margin-top: auto; padding-top: 12mm; text-align: center; font-size: 7.5pt; color: #aaa; letter-spacing: 1px; }
+
+        /* RESPONSIVE CSS */
+        @media (max-width: 1200px) {
+          .crm-stats-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        @media (max-width: 900px) {
+          .crm-header { flex-direction: column; align-items: stretch; gap: 1.5rem; }
+          .crm-header-btns { margin-left: 0; }
+          .report-ux-wrapper { flex-direction: column; align-items: stretch; gap: 1rem; padding: 1rem; }
+          .scope-picker { overflow-x: auto; padding-bottom: 5px; -webkit-overflow-scrolling: touch; }
+          .scope-btn { white-space: nowrap; }
+          .report-actions { border-left: none; border-top: 1px solid var(--line); padding-left: 0; padding-top: 1rem; }
+          .lux-report-btn { width: 100%; justify-content: center; }
+
+          .desktop-only { display: none; }
+          .mobile-only { display: block; }
+          
+          .mobile-lead-card { background: var(--surface-muted); border: 1px solid var(--line); border-radius: 12px; padding: 1.25rem; margin-bottom: 1rem; cursor: pointer; transition: all 0.3s; }
+          .mobile-lead-card:active { transform: scale(0.98); background: rgba(255,255,255,0.05); }
+          .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+          .card-id { font-size: 0.65rem; color: var(--text-muted); font-weight: 800; }
+          .card-body h3 { margin: 0 0 0.5rem 0; font-size: 1.1rem; color: #fff; }
+          .card-dept { font-size: 0.75rem; color: #a68966; font-weight: 700; text-transform: uppercase; margin-bottom: 0.75rem; }
+          .card-meta { display: flex; gap: 0.5rem; font-size: 0.75rem; color: var(--text-muted); }
+          .btn-card-action { width: 100%; margin-top: 1.25rem; background: rgba(255,255,255,0.05); border: 1px solid var(--line); color: #fff; padding: 0.75rem; border-radius: 8px; font-size: 0.8rem; font-weight: 700; }
+
+          .sidebar-item { border-radius: 12px; margin-bottom: 1rem; }
+          
+          /* Preview Modal Mobile */
+          .preview-container { width: 100%; height: 100vh; border-radius: 0; border: none; }
+          .preview-content-scroll { padding: 1.5rem 1rem; }
+          .preview-paper { 
+            width: 100%; min-width: 210mm; /* Force A4 for render, but scale it down */
+            transform: scale(0.45); transform-origin: top center;
+            margin-bottom: -150mm; /* Offset scale shrink */
+          }
+          .preview-toolbar { padding: 1rem; flex-direction: column; gap: 1rem; }
+          .toolbar-actions { width: 100%; display: grid; grid-template-columns: 1fr 1fr 44px; gap: 0.5rem; }
+          .tool-btn { padding: 0.75rem 0.5rem; font-size: 0.6rem; justify-content: center; }
+        }
+
+        @media (max-width: 600px) {
+          .crm-stats-grid { grid-template-columns: 1fr; }
+          .filter-group-scroll { overflow-x: auto; padding-bottom: 10px; -webkit-overflow-scrolling: touch; }
+          .filter-btn { white-space: nowrap; }
+          
+          .preview-paper { transform: scale(0.35); margin-bottom: -180mm; }
+        }
           .pdf-footer p { margin-bottom: 2mm; }
           .pdf-footer-line { height: 1px; background: #eee; margin: 3mm auto; width: 50%; }
         }
