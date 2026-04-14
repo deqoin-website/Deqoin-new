@@ -187,7 +187,6 @@ export default function CRMPage() {
         <div className="crm-header-btns">
           <div className="report-ux-wrapper">
             <div className="scope-picker">
-              <span className="scope-label-mini">KAPSAM:</span>
               <button className={`scope-btn ${activeScope === 'daily' ? 'active' : ''}`} onClick={() => setActiveScope('daily')}>GÜNLÜK</button>
               <button className={`scope-btn ${activeScope === 'weekly' ? 'active' : ''}`} onClick={() => setActiveScope('weekly')}>HAFTALIK</button>
               <button className={`scope-btn ${activeScope === 'monthly' ? 'active' : ''}`} onClick={() => setActiveScope('monthly')}>AYLIK</button>
@@ -707,7 +706,7 @@ export default function CRMPage() {
         .crm-header-btns { margin-left: auto; }
         .report-ux-wrapper { display: flex; align-items: center; gap: 1.5rem; background: rgba(0,0,0,0.1); padding: 6px 12px; border-radius: 12px; border: 1px solid var(--line); }
         
-        .scope-picker { display: flex; align-items: center; gap: 0.25rem; }
+        .scope-picker { display: flex; align-items: center; gap: 0.25rem; justify-content: flex-start; }
         .scope-label-mini { font-size: 0.55rem; font-weight: 900; color: var(--text-muted); margin-right: 0.5rem; letter-spacing: 0.1em; }
         .scope-btn { background: transparent; border: none; color: var(--text-soft); padding: 0.5rem 1rem; border-radius: 6px; font-size: 0.65rem; font-weight: 700; cursor: pointer; transition: all 0.3s; }
         .scope-btn:hover { color: #fff; background: rgba(255,255,255,0.03); }
@@ -927,8 +926,8 @@ export default function CRMPage() {
           .crm-header-btns { margin-left: 0 !important; width: 100% !important; }
           .report-ux-wrapper { flex-direction: column !important; align-items: stretch !important; gap: 1rem !important; padding: 1rem !important; border-radius: 12px !important; width: 100% !important; background: rgba(0,0,0,0.2) !important; display: flex !important; margin-bottom: 0.5rem !important; }
           
-          .scope-picker { display: grid !important; grid-template-columns: 1fr 1fr !important; gap: 0.5rem !important; width: 100% !important; }
-          .scope-label-mini { grid-column: 1 / -1 !important; margin-bottom: 0.25rem !important; text-align: center !important; font-size: 0.7rem !important; color: #a68966 !important; display: block !important; }
+          .scope-picker { display: grid !important; grid-template-columns: 1fr 1fr !important; gap: 0.5rem !important; width: 100% !important; justify-items: start !important; }
+          .scope-label-mini { display: none !important; }
           .scope-btn { width: 100% !important; padding: 0.75rem !important; font-size: 0.75rem !important; text-align: center !important; background: rgba(255,255,255,0.05) !important; border: 1px solid var(--line) !important; border-radius: 8px !important; display: block !important; }
           .scope-btn.active { background: #a68966 !important; border-color: #a68966 !important; color: #fff !important; }
           
