@@ -226,25 +226,37 @@ export default function AdminProjects() {
         <div className="engine-grid">
           {projects.map((project: any) => (
             <motion.div layout key={project._id} className="engine-card">
-              <div className="card-thumb">
-                {project.coverImage && <img src={project.coverImage} alt={project.title} />}
+              <div className="card-clickable-area" onClick={() => openEditModal(project)}>
+                <div className="card-thumb">
+                  {project.coverImage && <img src={project.coverImage} alt={project.title} />}
+                  <div className="thumb-overlay">
+                    <Edit3 size={24} />
+                    <span>DÜZENLEMEK İÇİN TIKLAYIN</span>
+                  </div>
+                </div>
+                <div className="card-info">
+                  <h4>{project.title}</h4>
+                  <div className="publish-badges">
+                    {project.publishTargets?.designStudio && <span className="badge design">DESIGN</span>}
+                    {project.publishTargets?.materialStudio && <span className="badge material">MAT.</span>}
+                    {project.publishTargets?.executionStudio && <span className="badge execution">EXEC.</span>}
+                  </div>
+                </div>
               </div>
-              <div className="card-meta">
-                <h4>{project.title}</h4>
-                <div className="publish-badges">
-                  {project.publishTargets?.designStudio && <span className="badge design">DESIGN</span>}
-                  {project.publishTargets?.materialStudio && <span className="badge material">MAT.</span>}
-                  {project.publishTargets?.executionStudio && <span className="badge execution">EXEC.</span>}
-                </div>
-                
-                <div className="card-actions-v2">
-                   <button onClick={() => openEditModal(project)} className="v2-btn edit">
-                     <Edit3 size={14} /> DÜZENLE
-                   </button>
-                   <button onClick={() => handleDelete(project._id)} className="v2-btn delete">
-                     <Trash2 size={14} /> SİL
-                   </button>
-                </div>
+              
+              <div className="card-actions-v2">
+                 <button onClick={() => openEditModal(project)} className="v2-btn edit">
+                   <Edit3 size={14} /> DÜZENLE
+                 </button>
+                 <button 
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleDelete(project._id);
+                  }} 
+                  className="v2-btn delete"
+                 >
+                   <Trash2 size={14} /> SİL
+                 </button>
               </div>
             </motion.div>
           ))}
@@ -451,39 +463,36 @@ export default function AdminProjects() {
         .engine-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem; }
 
         .engine-card {
-          background: var(--surface); border: 1px solid var(--line); border-radius: 8px; overflow: hidden;
+          background: var(--surface); border: 1px solid var(--line); border-radius: 12px; overflow: hidden;
+          transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
+        .engine-card:hover { transform: translateY(-5px); box-shadow: 0 12px 30px rgba(0,0,0,0.2); border-color: #a68966; }
+        
+        .card-clickable-area { cursor: pointer; }
         
         .card-thumb { aspect-ratio: 16/10; position: relative; overflow: hidden; }
-        .card-thumb img { width: 100%; height: 100%; object-fit: cover; }
+        .card-thumb img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
+        .engine-card:hover .card-thumb img { transform: scale(1.05); }
         
-        .card-actions-v2 { display: flex; gap: 0.5rem; margin-top: 1.25rem; border-top: 1px solid var(--line); padding-top: 1rem; }
-        .v2-btn { flex: 1; border: none; padding: 0.75rem; border-radius: 4px; font-size: 0.65rem; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 0.5rem; transition: all 0.3s; letter-spacing: 0.05em; }
+        .thumb-overlay {
+          position: absolute; inset: 0; background: rgba(166,137,102,0.8); 
+          display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.5rem;
+          opacity: 0; transition: opacity 0.3s ease; color: #000;
+        }
+        .thumb-overlay span { font-size: 0.7rem; font-weight: 800; letter-spacing: 0.1em; }
+        .card-clickable-area:hover .thumb-overlay { opacity: 1; }
+
+        .card-info { padding: 1.25rem; display: flex; flex-direction: column; gap: 0.5rem; }
+        .card-info h4 { margin: 0; font-size: 0.9rem; font-weight: 500; font-family: var(--font-display); color: var(--text); letter-spacing: 0.05em; }
+        
+        .card-actions-v2 { display: flex; gap: 0.5rem; padding: 0 1.25rem 1.25rem 1.25rem; }
+        .v2-btn { flex: 1; border: none; padding: 0.75rem; border-radius: 6px; font-size: 0.65rem; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 0.5rem; transition: all 0.3s; letter-spacing: 0.05em; }
         
         .v2-btn.edit { background: var(--surface-muted); color: var(--text); border: 1px solid var(--line); }
-        .v2-btn.edit:hover { background: var(--text); color: var(--background); }
+        .v2-btn.edit:hover { background: #a68966; color: #000; border-color: #a68966; }
         
         .v2-btn.delete { background: rgba(255,77,77,0.05); color: #ff4d4d; border: 1px solid rgba(255,77,77,0.1); }
         .v2-btn.delete:hover { background: #ff4d4d; color: #fff; }
-
-        .empty-state-container { grid-column: 1 / -1; display: flex; justify-content: center; padding: 3rem 0; }
-        .migration-helper { 
-          display: flex; flex-direction: column; align-items: center; text-align: center; gap: 1.5rem; padding: 4rem 2rem; 
-          background: var(--surface); border: 1px dashed #a68966; max-width: 500px; width: 100%; border-radius: 12px;
-        }
-        .migration-helper h4 { font-family: var(--font-display); font-size: 1rem; color: #a68966; margin: 0; letter-spacing: 0.1em; }
-        .migration-helper p { font-size: 0.85rem; color: var(--text-soft); line-height: 1.6; margin: 0; }
-        .icon-gold { color: #a68966; opacity: 0.6; }
-        .migrate-btn { 
-          background: #a68966; color: #000; border: none; padding: 1rem 2rem; border-radius: 4px; 
-          font-weight: 800; cursor: pointer; display: flex; align-items: center; gap: 0.75rem; transition: all 0.3s; 
-          font-size: 0.75rem; letter-spacing: 0.05em;
-        }
-        .migrate-btn:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(166,137,102,0.3); }
-        .migrate-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-
-        .card-meta { padding: 1rem; display: flex; flex-direction: column; gap: 0.5rem; }
-        .card-meta h4 { margin: 0; font-size: 0.9rem; font-weight: 500; font-family: var(--font-display); color: var(--text); }
         
         .publish-badges { display: flex; gap: 0.5rem; flex-wrap: wrap; }
         .badge { font-size: 0.6rem; padding: 2px 6px; border-radius: 2px; letter-spacing: 0.1em; font-weight: 700; }
