@@ -808,15 +808,19 @@ export default function DepartmentManagerPage() {
         .lux-group input:focus, .lux-group textarea:focus { outline: none; border-color: #a68966; background: rgba(255,255,255,0.05); box-shadow: 0 0 20px rgba(166,137,102,0.1); }
         .mb-6 { margin-bottom: 1.5rem; }
 
-        .media-grid { display: grid; grid-template-columns: 350px 1fr; gap: 3rem; }
-        .section-label { font-size: 0.65rem; color: #a68966; letter-spacing: 0.2em; font-weight: 800; margin-bottom: 1.5rem; display: block; }
+        .media-grid { display: grid; grid-template-columns: 1fr; gap: 3rem; }
+        @media (min-width: 1200px) {
+          .media-grid { grid-template-columns: 380px 1fr; }
+        }
+
+        .section-label { font-size: 0.65rem; color: #a68966; letter-spacing: 0.2em; font-weight: 800; margin-bottom: 1.5rem; display: block; border-bottom: 1px solid rgba(166,137,102,0.1); padding-bottom: 0.5rem; }
         
         .lux-cover-preview { 
           width: 100%; aspect-ratio: 16/10; border: 1px dashed rgba(166,137,102,0.3); border-radius: 16px;
           cursor: pointer; overflow: hidden; position: relative; background: rgba(0,0,0,0.2);
-          transition: all 0.4s;
+          transition: all 0.4s; max-height: 250px;
         }
-        .lux-cover-preview:hover { border-color: #a68966; transform: scale(1.02); }
+        .lux-cover-preview:hover { border-color: #a68966; transform: scale(1.01); }
         .img-wrapper { width: 100%; height: 100%; position: relative; }
         .img-wrapper img { width: 100%; height: 100%; object-fit: cover; }
         .change-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.5); opacity: 0; display: flex; align-items: center; justify-content: center; color: #fff; transition: 0.3s; }
@@ -829,22 +833,25 @@ export default function DepartmentManagerPage() {
         @keyframes pulse { 0% { transform: scale(1); opacity: 0.5; } 50% { transform: scale(1.1); opacity: 1; } 100% { transform: scale(1); opacity: 0.5; } }
 
         .lux-gallery-container { display: flex; flex-direction: column; gap: 1.5rem; }
-        .lux-gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem; }
-        .lux-gallery-item { display: flex; gap: 1rem; background: rgba(255,255,255,0.03); padding: 1rem; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); align-items: center; position: relative; }
-        .item-thumb { width: 70px; height: 70px; border-radius: 8px; overflow: hidden; }
+        .lux-gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem; }
+        .lux-gallery-item { display: flex; gap: 1.25rem; background: rgba(255,255,255,0.03); padding: 1.25rem; border-radius: 16px; border: 1px solid rgba(255,255,255,0.05); align-items: center; position: relative; transition: all 0.3s; }
+        .lux-gallery-item:hover { background: rgba(255,255,255,0.05); border-color: rgba(166,137,102,0.3); }
+        
+        .item-thumb { width: 80px; height: 80px; border-radius: 10px; overflow: hidden; flex-shrink: 0; border: 1px solid rgba(255,255,255,0.1); }
         .item-thumb img { width: 100%; height: 100%; object-fit: cover; }
-        .item-meta { flex: 1; display: flex; flex-direction: column; gap: 0.5rem; }
-        .item-meta input { background: transparent; border: none; border-bottom: 1px solid rgba(255,255,255,0.1); color: var(--text); padding: 0.3rem 0; font-size: 0.75rem; }
-        .item-meta input:focus { outline: none; border-color: #a68966; }
-        .lux-remove-btn { position: absolute; top: -10px; right: -10px; width: 28px; height: 28px; background: #ff4d4d; color: #fff; border: none; border-radius: 50%; opacity: 0; transform: scale(0.8); transition: all 0.3s; cursor: pointer; }
-        .lux-gallery-item:hover .lux-remove-btn { opacity: 1; transform: scale(1); }
+        .item-meta { flex: 1; display: flex; flex-direction: column; gap: 0.75rem; }
+        .item-meta input { background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.05); border-radius: 6px; color: var(--text); padding: 0.5rem 0.75rem; font-size: 0.75rem; transition: all 0.3s; }
+        .item-meta input:focus { outline: none; border-color: #a68966; background: rgba(0,0,0,0.3); }
+        
+        .lux-remove-btn { position: absolute; top: -8px; right: -8px; width: 24px; height: 24px; background: #ff4d4d; color: #fff; border: none; border-radius: 50%; opacity: 0; transform: translateY(5px); transition: all 0.3s; cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 5; box-shadow: 0 4px 12px rgba(255,77,77,0.3); }
+        .lux-gallery-item:hover .lux-remove-btn { opacity: 1; transform: translateY(0); }
         
         .lux-add-photo-btn { 
-          background: rgba(166,137,102,0.05); color: #a68966; border: 1px dashed rgba(166,137,102,0.3);
-          padding: 1.5rem; border-radius: 12px; display: flex; align-items: center; justify-content: center; gap: 0.75rem;
-          cursor: pointer; font-family: var(--font-display); font-size: 0.75rem; font-weight: 700; letter-spacing: 0.1em; transition: all 0.3s;
+          background: rgba(166,137,102,0.05); color: #a68966; border: 1px dashed rgba(166,137,102,0.4);
+          padding: 2rem; border-radius: 16px; display: flex; align-items: center; justify-content: center; gap: 0.75rem;
+          cursor: pointer; font-family: var(--font-display); font-size: 0.8rem; font-weight: 700; letter-spacing: 0.1em; transition: all 0.3s;
         }
-        .lux-add-photo-btn:hover { background: rgba(166,137,102,0.1); transform: translateY(-3px); }
+        .lux-add-photo-btn:hover { background: rgba(166,137,102,0.1); border-color: #a68966; transform: translateY(-3px); box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
 
         .premium-advanced-grid { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 4rem; }
         .lux-section { display: flex; flex-direction: column; gap: 2rem; }
