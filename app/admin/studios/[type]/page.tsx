@@ -764,12 +764,12 @@ export default function DepartmentManagerPage() {
         @media (max-width: 768px) { .form-grid-2 { grid-template-columns: 1fr; gap: 1.5rem; } }
         
         .form-group { display: flex; flex-direction: column; gap: 0.75rem; }
-        .lux-group label { font-size: 0.65rem; color: #fff; letter-spacing: 0.15em; font-weight: 800; opacity: 0.8; }
-        .form-group input, .form-group textarea { background: var(--background); border: 1px solid var(--line); padding: 1rem; color: #fff; border-radius: 4px; font-family: inherit; resize: vertical; width: 100%; }
+        .lux-group label { font-size: 0.65rem; color: var(--text-muted); letter-spacing: 0.15em; font-weight: 800; }
+        .form-group input, .form-group textarea { background: var(--background); border: 1px solid var(--line); padding: 1rem; color: var(--text); border-radius: 4px; font-family: inherit; resize: vertical; width: 100%; }
         .form-group input:focus, .form-group textarea:focus { outline: none; border-color: #a68966; }
 
         .hero-upload-section { display: flex; flex-direction: column; gap: 0.75rem; }
-        .hero-upload-section label { font-size: 0.65rem; color: #fff; letter-spacing: 0.15em; font-weight: 600; }
+        .hero-upload-section label { font-size: 0.65rem; color: var(--text-muted); letter-spacing: 0.15em; font-weight: 600; }
         .hero-preview { width: 100%; height: 300px; background: var(--background); border: 1px dashed var(--line); border-radius: 8px; overflow: hidden; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: border-color 0.3s; }
         @media (max-width: 600px) { .hero-preview { height: 220px; } }
         .hero-preview:hover { border-color: var(--accent); }
