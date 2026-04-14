@@ -361,7 +361,7 @@ export default function CRMPage() {
       <div className="print-view">
         <div className="pdf-header">
           <div className="pdf-brand-box">
-            <h1>DEQOIN STUDIO</h1>
+            <h1>Deqoin Studio</h1>
             <p>ARCHITECTURAL & DESIGN SOLUTIONS</p>
           </div>
           <div className="pdf-meta">
@@ -602,7 +602,7 @@ export default function CRMPage() {
           }
 
           .pdf-header { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 2px solid #000; padding-bottom: 5mm; margin-bottom: 8mm; }
-          .pdf-brand-box h1 { margin: 0; font-size: 28pt; letter-spacing: 8px; font-weight: 900; font-family: serif; }
+          .pdf-brand-box h1 { margin: 0; font-size: 28pt; letter-spacing: 2px; font-weight: 900; font-family: serif; }
           .pdf-brand-box p { margin: 2mm 0 0 0; font-size: 9pt; color: #444; letter-spacing: 3px; font-weight: 600; }
           .pdf-meta { display: flex; flex-direction: column; align-items: flex-end; gap: 1mm; font-size: 9pt; text-align: right; }
           
