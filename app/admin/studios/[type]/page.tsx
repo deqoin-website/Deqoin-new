@@ -787,7 +787,14 @@ export default function DepartmentManagerPage() {
         .items-list { display: flex; flex-direction: column; gap: 1.5rem; margin-top: 1.5rem; }
         .list-panel .panel-header h3 { color: #000 !important; font-weight: 800; }
         .list-panel .lux-group label { color: #000 !important; font-weight: 800; opacity: 1; }
-        .list-panel .lux-group input, .list-panel .lux-group textarea { color: #000 !important; font-weight: 500; }
+        .list-panel .lux-group input, .list-panel .lux-group textarea { 
+          color: #000 !important; 
+          background: #fff !important; 
+          border: 1px solid #000 !important; 
+          font-weight: 600; 
+        }
+        .list-panel .lux-group input::placeholder, .list-panel .lux-group textarea::placeholder { color: rgba(0,0,0,0.4) !important; }
+        .list-panel .lux-badge { color: #000 !important; border-color: #000 !important; font-weight: 800; }
 
         .list-item-card { 
           display: flex; align-items: flex-start; gap: 2rem; background: rgba(255,255,255,0.01); 
