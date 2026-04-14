@@ -4612,20 +4612,21 @@ body:has(.homepage-snap-shell) {
   text-transform: uppercase;
   margin-bottom: 1rem;
   font-weight: 400;
+  color: #fff;
 }
 
 .step-content p {
   font-family: var(--font-body), sans-serif;
   font-size: 0.85rem;
   line-height: 1.6;
-  color: var(--text-muted);
+  color: rgba(255, 255, 255, 0.5);
   max-width: 15rem;
   margin: 0 auto;
   transition: color 0.4s ease;
 }
 
 .process-step:hover .step-content p {
-  color: var(--text);
+  color: #fff;
 }
 
 /* Mobile Responsive */
