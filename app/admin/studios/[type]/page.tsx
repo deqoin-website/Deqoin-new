@@ -385,10 +385,19 @@ export default function DepartmentManagerPage() {
               <div className="items-list">
                 {data.process.map((step, i) => (
                   <div key={i} className="list-item-card">
-                    <div className="drag-handle"><GripVertical size={20} /></div>
+                    <div className="card-badge-row">
+                       <span className="lux-badge">ADIM {i + 1}</span>
+                       <div className="drag-handle"><GripVertical size={16} /></div>
+                    </div>
                     <div className="item-inputs">
-                      <input type="text" placeholder="Adım Başlığı (Örn: Konsept ve Keşif)" value={step.title} onChange={e => updateItem('process', i, 'title', e.target.value)} />
-                      <textarea placeholder="Adım Açıklaması..." value={step.desc} onChange={e => updateItem('process', i, 'desc', e.target.value)} rows={2} />
+                      <div className="lux-group">
+                        <label>ADIM BAŞLIĞI</label>
+                        <input type="text" placeholder="Konsept Tasarım..." value={step.title} onChange={e => updateItem('process', i, 'title', e.target.value)} />
+                      </div>
+                      <div className="lux-group">
+                        <label>SÜREÇ AÇIKLAMASI</label>
+                        <textarea placeholder="Bu adımda neler yapıldığını anlatın..." value={step.desc} onChange={e => updateItem('process', i, 'desc', e.target.value)} rows={2} />
+                      </div>
                     </div>
                     <button className="remove-btn" onClick={() => removeItem('process', i)}><Trash2 size={16} /></button>
                   </div>
@@ -411,17 +420,26 @@ export default function DepartmentManagerPage() {
                 {data.focusAreas.map((focus, i) => (
                   <div key={i} className="grid-item-card">
                     <div className="card-top">
-                      <select className="icon-select" value={focus.icon} onChange={e => updateItem('focusAreas', i, 'icon', e.target.value)}>
-                        <option value="architecture">Mimari İkon (Bina)</option>
-                        <option value="diamond">Elmas / Lüks İkon</option>
-                        <option value="eco">Yaprak / Çevre İkon</option>
-                        <option value="lightbulb">Işık / Fikir İkon</option>
-                        <option value="hammer">Çekiç / Uygulama İkon</option>
-                      </select>
-                      <button className="remove-btn-small" onClick={() => removeItem('focusAreas', i)}><X size={14} /></button>
+                      <span className="lux-badge">KART {i + 1}</span>
+                      <div className="card-actions-mini">
+                        <select className="icon-select" value={focus.icon} onChange={e => updateItem('focusAreas', i, 'icon', e.target.value)}>
+                          <option value="architecture">Mimari İkon</option>
+                          <option value="diamond">Lüks İkon</option>
+                          <option value="eco">Yaprak / Çevre</option>
+                          <option value="lightbulb">Fikir İkon</option>
+                          <option value="hammer">Uygulama İkon</option>
+                        </select>
+                        <button className="remove-btn-small" onClick={() => removeItem('focusAreas', i)}><X size={14} /></button>
+                      </div>
                     </div>
-                    <input type="text" placeholder="Kart Başlığı" value={focus.title} onChange={e => updateItem('focusAreas', i, 'title', e.target.value)} />
-                    <textarea placeholder="Kart Açıklaması" value={focus.desc} onChange={e => updateItem('focusAreas', i, 'desc', e.target.value)} rows={3} />
+                    <div className="lux-group">
+                      <label>KART BAŞLIĞI</label>
+                      <input type="text" placeholder="Stratejik Planlama" value={focus.title} onChange={e => updateItem('focusAreas', i, 'title', e.target.value)} />
+                    </div>
+                    <div className="lux-group">
+                      <label>KART AÇIKLAMASI</label>
+                      <textarea placeholder="Alan detaylarını girin..." value={focus.desc} onChange={e => updateItem('focusAreas', i, 'desc', e.target.value)} rows={3} />
+                    </div>
                   </div>
                 ))}
                 {data.focusAreas.length === 0 && <p className="empty">Odak kartı bulunamadı.</p>}
@@ -443,9 +461,16 @@ export default function DepartmentManagerPage() {
               <div className="category-list">
                 {data.categories.map((cat, i) => (
                   <div key={i} className="category-row">
-                    <input type="text" placeholder="Görünen Etiket (Örn: LÜKS KONUT)" value={cat.label} onChange={e => updateItem('categories', i, 'label', e.target.value)} />
+                    <span className="lux-badge-sq">{i + 1}</span>
+                    <div className="lux-group flex-1">
+                      <label>ETİKET (Label)</label>
+                      <input type="text" placeholder="Örn: LÜKS KONUT" value={cat.label} onChange={e => updateItem('categories', i, 'label', e.target.value)} />
+                    </div>
                     <span className="arrow">→</span>
-                    <input type="text" placeholder="Sistem Değeri (Örn: luks-konut)" value={cat.value} onChange={e => updateItem('categories', i, 'value', e.target.value)} />
+                    <div className="lux-group flex-1">
+                      <label>SİSTEM DEĞERİ (Value)</label>
+                      <input type="text" placeholder="Örn: luks-konut" value={cat.value} onChange={e => updateItem('categories', i, 'value', e.target.value)} />
+                    </div>
                     <button className="remove-btn-small ml-auto" onClick={() => removeItem('categories', i)}><Trash2 size={16} /></button>
                   </div>
                 ))}
@@ -746,28 +771,54 @@ export default function DepartmentManagerPage() {
         .add-item-btn { background: var(--surface-muted); border: 1px solid var(--line); color: var(--text); padding: 0.5rem 1rem; border-radius: 4px; display: flex; align-items: center; gap: 0.5rem; font-size: 0.75rem; cursor: pointer; transition: background 0.3s; }
         .add-item-btn:hover { background: var(--line); }
 
-        .items-list { display: flex; flex-direction: column; gap: 1rem; margin-top: 1rem; }
-        .list-item-card { display: flex; align-items: flex-start; gap: 1rem; background: var(--surface-muted); border: 1px solid var(--line); padding: 1.5rem; border-radius: 8px; }
-        .drag-handle { padding-top: 0.5rem; color: var(--text-muted); cursor: grab; }
-        .item-inputs { flex: 1; display: flex; flex-direction: column; gap: 0.75rem; }
-        .item-inputs input, .item-inputs textarea { background: var(--background); border: 1px solid var(--line); color: var(--text); padding: 0.85rem; border-radius: 4px; font-family: inherit; }
-        .item-inputs input:focus, .item-inputs textarea:focus { outline: none; border-color: rgba(166,137,102,0.5); }
-        .remove-btn { background: rgba(255,77,77,0.1); color: #ff4d4d; border: none; width: 44px; height: 44px; border-radius: 4px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.3s; }
-        .remove-btn:hover { background: #ff4d4d; color: #fff; }
+        .items-list { display: flex; flex-direction: column; gap: 1.5rem; margin-top: 1.5rem; }
+        .list-item-card { 
+          display: flex; align-items: flex-start; gap: 2rem; background: rgba(255,255,255,0.01); 
+          border: 1px solid rgba(255,255,255,0.05); padding: 2rem; border-radius: 16px; 
+          position: relative; transition: all 0.3s;
+        }
+        .list-item-card:hover { background: rgba(255,255,255,0.02); border-color: rgba(166,137,102,0.3); }
+        
+        .card-badge-row { display: flex; flex-direction: column; align-items: center; gap: 1rem; }
+        .lux-badge { 
+          background: rgba(166,137,102,0.1); border: 1px solid rgba(166,137,102,0.3);
+          color: #a68966; font-size: 0.55rem; font-weight: 900; letter-spacing: 0.2em; 
+          padding: 0.4rem 0.8rem; border-radius: 4px; white-space: nowrap;
+        }
+        .lux-badge-sq {
+          width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;
+          background: rgba(166,137,102,0.1); border: 1px solid rgba(166,137,102,0.3);
+          color: #a68966; border-radius: 4px; font-weight: 800; font-size: 0.75rem;
+        }
 
-        .items-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem; margin-top: 1rem; }
-        .grid-item-card { display: flex; flex-direction: column; gap: 0.75rem; background: var(--surface-muted); border: 1px solid var(--line); padding: 1.5rem; border-radius: 8px; }
-        .card-top { display: flex; justify-content: space-between; align-items: center; }
-        .icon-select { background: var(--background); border: 1px solid var(--line); color: #a68966; padding: 0.5rem; border-radius: 4px; font-family: inherit; font-size: 0.8rem; }
+        .drag-handle { color: var(--text-muted); cursor: grab; opacity: 0.4; transition: 0.3s; }
+        .drag-handle:hover { opacity: 1; color: #a68966; }
+
+        .item-inputs { flex: 1; display: flex; flex-direction: column; gap: 1.5rem; }
+        .remove-btn { background: rgba(255,77,77,0.05); color: #ff4d4d; border: 1px solid rgba(255,77,77,0.1); width: 44px; height: 44px; border-radius: 8px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.3s; }
+        .remove-btn:hover { background: #ff4d4d; color: #fff; transform: scale(1.05); }
+
+        .items-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 2rem; margin-top: 1.5rem; }
+        .grid-item-card { 
+          display: flex; flex-direction: column; gap: 1.5rem; background: rgba(255,255,255,0.01); 
+          border: 1px solid rgba(255,255,255,0.05); padding: 2rem; border-radius: 16px; transition: all 0.3s;
+        }
+        .grid-item-card:hover { background: rgba(255,255,255,0.02); border-color: rgba(166,137,102,0.3); transform: translateY(-4px); }
+        
+        .card-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; }
+        .card-actions-mini { display: flex; align-items: center; gap: 0.75rem; }
+
+        .icon-select { background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); color: #a68966; padding: 0.5rem; border-radius: 4px; font-family: inherit; font-size: 0.7rem; font-weight: 700; cursor: pointer; }
         .icon-select:focus { outline: none; border-color: #a68966; }
-        .grid-item-card input, .grid-item-card textarea { background: var(--background); border: 1px solid var(--line); color: var(--text); padding: 0.85rem; border-radius: 4px; font-family: inherit; }
-        .grid-item-card input:focus, .grid-item-card textarea:focus { outline: none; border-color: rgba(166,137,102,0.5); }
-        .remove-btn-small { background: rgba(255,77,77,0.1); color: #ff4d4d; border: none; width: 32px; height: 32px; border-radius: 4px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
 
-        .category-list { display: flex; flex-direction: column; gap: 0.75rem; margin-top: 1rem; }
-        .category-row { display: flex; align-items: center; gap: 1rem; background: var(--surface-muted); border: 1px solid var(--line); padding: 1rem; border-radius: 8px; }
-        .category-row input { background: var(--background); border: 1px solid var(--line); color: var(--text); padding: 0.75rem; border-radius: 4px; font-family: inherit; flex: 1; }
-        .arrow { color: var(--text-muted); }
+        .category-list { display: flex; flex-direction: column; gap: 1rem; margin-top: 1.5rem; }
+        .category-row { 
+          display: flex; align-items: center; gap: 1.5rem; background: rgba(255,255,255,0.01); 
+          border: 1px solid rgba(255,255,255,0.05); padding: 1.25rem; border-radius: 12px; transition: 0.3s;
+        }
+        .category-row:hover { background: rgba(255,255,255,0.02); border-color: rgba(166,137,102,0.3); }
+        .arrow { color: #a68966; font-weight: 800; opacity: 0.5; margin-top: 1.5rem; }
+        .flex-1 { flex: 1; }
         .ml-auto { margin-left: auto; }
 
         .hint { font-size: 0.75rem; color: var(--text-muted); margin-bottom: 1rem; }
