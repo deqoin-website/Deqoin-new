@@ -589,7 +589,7 @@ export default function Page() {
               <span style={{ 
                 fontFamily: "var(--font-display), sans-serif", 
                 fontSize: "1.1rem", 
-                color: "rgba(0,0,0,0.5)", 
+                color: "rgba(255,255,255,0.7)", 
                 letterSpacing: "0.3em", 
                 textTransform: "uppercase",
                 display: "block",
@@ -597,7 +597,7 @@ export default function Page() {
               }}>
                 TASARIM VE KOLEKSİYON
               </span>
-              <div className="section-line" style={{ background: "#000" }} />
+              <div className="section-line" style={{ background: "#fff" }} />
             </div>
           </div>
         </div>
