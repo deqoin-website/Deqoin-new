@@ -30,26 +30,64 @@ export default function MimariEditor() {
     fetchContent();
   }, []);
 
+  const createDefaultContent = () => ({
+    page: 'mimari',
+    sections: [
+      {
+        id: 'hero',
+        type: 'hero',
+        title: 'DESIGN STUDIO',
+        subtitle: 'MİMARİ TASARIM',
+        blur: 0,
+        overlay: 30,
+        slides: ['/images/slider/mimari_slide.png'],
+      },
+      {
+        id: 'cta',
+        type: 'cta',
+        image: '/images/slider/mimari_slide.png',
+        overlay: 30,
+      },
+      {
+        id: 'categories',
+        type: 'categories',
+        items: [],
+      },
+    ],
+  });
+
   const fetchContent = async () => {
     try {
       const res = await fetch('/api/content?page=mimari');
       const data = await res.json();
-      if (data && data.sections) {
-        const hasCtaSection = data.sections.some((s: any) => s.id === 'cta');
-        if (!hasCtaSection) {
-          data.sections.push({
-            id: 'cta',
-            type: 'cta',
-            image: '/images/slider/mimari_slide.png',
-            overlay: 30,
-          });
-        }
-        setContent(data);
-        setInitialContent(JSON.parse(JSON.stringify(data)));
+      const safeData = data && Array.isArray(data.sections) && data.sections.length > 0
+        ? data
+        : createDefaultContent();
+      const heroSection = safeData.sections.find((s: any) => s.id === 'hero');
+      if (heroSection) {
+        if (heroSection.blur === undefined) heroSection.blur = 0;
+        if (heroSection.overlay === undefined) heroSection.overlay = 30;
+        if (!heroSection.slides) heroSection.slides = [];
       }
+      const hasCtaSection = safeData.sections.some((s: any) => s.id === 'cta');
+      if (!hasCtaSection) {
+        safeData.sections.push({
+          id: 'cta',
+          type: 'cta',
+          image: '/images/slider/mimari_slide.png',
+          overlay: 30,
+        });
+      }
+      const categorySection = safeData.sections.find((s: any) => s.id === 'categories');
+      if (categorySection && !categorySection.items) categorySection.items = [];
+      setContent(safeData);
+      setInitialContent(JSON.parse(JSON.stringify(safeData)));
     } catch (err) {
       console.error(err);
       showToast("İçerik yüklenemedi.", "error");
+      const fallback = createDefaultContent();
+      setContent(fallback);
+      setInitialContent(JSON.parse(JSON.stringify(fallback)));
     } finally {
       setIsLoading(false);
     }

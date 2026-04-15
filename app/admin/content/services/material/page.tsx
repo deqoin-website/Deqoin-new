@@ -25,20 +25,46 @@ export default function MaterialEditor() {
     fetchContent();
   }, []);
 
+  const createDefaultContent = () => ({
+    page: 'material',
+    sections: [
+      {
+        id: 'hero',
+        type: 'hero',
+        title: 'MATERIAL STUDIO',
+        subtitle: 'ÜRÜN VE MALZEME',
+        sideLabel: 'Bespoke Material World',
+        blur: 0,
+        overlay: 30,
+        slides: ['https://images.unsplash.com/photo-1540932239986-30128078f3c5?q=80&w=2000&auto=format&fit=crop'],
+      },
+      {
+        id: 'categories',
+        type: 'categories',
+        items: [],
+      },
+    ],
+  });
+
   const fetchContent = async () => {
     try {
       const res = await fetch('/api/content?page=material');
       const data = await res.json();
-      if (data && data.sections) {
-        const heroSection = data.sections.find((s: any) => s.id === 'hero');
-        if (heroSection) {
-          if (heroSection.blur === undefined) heroSection.blur = 0;
-          if (heroSection.overlay === undefined) heroSection.overlay = 30;
-        }
-        setContent(data);
+      const safeData = data && Array.isArray(data.sections) && data.sections.length > 0
+        ? data
+        : createDefaultContent();
+      const heroSection = safeData.sections.find((s: any) => s.id === 'hero');
+      if (heroSection) {
+        if (heroSection.blur === undefined) heroSection.blur = 0;
+        if (heroSection.overlay === undefined) heroSection.overlay = 30;
+        if (!heroSection.slides) heroSection.slides = [];
       }
+      const categorySection = safeData.sections.find((s: any) => s.id === 'categories');
+      if (categorySection && !categorySection.items) categorySection.items = [];
+      setContent(safeData);
     } catch (err) {
       console.error(err);
+      setContent(createDefaultContent());
     } finally {
       setIsLoading(false);
     }
