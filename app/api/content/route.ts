@@ -2,6 +2,9 @@ import { NextResponse } from "next/server";
 import connectToDatabase from "@/lib/mongodb";
 import PageContent from "@/models/PageContent";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 function stripMongoFields(value: any): any {
   if (Array.isArray(value)) {
     return value.map(stripMongoFields);
@@ -29,11 +32,23 @@ export async function GET(request: Request) {
 
     if (page) {
       const content = await PageContent.findOne({ page }).sort({ "metadata.updatedAt": -1, updatedAt: -1, createdAt: -1 });
-      return NextResponse.json(content || { page, sections: [] });
+      return NextResponse.json(content || { page, sections: [] }, {
+        headers: {
+          "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate",
+          Pragma: "no-cache",
+          Expires: "0",
+        },
+      });
     }
 
     const allContent = await PageContent.find({});
-    return NextResponse.json(allContent);
+    return NextResponse.json(allContent, {
+      headers: {
+        "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate",
+        Pragma: "no-cache",
+        Expires: "0",
+      },
+    });
   } catch (error) {
     return NextResponse.json({ error: "Failed to fetch content" }, { status: 500 });
   }
@@ -76,7 +91,11 @@ export async function POST(request: Request) {
     }
 
     const updatedContent = await PageContent.findOne({ page }).sort({ "metadata.updatedAt": -1, updatedAt: -1, createdAt: -1 });
-    return NextResponse.json(updatedContent);
+    return NextResponse.json(updatedContent, {
+      headers: {
+        "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate",
+      },
+    });
   } catch (error) {
     console.error("Failed to save content:", error);
     return NextResponse.json({ error: "Failed to save content" }, { status: 500 });

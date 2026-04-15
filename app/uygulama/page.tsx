@@ -27,7 +27,7 @@ export default function UygulamaPage() {
   useEffect(() => {
     const fetchContent = async () => {
       try {
-        const res = await fetch('/api/content?page=execution');
+        const res = await fetch('/api/content?page=execution', { cache: 'no-store' });
         const data = await res.json();
         if (data && data.sections) {
           setContent(data);

@@ -59,7 +59,7 @@ export default function MimariEditor() {
 
   const fetchContent = async () => {
     try {
-      const res = await fetch('/api/content?page=mimari');
+      const res = await fetch('/api/content?page=mimari', { cache: 'no-store' });
       const data = await res.json();
       const safeData = data && Array.isArray(data.sections) && data.sections.length > 0
         ? data
@@ -162,6 +162,7 @@ export default function MimariEditor() {
     try {
       const res = await fetch('/api/content', {
         method: 'POST',
+        cache: 'no-store',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(content)
       });

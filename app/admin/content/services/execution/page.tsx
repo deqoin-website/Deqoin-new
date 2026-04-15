@@ -54,7 +54,7 @@ export default function ExecutionEditor() {
 
   const fetchContent = async () => {
     try {
-      const res = await fetch('/api/content?page=execution');
+      const res = await fetch('/api/content?page=execution', { cache: 'no-store' });
       const data = await res.json();
       const safeData = data && Array.isArray(data.sections) && data.sections.length > 0
         ? data
@@ -142,6 +142,7 @@ export default function ExecutionEditor() {
     try {
       await fetch('/api/content', {
         method: 'POST',
+        cache: 'no-store',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(content)
       });
