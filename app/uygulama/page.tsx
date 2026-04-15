@@ -61,11 +61,11 @@ export default function UygulamaPage() {
   }
 
   const heroSection = content?.sections?.find((s: any) => s.id === 'hero');
-  const heroBlur = heroSection?.blur ?? 0;
-  const heroOverlay = heroSection?.overlay ?? 30;
+  const heroBlur = 2;
+  const heroOverlay = 30;
   const ctaSection = content?.sections?.find((s: any) => s.id === 'cta');
-  const ctaBlur = ctaSection?.blur ?? 0;
-  const ctaOverlay = ctaSection?.overlay ?? 30;
+  const ctaBlur = 2;
+  const ctaOverlay = 30;
   return (
     <main className="site-shell project-detail-shell material-studio-page" style={{ background: "#0a0a0a" }}>
 
