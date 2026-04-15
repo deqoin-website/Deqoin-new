@@ -28,7 +28,7 @@ export async function GET(request: Request) {
     const page = searchParams.get("page");
 
     if (page) {
-      const content = await PageContent.findOne({ page });
+      const content = await PageContent.findOne({ page }).sort({ "metadata.updatedAt": -1, updatedAt: -1, createdAt: -1 });
       return NextResponse.json(content || { page, sections: [] });
     }
 
@@ -50,22 +50,32 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Page is required" }, { status: 400 });
     }
 
-    await PageContent.collection.updateOne(
-      { page },
-      {
-        $set: {
-          page,
-          sections,
-          "metadata.updatedAt": new Date(),
-        },
-        $setOnInsert: {
-          createdAt: new Date(),
-        },
-      },
-      { upsert: true }
-    );
+    const now = new Date();
+    const existingCount = await PageContent.collection.countDocuments({ page });
 
-    const updatedContent = await PageContent.findOne({ page });
+    if (existingCount > 0) {
+      await PageContent.collection.updateMany(
+        { page },
+        {
+          $set: {
+            page,
+            sections,
+            "metadata.updatedAt": now,
+            updatedAt: now,
+          },
+        }
+      );
+    } else {
+      await PageContent.collection.insertOne({
+        page,
+        sections,
+        metadata: { updatedAt: now },
+        createdAt: now,
+        updatedAt: now,
+      });
+    }
+
+    const updatedContent = await PageContent.findOne({ page }).sort({ "metadata.updatedAt": -1, updatedAt: -1, createdAt: -1 });
     return NextResponse.json(updatedContent);
   } catch (error) {
     console.error("Failed to save content:", error);
