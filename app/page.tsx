@@ -64,12 +64,18 @@ export default function Page() {
         if (res.ok) {
           const data = await res.json();
           if (data.length > 0) {
-            setSlides(data.map((s: any) => ({
+            const uniqueSlides = data.filter(
+              (slide: any, index: number, array: any[]) =>
+                array.findIndex((candidate: any) => candidate.mediaUrl === slide.mediaUrl) === index,
+            );
+
+            setSlides(uniqueSlides.map((s: any) => ({
               ...s,
-              image: s.mediaUrl, 
+              image: s.mediaUrl,
               motto: s.subtitle,
               mediaType: s.mediaType || 'image'
             })));
+            setHeroIndex(0);
           }
         }
       } catch (err) {
