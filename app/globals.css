@@ -5462,8 +5462,8 @@ body:has(.homepage-snap-shell) {
   background: linear-gradient(
     to bottom,
     rgba(8, 8, 8, 0.3) 0%,
-    rgba(8, 8, 8, 0.42) 50%,
-    rgba(8, 8, 8, 0.68) 100%
+    rgba(8, 8, 8, 0.3) 50%,
+    rgba(8, 8, 8, 0.3) 100%
   );
 }
 
