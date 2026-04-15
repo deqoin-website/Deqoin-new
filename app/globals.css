@@ -5512,6 +5512,47 @@ body:has(.homepage-snap-shell) {
   margin: 3rem auto 0;
 }
 
+.material-studio-page .mimari-manifesto,
+.material-studio-page .services-section.material-studio-collection {
+  background: #080808 !important;
+}
+
+.material-studio-page .mimari-manifesto {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.material-studio-page .mimari-quote,
+.material-studio-page .mimari-manifesto-text,
+.material-studio-page .section-heading h2,
+.material-studio-page .section-heading p,
+.material-studio-page .service-copy h3,
+.material-studio-page .service-cta,
+.material-studio-page .service-copy .vertical-text {
+  color: #fff;
+}
+
+.material-studio-page .section-heading p,
+.material-studio-page .mimari-manifesto-text,
+.material-studio-page .service-copy .vertical-text {
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.material-studio-page .service-overlay {
+  background: rgba(0, 0, 0, 0.42);
+  backdrop-filter: blur(1px);
+  -webkit-backdrop-filter: blur(1px);
+}
+
+.material-studio-page .service-card:hover .service-overlay {
+  background: rgba(0, 0, 0, 0.5);
+}
+
+[data-theme='light'] .material-studio-page .service-overlay,
+[data-theme='light'] .material-studio-page .service-card:hover .service-overlay,
+[data-theme='light'] .material-studio-page .mimari-cta-overlay {
+  background: rgba(0, 0, 0, 0.42);
+}
+
 @media (max-width: 768px) {
   .mimari-page-hero {
     height: 60vh;
