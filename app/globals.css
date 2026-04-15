@@ -2523,13 +2523,20 @@ body:has(.homepage-snap-shell) {
     font-size: 0.8rem;
   }
 
-  .team-home-mobile-slider .team-card-footer .material-symbols-outlined {
-    font-size: 1rem;
-  }
+.team-home-mobile-slider .team-card-footer .material-symbols-outlined {
+  font-size: 1rem;
+}
 
-  .project-slide-copy {
-    padding: 0.75rem 0.6rem 0.85rem;
-  }
+.homepage-team-section .team-card-role-vertical,
+.homepage-team-section .team-card-copy h3,
+.homepage-team-section .team-card-footer,
+.homepage-team-section .team-card-footer .material-symbols-outlined {
+  color: #fff;
+}
+
+.project-slide-copy {
+  padding: 0.75rem 0.6rem 0.85rem;
+}
 
   .project-slide-copy > div {
     max-width: min(62vw, 32rem);
