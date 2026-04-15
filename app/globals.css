@@ -4954,7 +4954,11 @@ body:has(.homepage-snap-shell) {
   justify-content: space-between;
 }
 
-.filter-button:hover,
+.filter-button:hover {
+  color: #cca883;
+  padding-left: 1rem;
+}
+
 .filter-button.active {
   color: var(--text);
   padding-left: 1rem;
@@ -5351,6 +5355,10 @@ body:has(.homepage-snap-shell) {
   .mobile-filter-button.active {
     color: var(--text);
     font-weight: 500;
+  }
+
+  .mobile-filter-button:hover {
+    color: #cca883;
   }
 
   .mobile-filter-button .material-symbols-outlined {
