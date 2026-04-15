@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import { mimariServices } from "../../../data/mimari-hizmetler";
 import { projectsData } from "../../../data/projects";
 import DepartmentStudio from "../../../components/DepartmentStudio";
+import Footer from "../../../components/Footer";
 import { Loader2 } from "lucide-react";
 
 type ServiceParams = {
@@ -59,21 +60,24 @@ export default function MimariDetail({ params }: { params: Promise<ServiceParams
   const focusAreas = content?.focusAreas || [];
 
   return (
-    <main className="site-shell">
-      <DepartmentStudio 
-        title={title.toUpperCase()}
-        subtitle={subtitle.toUpperCase()}
-        description={description}
-        heroImage={heroImage}
-        mediaType={content?.mediaType || 'image'}
-        heroBlur={heroBlur}
-        heroOverlay={heroOverlay}
-        images={gallery}
-        projects={projectsData}
-        categories={categories}
-        process={process}
-        focusAreas={focusAreas}
-      />
-    </main>
+    <>
+      <main className="site-shell">
+        <DepartmentStudio 
+          title={title.toUpperCase()}
+          subtitle={subtitle.toUpperCase()}
+          description={description}
+          heroImage={heroImage}
+          mediaType={content?.mediaType || 'image'}
+          heroBlur={heroBlur}
+          heroOverlay={heroOverlay}
+          images={gallery}
+          projects={projectsData}
+          categories={categories}
+          process={process}
+          focusAreas={focusAreas}
+        />
+      </main>
+      <Footer />
+    </>
   );
 }

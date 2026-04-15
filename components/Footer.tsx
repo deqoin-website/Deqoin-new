@@ -10,6 +10,10 @@ export default function Footer() {
   const [isConsultationOpen, setIsConsultationOpen] = useState(false);
   const pathname = usePathname();
   const year = new Date().getFullYear();
+  const pathSegments = pathname.split("/").filter(Boolean);
+  const isDepartmentDetailPage =
+    pathSegments.length === 2 &&
+    ["mimari", "materyal-studyo", "uygulama"].includes(pathSegments[0]);
 
   useEffect(() => {
     const fetchSettings = async () => {
@@ -27,7 +31,7 @@ export default function Footer() {
     fetchSettings();
   }, []);
 
-  if (pathname.startsWith('/admin')) {
+  if (pathname.startsWith('/admin') || isDepartmentDetailPage) {
     return null;
   }
 

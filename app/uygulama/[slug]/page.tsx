@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import { uygulamaBirimleri } from "../../../data/uygulama-birimleri";
 import { projectsData } from "../../../data/projects";
 import DepartmentStudio from "../../../components/DepartmentStudio";
+import Footer from "../../../components/Footer";
 import { Loader2 } from "lucide-react";
 
 type ServiceParams = {
@@ -57,19 +58,22 @@ export default function ExecutionDetail({ params }: { params: Promise<ServicePar
   const focusAreas = content?.focusAreas || [];
 
   return (
-    <main className="site-shell">
-      <DepartmentStudio 
-        title={title.toUpperCase()}
-        subtitle={subtitle.toUpperCase()}
-        description={description}
-        heroImage={heroImage}
-        mediaType={content?.mediaType || 'image'}
-        images={gallery}
-        projects={projectsData}
-        categories={categories}
-        process={process}
-        focusAreas={focusAreas}
-      />
-    </main>
+    <>
+      <main className="site-shell">
+        <DepartmentStudio 
+          title={title.toUpperCase()}
+          subtitle={subtitle.toUpperCase()}
+          description={description}
+          heroImage={heroImage}
+          mediaType={content?.mediaType || 'image'}
+          images={gallery}
+          projects={projectsData}
+          categories={categories}
+          process={process}
+          focusAreas={focusAreas}
+        />
+      </main>
+      <Footer />
+    </>
   );
 }

@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import { materyalKategorileri } from "../../../data/materyal-studyo";
 import { projectsData } from "../../../data/projects";
 import DepartmentStudio from "../../../components/DepartmentStudio";
+import Footer from "../../../components/Footer";
 import { Loader2 } from "lucide-react";
 
 type ServiceParams = {
@@ -57,19 +58,22 @@ export default function MaterialDetail({ params }: { params: Promise<ServicePara
   const focusAreas = content?.focusAreas || [];
 
   return (
-    <main className="site-shell">
-      <DepartmentStudio 
-        title={title.toUpperCase()}
-        subtitle={subtitle.toUpperCase()}
-        eyebrow="DEQOIN | MATERIAL STUDIO"
-        description={description}
-        heroImage={heroImage}
-        images={gallery}
-        projects={projectsData}
-        categories={categories}
-        process={process}
-        focusAreas={focusAreas}
-      />
-    </main>
+    <>
+      <main className="site-shell">
+        <DepartmentStudio 
+          title={title.toUpperCase()}
+          subtitle={subtitle.toUpperCase()}
+          eyebrow="DEQOIN | MATERIAL STUDIO"
+          description={description}
+          heroImage={heroImage}
+          images={gallery}
+          projects={projectsData}
+          categories={categories}
+          process={process}
+          focusAreas={focusAreas}
+        />
+      </main>
+      <Footer />
+    </>
   );
 }
