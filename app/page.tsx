@@ -9,42 +9,12 @@ import ConsultationModal from "../components/ConsultationModal";
 import ProjectInsightPanel from "../components/ProjectInsightPanel";
 import SwipeAppointmentButton from "../components/SwipeAppointmentButton";
 
-const heroSlides = [
-  {
-    image: "/images/slider/mimari_slide.png",
-    title: "DESIGN STUDIO",
-    motto: "TASARIM",
-    buttonText: "RANDEVU TALEP EDİNİZ",
-    blur: 0,
-    overlay: 30,
-    mediaType: 'image'
-  },
-  {
-    image: "/images/slider/tasarim_slide.png",
-    title: "MATERIAL STUDIO",
-    motto: "MALZEME",
-    buttonText: "RANDEVU TALEP EDİNİZ",
-    blur: 0,
-    overlay: 30,
-    mediaType: 'image'
-  },
-  {
-    image: "/images/slider/uygulama_slide.png",
-    title: "EXECUTION STUDIO",
-    motto: "UYGULAMA",
-    buttonText: "RANDEVU TALEP EDİNİZ",
-    blur: 0,
-    overlay: 30,
-    mediaType: 'image'
-  }
-];
-
 export default function Page() {
   const [heroIndex, setHeroIndex] = useState(0);
   const [heroDirection, setHeroDirection] = useState(0);
   const [isConsultationOpen, setIsConsultationOpen] = useState(false);
   const [activeTeamFilter, setActiveTeamFilter] = useState<(typeof teamFilters)[number]["key"]>("all");
-  const [slides, setSlides] = useState<any[]>(heroSlides);
+  const [slides, setSlides] = useState<any[]>([]);
   const [projectIndex, setProjectIndex] = useState(0);
   const [projectDirection, setProjectDirection] = useState(1);
   const [projectProgressKey, setProjectProgressKey] = useState(0);
@@ -465,38 +435,54 @@ export default function Page() {
             initial={{
               opacity: 0,
               x: heroDirection >= 0 ? 90 : -90,
-              scale: 1.08,
-              filter: `blur(${slides[heroIndex]?.blur || 12}px) brightness(0.45)`,
+              scale: 1.01,
             }}
             animate={{
               opacity: 1,
               x: 0,
-              scale: 1.05,
-              filter: `blur(${slides[heroIndex]?.blur ?? 6}px) brightness(0.6)`,
+              scale: 1,
             }}
             exit={{
               opacity: 0,
               x: heroDirection >= 0 ? -90 : 90,
-              scale: 1.08,
-              filter: `blur(${slides[heroIndex]?.blur || 12}px) brightness(0.45)`,
+              scale: 1.01,
             }}
             transition={{ duration: 0.75, ease: [0.16, 1, 0.3, 1] }}
-            style={{
-              backgroundImage: slides[heroIndex]?.mediaType === 'image' ? `url(${slides[heroIndex]?.image})` : 'none',
-              backgroundSize: "cover",
-              backgroundPosition: "center",
-              backgroundRepeat: "no-repeat",
-              backgroundColor: '#000'
-            }}
+            style={{ backgroundColor: "#000" }}
           >
+            {slides[heroIndex]?.mediaType === 'image' && (
+              <motion.div
+                key={slides[heroIndex]?.image}
+                className="hero-slide-media"
+                initial={{
+                  scale: 1.08,
+                  filter: `blur(${slides[heroIndex]?.blur || 12}px) brightness(0.45)`,
+                }}
+                animate={{
+                  scale: 1.05,
+                  filter: `blur(${slides[heroIndex]?.blur ?? 6}px) brightness(0.6)`,
+                }}
+                exit={{
+                  scale: 1.08,
+                  filter: `blur(${slides[heroIndex]?.blur || 12}px) brightness(0.45)`,
+                }}
+                transition={{ duration: 0.75, ease: [0.16, 1, 0.3, 1] }}
+                style={{
+                  backgroundImage: `url(${slides[heroIndex]?.image})`,
+                  backgroundSize: "cover",
+                  backgroundPosition: "center",
+                  backgroundRepeat: "no-repeat",
+                }}
+              />
+            )}
             {slides[heroIndex]?.mediaType === 'video' && (
               <video 
                 key={slides[heroIndex]?.mediaUrl}
+                className="hero-video"
                 autoPlay 
                 muted 
                 loop 
                 playsInline
-                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
               >
                 <source src={slides[heroIndex]?.mediaUrl} />
               </video>

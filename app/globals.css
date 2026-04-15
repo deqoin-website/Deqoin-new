@@ -316,7 +316,7 @@ body:has(.homepage-snap-shell) {
 }
 
 .mobile-menu-header .close-button {
-  color: var(--text);
+  color: #101010;
 }
 
 .mobile-menu-nav {
@@ -402,11 +402,17 @@ body:has(.homepage-snap-shell) {
 }
 
 .hero-video,
+.hero-slide-media,
 .hero-overlay {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
+}
+
+.hero-slide-media {
+  background-color: #000;
+  will-change: transform, filter;
 }
 
 .hero-video {
