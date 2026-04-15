@@ -8,6 +8,8 @@ const DepartmentSchema = new mongoose.Schema(
     description: { type: String, required: true }, // Main text
     image: { type: String }, // Hero/Cover image
     mediaType: { type: String, enum: ['image', 'video'], default: 'image' },
+    heroBlur: { type: Number, default: 0 },
+    heroOverlay: { type: Number, default: 30 },
     sliderImages: [{ type: String }],
     
     // Arrays for dynamic tabs

@@ -35,6 +35,8 @@ export async function GET(
         sideLabel: match.sideLabel,
         description: match.description,
         image: match.image,
+        heroBlur: 0,
+        heroOverlay: 30,
         sliderImages: match.sliderImages || [],
         categories: match.categories || [],
         process: match.process || (match.longDescription ? match.longDescription.content.map((c: string) => ({ title: "Açıklama Satırı", desc: c })) : []),

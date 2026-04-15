@@ -51,6 +51,8 @@ export default function MimariDetail({ params }: { params: Promise<ServiceParams
   const subtitle = content?.sideLabel || "";
   const description = content?.description || "";
   const heroImage = content?.image || "";
+  const heroBlur = content?.heroBlur ?? 0;
+  const heroOverlay = content?.heroOverlay ?? 30;
   const gallery = content?.sliderImages || [];
   const categories = content?.categories || [];
   const process = content?.process || [];
@@ -64,6 +66,8 @@ export default function MimariDetail({ params }: { params: Promise<ServiceParams
         description={description}
         heroImage={heroImage}
         mediaType={content?.mediaType || 'image'}
+        heroBlur={heroBlur}
+        heroOverlay={heroOverlay}
         images={gallery}
         projects={projectsData}
         categories={categories}

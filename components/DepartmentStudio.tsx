@@ -14,6 +14,8 @@ interface DepartmentStudioProps {
   description?: string;
   heroImage: string;
   mediaType?: 'image' | 'video';
+  heroBlur?: number;
+  heroOverlay?: number;
   images?: string[];
   projects: ProjectDetail[];
   categories?: { label: string; value: Category | string }[];
@@ -46,6 +48,8 @@ export default function DepartmentStudio({
   description,
   heroImage, 
   mediaType = 'image',
+  heroBlur = 0,
+  heroOverlay = 30,
   images, 
   projects, 
   categories,
@@ -115,7 +119,7 @@ export default function DepartmentStudio({
               <div 
                 key={idx} 
                 className={`studio-hero-slide ${idx === currentSlide ? 'active' : ''}`}
-                style={!isVideo ? { backgroundImage: `url(${url})` } : { backgroundColor: '#000' }}
+                style={!isVideo ? { backgroundImage: `url(${url})`, filter: `blur(${heroBlur}px)` } : { backgroundColor: '#000' }}
               >
                 {isVideo && (
                   <video 
@@ -133,7 +137,7 @@ export default function DepartmentStudio({
         </div>
 
         <div className="studio-hero-blur-overlay" />
-        <div className="studio-hero-dark-overlay" />
+        <div className="studio-hero-dark-overlay" style={{ background: `rgba(8, 8, 8, ${heroOverlay / 100})` }} />
 
         <div className="studio-hero-content">
           <motion.span 
