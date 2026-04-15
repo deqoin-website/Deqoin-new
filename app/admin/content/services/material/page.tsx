@@ -43,6 +43,13 @@ export default function MaterialEditor() {
         type: 'categories',
         items: [],
       },
+      {
+        id: 'cta',
+        type: 'cta',
+        image: 'https://images.unsplash.com/photo-1540932239986-30128078f3c5?q=80&w=2000&auto=format&fit=crop',
+        blur: 0,
+        overlay: 30,
+      },
     ],
   });
 
@@ -61,6 +68,16 @@ export default function MaterialEditor() {
       }
       const categorySection = safeData.sections.find((s: any) => s.id === 'categories');
       if (categorySection && !categorySection.items) categorySection.items = [];
+      const ctaSection = safeData.sections.find((s: any) => s.id === 'cta');
+      if (!ctaSection) {
+        safeData.sections.push({
+          id: 'cta',
+          type: 'cta',
+          image: 'https://images.unsplash.com/photo-1540932239986-30128078f3c5?q=80&w=2000&auto=format&fit=crop',
+          blur: 0,
+          overlay: 30,
+        });
+      }
       setContent(safeData);
     } catch (err) {
       console.error(err);
@@ -142,6 +159,7 @@ export default function MaterialEditor() {
 
   const heroSection = content.sections?.find((s: any) => s.id === 'hero');
   const catSection = content.sections?.find((s: any) => s.id === 'categories');
+  const ctaSection = content.sections?.find((s: any) => s.id === 'cta');
 
   return (
     <div className="editor-container">
@@ -243,6 +261,71 @@ export default function MaterialEditor() {
             <label className="add-slide-btn">
               <Plus size={20} />
               <input type="file" className="hidden" onChange={e => handleImageUpload(e, 'hero')} />
+            </label>
+          </div>
+        </section>
+
+        <section className="section-card">
+          <div className="section-title">
+            <ImageIcon size={20} />
+            <h2>CTA Alanı (Bir Sonraki Adım)</h2>
+          </div>
+          <div className="form-grid">
+            <div className="input-group">
+              <label>CTA Blur Oranı</label>
+              <div className="range-row">
+                <div className="range-meta">
+                  <span>Blur</span>
+                  <strong>{ctaSection?.blur ?? 0}px</strong>
+                </div>
+                <input
+                  type="range"
+                  min="0"
+                  max="40"
+                  value={ctaSection?.blur ?? 0}
+                  onChange={e => {
+                    const nc = { ...content };
+                    nc.sections.find((s:any) => s.id === 'cta').blur = Number(e.target.value);
+                    setContent(nc);
+                  }}
+                />
+              </div>
+            </div>
+            <div className="input-group">
+              <label>CTA Koyu Katman (%)</label>
+              <div className="range-row">
+                <div className="range-meta">
+                  <span>Katman</span>
+                  <strong>%{ctaSection?.overlay ?? 30}</strong>
+                </div>
+                <input
+                  type="range"
+                  min="0"
+                  max="90"
+                  value={ctaSection?.overlay ?? 30}
+                  onChange={e => {
+                    const nc = { ...content };
+                    nc.sections.find((s:any) => s.id === 'cta').overlay = Number(e.target.value);
+                    setContent(nc);
+                  }}
+                />
+              </div>
+            </div>
+          </div>
+          <div className="slides-grid">
+            {ctaSection?.image && (
+              <div className="slide-item">
+                <img src={ctaSection.image} alt="CTA görseli" />
+                <button className="delete-slide" onClick={() => {
+                  const nc = { ...content };
+                  nc.sections.find((s:any) => s.id === 'cta').image = '';
+                  setContent(nc);
+                }}><Trash2 size={12} /></button>
+              </div>
+            )}
+            <label className="add-slide-btn">
+              <Upload size={20} />
+              <input type="file" className="hidden" onChange={e => handleImageUpload(e, 'cta')} />
             </label>
           </div>
         </section>

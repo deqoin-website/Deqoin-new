@@ -63,6 +63,9 @@ export default function UygulamaPage() {
   const heroSection = content?.sections?.find((s: any) => s.id === 'hero');
   const heroBlur = heroSection?.blur ?? 0;
   const heroOverlay = heroSection?.overlay ?? 30;
+  const ctaSection = content?.sections?.find((s: any) => s.id === 'cta');
+  const ctaBlur = ctaSection?.blur ?? 0;
+  const ctaOverlay = ctaSection?.overlay ?? 30;
   return (
     <main className="site-shell project-detail-shell material-studio-page" style={{ background: "#0a0a0a" }}>
 
@@ -163,11 +166,12 @@ export default function UygulamaPage() {
       <section className="mimari-cta-banner">
         <div className="mimari-cta-bg">
           <img
-            src="https://lh3.googleusercontent.com/aida-public/AB6AXuDbQTBOayjmIt4JzHbORA9-NQOes7Uaoo4WrcuGAAwzEXJzUo0V4OeCDNGGyxzFDBzG1_DbgXDr5aROetwtqZ4iPhEiaV39HyWZ67_PbpZY6a2KYJHEC2_-3JaDiLZ_71qMkfLsbA991AHjCOdDh70fnYJ3lWy-tXN7nbh5DnUk-PZt4xV5nniOugFFMI4ACHWAkPu85H_YU43TPpuqCiveXM-RLOTvgub4LA47ECVZBRKJhuyDW83lyXynnNyLY1ieUH6-gh23YZs"
+            src={ctaSection?.image || "https://lh3.googleusercontent.com/aida-public/AB6AXuDbQTBOayjmIt4JzHbORA9-NQOes7Uaoo4WrcuGAAwzEXJzUo0V4OeCDNGGyxzFDBzG1_DbgXDr5aROetwtqZ4iPhEiaV39HyWZ67_PbpZY6a2KYJHEC2_-3JaDiLZ_71qMkfLsbA991AHjCOdDh70fnYJ3lWy-tXN7nbh5DnUk-PZt4xV5nniOugFFMI4ACHWAkPu85H_YU43TPpuqCiveXM-RLOTvgub4LA47ECVZBRKJhuyDW83lyXynnNyLY1ieUH6-gh23YZs"}
             alt="CTA"
+            style={{ filter: `blur(${ctaBlur}px)` }}
           />
         </div>
-        <div className="mimari-cta-overlay" />
+        <div className="mimari-cta-overlay" style={{ background: `rgba(0,0,0,${ctaOverlay / 100})` }} />
         <div className="mimari-cta-content">
           <span className="section-small-label" style={{ color: "#cca883" }}>BİR SONRAKI ADIM</span>
           <h2 className="mimari-cta-title">Kusursuz Uygulama İçin Başlayalım</h2>
