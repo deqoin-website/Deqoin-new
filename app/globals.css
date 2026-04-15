@@ -3278,7 +3278,7 @@ body:has(.homepage-snap-shell) {
   border-radius: 28px;
   box-shadow: var(--shadow);
   overflow-y: auto;
-  max-height: min(92vh, 980px);
+  max-height: min(95vh, 1040px);
 }
 
 .consultation-overlay-master.open .consultation-overlay-wrapper {
@@ -3451,7 +3451,7 @@ body:has(.homepage-snap-shell) {
   .consultation-overlay-wrapper {
     padding: 3rem 1rem calc(1rem + env(safe-area-inset-bottom));
     width: min(100%, 720px);
-    max-height: calc(100dvh - 1.5rem);
+    max-height: calc(100dvh - 0.5rem);
     border-radius: 24px;
     border-left: 1px solid rgba(255, 255, 255, 0.08);
     border-right: 1px solid rgba(255, 255, 255, 0.08);
