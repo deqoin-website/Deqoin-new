@@ -4216,7 +4216,7 @@ body:has(.homepage-snap-shell) {
   font-family: var(--font-smooch), sans-serif;
   font-size: clamp(3.5rem, 7vw, 6rem);
   font-weight: 100;
-  color: var(--text);
+  color: #fff;
   line-height: 0.92;
   letter-spacing: 0.04em;
   margin: 0 0 3.5rem;
@@ -4230,7 +4230,7 @@ body:has(.homepage-snap-shell) {
   font-family: var(--font-body), sans-serif;
   font-size: 0.9rem;
   font-weight: 300;
-  color: var(--text-muted);
+  color: #fff;
   line-height: 1.9;
   font-style: normal;
   margin-top: 1rem;
@@ -4259,7 +4259,7 @@ body:has(.homepage-snap-shell) {
   font-family: var(--font-body), sans-serif;
   font-size: 0.9rem;
   font-weight: 300;
-  color: var(--text-muted);
+  color: #fff;
   line-height: 1.8;
   margin: 0 0 2rem;
   max-width: 280px;
@@ -4294,7 +4294,7 @@ body:has(.homepage-snap-shell) {
   font-family: var(--font-display), sans-serif;
   font-size: 0.6rem;
   letter-spacing: 0.35em;
-  color: var(--text-muted);
+  color: #fff;
   text-transform: uppercase;
   margin-bottom: 1.8rem;
 }
@@ -4312,7 +4312,7 @@ body:has(.homepage-snap-shell) {
   font-family: var(--font-body), sans-serif;
   font-size: 0.95rem;
   font-weight: 300;
-  color: var(--text-muted);
+  color: #fff;
   text-decoration: none;
   position: relative;
   padding-bottom: 2px;
@@ -4356,8 +4356,21 @@ body:has(.homepage-snap-shell) {
   font-family: var(--font-display), sans-serif;
   font-size: 0.6rem;
   letter-spacing: 0.2em;
-  color: var(--text-muted);
+  color: #fff;
   text-transform: uppercase;
+}
+
+.site-footer .footer-cta-btn {
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.22);
+}
+
+.site-footer .footer-cta-btn .hero-cta-text {
+  color: #fff;
+}
+
+.site-footer .footer-cta-btn .hero-cta-circle span {
+  color: #101010;
 }
 
 /* ── FOOTER RESPONSIVE ── */
