@@ -2539,6 +2539,7 @@ body:has(.homepage-snap-shell) {
 
 .homepage-team-section .team-card-role-vertical,
 .homepage-team-section .team-card-copy h3,
+.homepage-team-section .team-card-index,
 .homepage-team-section .team-card-footer,
 .homepage-team-section .team-card-footer .material-symbols-outlined {
   color: #fff;
@@ -3429,8 +3430,14 @@ body:has(.homepage-snap-shell) {
 }
 .submit-btn-invert .premium-btn-text,
 .submit-btn-invert .premium-btn-icon {
-  color: var(--text-inverse) !important;
+  color: #101010 !important;
 }
+
+.consultation-overlay-wrapper .close-button,
+.consultation-overlay-wrapper .close-button span {
+  color: #101010 !important;
+}
+
 .submit-btn-invert:hover {
   border-color: var(--accent) !important;
 }
