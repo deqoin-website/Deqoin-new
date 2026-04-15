@@ -5958,7 +5958,7 @@ body:has(.homepage-snap-shell) {
     max-width: min(78vw, 18rem);
     text-align: right;
     z-index: 2;
-    color: var(--text);
+    color: #fff;
   }
 
   .galeri-page .project-card p {
@@ -5971,7 +5971,7 @@ body:has(.homepage-snap-shell) {
     letter-spacing: 0.42em;
     text-align: right;
     z-index: 2;
-    color: var(--text-soft);
+    color: #fff;
   }
 
   .galeri-page .project-card .vertical-text {
@@ -5979,7 +5979,7 @@ body:has(.homepage-snap-shell) {
     left: 0.9rem;
     bottom: 2.5rem;
     z-index: 2;
-    color: var(--text-soft);
+    color: #fff;
     font-size: 0.62rem;
     letter-spacing: 0.35em;
   }
