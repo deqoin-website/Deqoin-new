@@ -316,7 +316,15 @@ body:has(.homepage-snap-shell) {
 }
 
 .mobile-menu-header .close-button {
-  color: #101010;
+  color: #101010 !important;
+  position: relative;
+  z-index: 2;
+}
+
+.mobile-menu-header .close-button span,
+.search-overlay-header .close-button,
+.search-overlay-header .close-button span {
+  color: #101010 !important;
 }
 
 .mobile-menu-nav {
