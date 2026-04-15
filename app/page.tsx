@@ -462,15 +462,15 @@ export default function Page() {
                 className="hero-slide-media"
                 initial={{
                   scale: 1.08,
-                  filter: `blur(${slides[heroIndex]?.blur || 12}px) brightness(0.45)`,
+                  filter: `blur(${slides[heroIndex]?.blur || 0}px) brightness(0.42)`,
                 }}
                 animate={{
                   scale: 1.05,
-                  filter: `blur(${slides[heroIndex]?.blur ?? 6}px) brightness(0.6)`,
+                  filter: `blur(${slides[heroIndex]?.blur ?? 0}px) brightness(0.54)`,
                 }}
                 exit={{
                   scale: 1.08,
-                  filter: `blur(${slides[heroIndex]?.blur || 12}px) brightness(0.45)`,
+                  filter: `blur(${slides[heroIndex]?.blur || 0}px) brightness(0.42)`,
                 }}
                 transition={{ duration: 0.75, ease: [0.16, 1, 0.3, 1] }}
                 style={{
@@ -493,7 +493,7 @@ export default function Page() {
                 <source src={slides[heroIndex]?.mediaUrl} />
               </video>
             )}
-            <div className="hero-overlay" style={{ background: `rgba(0,0,0,${(slides[heroIndex]?.overlay ?? 30) / 100})` }} />
+            <div className="hero-overlay" style={{ background: `rgba(0,0,0,${Math.max((slides[heroIndex]?.overlay ?? 30), 42) / 100})` }} />
           </motion.div>
         </AnimatePresence>
 
