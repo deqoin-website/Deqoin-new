@@ -52,6 +52,8 @@ export default function MateryalStudyo() {
   }
 
   const heroSection = content?.sections?.find((s: any) => s.id === "hero");
+  const heroBlur = heroSection?.blur ?? 0;
+  const heroOverlay = heroSection?.overlay ?? 30;
 
   return (
     <main className="site-shell project-detail-shell material-studio-page" style={{ background: "#0a0a0a" }}>
@@ -62,11 +64,12 @@ export default function MateryalStudyo() {
             ref={heroRef}
             style={{
               backgroundImage: `url(${heroSection?.slides?.[0] || materialCategories[0]?.image || "https://images.unsplash.com/photo-1540932239986-30128078f3c5?q=80&w=2048&auto=format&fit=crop"})`,
+              filter: `blur(${heroBlur}px)`,
             }}
           />
         </div>
         <div className="mimari-hero-blur-overlay" />
-        <div className="mimari-hero-dark-overlay" />
+        <div className="mimari-hero-dark-overlay" style={{ background: `rgba(8, 8, 8, ${heroOverlay / 100})` }} />
 
         <div className="mimari-hero-content-centric">
           <span className="section-small-label" style={{ color: "#cca883", marginBottom: "1rem", display: "block" }}>

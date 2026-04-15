@@ -13,6 +13,8 @@ const PageContentSchema = new mongoose.Schema({
       title: String,
       subtitle: String,
       description: String,
+      blur: Number,
+      overlay: Number,
       heroImage: String,
       image: String,
       slides: [mongoose.Schema.Types.Mixed],

@@ -30,6 +30,11 @@ export default function MaterialEditor() {
       const res = await fetch('/api/content?page=material');
       const data = await res.json();
       if (data && data.sections) {
+        const heroSection = data.sections.find((s: any) => s.id === 'hero');
+        if (heroSection) {
+          if (heroSection.blur === undefined) heroSection.blur = 0;
+          if (heroSection.overlay === undefined) heroSection.overlay = 30;
+        }
         setContent(data);
       }
     } catch (err) {
@@ -130,7 +135,7 @@ export default function MaterialEditor() {
         <section className="section-card">
           <div className="section-title">
             <Layout size={20} />
-            <h2>Ana Giriş (Hero Area)</h2>
+            <h2>SİNEMATİK MEDYA & SLIDER</h2>
           </div>
           <div className="form-grid">
             <div className="input-group">
@@ -155,6 +160,34 @@ export default function MaterialEditor() {
                   nc.sections.find((s:any)=>s.id==='hero').subtitle = e.target.value;
                   setContent(nc);
                 }} 
+              />
+            </div>
+            <div className="input-group">
+              <label>Hero Blur Oranı</label>
+              <input
+                type="number"
+                min="0"
+                max="30"
+                value={heroSection?.blur ?? 0}
+                onChange={e => {
+                  const nc = {...content};
+                  nc.sections.find((s:any)=>s.id==='hero').blur = Number(e.target.value);
+                  setContent(nc);
+                }}
+              />
+            </div>
+            <div className="input-group">
+              <label>Hero Koyu Katman (%)</label>
+              <input
+                type="number"
+                min="0"
+                max="100"
+                value={heroSection?.overlay ?? 30}
+                onChange={e => {
+                  const nc = {...content};
+                  nc.sections.find((s:any)=>s.id==='hero').overlay = Number(e.target.value);
+                  setContent(nc);
+                }}
               />
             </div>
           </div>
