@@ -4137,7 +4137,7 @@ body:has(.homepage-snap-shell) {
 .mimari-cta-bg { position: absolute; inset: 0; }
 .mimari-cta-bg img { width: 100%; height: 100%; max-width: none; object-fit: cover; object-position: center; transition: transform 8s ease; }
 .mimari-cta-banner:hover .mimari-cta-bg img { transform: scale(1.04); }
-.mimari-cta-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.6); z-index: 1; }
+.mimari-cta-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.74); z-index: 1; }
 
 [data-theme='light'] .mimari-cta-overlay {
   background: rgba(255, 255, 255, 0.4);
@@ -5446,9 +5446,9 @@ body:has(.homepage-snap-shell) {
   position: absolute;
   inset: 0;
   z-index: 3;
-  backdrop-filter: blur(1px);
-  -webkit-backdrop-filter: blur(1px);
-  background: rgba(8, 8, 8, 0.12);
+  backdrop-filter: blur(0px);
+  -webkit-backdrop-filter: blur(0px);
+  background: rgba(8, 8, 8, 0.08);
 }
 
 [data-theme='light'] .mimari-hero-blur-overlay {
@@ -5461,9 +5461,9 @@ body:has(.homepage-snap-shell) {
   z-index: 4;
   background: linear-gradient(
     to bottom,
-    rgba(8, 8, 8, 0.5) 0%,
-    rgba(8, 8, 8, 0.74) 50%,
-    rgba(8, 8, 8, 0.96) 100%
+    rgba(8, 8, 8, 0.62) 0%,
+    rgba(8, 8, 8, 0.82) 50%,
+    rgba(8, 8, 8, 0.97) 100%
   );
 }
 
