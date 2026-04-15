@@ -4882,10 +4882,14 @@ body:has(.homepage-snap-shell) {
   border-color: #cca883;
 }
 
+.studio-search-bar .material-symbols-outlined {
+  color: #cca883;
+}
+
 .studio-search-bar input {
   background: transparent;
   border: none;
-  color: var(--text);
+  color: #cca883;
   flex: 1;
   padding: 1rem;
   font-size: 0.9rem;
@@ -4893,8 +4897,8 @@ body:has(.homepage-snap-shell) {
   outline: none;
 }
 
-.studio-search-bar .material-symbols-outlined {
-  color: var(--text-muted);
+.studio-search-bar input::placeholder {
+  color: rgba(204, 168, 131, 0.7);
 }
 
 /* Sidebar & Layout */
