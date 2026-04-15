@@ -146,10 +146,10 @@ export default function ExecutionEditor() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(content)
       });
-      const saved = await res.json();
-      setContent(saved);
+      if (!res.ok) {
+        throw new Error('Save failed');
+      }
       alert("Değişiklikler başarıyla kaydedildi!");
-      await fetchContent();
     } catch (err) {
       alert("Kaydedilemedi.");
     } finally {

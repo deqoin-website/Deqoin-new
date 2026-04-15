@@ -167,12 +167,9 @@ export default function MimariEditor() {
         body: JSON.stringify(content)
       });
       if (res.ok) {
-        const saved = await res.json();
         showToast("Değişiklikler başarıyla kaydedildi!", "success");
-        setContent(JSON.parse(JSON.stringify(saved)));
-        setInitialContent(JSON.parse(JSON.stringify(saved)));
+        setInitialContent(JSON.parse(JSON.stringify(content)));
         setIsDirty(false);
-        await fetchContent();
       } else {
         showToast("Kayıt sırasında hata oluştu.", "error");
       }
