@@ -1541,6 +1541,14 @@ body:has(.homepage-snap-shell) {
   color: var(--text);
 }
 
+.homepage-projects-section .project-slide-copy h4,
+.homepage-projects-section .project-slide-copy p,
+.homepage-projects-section .project-slide-copy .vertical-text,
+.homepage-projects-section .project-slide-cta,
+.homepage-projects-section .project-slide-cta-icon {
+  color: #fff;
+}
+
 .project-slide-copy h4 {
   font-family: var(--font-smooch), sans-serif;
   font-size: clamp(3.4rem, 7.4vw, 8rem);
