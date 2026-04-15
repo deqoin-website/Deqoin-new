@@ -190,31 +190,43 @@ export default function MaterialEditor() {
             </div>
             <div className="input-group">
               <label>Hero Blur Oranı</label>
-              <input
-                type="number"
-                min="0"
-                max="30"
-                value={heroSection?.blur ?? 0}
-                onChange={e => {
-                  const nc = {...content};
-                  nc.sections.find((s:any)=>s.id==='hero').blur = Number(e.target.value);
-                  setContent(nc);
-                }}
-              />
+              <div className="range-row">
+                <div className="range-meta">
+                  <span>Blur</span>
+                  <strong>{heroSection?.blur ?? 0}px</strong>
+                </div>
+                <input
+                  type="range"
+                  min="0"
+                  max="40"
+                  value={heroSection?.blur ?? 0}
+                  onChange={e => {
+                    const nc = {...content};
+                    nc.sections.find((s:any)=>s.id==='hero').blur = Number(e.target.value);
+                    setContent(nc);
+                  }}
+                />
+              </div>
             </div>
             <div className="input-group">
               <label>Hero Koyu Katman (%)</label>
-              <input
-                type="number"
-                min="0"
-                max="100"
-                value={heroSection?.overlay ?? 30}
-                onChange={e => {
-                  const nc = {...content};
-                  nc.sections.find((s:any)=>s.id==='hero').overlay = Number(e.target.value);
-                  setContent(nc);
-                }}
-              />
+              <div className="range-row">
+                <div className="range-meta">
+                  <span>Katman</span>
+                  <strong>%{heroSection?.overlay ?? 30}</strong>
+                </div>
+                <input
+                  type="range"
+                  min="0"
+                  max="90"
+                  value={heroSection?.overlay ?? 30}
+                  onChange={e => {
+                    const nc = {...content};
+                    nc.sections.find((s:any)=>s.id==='hero').overlay = Number(e.target.value);
+                    setContent(nc);
+                  }}
+                />
+              </div>
             </div>
           </div>
           <div className="slides-grid">
@@ -327,6 +339,10 @@ export default function MaterialEditor() {
         .input-group { display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 1rem; }
         .input-group label { font-size: 0.7rem; color: var(--text-muted); opacity: 0.8; letter-spacing: 0.1em; text-transform: uppercase; }
         .input-group input { background: var(--background); border: 1px solid var(--line); padding: 1rem; color: var(--text); font-size: 0.9rem; }
+        .range-row { display: flex; flex-direction: column; gap: 0.75rem; padding: 1rem; border: 1px solid var(--line); background: var(--background); }
+        .range-meta { display: flex; align-items: center; justify-content: space-between; font-size: 0.72rem; color: var(--text-muted); letter-spacing: 0.12em; text-transform: uppercase; }
+        .range-meta strong { color: var(--text); font-size: 0.9rem; letter-spacing: 0.04em; }
+        .range-row input[type="range"] { width: 100%; accent-color: #a68966; cursor: pointer; padding: 0; border: none; background: transparent; }
 
         .category-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1.5rem; }
         .category-item-card { background: var(--surface-muted); border: 1px solid var(--line); padding: 1.25rem; display: flex; gap: 1.25rem; }
