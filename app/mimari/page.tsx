@@ -76,10 +76,10 @@ export default function MimariPage() {
   const [slides, setSlides] = useState(heroSlides);
   const [categories, setCategories] = useState(mimariSubCategories);
   const [pageInfo, setPageInfo] = useState({ title: 'DESIGN STUDIO', subtitle: 'MİMARİ TASARIMIN GELECEĞİNİ ŞEKİLLENDİRİYORUZ' });
-  const [heroVisual, setHeroVisual] = useState({ blur: 0, overlay: 30 });
+  const [heroVisual, setHeroVisual] = useState({ blur: 2, overlay: 30 });
   const [ctaSection, setCtaSection] = useState({
     image: '/images/slider/mimari_slide.png',
-    blur: 0,
+    blur: 2,
     overlay: 30,
   });
 
@@ -96,7 +96,7 @@ export default function MimariPage() {
             if (hero.slides?.length > 0) setSlides(hero.slides);
             setPageInfo({ title: hero.title, subtitle: hero.subtitle });
             setHeroVisual({
-              blur: hero.blur ?? 0,
+              blur: 2,
               overlay: hero.overlay ?? 30,
             });
           }
@@ -107,7 +107,7 @@ export default function MimariPage() {
           if (cta) {
             setCtaSection({
               image: cta.image || '/images/slider/mimari_slide.png',
-              blur: cta.blur ?? 0,
+              blur: 2,
               overlay: cta.overlay ?? 30,
             });
           }
