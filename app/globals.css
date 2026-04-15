@@ -2505,6 +2505,16 @@ body:has(.homepage-snap-shell) {
     min-height: 100dvh;
   }
 
+  .homepage-team-section .team-home-mobile-slider {
+    min-height: clamp(34rem, 78svh, 46rem);
+    max-width: min(44rem, 92vw);
+  }
+
+  .homepage-team-section .team-home-mobile-slider .team-card-gallery,
+  .homepage-team-section .team-home-mobile-slider .team-card-img {
+    min-height: clamp(34rem, 78svh, 46rem);
+  }
+
   .team-home-mobile-slider .team-card-content {
     padding: 1.25rem 1.1rem 1.3rem;
   }
@@ -2532,6 +2542,24 @@ body:has(.homepage-snap-shell) {
 .homepage-team-section .team-card-footer,
 .homepage-team-section .team-card-footer .material-symbols-outlined {
   color: #fff;
+}
+
+.homepage-team-section .team-mobile-slider {
+  max-width: min(26rem, 100%);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.homepage-team-section .team-card-img {
+  aspect-ratio: 4 / 4.45;
+}
+
+.homepage-team-section .team-card-gallery {
+  min-height: auto;
+}
+
+.homepage-team-section .team-mobile-slide {
+  width: 100%;
 }
 
 .project-slide-copy {
