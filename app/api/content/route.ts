@@ -46,12 +46,26 @@ export async function POST(request: Request) {
     const page = data.page;
     const sections = stripMongoFields(data.sections || []);
 
-    const updatedContent = await PageContent.findOneAndUpdate(
+    if (!page) {
+      return NextResponse.json({ error: "Page is required" }, { status: 400 });
+    }
+
+    await PageContent.collection.updateOne(
       { page },
-      { page, sections, 'metadata.updatedAt': new Date() },
-      { upsert: true, new: true }
+      {
+        $set: {
+          page,
+          sections,
+          "metadata.updatedAt": new Date(),
+        },
+        $setOnInsert: {
+          createdAt: new Date(),
+        },
+      },
+      { upsert: true }
     );
 
+    const updatedContent = await PageContent.findOne({ page });
     return NextResponse.json(updatedContent);
   } catch (error) {
     console.error("Failed to save content:", error);
