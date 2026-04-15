@@ -52,6 +52,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           icon: Aperture, 
           path: '/admin/studios-mimari', // Not a real router, just for active state
           subItems: [
+            { name: 'Genel Sayfa Ayarları', path: '/admin/content/services/mimari' },
             { name: 'Mimarlık', path: '/admin/studios/mimarlik' },
             { name: 'İç Mimarlık', path: '/admin/studios/ic-mimarlik' },
             { name: 'Restorasyon', path: '/admin/studios/restorasyon' },
@@ -65,6 +66,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           icon: Aperture, 
           path: '/admin/studios-materyal',
           subItems: [
+            { name: 'Genel Sayfa Ayarları', path: '/admin/content/services/material' },
             { name: 'Mobilya', path: '/admin/studios/mobilya' },
             { name: 'Aydınlatma', path: '/admin/studios/aydinlatma' },
             { name: 'İtalyan Sıvalar', path: '/admin/studios/italyan-sivalar' },
@@ -77,6 +79,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           icon: Aperture, 
           path: '/admin/studios-uygulama',
           subItems: [
+            { name: 'Genel Sayfa Ayarları', path: '/admin/content/services/execution' },
             { name: 'İnşaat Ekipleri', path: '/admin/studios/insaat-ekipleri' },
             { name: 'Sıva & Alçı Ekipleri', path: '/admin/studios/siva-ve-alci-ekipleri' },
             { name: 'Boya Ekipleri', path: '/admin/studios/boya-ekipleri' },
