@@ -361,32 +361,54 @@ export default function DepartmentStudio({
 
 
       <style jsx>{`
-        .rich-service-content { background: var(--background); padding: 10rem 0; border-bottom: 1px solid var(--line); }
+        .rich-service-content { background: #080808; padding: 10rem 0; border-bottom: 1px solid rgba(255,255,255,0.08); color: #fff; }
         .rich-content-inner { max-width: 1400px; margin: 0 auto; padding: 0 5%; display: flex; flex-direction: column; gap: 8rem; }
         
         .service-vision-block { display: grid; grid-template-columns: 1fr 1.5fr; gap: 4rem; align-items: start; }
         .vision-tag { color: #a68966; font-size: 0.7rem; letter-spacing: 0.3em; font-weight: 800; }
-        .vision-title { color: var(--text); font-family: var(--font-display), sans-serif; font-size: 2.5rem; margin-top: 1rem; line-height: 1.2; letter-spacing: 0.05em; }
-        .vision-text { color: var(--text-soft); font-size: 1.1rem; line-height: 1.8; white-space: pre-line; }
+        .vision-title { color: #fff; font-family: var(--font-display), sans-serif; font-size: 2.5rem; margin-top: 1rem; line-height: 1.2; letter-spacing: 0.05em; }
+        .vision-text { color: rgba(255,255,255,0.78); font-size: 1.1rem; line-height: 1.8; white-space: pre-line; }
 
         .service-process-block { display: flex; flex-direction: column; gap: 4rem; }
         .process-main-title { color: #a68966; font-size: 0.75rem; letter-spacing: 0.4em; text-align: center; }
         .process-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2rem; }
-        .process-card { position: relative; padding: 2.5rem; background: var(--surface); border: 1px solid var(--line); transition: 0.4s; }
+        .process-card { position: relative; padding: 2.5rem; background: #080808; border: 1px solid rgba(255,255,255,0.08); transition: 0.4s; }
         .process-num { font-family: var(--font-display), sans-serif; font-size: 3rem; color: rgba(166,137,102,0.1); position: absolute; top: 1rem; right: 1rem; }
-        .process-step-title { color: var(--text); font-size: 1rem; margin-bottom: 1rem; letter-spacing: 0.1em; }
-        .process-step-desc { color: var(--text-soft); font-size: 0.85rem; line-height: 1.6; }
+        .process-step-title { color: #fff; font-size: 1rem; margin-bottom: 1rem; letter-spacing: 0.1em; }
+        .process-step-desc { color: rgba(255,255,255,0.78); font-size: 0.85rem; line-height: 1.6; }
         .process-step-line { width: 40px; height: 1px; background: #a68966; margin-top: 2rem; }
         .process-card:hover { border-color: #a68966; background: rgba(166,137,102,0.03); transform: translateY(-10px); }
 
-        .service-focus-block { background: rgba(166,137,102,0.03); padding: 5rem; border-radius: 2rem; }
+        .service-focus-block { background: #080808; padding: 5rem; border-radius: 2rem; border: 1px solid rgba(255,255,255,0.08); }
         .focus-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4rem; }
         .focus-card { display: flex; gap: 2rem; align-items: start; }
         .focus-icon { color: #a68966; font-size: 2.5rem; }
-        .focus-info h4 { color: var(--text); font-size: 0.9rem; letter-spacing: 0.1em; margin-bottom: 0.75rem; }
-        .focus-info p { color: var(--text-soft); font-size: 0.8rem; line-height: 1.6; }
+        .focus-info h4 { color: #fff; font-size: 0.9rem; letter-spacing: 0.1em; margin-bottom: 0.75rem; }
+        .focus-info p { color: rgba(255,255,255,0.78); font-size: 0.8rem; line-height: 1.6; }
 
-        .no-projects { text-align: center; padding: 10rem 0; color: var(--text-muted); letter-spacing: 0.1em; }
+        .no-projects { text-align: center; padding: 10rem 0; color: rgba(255,255,255,0.6); letter-spacing: 0.1em; }
+
+        :global(.studio-page .studio-hero-content h1),
+        :global(.studio-page .studio-hero-content p),
+        :global(.studio-page .project-card-info h3),
+        :global(.studio-page .meta-item span),
+        :global(.studio-page .project-action-btn) {
+          color: #fff;
+        }
+
+        :global(.studio-page .meta-item label),
+        :global(.studio-page .story-block p) {
+          color: rgba(255,255,255,0.78);
+        }
+
+        :global(.studio-page .project-card-interactive-sensory),
+        :global(.studio-page .project-card-info) {
+          background: #080808;
+        }
+
+        :global(.studio-page .project-meta-row) {
+          border-bottom: 1px solid rgba(255,255,255,0.08);
+        }
 
         @media (max-width: 1024px) {
           .service-vision-block { grid-template-columns: 1fr; gap: 2rem; }
