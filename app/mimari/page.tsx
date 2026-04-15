@@ -19,6 +19,8 @@ const mimariSubCategories = [
     title: "Mühendislik",
     sideLabel: "Structural Strength",
     image: "/images/projects/gallery_1.png",
+    blur: 0,
+    overlay: 30,
     slug: "insaat-muhendisligi"
   },
   {
@@ -26,6 +28,8 @@ const mimariSubCategories = [
     title: "Mimarlık",
     sideLabel: "Structural Form",
     image: "/images/slider/mimari_slide.png",
+    blur: 0,
+    overlay: 30,
     slug: "mimarlik"
   },
   {
@@ -33,6 +37,8 @@ const mimariSubCategories = [
     title: "Mekanik",
     sideLabel: "Power & Logic",
     image: "/images/projects/gallery_2.png",
+    blur: 0,
+    overlay: 30,
     slug: "elektrik-elektronik-muhendisligi"
   },
   {
@@ -40,6 +46,8 @@ const mimariSubCategories = [
     title: "İç Mimarlık",
     sideLabel: "Interior Essence",
     image: "/images/about_interior.png",
+    blur: 0,
+    overlay: 30,
     slug: "ic-mimarlik"
   },
   {
@@ -47,6 +55,8 @@ const mimariSubCategories = [
     title: "Restorasyon",
     sideLabel: "Heritage Revival",
     image: "/images/projects/gallery_1.png",
+    blur: 0,
+    overlay: 30,
     slug: "restorasyon"
   },
   {
@@ -54,6 +64,8 @@ const mimariSubCategories = [
     title: "Peyzaj",
     sideLabel: "Natural Canvas",
     image: "/images/projects/gallery_2.png",
+    blur: 0,
+    overlay: 30,
     slug: "peyzaj-mimarligi"
   },
 ];
@@ -132,8 +144,8 @@ export default function MimariPage() {
         <div className="services-grid">
           {categories.map((card) => (
             <Link key={card.title} href={card.href || `/mimari/${card.slug}`} className="service-card">
-              <img src={card.image} alt={card.title} />
-              <div className="service-overlay" />
+              <img src={card.image} alt={card.title} style={{ filter: `blur(${card.blur || 0}px)` }} />
+              <div className="service-overlay" style={{ background: `rgba(0,0,0,${(card.overlay ?? 30) / 100})` }} />
               <div className="service-copy">
                 <div>
                   <h3>{card.title}</h3>
