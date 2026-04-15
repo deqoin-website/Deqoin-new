@@ -20,7 +20,7 @@ export default function MateryalStudyo() {
   useEffect(() => {
     const fetchContent = async () => {
       try {
-        const res = await fetch("/api/content?page=material", { cache: "no-store" });
+        const res = await fetch(`/api/content?page=material&ts=${Date.now()}`, { cache: "no-store" });
         const data = await res.json();
         if (data && data.sections) setContent(data);
       } catch (err) {

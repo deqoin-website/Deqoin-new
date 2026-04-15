@@ -59,7 +59,7 @@ export default function MimariEditor() {
 
   const fetchContent = async () => {
     try {
-      const res = await fetch('/api/content?page=mimari', { cache: 'no-store' });
+      const res = await fetch(`/api/content?page=mimari&ts=${Date.now()}`, { cache: 'no-store' });
       const data = await res.json();
       const safeData = data && Array.isArray(data.sections) && data.sections.length > 0
         ? data
@@ -167,9 +167,12 @@ export default function MimariEditor() {
         body: JSON.stringify(content)
       });
       if (res.ok) {
+        const saved = await res.json();
         showToast("Değişiklikler başarıyla kaydedildi!", "success");
-        setInitialContent(JSON.parse(JSON.stringify(content)));
+        setContent(JSON.parse(JSON.stringify(saved)));
+        setInitialContent(JSON.parse(JSON.stringify(saved)));
         setIsDirty(false);
+        await fetchContent();
       } else {
         showToast("Kayıt sırasında hata oluştu.", "error");
       }

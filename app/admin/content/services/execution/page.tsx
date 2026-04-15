@@ -54,7 +54,7 @@ export default function ExecutionEditor() {
 
   const fetchContent = async () => {
     try {
-      const res = await fetch('/api/content?page=execution', { cache: 'no-store' });
+      const res = await fetch(`/api/content?page=execution&ts=${Date.now()}`, { cache: 'no-store' });
       const data = await res.json();
       const safeData = data && Array.isArray(data.sections) && data.sections.length > 0
         ? data
@@ -140,13 +140,16 @@ export default function ExecutionEditor() {
   const saveContent = async () => {
     setIsSaving(true);
     try {
-      await fetch('/api/content', {
+      const res = await fetch('/api/content', {
         method: 'POST',
         cache: 'no-store',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(content)
       });
+      const saved = await res.json();
+      setContent(saved);
       alert("Değişiklikler başarıyla kaydedildi!");
+      await fetchContent();
     } catch (err) {
       alert("Kaydedilemedi.");
     } finally {

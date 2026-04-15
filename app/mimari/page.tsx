@@ -86,7 +86,7 @@ export default function MimariPage() {
   useEffect(() => {
     const fetchContent = async () => {
       try {
-        const res = await fetch('/api/content?page=mimari', { cache: 'no-store' });
+        const res = await fetch(`/api/content?page=mimari&ts=${Date.now()}`, { cache: 'no-store' });
         const data = await res.json();
         if (data.sections) {
           const hero = data.sections.find((s: any) => s.id === 'hero');
