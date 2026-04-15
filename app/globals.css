@@ -2506,13 +2506,13 @@ body:has(.homepage-snap-shell) {
   }
 
   .homepage-team-section .team-home-mobile-slider {
-    min-height: clamp(36rem, 82svh, 49rem);
-    max-width: min(60rem, 96vw);
+    min-height: clamp(38rem, 84svh, 52rem);
+    max-width: min(64rem, 96vw);
   }
 
   .homepage-team-section .team-home-mobile-slider .team-card-gallery,
   .homepage-team-section .team-home-mobile-slider .team-card-img {
-    min-height: clamp(36rem, 82svh, 49rem);
+    min-height: clamp(38rem, 84svh, 52rem);
   }
 
   .team-home-mobile-slider .team-card-content {
