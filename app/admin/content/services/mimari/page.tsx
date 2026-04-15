@@ -46,6 +46,7 @@ export default function MimariEditor() {
         id: 'cta',
         type: 'cta',
         image: '/images/slider/mimari_slide.png',
+        blur: 0,
         overlay: 30,
       },
       {
@@ -75,6 +76,7 @@ export default function MimariEditor() {
           id: 'cta',
           type: 'cta',
           image: '/images/slider/mimari_slide.png',
+          blur: 0,
           overlay: 30,
         });
       }
@@ -323,6 +325,27 @@ export default function MimariEditor() {
             <h2>CTA Alanı (Bir Sonraki Adım)</h2>
           </div>
           <div className="form-grid">
+            <div className="input-group">
+              <label>CTA Blur Oranı</label>
+              <div className="range-row">
+                <div className="range-meta">
+                  <span>Blur</span>
+                  <strong>{ctaSection?.blur ?? 0}px</strong>
+                </div>
+                <input
+                  type="range"
+                  min="0"
+                  max="40"
+                  value={ctaSection?.blur ?? 0}
+                  onChange={e => {
+                    const nc = { ...content };
+                    nc.sections.find((s:any) => s.id === 'cta').blur = Number(e.target.value);
+                    setContent(nc);
+                    setIsDirty(true);
+                  }}
+                />
+              </div>
+            </div>
             <div className="input-group">
               <label>CTA Koyu Katman (%)</label>
               <div className="range-row">

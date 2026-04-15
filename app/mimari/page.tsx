@@ -79,6 +79,7 @@ export default function MimariPage() {
   const [heroVisual, setHeroVisual] = useState({ blur: 0, overlay: 30 });
   const [ctaSection, setCtaSection] = useState({
     image: '/images/slider/mimari_slide.png',
+    blur: 0,
     overlay: 30,
   });
 
@@ -106,6 +107,7 @@ export default function MimariPage() {
           if (cta) {
             setCtaSection({
               image: cta.image || '/images/slider/mimari_slide.png',
+              blur: cta.blur ?? 0,
               overlay: cta.overlay ?? 30,
             });
           }
@@ -184,7 +186,7 @@ export default function MimariPage() {
       {/* CTA BANNER */}
       <section className="mimari-cta-banner">
         <div className="mimari-cta-bg">
-          <img src={ctaSection.image} alt="CTA" />
+          <img src={ctaSection.image} alt="CTA" style={{ filter: `blur(${ctaSection.blur ?? 0}px)` }} />
         </div>
         <div className="mimari-cta-overlay" style={{ background: `rgba(0,0,0,${(ctaSection.overlay ?? 30) / 100})` }} />
         <div className="mimari-cta-content">
