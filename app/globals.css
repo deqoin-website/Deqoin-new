@@ -4153,10 +4153,10 @@ body:has(.homepage-snap-shell) {
 .mimari-other-card { position: relative; display: block; overflow: hidden; aspect-ratio: 16 / 9; text-decoration: none; }
 .mimari-other-card img { width: 100%; height: 100%; max-width: none; object-fit: cover; transition: transform 1.5s cubic-bezier(0.165, 0.84, 0.44, 1); }
 .mimari-other-card:hover img { transform: scale(1.06); }
-.mimari-other-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.75) 0%, transparent 60%); z-index: 1; }
-.mimari-other-copy { position: absolute; inset: 0; z-index: 2; padding: 2rem; display: flex; align-items: flex-end; justify-content: space-between; }
-.mimari-other-copy h3 { font-family: var(--font-body), sans-serif; font-size: clamp(1.2rem, 3vw, 2rem); font-weight: 200; color: var(--text); margin: 0; letter-spacing: 0.05em; }
-.mimari-other-copy .vertical-text { font-family: var(--font-display), sans-serif; font-size: 0.55rem; letter-spacing: 0.3em; color: var(--text-muted); text-transform: uppercase; }
+.mimari-other-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.62) 42%, transparent 72%); z-index: 1; }
+.mimari-other-copy { position: absolute; inset: 0; z-index: 2; padding: 2rem; display: flex; align-items: flex-end; justify-content: space-between; background: linear-gradient(to top, rgba(0,0,0,0.72) 0%, rgba(0,0,0,0.18) 36%, transparent 62%); }
+.mimari-other-copy h3 { font-family: var(--font-body), sans-serif; font-size: clamp(1.2rem, 3vw, 2rem); font-weight: 200; color: #fff; margin: 0; letter-spacing: 0.05em; }
+.mimari-other-copy .vertical-text { font-family: var(--font-display), sans-serif; font-size: 0.55rem; letter-spacing: 0.3em; color: rgba(255,255,255,0.76); text-transform: uppercase; }
 
 /* MİMARİ RESPONSIVE */
 @media (max-width: 1024px) {
