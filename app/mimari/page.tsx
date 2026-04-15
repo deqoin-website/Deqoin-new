@@ -76,6 +76,11 @@ export default function MimariPage() {
   const [slides, setSlides] = useState(heroSlides);
   const [categories, setCategories] = useState(mimariSubCategories);
   const [pageInfo, setPageInfo] = useState({ title: 'DESIGN STUDIO', subtitle: 'MİMARİ TASARIMIN GELECEĞİNİ ŞEKİLLENDİRİYORUZ' });
+  const [heroVisual, setHeroVisual] = useState({ blur: 0, overlay: 30 });
+  const [ctaSection, setCtaSection] = useState({
+    image: '/images/slider/mimari_slide.png',
+    overlay: 30,
+  });
 
   useEffect(() => {
     const fetchContent = async () => {
@@ -89,9 +94,20 @@ export default function MimariPage() {
           if (hero) {
             if (hero.slides?.length > 0) setSlides(hero.slides);
             setPageInfo({ title: hero.title, subtitle: hero.subtitle });
+            setHeroVisual({
+              blur: hero.blur ?? 0,
+              overlay: hero.overlay ?? 30,
+            });
           }
           if (cats?.items?.length > 0) {
             setCategories(cats.items);
+          }
+          const cta = data.sections.find((s: any) => s.id === 'cta');
+          if (cta) {
+            setCtaSection({
+              image: cta.image || '/images/slider/mimari_slide.png',
+              overlay: cta.overlay ?? 30,
+            });
           }
         }
       } catch (err) {
@@ -118,14 +134,17 @@ export default function MimariPage() {
             <div 
               key={idx} 
               className={`mimari-hero-slide ${idx === currentSlide ? 'active' : ''}`}
-              style={{ backgroundImage: `url(${img})` }}
+              style={{
+                backgroundImage: `url(${img})`,
+                filter: `blur(${heroVisual.blur}px)`,
+              }}
             />
           ))}
         </div>
         
         {/* Glassmorphism Blur Overlay */}
         <div className="mimari-hero-blur-overlay" />
-        <div className="mimari-hero-dark-overlay" />
+        <div className="mimari-hero-dark-overlay" style={{ background: `rgba(8, 8, 8, ${(heroVisual.overlay ?? 30) / 100})` }} />
 
         <div className="mimari-hero-content-centric">
           <span className="section-small-label" style={{ color: "#cca883", marginBottom: "1rem", display: "block" }}>
@@ -165,9 +184,9 @@ export default function MimariPage() {
       {/* CTA BANNER */}
       <section className="mimari-cta-banner">
         <div className="mimari-cta-bg">
-          <img src="/images/slider/mimari_slide.png" alt="CTA" />
+          <img src={ctaSection.image} alt="CTA" />
         </div>
-        <div className="mimari-cta-overlay" />
+        <div className="mimari-cta-overlay" style={{ background: `rgba(0,0,0,${(ctaSection.overlay ?? 30) / 100})` }} />
         <div className="mimari-cta-content">
           <span className="section-small-label" style={{ color: "#cca883" }}>BİR SONRAKI ADIM</span>
           <h2 className="mimari-cta-title">Mimari Vizyonunuzu Gerçeğe Dönüştürelim</h2>

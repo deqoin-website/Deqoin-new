@@ -35,6 +35,15 @@ export default function MimariEditor() {
       const res = await fetch('/api/content?page=mimari');
       const data = await res.json();
       if (data && data.sections) {
+        const hasCtaSection = data.sections.some((s: any) => s.id === 'cta');
+        if (!hasCtaSection) {
+          data.sections.push({
+            id: 'cta',
+            type: 'cta',
+            image: '/images/slider/mimari_slide.png',
+            overlay: 30,
+          });
+        }
         setContent(data);
         setInitialContent(JSON.parse(JSON.stringify(data)));
       }
@@ -64,6 +73,8 @@ export default function MimariEditor() {
         section.items[index].image = blob.url;
       } else if (index !== undefined) {
         section.slides[index] = blob.url;
+      } else if (section.image !== undefined) {
+        section.image = blob.url;
       } else if (section.slides) {
         section.slides.push(blob.url);
       }
@@ -139,6 +150,7 @@ export default function MimariEditor() {
 
   const heroSection = content.sections?.find((s: any) => s.id === 'hero');
   const catSection = content.sections?.find((s: any) => s.id === 'categories');
+  const ctaSection = content.sections?.find((s: any) => s.id === 'cta');
 
   return (
     <div className="editor-container">
@@ -205,6 +217,36 @@ export default function MimariEditor() {
                 }} 
               />
             </div>
+            <div className="input-group">
+              <label>Hero Blur Oranı</label>
+              <input 
+                type="number"
+                min="0"
+                max="30"
+                value={heroSection?.blur ?? 0}
+                onChange={e => {
+                  const nc = {...content};
+                  nc.sections.find((s:any)=>s.id==='hero').blur = Number(e.target.value);
+                  setContent(nc);
+                  setIsDirty(true);
+                }} 
+              />
+            </div>
+            <div className="input-group">
+              <label>Hero Koyu Katman (%)</label>
+              <input 
+                type="number"
+                min="0"
+                max="100"
+                value={heroSection?.overlay ?? 30}
+                onChange={e => {
+                  const nc = {...content};
+                  nc.sections.find((s:any)=>s.id==='hero').overlay = Number(e.target.value);
+                  setContent(nc);
+                  setIsDirty(true);
+                }} 
+              />
+            </div>
           </div>
           <div className="slides-grid">
             {heroSection?.slides?.map((slide: string, idx: number) => (
@@ -221,6 +263,47 @@ export default function MimariEditor() {
             <label className="add-slide-btn">
               <Plus size={20} />
               <input type="file" className="hidden" onChange={e => handleImageUpload(e, 'hero')} />
+            </label>
+          </div>
+        </section>
+
+        <section className="section-card">
+          <div className="section-title">
+            <ImageIcon size={20} />
+            <h2>CTA Alanı (Bir Sonraki Adım)</h2>
+          </div>
+          <div className="form-grid">
+            <div className="input-group">
+              <label>CTA Koyu Katman (%)</label>
+              <input
+                type="number"
+                min="0"
+                max="100"
+                value={ctaSection?.overlay ?? 30}
+                onChange={e => {
+                  const nc = { ...content };
+                  nc.sections.find((s:any) => s.id === 'cta').overlay = Number(e.target.value);
+                  setContent(nc);
+                  setIsDirty(true);
+                }}
+              />
+            </div>
+          </div>
+          <div className="slides-grid">
+            {ctaSection?.image && (
+              <div className="slide-item">
+                <img src={ctaSection.image} alt="CTA görseli" />
+                <button className="delete-slide" onClick={() => {
+                  const nc = { ...content };
+                  nc.sections.find((s:any) => s.id === 'cta').image = '';
+                  setContent(nc);
+                  setIsDirty(true);
+                }}><Trash2 size={12} /></button>
+              </div>
+            )}
+            <label className="add-slide-btn">
+              <Upload size={20} />
+              <input type="file" className="hidden" onChange={e => handleImageUpload(e, 'cta')} />
             </label>
           </div>
         </section>
