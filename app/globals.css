@@ -5258,7 +5258,7 @@ body:has(.homepage-snap-shell) {
   .mobile-filter-toggle {
     background: #111;
     border: 1px solid var(--line) 0.1);
-    color: var(--text);
+    color: #fff;
     padding: 1.2rem;
     font-size: 0.7rem;
     letter-spacing: 0.3em;
@@ -5288,6 +5288,10 @@ body:has(.homepage-snap-shell) {
     position: absolute;
     top: 1rem;
     right: 1.5rem;
+  }
+
+  .mobile-filter-toggle .material-symbols-outlined {
+    color: #fff;
   }
 
   /* Off-Canvas Drawer */
