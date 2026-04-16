@@ -6391,12 +6391,12 @@ body:has(.homepage-snap-shell) {
 }
 
 .team-native-card {
-  flex: 0 0 85%;
-  max-width: 22rem;
+  flex: 0 0 92%;
+  max-width: 26rem;
   scroll-snap-align: center;
   position: relative;
   overflow: hidden;
-  border-radius: 1.5rem;
+  border-radius: 0;
   border: 1px solid rgba(255, 255, 255, 0.08);
   aspect-ratio: 4 / 5;
   background: #0f0f0f;
