@@ -411,6 +411,11 @@ function GaleriContent() {
 
           .galeri-page .studio-mobile-drawer {
             width: min(88vw, 340px);
+            z-index: 2200;
+          }
+
+          .galeri-page .studio-mobile-drawer-overlay {
+            z-index: 2190;
           }
 
           .galeri-page .galeri-drawer-header {
