@@ -164,12 +164,6 @@ body:has(.homepage-snap-shell) {
   color: #fff;
 }
 
-.homepage-snap-shell .homepage-services-section .section-heading,
-.homepage-snap-shell .homepage-projects-section .section-heading,
-.homepage-snap-shell .homepage-team-section .section-heading {
-  display: none;
-}
-
 .homepage-snap-shell .process-header h2,
 .homepage-snap-shell .section-heading h2,
 .homepage-snap-shell .process-step h3,
