@@ -33,7 +33,7 @@ export default function SwipeAppointmentButton({
   const fillWidth = useTransform(x, (value) => Math.min(trackWidth, value + HANDLE_SIZE + TRACK_PADDING * 2));
 
   useMotionValueEvent(x, "change", (latest) => {
-    setIsFilled(maxTravel > 0 && latest > maxTravel * 0.18);
+    setIsFilled(maxTravel > 0 && latest > 0);
   });
 
   useEffect(() => {
