@@ -2647,15 +2647,15 @@ body:has(.homepage-snap-shell) {
   }
 
   .homepage-team-section .team-mobile-slider {
-    max-width: min(88vw, 26rem);
+    max-width: min(88vw, 24rem);
   }
 
   .homepage-team-section .team-card-gallery {
-    min-height: clamp(24rem, 65svh, 34rem);
+    min-height: clamp(20rem, 45svh, 26rem);
   }
 
   .homepage-team-section .team-card-img {
-    aspect-ratio: 4 / 4.4;
+    aspect-ratio: 4 / 4;
   }
 }
 
@@ -2663,7 +2663,7 @@ body:has(.homepage-snap-shell) {
   .homepage-team-section .team-mobile-slider,
   .homepage-team-section .team-home-mobile-slider,
   .team-mobile-card {
-    max-width: min(84vw, 21rem);
+    max-width: min(82vw, 18rem);
   }
 
   .homepage-team-section .team-card-gallery,
@@ -2671,12 +2671,12 @@ body:has(.homepage-snap-shell) {
   .homepage-team-section .team-home-mobile-slider,
   .team-home-mobile-slider .team-card-gallery,
   .team-home-mobile-slider .team-card-img {
-    min-height: clamp(20rem, 55svh, 28rem);
+    min-height: clamp(16rem, 40svh, 22rem);
   }
 
   .homepage-team-section .team-card-copy h3,
   .team-home-mobile-slider .team-card-copy h3 {
-    font-size: clamp(0.75rem, 3.5vw, 0.95rem);
+    font-size: clamp(0.7rem, 3.2vw, 0.9rem);
   }
 }
 
