@@ -153,6 +153,30 @@ body:has(.homepage-snap-shell) {
   padding-bottom: 0;
 }
 
+.homepage-snap-shell .process-section,
+.homepage-snap-shell .services-section,
+.homepage-snap-shell .projects-section,
+.homepage-snap-shell .about-section,
+.homepage-snap-shell .team-section,
+.homepage-snap-shell .before-after-section {
+  background: #080808;
+  color: #fff;
+}
+
+.homepage-snap-shell .process-header h2,
+.homepage-snap-shell .section-heading h2,
+.homepage-snap-shell .process-step h3,
+.homepage-snap-shell .process-step p,
+.homepage-snap-shell .section-heading span,
+.homepage-snap-shell .hero-meta p,
+.homepage-snap-shell .team-card-footer {
+  color: #fff;
+}
+
+.homepage-snap-shell .process-step {
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
 .homepage-footer-snap {
   scroll-snap-align: start;
   scroll-snap-stop: always;
