@@ -1140,21 +1140,11 @@ body:has(.homepage-snap-shell) {
   transform: translateX(5px);
 }
 
-.service-card-material-highlight .service-copy h3 {
+.hero-studio-label {
+  font-size: clamp(0.82rem, 1.3vw, 1rem);
+  letter-spacing: 0.7em;
   color: #cca883;
-  font-size: clamp(3.25rem, 6.4vw, 5.35rem);
-}
-
-.service-card-material-highlight .service-copy p {
-  color: #cca883 !important;
-  font-size: 1.55rem !important;
-  letter-spacing: 0.28em !important;
-}
-
-.service-card-material-highlight .service-copy .vertical-text {
-  color: #cca883 !important;
-  font-size: 1rem;
-  letter-spacing: 0.46em;
+  text-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
 }
 
 .section-inner {

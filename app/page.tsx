@@ -499,7 +499,15 @@ export default function Page() {
 
         <div className="hero-content" style={{ textAlign: "center", display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", gap: "3rem", height: "100%", width: "100%" }}>
           <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "1.5rem" }}>
-            <span style={{ fontFamily: "var(--font-display), sans-serif", fontSize: "0.65rem", letterSpacing: "0.6em", fontWeight: 300, color: "rgba(255,255,255,0.8)", textTransform: "uppercase", paddingLeft: "0.6em" }}>
+            <span
+              className="hero-studio-label"
+              style={{
+                fontFamily: "var(--font-display), sans-serif",
+                fontWeight: 500,
+                textTransform: "uppercase",
+                paddingLeft: "0.6em",
+              }}
+            >
               {slides[heroIndex]?.motto}
             </span>
             <h1 style={{ 
