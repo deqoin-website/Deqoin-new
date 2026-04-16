@@ -4509,8 +4509,12 @@ body:has(.homepage-snap-shell) {
   border-color: rgba(204, 168, 131, 0.55);
 }
 
+.site-footer .footer-cta-btn:hover .hero-cta-text {
+  color: #080808;
+}
+
 .site-footer .footer-cta-btn:hover .hero-cta-circle span {
-  color: #fff !important;
+  color: #080808 !important;
 }
 
 /* ── FOOTER RESPONSIVE ── */
