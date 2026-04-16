@@ -2591,13 +2591,13 @@ body:has(.homepage-snap-shell) {
 }
 
 .homepage-team-section .team-mobile-slider {
-  max-width: min(26rem, 100%);
+  max-width: min(34rem, 100%);
   margin-left: auto;
   margin-right: auto;
 }
 
 .homepage-team-section .team-card-img {
-  aspect-ratio: 4 / 4.45;
+  aspect-ratio: 4 / 5.25;
 }
 
 .homepage-team-section .team-card-gallery {
@@ -2606,6 +2606,14 @@ body:has(.homepage-snap-shell) {
 
 .homepage-team-section .team-mobile-slide {
   width: 100%;
+}
+
+.homepage-team-section .team-card-gallery {
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.28);
+}
+
+.homepage-team-section .team-card-img img {
+  object-position: center top;
 }
 
 .project-slide-copy {
