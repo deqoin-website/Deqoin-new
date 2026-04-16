@@ -2557,51 +2557,53 @@ body:has(.homepage-snap-shell) {
 
   .team-home-mobile-slider {
     margin-top: 1.25rem;
-    min-height: 100svh;
-    min-height: 100dvh;
+    min-height: calc(100svh - 4.5rem);
+    min-height: calc(100dvh - 4.5rem);
   }
 
   .team-home-mobile-slider .team-card-gallery {
-    min-height: 100svh;
-    min-height: 100dvh;
+    min-height: calc(100svh - 4.5rem);
+    min-height: calc(100dvh - 4.5rem);
   }
 
   .team-home-mobile-slider .team-card-img {
-    aspect-ratio: auto;
-    min-height: 100svh;
-    min-height: 100dvh;
+    aspect-ratio: 4 / 5.7;
+    min-height: calc(100svh - 4.5rem);
+    min-height: calc(100dvh - 4.5rem);
   }
 
   .homepage-team-section .team-home-mobile-slider {
-    min-height: clamp(38rem, 84svh, 52rem);
-    max-width: min(64rem, 96vw);
+    min-height: calc(100svh - 4.5rem);
+    min-height: calc(100dvh - 4.5rem);
+    max-width: min(100vw, 100%);
   }
 
   .homepage-team-section .team-home-mobile-slider .team-card-gallery,
   .homepage-team-section .team-home-mobile-slider .team-card-img {
-    min-height: clamp(38rem, 84svh, 52rem);
+    min-height: calc(100svh - 4.5rem);
+    min-height: calc(100dvh - 4.5rem);
   }
 
   .team-home-mobile-slider .team-card-content {
-    padding: 1.25rem 1.1rem 1.3rem;
+    padding: 1rem 1rem 1.1rem;
   }
 
   .team-home-mobile-slider .team-card-role-vertical {
-    font-size: 0.48rem;
-    letter-spacing: 0.26em;
+    font-size: 0.42rem;
+    letter-spacing: 0.22em;
   }
 
   .team-home-mobile-slider .team-card-copy h3 {
-    font-size: clamp(1.8rem, 7vw, 2.6rem);
+    font-size: clamp(1.45rem, 6vw, 2.1rem);
     line-height: 0.88;
   }
 
   .team-home-mobile-slider .team-card-index {
-    font-size: 0.8rem;
+    font-size: 0.72rem;
   }
 
 .team-home-mobile-slider .team-card-footer .material-symbols-outlined {
-  font-size: 1rem;
+  font-size: 0.92rem;
 }
 
 .homepage-team-section .team-card-role-vertical,
@@ -2613,40 +2615,41 @@ body:has(.homepage-snap-shell) {
 }
 
   .homepage-team-section .team-mobile-slider {
-    max-width: min(72rem, 100%);
+    max-width: min(100vw, 100%);
     margin-left: auto;
     margin-right: auto;
   }
 
   .homepage-team-section .team-card-img {
-    aspect-ratio: 4 / 5.05;
+    aspect-ratio: 4 / 5.7;
   }
 
   .homepage-team-section .team-card-gallery {
     min-height: auto;
-    min-height: clamp(36rem, 74svh, 50rem);
+    min-height: calc(100svh - 4.5rem);
+    min-height: calc(100dvh - 4.5rem);
   }
 
   .homepage-team-section .team-card-content {
-    padding: 1.25rem 1.3rem 1.4rem;
+    padding: 1rem 1rem 1.1rem;
   }
 
   .homepage-team-section .team-card-role-vertical {
-    font-size: 0.52rem;
-    letter-spacing: 0.3em;
+    font-size: 0.42rem;
+    letter-spacing: 0.22em;
   }
 
   .homepage-team-section .team-card-copy h3 {
-    font-size: clamp(1.8rem, 3.1vw, 3.2rem);
+    font-size: clamp(1.45rem, 6vw, 2.1rem);
     line-height: 0.88;
   }
 
   .homepage-team-section .team-card-index {
-    font-size: 0.8rem;
+    font-size: 0.72rem;
   }
 
   .homepage-team-section .team-card-footer .material-symbols-outlined {
-    font-size: 1rem;
+    font-size: 0.92rem;
   }
 
 .homepage-team-section .team-mobile-slide {
