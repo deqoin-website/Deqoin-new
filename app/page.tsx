@@ -597,7 +597,7 @@ export default function Page() {
           <div className="section-heading">
             <div>
               <span className="section-small-label" style={{ letterSpacing: "0.5em", color: "#cca883", fontSize: "0.75rem", marginBottom: "1rem", display: "block" }}>STUDIO SELECTION</span>
-              <h2 style={{ marginBottom: "0.5rem", textTransform: "uppercase", color: "#000" }}>DESIGN & COLLECTION</h2>
+              <h2 style={{ marginBottom: "0.5rem", textTransform: "uppercase", color: "#fff" }}>DESIGN & COLLECTION</h2>
               <span style={{ 
                 fontFamily: "var(--font-display), sans-serif", 
                 fontSize: "1.1rem", 
