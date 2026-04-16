@@ -1,6 +1,6 @@
 "use client";
 
-import { animate, motion, useMotionValue, useMotionValueEvent, useTransform } from "framer-motion";
+import { animate, motion, useAnimation, useMotionValue, useMotionValueEvent, useTransform } from "framer-motion";
 import { useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
 
 type SwipeAppointmentButtonProps = {
@@ -21,8 +21,10 @@ export default function SwipeAppointmentButton({
 }: SwipeAppointmentButtonProps) {
   const trackRef = useRef<HTMLButtonElement | null>(null);
   const x = useMotionValue(0);
+  const handleControls = useAnimation();
   const [trackWidth, setTrackWidth] = useState(0);
   const [isFilled, setIsFilled] = useState(false);
+  const [hasInteracted, setHasInteracted] = useState(false);
   const maxTravel = useMemo(
     () => Math.max(0, trackWidth - HANDLE_SIZE - TRACK_PADDING * 2),
     [trackWidth],
@@ -49,13 +51,35 @@ export default function SwipeAppointmentButton({
 
   useEffect(() => {
     x.set(0);
+    handleControls.set({ x: 0 });
+    setHasInteracted(false);
   }, [maxTravel, x]);
+
+  useEffect(() => {
+    if (maxTravel <= 0 || hasInteracted) return;
+
+    const travel = Math.min(Math.max(maxTravel * 0.22, 18), 34);
+    const timer = window.setTimeout(() => {
+      handleControls.start({
+        x: [0, travel, 0],
+        transition: {
+          duration: 1.8,
+          times: [0, 0.55, 1],
+          ease: [0.77, 0, 0.175, 1],
+        },
+      });
+    }, 900);
+
+    return () => window.clearTimeout(timer);
+  }, [handleControls, hasInteracted, maxTravel]);
 
   const reset = () => {
     animate(x, 0, { type: "spring", stiffness: 420, damping: 32 });
+    handleControls.start({ x: 0, transition: { duration: 0.2 } });
   };
 
   const handleDragEnd = (_: unknown, info: { offset: { x: number }; velocity: { x: number } }) => {
+    setHasInteracted(true);
     const reachedEnd = info.offset.x >= maxTravel * 0.82 || info.velocity.x > 800;
 
     if (!reachedEnd) {
@@ -84,13 +108,18 @@ export default function SwipeAppointmentButton({
         <span className={`swipe-appointment-label ${isFilled ? "is-dark" : ""}`}>RANDEVU TALEP EDİNİZ</span>
         <motion.div
           className="swipe-appointment-handle"
+          animate={handleControls}
           style={{ x }}
           drag="x"
           dragConstraints={{ left: 0, right: maxTravel }}
           dragElastic={0.06}
           dragMomentum={false}
           onDragEnd={handleDragEnd}
-          onClick={(event) => event.stopPropagation()}
+          onDragStart={() => setHasInteracted(true)}
+          onClick={(event) => {
+            event.stopPropagation();
+            setHasInteracted(true);
+          }}
         >
           <span className="material-symbols-outlined">event_available</span>
         </motion.div>
