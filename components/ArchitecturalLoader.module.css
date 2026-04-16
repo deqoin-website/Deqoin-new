@@ -1,70 +1,89 @@
-.loaderShell {
+.shell {
   position: fixed;
   inset: 0;
   z-index: 9999;
-  pointer-events: none;
   overflow: hidden;
   background: #0f0f0f;
-  opacity: 0;
-  transition: opacity 0.25s ease;
-}
-
-.active {
-  opacity: 1;
   pointer-events: auto;
 }
 
-.ambientGlow {
+.ambient {
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(circle at center, rgba(204, 168, 131, 0.12) 0%, rgba(204, 168, 131, 0.05) 22%, transparent 55%),
-    radial-gradient(circle at center, rgba(255, 255, 255, 0.05) 0%, transparent 38%);
-  filter: blur(18px);
+    radial-gradient(circle at center, rgba(204, 168, 131, 0.14) 0%, rgba(204, 168, 131, 0.05) 22%, transparent 58%),
+    radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.06) 0%, transparent 30%);
+  filter: blur(16px);
+  opacity: 0.9;
   pointer-events: none;
 }
 
-.panelLeft,
-.panelRight {
+.curtainLeft,
+.curtainRight {
   position: absolute;
   top: 0;
   bottom: 0;
-  width: 50vw;
+  width: 50.5vw;
   background:
-    linear-gradient(180deg, rgba(255,255,255,0.03), transparent 18%),
-    linear-gradient(180deg, #0f0f0f 0%, #0b0b0b 100%);
-  will-change: transform;
+    linear-gradient(180deg, rgba(255, 255, 255, 0.04), transparent 12%),
+    linear-gradient(180deg, #141414 0%, #0c0c0c 100%);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.02);
 }
 
-.panelLeft {
+.curtainLeft {
   left: 0;
+  border-right: 1px solid rgba(255, 255, 255, 0.04);
 }
 
-.panelRight {
+.curtainRight {
   right: 0;
+  border-left: 1px solid rgba(255, 255, 255, 0.04);
 }
 
-.brandMark {
+.centerFrame {
   position: absolute;
   inset: 0;
   display: grid;
   place-items: center;
-  user-select: none;
+  gap: 1.15rem;
   pointer-events: none;
-  mix-blend-mode: screen;
-  z-index: 2;
 }
 
-.brandLogo {
+.logoWrap {
+  display: grid;
+  place-items: center;
+  width: min(70vw, 26rem);
+}
+
+.logo {
   display: block;
-  width: min(34vw, 18rem);
+  width: min(40vw, 18rem);
   height: auto;
   object-fit: contain;
-  filter: drop-shadow(0 16px 36px rgba(0, 0, 0, 0.5));
+  filter: drop-shadow(0 18px 34px rgba(0, 0, 0, 0.55));
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.loadingBar {
+  width: min(18rem, 36vw);
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(204, 168, 131, 0.95), transparent);
+  transform-origin: center;
+  box-shadow: 0 0 24px rgba(204, 168, 131, 0.18);
 }
 
 @media (max-width: 767px) {
-  .brandLogo {
-    width: min(56vw, 13rem);
+  .curtainLeft,
+  .curtainRight {
+    width: 51vw;
+  }
+
+  .logo {
+    width: min(56vw, 14rem);
+  }
+
+  .loadingBar {
+    width: min(12rem, 60vw);
   }
 }
