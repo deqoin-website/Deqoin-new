@@ -1,0 +1,58 @@
+.loaderShell {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+  overflow: hidden;
+  background: #0f0f0f;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+
+.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.panelLeft,
+.panelRight {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 50vw;
+  background: linear-gradient(180deg, #0f0f0f 0%, #0b0b0b 100%);
+  will-change: transform;
+}
+
+.panelLeft {
+  left: 0;
+}
+
+.panelRight {
+  right: 0;
+}
+
+.brandMark {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: #f4efe8;
+  font-family: var(--font-display), sans-serif;
+  font-size: clamp(2rem, 6vw, 4.25rem);
+  letter-spacing: 0.45em;
+  text-indent: 0.45em;
+  text-transform: uppercase;
+  user-select: none;
+  text-rendering: geometricPrecision;
+  pointer-events: none;
+  mix-blend-mode: screen;
+}
+
+@media (max-width: 767px) {
+  .brandMark {
+    font-size: clamp(1.6rem, 10vw, 2.4rem);
+    letter-spacing: 0.35em;
+    text-indent: 0.35em;
+  }
+}

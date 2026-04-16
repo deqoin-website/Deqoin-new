@@ -2,6 +2,7 @@ import type { Metadata, ResolvingMetadata } from "next";
 import { Manrope, Noto_Serif, Outfit, Playfair_Display, Smooch_Sans } from "next/font/google";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import ArchitecturalLoaderGate from "@/components/ArchitecturalLoaderGate";
 import MaintenancePage from "./maintenance/page";
 import connectToDatabase from "@/lib/mongodb";
 import Settings from "@/models/Settings";
@@ -115,6 +116,7 @@ export default async function RootLayout({
             {!isAdminPath && <Header />}
             {isAdminPath && <Header />} {/* Keep header for admin if needed, or modify logic */}
             {children}
+            {!isAdminPath && <ArchitecturalLoaderGate />}
             {!isAdminPath && <Footer />}
           </>
         )}
