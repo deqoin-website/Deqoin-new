@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
-import { AnimatePresence, motion } from "framer-motion";
+import { motion } from "framer-motion";
 import { projectsData } from "../data/projects";
 import { teamFilters, teamMembers } from "../data/team";
 import ConsultationModal from "../components/ConsultationModal";
@@ -144,6 +144,7 @@ export default function Page() {
 
   const currentProject = filteredProjects[projectIndex];
   const currentTeamMember = filteredTeam[teamSlideIndex];
+  const currentHeroSlide = slides[heroIndex];
 
   useEffect(() => {
     projectIndexRef.current = projectIndex;
@@ -441,52 +442,42 @@ export default function Page() {
           onTouchEnd={handleHeroTouchEnd}
         >
         <div className="hero-slide active" style={{ backgroundColor: "#000" }}>
-          <AnimatePresence mode="wait" initial={false}>
-            {slides[heroIndex]?.mediaType === 'image' && (
-              <motion.div
-                key={slides[heroIndex]?.image}
-                className="hero-slide-media"
-                initial={{
-                  scale: 1.12,
-                  opacity: 0,
-                  filter: `blur(${Math.max((slides[heroIndex]?.blur || 0), 2) + 10}px) brightness(0.28) saturate(0.9)`,
-                }}
-                animate={{
-                  scale: heroIntroReady ? 1.02 : 1.08,
-                  opacity: heroIntroReady ? 1 : 0,
-                  filter: `blur(${Math.max((slides[heroIndex]?.blur ?? 0), 2)}px) brightness(0.45) saturate(0.92)`,
-                }}
-                exit={{
-                  scale: 1.15,
-                  opacity: 0,
-                  filter: `blur(${Math.max((slides[heroIndex]?.blur || 0), 2) + 12}px) brightness(0.24) saturate(0.86)`,
-                }}
-                transition={{ duration: 1.3, ease: [0.77, 0, 0.175, 1] }}
-                style={{
-                  backgroundImage: `url(${slides[heroIndex]?.image})`,
-                  backgroundSize: "cover",
-                  backgroundPosition: "center",
-                  backgroundRepeat: "no-repeat",
-                }}
-              />
-            )}
-            {slides[heroIndex]?.mediaType === 'video' && (
-              <motion.video
-                key={slides[heroIndex]?.mediaUrl}
-                className="hero-video"
-                autoPlay
-                muted
-                loop
-                playsInline
-                initial={{ opacity: 0, scale: 1.1, filter: "blur(18px) brightness(0.28)" }}
-                animate={{ opacity: heroIntroReady ? 1 : 0, scale: 1.02, filter: "blur(0px) brightness(0.42)" }}
-                exit={{ opacity: 0, scale: 1.14, filter: "blur(20px) brightness(0.2)" }}
-                transition={{ duration: 1.3, ease: [0.77, 0, 0.175, 1] }}
-              >
-                <source src={slides[heroIndex]?.mediaUrl} />
-              </motion.video>
-            )}
-          </AnimatePresence>
+          {currentHeroSlide?.mediaType === "image" && (
+            <motion.div
+              className="hero-slide-media"
+              initial={{
+                opacity: 0,
+                scale: 1.12,
+                filter: `blur(${Math.max((currentHeroSlide?.blur || 0), 2) + 10}px) brightness(0.26) saturate(0.88)`,
+              }}
+              animate={{
+                opacity: heroIntroReady ? 1 : 0,
+                scale: 1.02,
+                filter: `blur(${Math.max((currentHeroSlide?.blur ?? 0), 2)}px) brightness(0.44) saturate(0.92)`,
+              }}
+              transition={{ duration: 1.35, ease: [0.77, 0, 0.175, 1] }}
+              style={{
+                backgroundImage: `url(${currentHeroSlide?.image})`,
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+                backgroundRepeat: "no-repeat",
+              }}
+            />
+          )}
+          {currentHeroSlide?.mediaType === "video" && (
+            <motion.video
+              className="hero-video"
+              autoPlay
+              muted
+              loop
+              playsInline
+              initial={{ opacity: 0, scale: 1.1, filter: "blur(18px) brightness(0.28)" }}
+              animate={{ opacity: heroIntroReady ? 1 : 0, scale: 1.02, filter: "blur(0px) brightness(0.42)" }}
+              transition={{ duration: 1.35, ease: [0.77, 0, 0.175, 1] }}
+            >
+              <source src={currentHeroSlide?.mediaUrl} />
+            </motion.video>
+          )}
           <div className="hero-overlay" style={{ background: `rgba(0,0,0,${Math.max((slides[heroIndex]?.overlay ?? 30), 42) / 100})` }} />
         </div>
 
