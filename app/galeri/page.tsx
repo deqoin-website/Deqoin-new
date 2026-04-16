@@ -92,7 +92,7 @@ function GaleriContent() {
   };
 
   return (
-    <main className="site-shell project-detail-shell galeri-page gallery-vertical-shell" style={{ paddingTop: "8rem" }}>
+    <main className="site-shell project-detail-shell galeri-page gallery-vertical-shell">
       <div className="section-inner" style={{ paddingBottom: "6rem" }}>
         
         {/* HEADER SECTION */}
@@ -231,6 +231,7 @@ function GaleriContent() {
         .galeri-page {
           background: #080808;
           color: #fff;
+          padding-top: 12rem;
         }
 
         .galeri-header-section {
@@ -316,6 +317,7 @@ function GaleriContent() {
         @media (max-width: 767px) {
           .galeri-page {
             overflow-x: hidden;
+            padding-top: 9rem;
           }
 
           .galeri-page .section-inner {
