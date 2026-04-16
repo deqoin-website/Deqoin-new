@@ -386,17 +386,24 @@ function GaleriContent() {
           }
 
           .galeri-page .project-card-gallery-sensory h4 {
-            bottom: 4rem;
-            right: 0.8rem;
+            left: 0.9rem;
+            right: auto;
+            bottom: 1.15rem;
             font-size: 1rem;
-            max-width: 70vw;
+            max-width: 68vw;
+            text-align: left;
           }
 
           .galeri-page .project-card-gallery-sensory p,
           .galeri-page .project-card-gallery-sensory .vertical-text {
-            bottom: 2rem;
+            top: 0.9rem;
+            right: 0.9rem;
+            bottom: auto;
+            left: auto;
             font-size: 0.56rem;
             letter-spacing: 0.34em;
+            max-width: min(45vw, 10rem);
+            text-align: right;
           }
 
           .galeri-page .studio-mobile-drawer {
