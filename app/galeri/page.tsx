@@ -419,7 +419,7 @@ function GaleriContent() {
           }
 
           .galeri-page .galeri-drawer-header {
-            padding: 1.5rem 1.25rem;
+            padding: 6.5rem 1.25rem 1.5rem;
           }
 
           .galeri-page .galeri-drawer-close {
@@ -436,6 +436,10 @@ function GaleriContent() {
           .galeri-page .galeri-drawer-close .material-symbols-outlined {
             color: #fff;
             font-size: 1.25rem;
+          }
+
+          .galeri-page .studio-mobile-drawer-overlay {
+            top: 0;
           }
         }
       `}</style>
