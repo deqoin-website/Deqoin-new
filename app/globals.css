@@ -6362,3 +6362,119 @@ body:has(.homepage-snap-shell) {
     width: min(100%, 44rem);
   }
 }
+
+/* NEW MOBILE ONLY DEPARTMAN EKIPLERI SLIDER */
+@media (max-width: 767px) {
+  .desktop-only-team-slider {
+    display: none !important;
+  }
+}
+@media (min-width: 768px) {
+  .mobile-only-team-slider {
+    display: none !important;
+  }
+}
+
+.mobile-only-team-slider {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  gap: 1rem;
+  padding: 1rem 1.5rem 2.5rem;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  width: 100vw;
+  margin-left: -1.5rem; /* Break out of container to go edge to edge */
+}
+.mobile-only-team-slider::-webkit-scrollbar {
+  display: none;
+}
+
+.team-native-card {
+  flex: 0 0 85%;
+  max-width: 22rem;
+  scroll-snap-align: center;
+  position: relative;
+  overflow: hidden;
+  border-radius: 1.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  aspect-ratio: 4 / 5;
+  background: #0f0f0f;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4);
+  transform: scale(0.96);
+  transition: transform 0.3s ease;
+}
+.team-native-card:active {
+  transform: scale(0.92);
+}
+
+.team-native-img {
+  position: absolute;
+  inset: 0;
+}
+.team-native-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.team-native-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(0,0,0,0) 25%, rgba(0,0,0,0.85) 100%);
+  pointer-events: none;
+}
+
+.team-native-content {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 1.4rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.team-native-role {
+  color: #cca883;
+  font-size: 0.65rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  font-family: var(--font-display), sans-serif;
+}
+
+.team-native-content h3 {
+  margin: 0;
+  color: #fff;
+  font-family: var(--font-smooch), sans-serif;
+  font-size: clamp(2.4rem, 9vw, 3rem);
+  font-weight: 100;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  line-height: 0.9;
+}
+
+.team-native-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 0.4rem;
+}
+
+.team-native-idx {
+  color: #cca883;
+  font-size: 0.85rem;
+  font-family: var(--font-headline), serif;
+  letter-spacing: 0.1em;
+  line-height: 1;
+}
+
+.team-native-footer .material-symbols-outlined {
+  color: #fff;
+  font-size: 1.15rem;
+  opacity: 0.7;
+}

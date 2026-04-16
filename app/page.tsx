@@ -820,7 +820,7 @@ export default function Page() {
               <div className="section-line" />
             </div>
           </div>
-          <div className="team-mobile-slider team-home-mobile-slider" onTouchStart={handleTeamTouchStart} onTouchEnd={handleTeamTouchEnd}>
+          <div className="team-mobile-slider team-home-mobile-slider desktop-only-team-slider" onTouchStart={handleTeamTouchStart} onTouchEnd={handleTeamTouchEnd}>
             <button type="button" className="team-slider-arrow team-slider-arrow-left" onClick={() => navigateTeamSlide(-1)} aria-label="Önceki ekip">
               <span className="material-symbols-outlined">arrow_back</span>
             </button>
@@ -879,6 +879,25 @@ export default function Page() {
                 </Link>
               </motion.div>
             </AnimatePresence>
+          </div>
+
+          <div className="mobile-only-team-slider">
+            {filteredTeam.map((member, idx) => (
+              <Link key={member.id} href="/departman-ekipleri" className="team-native-card">
+                <div className="team-native-img">
+                  {member.image ? <img src={member.image} alt={member.name} /> : null}
+                </div>
+                <div className="team-native-overlay" />
+                <div className="team-native-content">
+                  <span className="team-native-role">{member.role}</span>
+                  <h3>{member.name}</h3>
+                  <div className="team-native-footer">
+                    <span className="team-native-idx">{String(idx + 1).padStart(2, "0")}</span>
+                    <span className="material-symbols-outlined">arrow_outward</span>
+                  </div>
+                </div>
+              </Link>
+            ))}
           </div>
 
           <div className="homepage-section-cta">
