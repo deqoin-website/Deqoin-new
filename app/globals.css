@@ -2795,22 +2795,42 @@ body:has(.homepage-snap-shell) {
 
 @media (max-width: 767px) {
   .homepage-snap-shell .homepage-section-inner {
-    padding-top: 2rem;
-    padding-bottom: 2rem;
+    width: min(100%, 100vw);
+    padding-top: 1.1rem;
+    padding-bottom: 1.1rem;
+  }
+
+  .homepage-snap-shell .homepage-services-inner {
+    padding-top: 0;
+    padding-bottom: 0;
   }
 
   .homepage-snap-shell .homepage-projects-section .section-heading,
   .homepage-snap-shell .homepage-team-section .section-heading,
   .homepage-snap-shell .homepage-services-section .section-heading {
-    margin-bottom: 1.5rem;
+    margin-bottom: 1rem;
   }
 
   .homepage-snap-shell .homepage-section-cta {
-    margin-top: 1.5rem;
+    margin-top: 1rem;
   }
 
   .homepage-snap-shell .homepage-about-grid {
-    gap: 1.75rem;
+    gap: 1.25rem;
+  }
+
+  .homepage-snap-shell .homepage-services-section .service-card {
+    min-height: 100svh;
+  }
+
+  .homepage-snap-shell .homepage-projects-section .project-slider-window {
+    min-height: 100svh;
+  }
+
+  .homepage-snap-shell .homepage-team-section .team-mobile-slider,
+  .homepage-snap-shell .homepage-team-section .team-card-gallery,
+  .homepage-snap-shell .homepage-team-section .team-card-img {
+    min-height: 100svh;
   }
 }
 
