@@ -442,42 +442,70 @@ export default function Page() {
           onTouchEnd={handleHeroTouchEnd}
         >
         <div className="hero-slide active" style={{ backgroundColor: "#000" }}>
-          {currentHeroSlide?.mediaType === "image" && (
-            <motion.div
-              className="hero-slide-media"
-              initial={{
-                opacity: 0,
-                scale: 1.12,
-                filter: `blur(${Math.max((currentHeroSlide?.blur || 0), 2) + 10}px) brightness(0.26) saturate(0.88)`,
-              }}
-              animate={{
-                opacity: heroIntroReady ? 1 : 0,
-                scale: 1.02,
-                filter: `blur(${Math.max((currentHeroSlide?.blur ?? 0), 2)}px) brightness(0.44) saturate(0.92)`,
-              }}
-              transition={{ duration: 1.35, ease: [0.77, 0, 0.175, 1] }}
-              style={{
-                backgroundImage: `url(${currentHeroSlide?.image})`,
-                backgroundSize: "cover",
-                backgroundPosition: "center",
-                backgroundRepeat: "no-repeat",
-              }}
-            />
-          )}
-          {currentHeroSlide?.mediaType === "video" && (
-            <motion.video
-              className="hero-video"
-              autoPlay
-              muted
-              loop
-              playsInline
-              initial={{ opacity: 0, scale: 1.1, filter: "blur(18px) brightness(0.28)" }}
-              animate={{ opacity: heroIntroReady ? 1 : 0, scale: 1.02, filter: "blur(0px) brightness(0.42)" }}
-              transition={{ duration: 1.35, ease: [0.77, 0, 0.175, 1] }}
-            >
-              <source src={currentHeroSlide?.mediaUrl} />
-            </motion.video>
-          )}
+          <AnimatePresence mode="wait" initial={false}>
+            {currentHeroSlide?.mediaType === "image" && (
+              <motion.div
+                key={currentHeroSlide?.image || heroIndex}
+                className="hero-slide-media"
+                initial={{
+                  opacity: 0,
+                  scale: 1.12,
+                  x: heroDirection >= 0 ? 36 : -36,
+                  filter: `blur(${Math.max((currentHeroSlide?.blur || 0), 2) + 12}px) brightness(0.24) saturate(0.86)`,
+                }}
+                animate={{
+                  opacity: heroIntroReady ? 1 : 0,
+                  scale: 1,
+                  x: 0,
+                  filter: `blur(${Math.max((currentHeroSlide?.blur ?? 0), 2)}px) brightness(0.42) saturate(0.92)`,
+                }}
+                exit={{
+                  opacity: 0,
+                  scale: 1.08,
+                  x: heroDirection >= 0 ? -36 : 36,
+                  filter: `blur(${Math.max((currentHeroSlide?.blur || 0), 2) + 14}px) brightness(0.18) saturate(0.84)`,
+                }}
+                transition={{ duration: 1.15, ease: [0.77, 0, 0.175, 1] }}
+                style={{
+                  backgroundImage: `url(${currentHeroSlide?.image})`,
+                  backgroundSize: "cover",
+                  backgroundPosition: "center",
+                  backgroundRepeat: "no-repeat",
+                }}
+              />
+            )}
+            {currentHeroSlide?.mediaType === "video" && (
+              <motion.video
+                key={currentHeroSlide?.mediaUrl || heroIndex}
+                className="hero-video"
+                autoPlay
+                muted
+                loop
+                playsInline
+                initial={{
+                  opacity: 0,
+                  scale: 1.08,
+                  x: heroDirection >= 0 ? 36 : -36,
+                  filter: "blur(14px) brightness(0.24)",
+                }}
+                animate={{
+                  opacity: heroIntroReady ? 1 : 0,
+                  scale: 1,
+                  x: 0,
+                  filter: "blur(0px) brightness(0.4)",
+                }}
+                exit={{
+                  opacity: 0,
+                  scale: 1.08,
+                  x: heroDirection >= 0 ? -36 : 36,
+                  filter: "blur(16px) brightness(0.18)",
+                }}
+                transition={{ duration: 1.15, ease: [0.77, 0, 0.175, 1] }}
+              >
+                <source src={currentHeroSlide?.mediaUrl} />
+              </motion.video>
+            )}
+          </AnimatePresence>
           <div className="hero-overlay" style={{ background: `rgba(0,0,0,${Math.max((slides[heroIndex]?.overlay ?? 30), 42) / 100})` }} />
         </div>
 
