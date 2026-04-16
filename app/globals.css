@@ -5345,16 +5345,16 @@ body:has(.homepage-snap-shell) {
   .drawer-close {
     background: none;
     border: none;
-    color: var(--text);
+    color: #cca883;
     cursor: pointer;
   }
 
   .material-studio-page .drawer-close {
-    color: #fff;
+    color: #cca883;
   }
 
   .material-studio-page .drawer-close .material-symbols-outlined {
-    color: #fff;
+    color: #cca883;
   }
 
   .drawer-content {
@@ -5376,7 +5376,7 @@ body:has(.homepage-snap-shell) {
   .mobile-filter-button {
     background: none;
     border: none;
-    color: var(--text-muted);
+    color: #cca883;
     font-size: 1rem;
     letter-spacing: 0.05em;
     text-align: left;
@@ -5389,7 +5389,7 @@ body:has(.homepage-snap-shell) {
   }
 
   .mobile-filter-button.active {
-    color: var(--text);
+    color: #fff;
     font-weight: 500;
   }
 
