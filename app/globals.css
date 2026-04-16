@@ -162,7 +162,7 @@ body:has(.homepage-snap-shell) {
 .topbar {
   position: fixed;
   inset: 0 0 auto;
-  z-index: 50;
+  z-index: 120;
   padding: 0 1.5rem;
   background: transparent;
   transition:
@@ -175,11 +175,11 @@ body:has(.homepage-snap-shell) {
 
 /* Scroll state — frosted glass */
 .topbar.scrolled {
-  background: rgba(8, 8, 8, 0.44);
-  backdrop-filter: blur(22px) saturate(160%);
-  -webkit-backdrop-filter: blur(22px) saturate(160%);
-  border-bottom: 1px solid var(--line);
-  box-shadow: var(--shadow);
+  background: rgba(8, 8, 8, 0.62);
+  backdrop-filter: blur(24px) saturate(170%);
+  -webkit-backdrop-filter: blur(24px) saturate(170%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.22);
 }
 
 .topbar-nav {
@@ -4315,7 +4315,7 @@ body:has(.homepage-snap-shell) {
   font-family: var(--font-display), sans-serif;
   font-size: 0.6rem;
   letter-spacing: 0.35em;
-  color: #fff;
+  color: #cca883;
   text-transform: uppercase;
   margin-bottom: 1.8rem;
 }
@@ -4390,8 +4390,23 @@ body:has(.homepage-snap-shell) {
   color: #fff;
 }
 
+.site-footer .footer-cta-btn .hero-cta-circle {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.18);
+  box-shadow: none;
+}
+
 .site-footer .footer-cta-btn .hero-cta-circle span {
-  color: #101010;
+  color: #fff !important;
+}
+
+.site-footer .footer-cta-btn:hover .hero-cta-circle {
+  background: rgba(204, 168, 131, 0.16);
+  border-color: rgba(204, 168, 131, 0.55);
+}
+
+.site-footer .footer-cta-btn:hover .hero-cta-circle span {
+  color: #fff !important;
 }
 
 /* ── FOOTER RESPONSIVE ── */
