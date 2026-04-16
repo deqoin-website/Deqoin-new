@@ -1,6 +1,6 @@
 "use client";
 
-import { animate, motion, useAnimation, useMotionValue, useMotionValueEvent, useTransform } from "framer-motion";
+import { animate, motion, useMotionValue, useMotionValueEvent, useTransform } from "framer-motion";
 import { useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
 
 type SwipeAppointmentButtonProps = {
@@ -21,10 +21,11 @@ export default function SwipeAppointmentButton({
 }: SwipeAppointmentButtonProps) {
   const trackRef = useRef<HTMLButtonElement | null>(null);
   const x = useMotionValue(0);
-  const handleControls = useAnimation();
   const [trackWidth, setTrackWidth] = useState(0);
   const [isFilled, setIsFilled] = useState(false);
   const [hasInteracted, setHasInteracted] = useState(false);
+  const nudgeTimeoutRef = useRef<number | null>(null);
+  const nudgeCycleRef = useRef<number | null>(null);
   const maxTravel = useMemo(
     () => Math.max(0, trackWidth - HANDLE_SIZE - TRACK_PADDING * 2),
     [trackWidth],
@@ -51,31 +52,58 @@ export default function SwipeAppointmentButton({
 
   useEffect(() => {
     x.set(0);
-    handleControls.set({ x: 0 });
     setHasInteracted(false);
   }, [maxTravel, x]);
 
   useEffect(() => {
     if (maxTravel <= 0 || hasInteracted) return;
 
-    const travel = Math.min(Math.max(maxTravel * 0.22, 18), 34);
-    const timer = window.setTimeout(() => {
-      handleControls.start({
-        x: [0, travel, 0],
-        transition: {
-          duration: 1.8,
-          times: [0, 0.55, 1],
-          ease: [0.77, 0, 0.175, 1],
-        },
-      });
-    }, 900);
+    let cancelled = false;
+    const travel = maxTravel;
 
-    return () => window.clearTimeout(timer);
-  }, [handleControls, hasInteracted, maxTravel]);
+    const runNudge = async () => {
+      while (!cancelled) {
+        await new Promise<void>((resolve) => {
+          nudgeTimeoutRef.current = window.setTimeout(() => resolve(), 900);
+        });
+        if (cancelled || hasInteracted) break;
+
+        await animate(x, travel, {
+          type: "tween",
+          duration: 1.1,
+          ease: [0.77, 0, 0.175, 1],
+        }).finished;
+        if (cancelled || hasInteracted) break;
+
+        await new Promise<void>((resolve) => {
+          nudgeCycleRef.current = window.setTimeout(() => resolve(), 420);
+        });
+        if (cancelled || hasInteracted) break;
+
+        await animate(x, 0, {
+          type: "tween",
+          duration: 0.85,
+          ease: [0.77, 0, 0.175, 1],
+        }).finished;
+        if (cancelled || hasInteracted) break;
+
+        await new Promise<void>((resolve) => {
+          nudgeCycleRef.current = window.setTimeout(() => resolve(), 1800);
+        });
+      }
+    };
+
+    void runNudge();
+
+    return () => {
+      cancelled = true;
+      if (nudgeTimeoutRef.current) window.clearTimeout(nudgeTimeoutRef.current);
+      if (nudgeCycleRef.current) window.clearTimeout(nudgeCycleRef.current);
+    };
+  }, [hasInteracted, maxTravel, x]);
 
   const reset = () => {
     animate(x, 0, { type: "spring", stiffness: 420, damping: 32 });
-    handleControls.start({ x: 0, transition: { duration: 0.2 } });
   };
 
   const handleDragEnd = (_: unknown, info: { offset: { x: number }; velocity: { x: number } }) => {
