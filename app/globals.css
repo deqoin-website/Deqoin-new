@@ -2279,21 +2279,22 @@ body:has(.homepage-snap-shell) {
   display: block;
   overflow: hidden;
   background: #0f0f0f;
-  border: 1px solid var(--line) 0.06);
-  border-radius: 0;
-  transition: transform 0.65s cubic-bezier(0.165, 0.84, 0.44, 1), border-color 0.65s ease;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 1.5rem;
+  transition: transform 0.65s cubic-bezier(0.165, 0.84, 0.44, 1), border-color 0.65s ease, box-shadow 0.65s ease;
 }
 
 .team-card-gallery:hover {
   transform: translateY(-8px);
   border-color: rgba(204, 168, 131, 0.28);
+  box-shadow: 0 32px 80px rgba(0, 0, 0, 0.6);
 }
 
 .team-card-img {
   position: relative;
-  aspect-ratio: 4 / 5;
+  aspect-ratio: 16 / 9;
   overflow: hidden;
-  border-radius: 0;
+  border-radius: 1.5rem;
 }
 
 .team-card-img img {
@@ -2471,8 +2472,8 @@ body:has(.homepage-snap-shell) {
   }
 
   .team-mobile-slider {
-    max-width: min(60rem, 88vw);
-    margin: 0.65rem auto 0;
+    max-width: min(92vw, 90rem);
+    margin: 2rem auto 0;
   }
 
   .team-slider-arrow {
@@ -2481,7 +2482,7 @@ body:has(.homepage-snap-shell) {
 
   .team-home-mobile-slider {
     grid-template-columns: minmax(0, 1fr);
-    max-width: min(60rem, 88vw);
+    max-width: min(92vw, 90rem);
     width: 100%;
   }
 
@@ -2528,7 +2529,7 @@ body:has(.homepage-snap-shell) {
   }
 
   .team-mobile-card {
-    max-width: min(88vw, 60rem);
+    max-width: min(92vw, 90rem);
     margin: 0 auto;
     width: 100%;
   }
@@ -2539,26 +2540,26 @@ body:has(.homepage-snap-shell) {
 
   .team-home-mobile-slider {
     margin-top: 1.25rem;
-    min-height: clamp(26rem, 64svh, 40rem);
+    min-height: clamp(28rem, 64svh, 45rem);
   }
 
   .team-home-mobile-slider .team-card-gallery {
-    min-height: clamp(26rem, 64svh, 40rem);
+    min-height: clamp(28rem, 64svh, 45rem);
   }
 
   .team-home-mobile-slider .team-card-img {
-    aspect-ratio: 4 / 4.35;
-    min-height: clamp(26rem, 64svh, 40rem);
+    aspect-ratio: 16 / 9;
+    min-height: clamp(28rem, 64svh, 45rem);
   }
 
   .homepage-team-section .team-home-mobile-slider {
-    min-height: clamp(26rem, 64svh, 40rem);
-    max-width: min(88vw, 60rem);
+    min-height: clamp(28rem, 64svh, 45rem);
+    max-width: min(92vw, 90rem);
   }
 
   .homepage-team-section .team-home-mobile-slider .team-card-gallery,
   .homepage-team-section .team-home-mobile-slider .team-card-img {
-    min-height: clamp(26rem, 64svh, 40rem);
+    min-height: clamp(28rem, 64svh, 45rem);
   }
 
   .team-home-mobile-slider .team-card-content {
@@ -2592,18 +2593,18 @@ body:has(.homepage-snap-shell) {
 }
 
   .homepage-team-section .team-mobile-slider {
-    max-width: min(88vw, 60rem);
+    max-width: min(92vw, 90rem);
     margin-left: auto;
     margin-right: auto;
   }
 
   .homepage-team-section .team-card-img {
-    aspect-ratio: 4 / 4.35;
+    aspect-ratio: 16 / 9;
   }
 
   .homepage-team-section .team-card-gallery {
     min-height: auto;
-    min-height: clamp(26rem, 54svh, 36rem);
+    min-height: clamp(28rem, 60svh, 42rem);
   }
 
   .homepage-team-section .team-card-content {
@@ -2646,15 +2647,15 @@ body:has(.homepage-snap-shell) {
   }
 
   .homepage-team-section .team-mobile-slider {
-    max-width: min(88vw, 22rem);
+    max-width: min(94vw, 40rem);
   }
 
   .homepage-team-section .team-card-gallery {
-    min-height: clamp(22rem, 68svh, 32rem);
+    min-height: clamp(26rem, 60svh, 36rem);
   }
 
   .homepage-team-section .team-card-img {
-    aspect-ratio: 4 / 4.1;
+    aspect-ratio: 4 / 3;
   }
 }
 
@@ -2662,7 +2663,7 @@ body:has(.homepage-snap-shell) {
   .homepage-team-section .team-mobile-slider,
   .homepage-team-section .team-home-mobile-slider,
   .team-mobile-card {
-    max-width: min(88vw, 19rem);
+    max-width: min(95vw, 30rem);
   }
 
   .homepage-team-section .team-card-gallery,
@@ -2670,7 +2671,7 @@ body:has(.homepage-snap-shell) {
   .homepage-team-section .team-home-mobile-slider,
   .team-home-mobile-slider .team-card-gallery,
   .team-home-mobile-slider .team-card-img {
-    min-height: clamp(20rem, 64svh, 30rem);
+    min-height: clamp(22rem, 58svh, 32rem);
   }
 
   .homepage-team-section .team-card-copy h3,
