@@ -595,7 +595,7 @@ export default function Page() {
         <section className="services-section snap-section homepage-section homepage-services-section">
         <div className="section-inner homepage-section-inner homepage-services-inner">
           <div className="section-heading">
-            <div>
+            <div style={{ background: "#000", padding: "1.75rem 2rem", borderRadius: "1.5rem", boxShadow: "0 24px 60px rgba(0, 0, 0, 0.32)" }}>
               <span className="section-small-label" style={{ letterSpacing: "0.5em", color: "#cca883", fontSize: "0.75rem", marginBottom: "1rem", display: "block" }}>STUDIO SELECTION</span>
               <h2 style={{ marginBottom: "0.5rem", textTransform: "uppercase", color: "#fff" }}>DESIGN & COLLECTION</h2>
               <span style={{ 
