@@ -440,20 +440,20 @@ export default function Page() {
             className="hero-slide active"
             initial={{
               opacity: 0,
-              x: heroDirection >= 0 ? 90 : -90,
-              scale: 1.01,
+              scale: 1.08,
+              filter: "blur(14px)",
             }}
             animate={{
               opacity: 1,
-              x: 0,
               scale: 1,
+              filter: "blur(0px)",
             }}
             exit={{
               opacity: 0,
-              x: heroDirection >= 0 ? -90 : 90,
-              scale: 1.01,
+              scale: 1.12,
+              filter: "blur(18px)",
             }}
-            transition={{ duration: 0.75, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ duration: 1.25, ease: [0.77, 0, 0.175, 1] }}
             style={{ backgroundColor: "#000" }}
           >
             {slides[heroIndex]?.mediaType === 'image' && (
@@ -461,18 +461,21 @@ export default function Page() {
                 key={slides[heroIndex]?.image}
                 className="hero-slide-media"
                 initial={{
-                  scale: 1.08,
-                  filter: `blur(${slides[heroIndex]?.blur || 0}px) brightness(0.42)`,
+                  scale: 1.12,
+                  opacity: 0,
+                  filter: `blur(${Math.max((slides[heroIndex]?.blur || 0), 2)}px) brightness(0.34) saturate(0.92)`,
                 }}
                 animate={{
-                  scale: 1.05,
-                  filter: `blur(${slides[heroIndex]?.blur ?? 0}px) brightness(0.54)`,
+                  scale: 1.02,
+                  opacity: 1,
+                  filter: `blur(${Math.max((slides[heroIndex]?.blur ?? 0), 2)}px) brightness(0.45) saturate(0.92)`,
                 }}
                 exit={{
-                  scale: 1.08,
-                  filter: `blur(${slides[heroIndex]?.blur || 0}px) brightness(0.42)`,
+                  scale: 1.15,
+                  opacity: 0,
+                  filter: `blur(${Math.max((slides[heroIndex]?.blur || 0), 2)}px) brightness(0.3) saturate(0.88)`,
                 }}
-                transition={{ duration: 0.75, ease: [0.16, 1, 0.3, 1] }}
+                transition={{ duration: 1.25, ease: [0.77, 0, 0.175, 1] }}
                 style={{
                   backgroundImage: `url(${slides[heroIndex]?.image})`,
                   backgroundSize: "cover",
