@@ -136,7 +136,6 @@ export default function SwipeAppointmentButton({
         <span className={`swipe-appointment-label ${isFilled ? "is-dark" : ""}`}>RANDEVU TALEP EDİNİZ</span>
         <motion.div
           className="swipe-appointment-handle"
-          animate={handleControls}
           style={{ x }}
           drag="x"
           dragConstraints={{ left: 0, right: maxTravel }}
