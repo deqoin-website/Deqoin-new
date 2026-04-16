@@ -783,7 +783,7 @@ export default function Page() {
             <div className="about-text">
               <div className="about-label-row">
                 <span className="vertical-text">Atölye Felsefesi</span>
-                <p>
+                <p style={{ color: "#fff" }}>
                   Mimarlığın yaşayan bir varlık olduğu ilkesiyle kurulan DEQOIN, yapı
                   mühendisliğinin soğuk hassasiyetini, kişiye özel iç mekanların sıcak ruhuyla
                   birleştiriyor. Biz sadece ev inşa etmiyoruz; atmosferler kurguluyoruz. Her proje
