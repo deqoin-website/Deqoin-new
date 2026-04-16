@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { usePathname } from "next/navigation";
 import ArchitecturalLoader from "./ArchitecturalLoader";
 
 type ArchitecturalLoaderGateProps = {
@@ -9,17 +8,20 @@ type ArchitecturalLoaderGateProps = {
 };
 
 export default function ArchitecturalLoaderGate({ logoSrc }: ArchitecturalLoaderGateProps) {
-  const pathname = usePathname();
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(() => {
+    if (typeof window === "undefined") return true;
+    return !window.sessionStorage.getItem("deqoin_loader_seen");
+  });
 
   useEffect(() => {
-    const timer = window.setTimeout(() => setIsLoading(false), 1200);
+    if (!isLoading) return;
+
+    const timer = window.setTimeout(() => {
+      window.sessionStorage.setItem("deqoin_loader_seen", "1");
+      setIsLoading(false);
+    }, 1200);
     return () => window.clearTimeout(timer);
-  }, [pathname]);
-
-  useEffect(() => {
-    setIsLoading(true);
-  }, [pathname]);
+  }, [isLoading]);
 
   return <ArchitecturalLoader isLoading={isLoading} logoSrc={logoSrc} />;
 }
