@@ -226,6 +226,184 @@ function GaleriContent() {
         </div>
       </div>
       <ProjectInsightPanel project={selectedProject} onClose={() => setActiveProjectSlug(null)} />
+
+      <style jsx>{`
+        .galeri-page {
+          background: #080808;
+          color: #fff;
+        }
+
+        .galeri-header-section {
+          margin-bottom: 2rem;
+        }
+
+        .galeri-title {
+          font-family: var(--font-display), sans-serif;
+          font-size: clamp(2.6rem, 7vw, 5.5rem);
+          font-weight: 200;
+          letter-spacing: 0.1em;
+          color: #fff;
+          line-height: 0.95;
+          margin: 0;
+          text-transform: uppercase;
+        }
+
+        .galeri-subtitle {
+          color: #cca883;
+          max-width: 30rem;
+          line-height: 1.6;
+          letter-spacing: 0.35em;
+          font-size: 0.72rem;
+          text-transform: uppercase;
+          margin-top: 1rem;
+        }
+
+        .galeri-page .studio-search-container {
+          background: rgba(8, 8, 8, 0.82) !important;
+          border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .galeri-page .studio-search-bar {
+          background: rgba(18, 18, 18, 0.9);
+        }
+
+        .galeri-page .studio-search-bar input,
+        .galeri-page .studio-search-bar input::placeholder,
+        .galeri-page .studio-search-bar .material-symbols-outlined {
+          color: #cca883;
+        }
+
+        .galeri-page .mobile-filter-toggle,
+        .galeri-page .filter-button,
+        .galeri-page .mobile-filter-button,
+        .galeri-page .drawer-header h3 {
+          color: #fff;
+        }
+
+        .galeri-page .filter-group h4,
+        .galeri-page .mobile-filter-button:hover,
+        .galeri-page .filter-button:hover,
+        .galeri-page .mobile-filter-button .material-symbols-outlined,
+        .galeri-page .filter-button.active::after {
+          color: #cca883;
+        }
+
+        .galeri-page .project-card-gallery-sensory h4,
+        .galeri-page .project-card-gallery-sensory .vertical-text {
+          color: #fff;
+          text-shadow: 0 2px 18px rgba(0, 0, 0, 0.35);
+        }
+
+        .galeri-page .project-card-gallery-sensory .project-overlay {
+          background: linear-gradient(180deg, rgba(0,0,0,0.1), rgba(0,0,0,0.68));
+        }
+
+        .galeri-page .project-card-gallery-sensory .project-slide-glow {
+          filter: blur(0px);
+          opacity: 0.85;
+        }
+
+        .galeri-page .project-detail-sheet {
+          color: #fff;
+        }
+
+        @media (max-width: 1024px) {
+          .galeri-page .project-grid {
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+          }
+        }
+
+        @media (max-width: 767px) {
+          .galeri-page {
+            overflow-x: hidden;
+          }
+
+          .galeri-page .section-inner {
+            padding-top: 3.5rem;
+            padding-left: 1rem;
+            padding-right: 1rem;
+          }
+
+          .galeri-header-section {
+            margin-bottom: 1.5rem;
+          }
+
+          .galeri-title {
+            font-size: clamp(2.2rem, 12vw, 3.4rem);
+            letter-spacing: 0.08em;
+          }
+
+          .galeri-subtitle {
+            font-size: 0.62rem;
+            letter-spacing: 0.28em;
+            max-width: 100%;
+          }
+
+          .galeri-page .studio-search-container {
+            position: relative !important;
+            top: auto !important;
+            margin-bottom: 2rem;
+            padding-left: 0;
+            padding-right: 0;
+          }
+
+          .galeri-page .studio-search-bar {
+            padding: 0.35rem 1rem;
+          }
+
+          .galeri-page .studio-search-bar input {
+            font-size: 0.85rem;
+            letter-spacing: 0.04em;
+          }
+
+          .galeri-page .mobile-filter-toggle {
+            width: 100%;
+            padding: 1rem;
+            letter-spacing: 0.22em;
+          }
+
+          .galeri-page .studio-main {
+            gap: 1.5rem;
+          }
+
+          .galeri-page .studio-sidebar {
+            display: none;
+          }
+
+          .galeri-page .project-grid.project-grid-sensory {
+            width: 100%;
+            margin-left: 0;
+            margin-right: 0;
+            padding: 0;
+            grid-template-columns: 1fr;
+            gap: 1rem;
+          }
+
+          .galeri-page .project-card-gallery-sensory {
+            height: 72svh;
+            min-height: 72svh;
+            border-radius: 1.1rem !important;
+          }
+
+          .galeri-page .project-card-gallery-sensory h4 {
+            bottom: 4rem;
+            right: 0.8rem;
+            font-size: 1rem;
+            max-width: 70vw;
+          }
+
+          .galeri-page .project-card-gallery-sensory p,
+          .galeri-page .project-card-gallery-sensory .vertical-text {
+            bottom: 2rem;
+            font-size: 0.56rem;
+            letter-spacing: 0.34em;
+          }
+
+          .galeri-page .studio-mobile-drawer {
+            width: min(88vw, 340px);
+          }
+        }
+      `}</style>
     </main>
   );
 }
