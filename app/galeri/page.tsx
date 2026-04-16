@@ -104,7 +104,7 @@ function GaleriContent() {
         </div>
 
         {/* SEARCH & MOBILE FILTER BAR */}
-        <div className="studio-search-container gallery-snap-point" style={{ position: 'sticky', top: '80px', zIndex: 100, background: 'rgba(10,10,10,0.8)', backdropFilter: 'blur(20px)', borderBottom: '1px solid rgba(255,255,255,0.05)', marginBottom: '4rem' }}>
+        <div className="studio-search-container gallery-snap-point galeri-filter-bar" style={{ position: 'sticky', top: '80px', zIndex: 100, background: 'rgba(10,10,10,0.8)', backdropFilter: 'blur(20px)', borderBottom: '1px solid rgba(255,255,255,0.05)', marginBottom: '4rem' }}>
           <div className="studio-search-bar">
             <span className="material-symbols-outlined">search</span>
             <input 
@@ -128,9 +128,9 @@ function GaleriContent() {
         {/* MOBILE DRAWER */}
         <div className={`studio-mobile-drawer-overlay ${isMobileDrawerOpen ? 'active' : ''}`} onClick={() => setIsMobileDrawerOpen(false)} />
         <div className={`studio-mobile-drawer ${isMobileDrawerOpen ? 'active' : ''}`}>
-          <div className="drawer-header">
+          <div className="drawer-header galeri-drawer-header">
             <h3>KATEGORİLER</h3>
-            <button className="drawer-close" onClick={() => setIsMobileDrawerOpen(false)}>
+            <button className="drawer-close galeri-drawer-close" onClick={() => setIsMobileDrawerOpen(false)} aria-label="Filtreleri kapat">
               <span className="material-symbols-outlined">close</span>
             </button>
           </div>
@@ -342,11 +342,12 @@ function GaleriContent() {
           }
 
           .galeri-page .studio-search-container {
-            position: relative !important;
-            top: auto !important;
+            position: sticky !important;
+            top: 6rem !important;
             margin-bottom: 2rem;
             padding-left: 0;
             padding-right: 0;
+            z-index: 110;
           }
 
           .galeri-page .studio-search-bar {
@@ -410,6 +411,26 @@ function GaleriContent() {
 
           .galeri-page .studio-mobile-drawer {
             width: min(88vw, 340px);
+          }
+
+          .galeri-page .galeri-drawer-header {
+            padding: 1.5rem 1.25rem;
+          }
+
+          .galeri-page .galeri-drawer-close {
+            width: 2.75rem;
+            height: 2.75rem;
+            display: grid;
+            place-items: center;
+            color: #fff;
+            border: 1px solid rgba(255,255,255,0.12);
+            background: rgba(255,255,255,0.04);
+            border-radius: 999px;
+          }
+
+          .galeri-page .galeri-drawer-close .material-symbols-outlined {
+            color: #fff;
+            font-size: 1.25rem;
           }
         }
       `}</style>
