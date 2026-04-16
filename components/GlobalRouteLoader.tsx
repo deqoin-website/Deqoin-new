@@ -14,7 +14,7 @@ export default function GlobalRouteLoader({ logoSrc }: GlobalRouteLoaderProps) {
 
   useEffect(() => {
     setIsVisible(true);
-    const timer = window.setTimeout(() => setIsVisible(false), 1200);
+    const timer = window.setTimeout(() => setIsVisible(false), 1900);
     return () => window.clearTimeout(timer);
   }, [pathname]);
 
