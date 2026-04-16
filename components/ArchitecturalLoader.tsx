@@ -5,6 +5,7 @@ import styles from "./ArchitecturalLoader.module.css";
 
 type ArchitecturalLoaderProps = {
   isLoading: boolean;
+  logoSrc?: string;
 };
 
 const panelTransition = {
@@ -12,7 +13,7 @@ const panelTransition = {
   ease: [0.77, 0, 0.175, 1] as const,
 };
 
-export default function ArchitecturalLoader({ isLoading }: ArchitecturalLoaderProps) {
+export default function ArchitecturalLoader({ isLoading, logoSrc = "/images/logo-new.jpeg" }: ArchitecturalLoaderProps) {
   return (
     <AnimatePresence>
       {isLoading ? (
@@ -46,7 +47,7 @@ export default function ArchitecturalLoader({ isLoading }: ArchitecturalLoaderPr
             exit={{ opacity: 0, y: -6 }}
             transition={{ duration: 0.7, ease: [0.77, 0, 0.175, 1] }}
           >
-            DEQOIN
+            <img src={logoSrc} alt="DEQOIN" className={styles.brandLogo} />
           </motion.div>
         </motion.div>
       ) : null}

@@ -37,22 +37,21 @@
   inset: 0;
   display: grid;
   place-items: center;
-  color: #f4efe8;
-  font-family: var(--font-display), sans-serif;
-  font-size: clamp(2rem, 6vw, 4.25rem);
-  letter-spacing: 0.45em;
-  text-indent: 0.45em;
-  text-transform: uppercase;
   user-select: none;
-  text-rendering: geometricPrecision;
   pointer-events: none;
   mix-blend-mode: screen;
 }
 
+.brandLogo {
+  display: block;
+  width: min(42vw, 20rem);
+  height: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 12px 30px rgba(0, 0, 0, 0.45));
+}
+
 @media (max-width: 767px) {
-  .brandMark {
-    font-size: clamp(1.6rem, 10vw, 2.4rem);
-    letter-spacing: 0.35em;
-    text-indent: 0.35em;
+  .brandLogo {
+    width: min(58vw, 14rem);
   }
 }

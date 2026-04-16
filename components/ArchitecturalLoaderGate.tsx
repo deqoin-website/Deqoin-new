@@ -4,7 +4,11 @@ import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import ArchitecturalLoader from "./ArchitecturalLoader";
 
-export default function ArchitecturalLoaderGate() {
+type ArchitecturalLoaderGateProps = {
+  logoSrc?: string;
+};
+
+export default function ArchitecturalLoaderGate({ logoSrc }: ArchitecturalLoaderGateProps) {
   const pathname = usePathname();
   const [isLoading, setIsLoading] = useState(true);
 
@@ -17,5 +21,5 @@ export default function ArchitecturalLoaderGate() {
     setIsLoading(true);
   }, [pathname]);
 
-  return <ArchitecturalLoader isLoading={isLoading} />;
+  return <ArchitecturalLoader isLoading={isLoading} logoSrc={logoSrc} />;
 }

@@ -116,7 +116,7 @@ export default async function RootLayout({
             {!isAdminPath && <Header />}
             {isAdminPath && <Header />} {/* Keep header for admin if needed, or modify logic */}
             {children}
-            {!isAdminPath && <ArchitecturalLoaderGate />}
+            {!isAdminPath && <ArchitecturalLoaderGate logoSrc={settings?.logoUrl || "/images/logo-new.jpeg"} />}
             {!isAdminPath && <Footer />}
           </>
         )}
