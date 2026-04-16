@@ -115,9 +115,6 @@ export default function Header() {
             İLETİŞİM
           </Link>
         </nav>
-        <div className="mobile-menu-footer">
-          <span>DEQOIN ARCHITECTURAL STUDIO</span>
-        </div>
       </div>
 
       {/* World-Class Search Overlay */}
