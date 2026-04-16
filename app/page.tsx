@@ -21,6 +21,7 @@ export default function Page() {
   const [activeProjectPanelSlug, setActiveProjectPanelSlug] = useState<string | null>(null);
   const [teamSlideIndex, setTeamSlideIndex] = useState(0);
   const [teamSlideDirection, setTeamSlideDirection] = useState(1);
+  const [heroIntroReady, setHeroIntroReady] = useState(false);
   const heroTouchStartX = useRef<number | null>(null);
   const heroTouchStartY = useRef<number | null>(null);
   const projectTouchStartX = useRef<number | null>(null);
@@ -109,6 +110,8 @@ export default function Page() {
     fetchSlides();
     fetchServiceCards();
 
+    const introTimer = window.setTimeout(() => setHeroIntroReady(true), 220);
+
     const interval = window.setInterval(() => {
       setSlides(current => {
         if (current.length > 0) {
@@ -118,7 +121,10 @@ export default function Page() {
       });
     }, 8000);
 
-    return () => window.clearInterval(interval);
+    return () => {
+      window.clearInterval(interval);
+      window.clearTimeout(introTimer);
+    };
   }, []);
 
   const filteredProjects = useMemo(() => projectsData, []);
@@ -434,28 +440,8 @@ export default function Page() {
           onTouchStart={handleHeroTouchStart}
           onTouchEnd={handleHeroTouchEnd}
         >
-        <AnimatePresence mode="wait" initial={false}>
-          <motion.div
-            key={heroIndex}
-            className="hero-slide active"
-            initial={{
-              opacity: 0,
-              scale: 1.08,
-              filter: "blur(14px)",
-            }}
-            animate={{
-              opacity: 1,
-              scale: 1,
-              filter: "blur(0px)",
-            }}
-            exit={{
-              opacity: 0,
-              scale: 1.12,
-              filter: "blur(18px)",
-            }}
-            transition={{ duration: 1.25, ease: [0.77, 0, 0.175, 1] }}
-            style={{ backgroundColor: "#000" }}
-          >
+        <div className="hero-slide active" style={{ backgroundColor: "#000" }}>
+          <AnimatePresence mode="wait" initial={false}>
             {slides[heroIndex]?.mediaType === 'image' && (
               <motion.div
                 key={slides[heroIndex]?.image}
@@ -463,19 +449,19 @@ export default function Page() {
                 initial={{
                   scale: 1.12,
                   opacity: 0,
-                  filter: `blur(${Math.max((slides[heroIndex]?.blur || 0), 2)}px) brightness(0.34) saturate(0.92)`,
+                  filter: `blur(${Math.max((slides[heroIndex]?.blur || 0), 2) + 10}px) brightness(0.28) saturate(0.9)`,
                 }}
                 animate={{
-                  scale: 1.02,
-                  opacity: 1,
+                  scale: heroIntroReady ? 1.02 : 1.08,
+                  opacity: heroIntroReady ? 1 : 0,
                   filter: `blur(${Math.max((slides[heroIndex]?.blur ?? 0), 2)}px) brightness(0.45) saturate(0.92)`,
                 }}
                 exit={{
                   scale: 1.15,
                   opacity: 0,
-                  filter: `blur(${Math.max((slides[heroIndex]?.blur || 0), 2)}px) brightness(0.3) saturate(0.88)`,
+                  filter: `blur(${Math.max((slides[heroIndex]?.blur || 0), 2) + 12}px) brightness(0.24) saturate(0.86)`,
                 }}
-                transition={{ duration: 1.25, ease: [0.77, 0, 0.175, 1] }}
+                transition={{ duration: 1.3, ease: [0.77, 0, 0.175, 1] }}
                 style={{
                   backgroundImage: `url(${slides[heroIndex]?.image})`,
                   backgroundSize: "cover",
@@ -485,20 +471,24 @@ export default function Page() {
               />
             )}
             {slides[heroIndex]?.mediaType === 'video' && (
-              <video 
+              <motion.video
                 key={slides[heroIndex]?.mediaUrl}
                 className="hero-video"
-                autoPlay 
-                muted 
-                loop 
+                autoPlay
+                muted
+                loop
                 playsInline
+                initial={{ opacity: 0, scale: 1.1, filter: "blur(18px) brightness(0.28)" }}
+                animate={{ opacity: heroIntroReady ? 1 : 0, scale: 1.02, filter: "blur(0px) brightness(0.42)" }}
+                exit={{ opacity: 0, scale: 1.14, filter: "blur(20px) brightness(0.2)" }}
+                transition={{ duration: 1.3, ease: [0.77, 0, 0.175, 1] }}
               >
                 <source src={slides[heroIndex]?.mediaUrl} />
-              </video>
+              </motion.video>
             )}
-            <div className="hero-overlay" style={{ background: `rgba(0,0,0,${Math.max((slides[heroIndex]?.overlay ?? 30), 42) / 100})` }} />
-          </motion.div>
-        </AnimatePresence>
+          </AnimatePresence>
+          <div className="hero-overlay" style={{ background: `rgba(0,0,0,${Math.max((slides[heroIndex]?.overlay ?? 30), 42) / 100})` }} />
+        </div>
 
         <div className="hero-content" style={{ textAlign: "center", display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", gap: "3rem", height: "100%", width: "100%" }}>
           <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "1.5rem" }}>
