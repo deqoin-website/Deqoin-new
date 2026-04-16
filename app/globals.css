@@ -2621,35 +2621,35 @@ body:has(.homepage-snap-shell) {
   }
 
   .homepage-team-section .team-card-img {
-    aspect-ratio: 4 / 5.15;
+    aspect-ratio: 4 / 4.95;
   }
 
   .homepage-team-section .team-card-gallery {
     min-height: auto;
-    min-height: calc(88svh - 4.5rem);
-    min-height: calc(88dvh - 4.5rem);
+    min-height: calc(84svh - 4.5rem);
+    min-height: calc(84dvh - 4.5rem);
   }
 
   .homepage-team-section .team-card-content {
-    padding: 0.85rem 0.85rem 0.95rem;
+    padding: 0.78rem 0.78rem 0.88rem;
   }
 
   .homepage-team-section .team-card-role-vertical {
-    font-size: 0.36rem;
-    letter-spacing: 0.18em;
+    font-size: 0.34rem;
+    letter-spacing: 0.16em;
   }
 
   .homepage-team-section .team-card-copy h3 {
-    font-size: clamp(1.15rem, 4.6vw, 1.7rem);
+    font-size: clamp(1.05rem, 4.2vw, 1.55rem);
     line-height: 0.88;
   }
 
   .homepage-team-section .team-card-index {
-    font-size: 0.64rem;
+    font-size: 0.6rem;
   }
 
   .homepage-team-section .team-card-footer .material-symbols-outlined {
-    font-size: 0.84rem;
+    font-size: 0.8rem;
   }
 
 .homepage-team-section .team-mobile-slide {
