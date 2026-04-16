@@ -1140,6 +1140,23 @@ body:has(.homepage-snap-shell) {
   transform: translateX(5px);
 }
 
+.service-card-material-highlight .service-copy h3 {
+  color: #cca883;
+  font-size: clamp(3.25rem, 6.4vw, 5.35rem);
+}
+
+.service-card-material-highlight .service-copy p {
+  color: #cca883 !important;
+  font-size: 1.55rem !important;
+  letter-spacing: 0.28em !important;
+}
+
+.service-card-material-highlight .service-copy .vertical-text {
+  color: #cca883 !important;
+  font-size: 1rem;
+  letter-spacing: 0.46em;
+}
+
 .section-inner {
   max-width: 80rem;
   margin: 0 auto;

@@ -595,7 +595,11 @@ export default function Page() {
         </div>
         <div className="services-grid">
           {serviceCards.map((card) => (
-            <a key={card.title} href={card.href} className="service-card">
+            <a
+              key={card.title}
+              href={card.href}
+              className={`service-card ${card.title === "Material Studio" ? "service-card-material-highlight" : ""}`}
+            >
               <img 
                 src={card.image} 
                 alt={card.title} 
