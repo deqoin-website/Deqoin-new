@@ -113,8 +113,8 @@ body:has(.homepage-snap-shell) {
 }
 
 .homepage-snap-shell .homepage-services-inner {
-  padding-top: clamp(2rem, 4vh, 3rem);
-  padding-bottom: clamp(2rem, 4vh, 3rem);
+  padding-top: 0;
+  padding-bottom: 0;
 }
 
 .homepage-snap-shell .homepage-services-section {
@@ -126,6 +126,7 @@ body:has(.homepage-snap-shell) {
 .homepage-snap-shell .homepage-services-section .services-grid {
   width: 100%;
   flex: 1;
+  min-height: 100svh;
 }
 
 .homepage-snap-shell .homepage-projects-section .section-heading,
@@ -163,6 +164,12 @@ body:has(.homepage-snap-shell) {
   color: #fff;
 }
 
+.homepage-snap-shell .homepage-services-section .section-heading,
+.homepage-snap-shell .homepage-projects-section .section-heading,
+.homepage-snap-shell .homepage-team-section .section-heading {
+  display: none;
+}
+
 .homepage-snap-shell .process-header h2,
 .homepage-snap-shell .section-heading h2,
 .homepage-snap-shell .process-step h3,
@@ -175,6 +182,18 @@ body:has(.homepage-snap-shell) {
 
 .homepage-snap-shell .process-step {
   border-color: rgba(255, 255, 255, 0.08);
+}
+
+.homepage-snap-shell .homepage-services-section .service-card {
+  min-height: 100svh;
+}
+
+.homepage-snap-shell .homepage-projects-section .project-slider-window {
+  min-height: 100svh;
+}
+
+.homepage-snap-shell .homepage-team-section .team-mobile-slider {
+  min-height: 100svh;
 }
 
 .homepage-footer-snap {
