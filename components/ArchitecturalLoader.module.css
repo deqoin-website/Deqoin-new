@@ -14,13 +14,25 @@
   pointer-events: auto;
 }
 
+.ambientGlow {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at center, rgba(204, 168, 131, 0.12) 0%, rgba(204, 168, 131, 0.05) 22%, transparent 55%),
+    radial-gradient(circle at center, rgba(255, 255, 255, 0.05) 0%, transparent 38%);
+  filter: blur(18px);
+  pointer-events: none;
+}
+
 .panelLeft,
 .panelRight {
   position: absolute;
   top: 0;
   bottom: 0;
   width: 50vw;
-  background: linear-gradient(180deg, #0f0f0f 0%, #0b0b0b 100%);
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.03), transparent 18%),
+    linear-gradient(180deg, #0f0f0f 0%, #0b0b0b 100%);
   will-change: transform;
 }
 
@@ -40,18 +52,19 @@
   user-select: none;
   pointer-events: none;
   mix-blend-mode: screen;
+  z-index: 2;
 }
 
 .brandLogo {
   display: block;
-  width: min(42vw, 20rem);
+  width: min(34vw, 18rem);
   height: auto;
   object-fit: contain;
-  filter: drop-shadow(0 12px 30px rgba(0, 0, 0, 0.45));
+  filter: drop-shadow(0 16px 36px rgba(0, 0, 0, 0.5));
 }
 
 @media (max-width: 767px) {
   .brandLogo {
-    width: min(58vw, 14rem);
+    width: min(56vw, 13rem);
   }
 }

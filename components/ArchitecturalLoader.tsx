@@ -9,7 +9,7 @@ type ArchitecturalLoaderProps = {
 };
 
 const panelTransition = {
-  duration: 1.2,
+  duration: 1.35,
   ease: [0.77, 0, 0.175, 1] as const,
 };
 
@@ -25,6 +25,13 @@ export default function ArchitecturalLoader({ isLoading, logoSrc = "/images/logo
           exit={{ opacity: 0 }}
           transition={{ duration: 0.25, ease: "easeOut" }}
         >
+          <motion.div
+            className={styles.ambientGlow}
+            initial={{ opacity: 0, scale: 0.92 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 1.06 }}
+            transition={{ duration: 0.9, ease: [0.77, 0, 0.175, 1] }}
+          />
           <motion.div
             className={styles.panelLeft}
             initial={{ x: 0 }}
@@ -42,10 +49,10 @@ export default function ArchitecturalLoader({ isLoading, logoSrc = "/images/logo
 
           <motion.div
             className={styles.brandMark}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -6 }}
-            transition={{ duration: 0.7, ease: [0.77, 0, 0.175, 1] }}
+            initial={{ opacity: 0, y: 12, scale: 0.985, filter: "blur(2px)" }}
+            animate={{ opacity: 1, y: 0, scale: 1, filter: "blur(0px)" }}
+            exit={{ opacity: 0, y: -8, scale: 1.01, filter: "blur(3px)" }}
+            transition={{ duration: 0.8, ease: [0.77, 0, 0.175, 1] }}
           >
             <img src={logoSrc} alt="DEQOIN" className={styles.brandLogo} />
           </motion.div>
