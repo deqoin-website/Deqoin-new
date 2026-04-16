@@ -5271,6 +5271,15 @@ body:has(.homepage-snap-shell) {
     position: relative;
   }
 
+  .material-studio-page .mobile-filter-toggle {
+    color: #cca883;
+    border-color: rgba(204, 168, 131, 0.3);
+  }
+
+  .material-studio-page .mobile-filter-toggle .material-symbols-outlined {
+    color: #cca883;
+  }
+
   .mobile-filter-toggle .active-dot {
     width: 6px;
     height: 6px;
@@ -5338,6 +5347,14 @@ body:has(.homepage-snap-shell) {
     border: none;
     color: var(--text);
     cursor: pointer;
+  }
+
+  .material-studio-page .drawer-close {
+    color: #fff;
+  }
+
+  .material-studio-page .drawer-close .material-symbols-outlined {
+    color: #fff;
   }
 
   .drawer-content {
