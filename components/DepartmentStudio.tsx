@@ -22,7 +22,6 @@ interface DepartmentStudioProps {
   images?: string[];
   projects: ProjectDetail[];
   categories?: { label: string; value: Category | string }[];
-  process?: { title: string; desc: string }[];
   focusAreas?: { title: string; icon: string; desc: string }[];
   workflowType?: 'design' | 'material' | 'execution';
 }
@@ -57,7 +56,6 @@ export default function DepartmentStudio({
   images, 
   projects, 
   categories,
-  process,
   focusAreas,
   workflowType = 'design'
 }: DepartmentStudioProps) {
@@ -141,22 +139,6 @@ export default function DepartmentStudio({
                  <h2 className="vision-title">Fikirlerin Mimari Gerçekliğe Dönüşümü</h2>
                </div>
                <p className="vision-text">{description}</p>
-            </div>
-          )}
-
-          {process && process.length > 0 && (
-            <div className="service-process-block">
-              <h3 className="process-main-title">İŞ SÜRECİMİZ</h3>
-              <div className="process-grid">
-                {process.map((step, idx) => (
-                  <div key={idx} className="process-card">
-                    <span className="process-num">0{idx + 1}</span>
-                    <h4 className="process-step-title">{step.title}</h4>
-                    <p className="process-step-desc">{step.desc}</p>
-                    <div className="process-step-line" />
-                  </div>
-                ))}
-              </div>
             </div>
           )}
 

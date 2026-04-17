@@ -54,7 +54,6 @@ export default function ExecutionDetail({ params }: { params: Promise<ServicePar
   const heroImage = content?.image || "";
   const gallery = content?.sliderImages || [];
   const categories = content?.categories || [];
-  const process = content?.process || [];
   const focusAreas = content?.focusAreas || [];
 
   return (
@@ -69,7 +68,6 @@ export default function ExecutionDetail({ params }: { params: Promise<ServicePar
           images={gallery}
           projects={projectsData}
           categories={categories}
-          process={process}
           focusAreas={focusAreas}
           workflowType="execution"
         />
