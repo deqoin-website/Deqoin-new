@@ -2,6 +2,7 @@ import type { Metadata, ResolvingMetadata } from "next";
 import { Manrope, Noto_Serif, Outfit, Playfair_Display, Smooch_Sans } from "next/font/google";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import InteractiveBackground from "@/components/InteractiveBackground";
 import MaintenancePage from "./maintenance/page";
 import connectToDatabase from "@/lib/mongodb";
 import Settings from "@/models/Settings";
@@ -108,6 +109,7 @@ export default async function RootLayout({
         className={`${manrope.variable} ${notoSerif.variable} ${outfit.variable} ${playfair.variable} ${smooch.variable}`}
         suppressHydrationWarning
       >
+        <InteractiveBackground />
         {isMaintenance && !isAdminPath ? (
           <MaintenancePage />
         ) : (
