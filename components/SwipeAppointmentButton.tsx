@@ -63,24 +63,23 @@ export default function SwipeAppointmentButton({
 
     const runNudge = async () => {
       while (!cancelled) {
-        // Long initial pause for a calm start
+        // Minimal initial pause for a near-continuous flow
         await new Promise<void>((resolve) => {
-          nudgeTimeoutRef.current = window.setTimeout(() => resolve(), 2200);
+          nudgeTimeoutRef.current = window.setTimeout(() => resolve(), 100);
         });
         if (cancelled || hasInteracted) break;
 
-        // Very slow, fluid slide out (only 30% of the travel for subtlety)
-        const nudgeDistance = travel * 0.3;
-        await animate(x, nudgeDistance, {
+        // Slow, fluid slide out to the FULL distance
+        await animate(x, travel, {
           type: "tween",
-          duration: 2.8,
-          ease: [0.445, 0.05, 0.55, 0.95], // Gentle easeInOutExpo-like but softer
+          duration: 3.2, // Slightly increased for the full distance consistency
+          ease: [0.445, 0.05, 0.55, 0.95],
         }).finished;
         if (cancelled || hasInteracted) break;
 
-        // Short pause at the extended position
+        // Negligible pause at the end
         await new Promise<void>((resolve) => {
-          nudgeCycleRef.current = window.setTimeout(() => resolve(), 800);
+          nudgeCycleRef.current = window.setTimeout(() => resolve(), 100);
         });
         if (cancelled || hasInteracted) break;
 
@@ -92,9 +91,9 @@ export default function SwipeAppointmentButton({
         }).finished;
         if (cancelled || hasInteracted) break;
 
-        // Long rest between cycles
+        // Minimal pause before restarting the cycle
         await new Promise<void>((resolve) => {
-          nudgeCycleRef.current = window.setTimeout(() => resolve(), 4500);
+          nudgeCycleRef.current = window.setTimeout(() => resolve(), 100);
         });
       }
     };

@@ -54,8 +54,9 @@ export default function ConsultationModal({ isOpen, onClose }: ConsultationModal
   const [shouldRender, setShouldRender] = useState(isOpen);
   const [isVisible, setIsVisible] = useState(false);
   const dragControls = useDragControls();
-  const sheetRef = useRef<HTMLDivElement | null>(null);
   const [currentStep, setCurrentStep] = useState(1);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const lastPlayTime = useRef<number>(0);
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -87,6 +88,27 @@ export default function ConsultationModal({ isOpen, onClose }: ConsultationModal
 
     return () => window.clearTimeout(timeout);
   }, [isOpen]);
+
+  useEffect(() => {
+    // Preload audio
+    audioRef.current = new Audio("/sounds/writing.mp3");
+    audioRef.current.volume = 0.25; // Subtle volume
+    audioRef.current.load();
+  }, []);
+
+  const playWritingSound = () => {
+    if (!audioRef.current) return;
+    
+    const now = Date.now();
+    // Throttle sound to not overlap too fast (max every 120ms)
+    if (now - lastPlayTime.current < 120) return;
+
+    // Reset and play
+    const sound = audioRef.current.cloneNode() as HTMLAudioElement;
+    sound.volume = 0.25;
+    sound.play().catch(() => {}); // Catch autoplay block issues
+    lastPlayTime.current = now;
+  };
 
   useEffect(() => {
     if (!shouldRender) {
@@ -121,6 +143,10 @@ export default function ConsultationModal({ isOpen, onClose }: ConsultationModal
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
+    
+    // Play sound on typing
+    playWritingSound();
+
     setFormData((prev) => {
       const newData = { ...prev, [name]: value };
       if (name === "department") {
