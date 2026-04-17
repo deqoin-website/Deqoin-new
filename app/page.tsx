@@ -514,8 +514,8 @@ export default function Page() {
             <span
               className="hero-studio-label"
               style={{
-                fontFamily: "var(--font-display), sans-serif",
-                fontWeight: 500,
+                fontFamily: "var(--font-smooch), sans-serif",
+                fontWeight: 200,
                 textTransform: "uppercase",
                 paddingLeft: "0.6em",
               }}
@@ -524,16 +524,16 @@ export default function Page() {
             </span>
             <h1 style={{ 
               fontFamily: "var(--font-smooch), sans-serif", 
-              fontSize: "clamp(4.5rem, 12vw, 11rem)", 
+              fontSize: "clamp(6rem, 16vw, 15rem)", 
               fontStyle: "normal", 
               fontWeight: 100, 
               color: "#ffffff", 
-              letterSpacing: "0.2em", 
+              letterSpacing: "0.22em", 
               textTransform: "uppercase", 
               margin: 0, 
-              lineHeight: "0.9",
-              textShadow: "0 15px 50px rgba(0,0,0,0.9)",
-              paddingLeft: "0.2em"
+              lineHeight: "0.85",
+              textShadow: "0 20px 60px rgba(0,0,0,0.95)",
+              paddingLeft: "0.25em"
             }}>
               {slides[heroIndex]?.title}
             </h1>
