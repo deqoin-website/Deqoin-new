@@ -354,7 +354,7 @@ export default function Page() {
               <span className="section-small-label" style={{ letterSpacing: "0.5em", color: "#cca883", fontSize: "0.75rem", marginBottom: "0.5rem", display: "block" }}>STUDIO SELECTION</span>
               <h2 style={{ 
                 fontFamily: "var(--font-smooch), sans-serif", 
-                fontSize: "clamp(4rem, 10vw, 8rem)", 
+                fontSize: "clamp(2.8rem, 10vw, 8rem)", 
                 fontWeight: 100, 
                 letterSpacing: "0.15em",
                 marginBottom: "0.2rem", 
@@ -410,7 +410,7 @@ export default function Page() {
               <div>
                 <h2 style={{ 
                   fontFamily: "var(--font-smooch), sans-serif", 
-                  fontSize: "clamp(4rem, 10vw, 8rem)", 
+                  fontSize: "clamp(2.8rem, 10vw, 8rem)", 
                   fontWeight: 100, 
                   letterSpacing: "0.15em",
                   color: "#fff",
@@ -608,7 +608,7 @@ export default function Page() {
             <div className="section-heading-v2">
               <h2 style={{ 
                 fontFamily: "var(--font-smooch), sans-serif", 
-                fontSize: "clamp(4rem, 10vw, 8rem)", 
+                fontSize: "clamp(2.8rem, 10vw, 8rem)", 
                 fontWeight: 100, 
                 letterSpacing: "0.15em",
                 color: "#fff",

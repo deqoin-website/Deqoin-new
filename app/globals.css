@@ -291,25 +291,35 @@ video {
   color: #ffffff !important;
   font-family: var(--font-smooch), sans-serif;
   font-weight: 100;
-  font-size: clamp(3rem, 6vw, 5.5rem) !important;
+  font-size: clamp(2.2rem, 6vw, 5.5rem) !important;
   line-height: 0.9;
   letter-spacing: 0.05em;
 }
 
 .team-card-index {
-  font-size: 2.5rem !important;
+  font-size: clamp(1.8rem, 5vw, 2.5rem) !important;
   font-weight: 300;
   opacity: 0.8;
 }
 
 .team-card-role-vertical {
   color: #ffffff !important;
-  font-size: 1.2rem !important;
+  font-size: clamp(0.9rem, 2vw, 1.2rem) !important;
   opacity: 0.6;
 }
 
 .team-card-footer .material-symbols-outlined {
-  font-size: 2.5rem !important;
+  font-size: clamp(1.8rem, 5vw, 2.5rem) !important;
+}
+
+@media (max-width: 1023px) {
+  .project-slider-window {
+    min-height: 70svh !important;
+  }
+  
+  .project-slide-copy h4 {
+    font-size: clamp(2rem, 8vw, 3.5rem) !important;
+  }
 }
 
 

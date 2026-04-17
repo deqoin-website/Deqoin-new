@@ -177,7 +177,9 @@ export default function HeroSlider({ slides, onAppointmentClick, showScrollHint 
               fontWeight: 200,
               textTransform: "uppercase",
               paddingLeft: "0.6em",
-              color: '#cca883'
+              color: '#cca883',
+              fontSize: "clamp(1rem, 2vw, 1.4rem)",
+              letterSpacing: "0.4em"
             }}
           >
             {currentSlide?.motto}
@@ -188,10 +190,10 @@ export default function HeroSlider({ slides, onAppointmentClick, showScrollHint 
             transition={{ delay: 0.7, duration: 0.8 }}
             style={{ 
               fontFamily: "var(--font-smooch), sans-serif", 
-              fontSize: "clamp(6rem, 16vw, 15rem)", 
+              fontSize: "clamp(3.5rem, 15vw, 15rem)", 
               fontWeight: 100, 
               color: "#ffffff", 
-              letterSpacing: "0.22em", 
+              letterSpacing: "0.18em", 
               textTransform: "uppercase", 
               margin: 0, 
               lineHeight: "0.85",
