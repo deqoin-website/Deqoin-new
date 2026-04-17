@@ -226,6 +226,10 @@ video {
   align-items: stretch;
 }
 
+.homepage-snap-shell .homepage-services-section .section-header-area {
+  padding-top: clamp(1.5rem, 5vh, 4rem) !important; /* Specific nudge for this section */
+}
+
 .homepage-snap-shell .homepage-services-section .services-grid {
   width: 100%;
   flex: 1;
