@@ -50,7 +50,6 @@ export default function MimariDetail({ params }: { params: Promise<ServiceParams
   // Prefer DB content (sections[0]), fallback to static service data
   const title = content?.title || slug;
   const subtitle = content?.sideLabel || "";
-  const description = content?.description || "";
   const heroImage = content?.image || "";
   const heroBlur = content?.heroBlur ?? 0;
   const heroOverlay = content?.heroOverlay ?? 30;
@@ -64,7 +63,6 @@ export default function MimariDetail({ params }: { params: Promise<ServiceParams
         <DepartmentStudio 
           title={title.toUpperCase()}
           subtitle={subtitle.toUpperCase()}
-          description={description}
           heroImage={heroImage}
           mediaType={content?.mediaType || 'image'}
           heroBlur={heroBlur}

@@ -14,7 +14,6 @@ interface DepartmentStudioProps {
   title: string;
   subtitle: string;
   eyebrow?: string;
-  description?: string;
   heroImage: string;
   mediaType?: 'image' | 'video';
   heroBlur?: number;
@@ -48,7 +47,6 @@ export default function DepartmentStudio({
   title, 
   subtitle, 
   eyebrow = "DEQOIN | DESIGN STUDIO",
-  description,
   heroImage, 
   mediaType = 'image',
   heroBlur = 0,
@@ -129,18 +127,9 @@ export default function DepartmentStudio({
         } 
       />
 
-      {/* RICH CONTENT SECTION: VISION & PROCESS */}
+      {/* RICH CONTENT SECTION: FOCUS AREAS */}
       <section className="rich-service-content studio-snap-point">
         <div className="rich-content-inner">
-          {description && (
-            <div className="service-vision-block">
-               <div className="vision-header">
-                 <span className="vision-tag">HİZMET VİZYONU</span>
-                 <h2 className="vision-title">Fikirlerin Mimari Gerçekliğe Dönüşümü</h2>
-               </div>
-               <p className="vision-text">{description}</p>
-            </div>
-          )}
 
           {focusAreas && focusAreas.length > 0 && (
             <div className="service-focus-block">

@@ -50,7 +50,6 @@ export default function ExecutionDetail({ params }: { params: Promise<ServicePar
   // Prefer DB content (sections[0]), fallback to static service data
   const title = content?.title || slug;
   const subtitle = content?.sideLabel || "";
-  const description = content?.description || "";
   const heroImage = content?.image || "";
   const gallery = content?.sliderImages || [];
   const categories = content?.categories || [];
@@ -62,7 +61,6 @@ export default function ExecutionDetail({ params }: { params: Promise<ServicePar
         <DepartmentStudio 
           title={title.toUpperCase()}
           subtitle={subtitle.toUpperCase()}
-          description={description}
           heroImage={heroImage}
           mediaType={content?.mediaType || 'image'}
           images={gallery}

@@ -50,7 +50,6 @@ export default function MaterialDetail({ params }: { params: Promise<ServicePara
   // Prefer DB content (sections[0]), fallback to static service data
   const title = content?.title || slug;
   const subtitle = content?.sideLabel || "";
-  const description = content?.description || "";
   const heroImage = content?.image || "";
   const gallery = content?.sliderImages || [];
   const categories = content?.categories || [];
@@ -63,7 +62,6 @@ export default function MaterialDetail({ params }: { params: Promise<ServicePara
           title={title.toUpperCase()}
           subtitle={subtitle.toUpperCase()}
           eyebrow="DEQOIN | MATERIAL STUDIO"
-          description={description}
           heroImage={heroImage}
           images={gallery}
           projects={projectsData}
