@@ -166,105 +166,6 @@ export default function Page() {
   }, [activeProjectPanelSlug]);
 
   useEffect(() => {
-    const getSnapSections = () =>
-      Array.from(
-        document.querySelectorAll<HTMLElement>(
-          ".homepage-snap-shell .snap-section, .homepage-footer-snap",
-        ),
-      );
-
-    const getHeaderOffset = () => {
-      const topbar = document.querySelector<HTMLElement>(".topbar-nav");
-      return topbar?.offsetHeight ?? 80;
-    };
-
-    const getClosestSectionIndex = (sections: HTMLElement[]) => {
-      const headerOffset = getHeaderOffset();
-      const viewportAnchor = window.scrollY + headerOffset + 12;
-      let closestIndex = 0;
-      let closestDistance = Number.POSITIVE_INFINITY;
-
-      sections.forEach((section, index) => {
-        const sectionTop = Math.max(0, section.offsetTop - headerOffset);
-        const distance = Math.abs(sectionTop - viewportAnchor);
-        if (distance < closestDistance) {
-          closestDistance = distance;
-          closestIndex = index;
-        }
-      });
-
-      return closestIndex;
-    };
-
-    const snapToSection = (direction: 1 | -1) => {
-      const sections = getSnapSections();
-      if (sections.length === 0) return;
-
-      const currentIndex = getClosestSectionIndex(sections);
-      const nextIndex = Math.min(
-        sections.length - 1,
-        Math.max(0, currentIndex + direction),
-      );
-
-      if (nextIndex === currentIndex) return;
-
-      const headerOffset = getHeaderOffset();
-      const documentHeight = document.documentElement.scrollHeight;
-      const viewportHeight = window.innerHeight;
-      const targetTop = Math.max(
-        0,
-        Math.min(
-          sections[nextIndex].offsetTop - headerOffset,
-          documentHeight - viewportHeight,
-        ),
-      );
-
-      homepageSnapLockRef.current = true;
-      window.scrollTo({ top: targetTop, behavior: "smooth" });
-
-      window.setTimeout(() => {
-        homepageSnapLockRef.current = false;
-      }, 850);
-    };
-
-    const handleWheel = (event: WheelEvent) => {
-      if (homepageSnapLockRef.current || activeProjectPanelSlug || isConsultationOpen) return;
-      if (Math.abs(event.deltaY) < 24) return;
-
-      event.preventDefault();
-      snapToSection(event.deltaY > 0 ? 1 : -1);
-    };
-
-    const handleTouchStart = (event: TouchEvent) => {
-      homepageTouchStartYRef.current = event.touches[0]?.clientY ?? null;
-    };
-
-    const handleTouchEnd = (event: TouchEvent) => {
-      if (homepageSnapLockRef.current || activeProjectPanelSlug || isConsultationOpen) return;
-
-      const startY = homepageTouchStartYRef.current;
-      homepageTouchStartYRef.current = null;
-      if (startY == null) return;
-
-      const endY = event.changedTouches[0]?.clientY ?? startY;
-      const deltaY = startY - endY;
-      if (Math.abs(deltaY) < 52) return;
-
-      snapToSection(deltaY > 0 ? 1 : -1);
-    };
-
-    window.addEventListener("wheel", handleWheel, { passive: false });
-    window.addEventListener("touchstart", handleTouchStart, { passive: true });
-    window.addEventListener("touchend", handleTouchEnd, { passive: true });
-
-    return () => {
-      window.removeEventListener("wheel", handleWheel);
-      window.removeEventListener("touchstart", handleTouchStart);
-      window.removeEventListener("touchend", handleTouchEnd);
-    };
-  }, [activeProjectPanelSlug, isConsultationOpen]);
-
-  useEffect(() => {
     if (filteredTeam.length === 0) return;
     setTeamSlideIndex(0);
   }, [activeTeamFilter, filteredTeam.length]);
@@ -389,375 +290,419 @@ export default function Page() {
 
   return (
     <main
-      className={`site-shell experiential-shell homepage-snap-shell ${
+      className={`homepage-snap-shell ${
         activeProjectPanelSlug ? "project-panel-open" : ""
       }`}
     >
-      <div className="site-shell-content">
-        <HeroSlider 
-          slides={slides} 
-          onAppointmentClick={() => setIsConsultationOpen(true)} 
-        />
+      <HeroSlider 
+        slides={slides} 
+        onAppointmentClick={() => setIsConsultationOpen(true)} 
+      />
 
         {/* ── DESIGN & BUILD PROCESS SECTION ── */}
         <section className="process-section snap-section">
-        <div className="process-header">
-          <h2>İŞ AKIŞI</h2>
-          <div className="section-line" />
-        </div>
-
-        <div className="process-timeline">
-          {[
-            { id: "01", icon: "event_note", title: "Randevu", detail: "Kusursuz sürecin ilk adımı.", href: "#", action: () => setIsConsultationOpen(true) },
-            { id: "02", icon: "manage_search", title: "Keşif", detail: "İhtiyaçların ve potansiyelin öngörülmesi.", href: "/kesif" },
-            { id: "03", icon: "draw", title: "Tasarım", detail: "Vizyonun ve mimari kimliğin kurgulanması.", href: "/mimari" },
-            { id: "04", icon: "layers", title: "Malzeme", detail: "Projeye özel premium donatıların entegrasyonu.", href: "/materyal-studyo" },
-            { id: "05", icon: "precision_manufacturing", title: "Uygulama", detail: "Tüm değerlerinizi ortaya koyan usta işi inşa süreci.", href: "/uygulama" }
-          ].map((step, idx) => (
-            <Link 
-              key={idx} 
-              href={step.href} 
-              className="process-step"
-              onClick={(e) => {
-                if (step.action) {
-                  e.preventDefault();
-                  step.action();
-                }
-              }}
-            >
-              <div className="step-number">
-                <span
-                  className="material-symbols-outlined step-icon"
-                  style={{ fontVariationSettings: "'FILL' 0, 'wght' 200, 'opsz' 24" }}
-                >
-                  {step.icon}
-                </span>
-                <span className="step-id">{step.id}</span>
-              </div>
-              <div className="step-content">
-                <h3>{step.title}</h3>
-                <p>{step.detail}</p>
-              </div>
-            </Link>
-          ))}
-        </div>
-        </section>
-
-        <section className="services-section snap-section homepage-section homepage-services-section">
-        <div className="section-inner homepage-section-inner homepage-services-inner">
-          <div className="section-heading">
-            <div style={{ background: "#000", padding: "1.75rem 2rem", borderRadius: "1.5rem", boxShadow: "0 24px 60px rgba(0, 0, 0, 0.32)" }}>
-              <span className="section-small-label" style={{ letterSpacing: "0.5em", color: "#cca883", fontSize: "0.75rem", marginBottom: "1rem", display: "block" }}>STUDIO SELECTION</span>
-              <h2 style={{ marginBottom: "0.5rem", textTransform: "uppercase", color: "#fff" }}>DESIGN & COLLECTION</h2>
-              <span style={{ 
-                fontFamily: "var(--font-display), sans-serif", 
-                fontSize: "1.1rem", 
-                color: "rgba(255,255,255,0.7)", 
-                letterSpacing: "0.3em", 
-                textTransform: "uppercase",
-                display: "block",
-                marginBottom: "1.5rem"
-              }}>
-                TASARIM VE KOLEKSİYON
-              </span>
-              <div className="section-line" style={{ background: "#fff" }} />
-            </div>
-          </div>
-        </div>
-        <div className="services-grid">
-          {serviceCards.map((card) => (
-            <a
-              key={card.title}
-              href={card.href}
-              className={`service-card ${card.title === "Material Studio" ? "service-card-material-highlight" : ""}`}
-            >
-              <img 
-                src={card.image} 
-                alt={card.title} 
-                style={{ filter: `blur(${card.blur || 0}px)` }}
-              />
-              <div 
-                className="service-overlay" 
-                style={{ background: `rgba(0,0,0,${(card.overlay ?? 30) / 100})` }}
-              />
-              <div className="service-copy">
-                <div>
-                  <h3>{card.title}</h3>
-                  {"subTitle" in card && (
-                    <p style={{ fontSize: "1.4rem", color: "rgba(255,255,255,0.8)", marginTop: "0.7rem", letterSpacing: "0.24em", textTransform: "uppercase", lineHeight: 1 }}>{card.subTitle}</p>
-                  )}
-                  <div className="service-line" />
-                  <div className="service-cta">
-                    <span>DETAYLARI GÖR</span>
-                    <span className="material-symbols-outlined">arrow_forward</span>
-                  </div>
-                </div>
-                <span className="vertical-text">{card.sideLabel}</span>
-              </div>
-            </a>
-          ))}
-        </div>
-        </section>
-
-
-        <section className="projects-section snap-section homepage-section homepage-projects-section" id="galeri">
-        <div className="section-inner homepage-section-inner">
-          <div className="section-heading projects-heading">
-            <div>
-              <h2>Galeri</h2>
+          <div className="section-header-area">
+            <div className="process-header">
+              <h2>İŞ AKIŞI</h2>
               <div className="section-line" />
             </div>
-            <div className="project-slider-controls">
-              <div className="project-slider-counter">
-                <span>{String(projectIndex + 1).padStart(2, "0")}</span>
-                <small>{String(filteredProjects.length).padStart(2, "0")}</small>
-              </div>
-              <div className="project-slider-dots" aria-label="Proje slider göstergeleri">
-                {filteredProjects.map((project, idx) => (
-                  <button
-                    key={project.slug}
-                    type="button"
-                    className={`project-slider-dot ${idx === projectIndex ? "active" : ""}`}
-                    onClick={() => jumpToProject(idx)}
-                    aria-label={`${project.title} projesine git`}
-                  />
-                ))}
-              </div>
-              <div className="carousel-buttons project-slider-arrows">
-                <button type="button" onClick={() => navigateProject(-1)} aria-label="Önceki proje">
-                  <span className="material-symbols-outlined">arrow_back</span>
-                </button>
-                <button type="button" onClick={() => navigateProject(1)} aria-label="Sonraki proje">
-                  <span className="material-symbols-outlined">arrow_forward</span>
-                </button>
-              </div>
-            </div>
           </div>
-
-          <div
-            className="project-slider-window"
-            onTouchStart={handleProjectTouchStart}
-            onTouchEnd={handleProjectTouchEnd}
-          >
-            <div className="project-slider-progress" aria-hidden="true">
-              <motion.span
-                key={projectProgressKey}
-                className="project-slider-progress-fill"
-                initial={{ scaleX: 0 }}
-                animate={{ scaleX: 1 }}
-                transition={{ duration: 4.8, ease: "linear" }}
-              />
-            </div>
-            <AnimatePresence mode="wait" initial={false}>
-              <motion.div
-                key={filteredProjects[projectIndex]?.slug}
-                className="project-slide"
-                drag="x"
-                dragConstraints={{ left: 0, right: 0 }}
-                dragElastic={0.12}
-                onDragEnd={(_, info) => {
-                  const threshold = 60;
-                  if (info.offset.x < -threshold) navigateProject(1);
-                  if (info.offset.x > threshold) navigateProject(-1);
-                }}
-                initial={{
-                  opacity: 0,
-                  x: projectDirection >= 0 ? 120 : -120,
-                  scale: 1.08,
-                  filter: "blur(16px) saturate(0.8)",
-                }}
-                animate={{
-                  opacity: 1,
-                  x: 0,
-                  scale: 1,
-                  filter: "blur(0px) saturate(1)",
-                }}
-                exit={{
-                  opacity: 0,
-                  x: projectDirection >= 0 ? -120 : 120,
-                  scale: 0.98,
-                  filter: "blur(10px) saturate(0.85)",
-                }}
-                transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
-              >
-                <button
-                  type="button"
-                  className="project-card project-card-full project-card-trigger"
-                  onClick={() => currentProject && openProjectPanel(currentProject.slug)}
-                  aria-label={`${currentProject?.title ?? "Proje"} bilgilerini aç`}
+          
+          <div className="section-content-area" style={{ overflowX: 'auto' }}>
+            <div className="process-timeline" style={{ width: 'max-content', margin: '0 auto' }}>
+              {[
+                { id: "01", icon: "event_note", title: "Randevu", detail: "Kusursuz sürecin ilk adımı.", href: "#", action: () => setIsConsultationOpen(true) },
+                { id: "02", icon: "manage_search", title: "Keşif", detail: "İhtiyaçların ve potansiyelin öngörülmesi.", href: "/kesif" },
+                { id: "03", icon: "draw", title: "Tasarım", detail: "Vizyonun ve mimari kimliğin kurgulanması.", href: "/mimari" },
+                { id: "04", icon: "layers", title: "Malzeme", detail: "Projeye özel premium donatıların entegrasyonu.", href: "/materyal-studyo" },
+                { id: "05", icon: "precision_manufacturing", title: "Uygulama", detail: "Tüm değerlerinizi ortaya koyan usta işi inşa süreci.", href: "/uygulama" }
+              ].map((step, idx) => (
+                <Link 
+                  key={idx} 
+                  href={step.href} 
+                  className="process-step"
+                  onClick={(e) => {
+                    if (step.action) {
+                      e.preventDefault();
+                      step.action();
+                    }
+                  }}
                 >
-                  <motion.div
-                    className="project-slide-parallax"
-                    style={currentProject?.coverImage ? { backgroundImage: `url(${currentProject.coverImage})` } : undefined}
-                    initial={{ scale: 1.08, x: projectDirection >= 0 ? -30 : 30 }}
-                    animate={{ scale: 1.16, x: 0 }}
-                    exit={{ scale: 1.08, x: projectDirection >= 0 ? 30 : -30 }}
-                    transition={{ duration: 0.75, ease: [0.16, 1, 0.3, 1] }}
-                  />
-                  {currentProject?.coverImage ? (
-                    <img src={currentProject.coverImage} alt={currentProject.title} />
-                  ) : null}
-                  <div className="project-overlay" />
-                  <div className="project-slide-glow" />
-                  <div className="project-slide-copy">
-                    <span className="vertical-text">{currentProject?.label}</span>
-                    <div>
-                      <h4>{currentProject?.title}</h4>
-                      <span className="project-slide-cta">
-                        <span className="project-slide-cta-line" aria-hidden="true" />
-                        <span>PROJE BİLGİSİ</span>
-                        <span className="material-symbols-outlined project-slide-cta-icon" aria-hidden="true">arrow_forward</span>
-                      </span>
-                    </div>
+                  <div className="step-number">
+                    <span
+                      className="material-symbols-outlined step-icon"
+                      style={{ fontVariationSettings: "'FILL' 0, 'wght' 200, 'opsz' 24" }}
+                    >
+                      {step.icon}
+                    </span>
+                    <span className="step-id">{step.id}</span>
                   </div>
-                </button>
-              </motion.div>
-            </AnimatePresence>
+                  <div className="step-content">
+                    <h3>{step.title}</h3>
+                    <p>{step.detail}</p>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section className="services-section snap-section homepage-section-v2">
+          <div className="section-header-area">
+            <div className="section-heading-v2">
+              <span className="section-small-label" style={{ letterSpacing: "0.5em", color: "#cca883", fontSize: "0.75rem", marginBottom: "0.5rem", display: "block" }}>STUDIO SELECTION</span>
+              <h2 style={{ marginBottom: "0.2rem", textTransform: "uppercase", color: "#fff" }}>DESIGN & COLLECTION</h2>
+              <div className="section-line" style={{ background: "#fff", width: '100px', height: '1px', opacity: 0.3 }} />
+            </div>
+          </div>
+          
+          <div className="section-content-area" style={{ padding: '0' }}>
+            <div className="services-grid" style={{ width: '100%', height: '100%' }}>
+              {serviceCards.map((card) => (
+                <a
+                  key={card.title}
+                  href={card.href}
+                  className={`service-card ${card.title === "Material Studio" ? "service-card-material-highlight" : ""}`}
+                >
+                  <img 
+                    src={card.image} 
+                    alt={card.title} 
+                    style={{ filter: `blur(${card.blur || 0}px)` }}
+                  />
+                  <div 
+                    className="service-overlay" 
+                    style={{ background: `rgba(0,0,0,${(card.overlay ?? 30) / 100})` }}
+                  />
+                  <div className="service-copy">
+                    <div>
+                      <h3>{card.title}</h3>
+                      {"subTitle" in card && (
+                        <p style={{ fontSize: "1.2rem", color: "rgba(255,255,255,0.8)", marginTop: "0.5rem", letterSpacing: "0.2em", textTransform: "uppercase", lineHeight: 1 }}>{card.subTitle}</p>
+                      )}
+                      <div className="service-line" />
+                      <div className="service-cta">
+                        <span>DETAYLARI GÖR</span>
+                        <span className="material-symbols-outlined">arrow_forward</span>
+                      </div>
+                    </div>
+                    <span className="vertical-text">{card.sideLabel}</span>
+                  </div>
+                </a>
+              ))}
+            </div>
+          </div>
+        </section>
+
+
+        <section className="projects-section snap-section homepage-section-v2" id="galeri">
+          <div className="section-header-area">
+            <div className="section-heading projects-heading-v2" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', width: '100%' }}>
+              <div>
+                <h2>Galeri</h2>
+                <div className="section-line" />
+              </div>
+              <div className="project-slider-controls">
+                <div className="project-slider-counter">
+                  <span>{String(projectIndex + 1).padStart(2, "0")}</span>
+                  <small>{String(filteredProjects.length).padStart(2, "0")}</small>
+                </div>
+                <div className="project-slider-dots" aria-label="Proje slider göstergeleri">
+                  {filteredProjects.map((project, idx) => (
+                    <button
+                      key={project.slug}
+                      type="button"
+                      className={`project-slider-dot ${idx === projectIndex ? "active" : ""}`}
+                      onClick={() => jumpToProject(idx)}
+                      aria-label={`${project.title} projesine git`}
+                    />
+                  ))}
+                </div>
+                <div className="carousel-buttons project-slider-arrows">
+                  <button type="button" onClick={() => navigateProject(-1)} aria-label="Önceki proje">
+                    <span className="material-symbols-outlined">arrow_back</span>
+                  </button>
+                  <button type="button" onClick={() => navigateProject(1)} aria-label="Sonraki proje">
+                    <span className="material-symbols-outlined">arrow_forward</span>
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
 
-          <div className="homepage-section-cta">
-            <Link href="/galeri" className="premium-all-btn">
+          <div className="section-content-area">
+            <div
+              className="project-slider-window"
+              onTouchStart={handleProjectTouchStart}
+              onTouchEnd={handleProjectTouchEnd}
+              style={{ width: '100%', height: '100%', borderRadius: '4px' }}
+            >
+              <div className="project-slider-progress" aria-hidden="true">
+                <motion.span
+                  key={projectProgressKey}
+                  className="project-slider-progress-fill"
+                  initial={{ scaleX: 0 }}
+                  animate={{ scaleX: 1 }}
+                  transition={{ duration: 4.8, ease: "linear" }}
+                />
+              </div>
+              <AnimatePresence mode="wait" initial={false}>
+                <motion.div
+                  key={filteredProjects[projectIndex]?.slug}
+                  className="project-slide"
+                  drag="x"
+                  dragConstraints={{ left: 0, right: 0 }}
+                  dragElastic={0.12}
+                  onDragEnd={(_, info) => {
+                    const threshold = 60;
+                    if (info.offset.x < -threshold) navigateProject(1);
+                    if (info.offset.x > threshold) navigateProject(-1);
+                  }}
+                  initial={{
+                    opacity: 0,
+                    x: projectDirection >= 0 ? 120 : -120,
+                    scale: 1.08,
+                    filter: "blur(16px) saturate(0.8)",
+                  }}
+                  animate={{
+                    opacity: 1,
+                    x: 0,
+                    scale: 1,
+                    filter: "blur(0px) saturate(1)",
+                  }}
+                  exit={{
+                    opacity: 0,
+                    x: projectDirection >= 0 ? -120 : 120,
+                    scale: 0.98,
+                    filter: "blur(10px) saturate(0.85)",
+                  }}
+                  transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
+                >
+                  <button
+                    type="button"
+                    className="project-card project-card-full project-card-trigger"
+                    onClick={() => currentProject && openProjectPanel(currentProject.slug)}
+                    aria-label={`${currentProject?.title ?? "Proje"} bilgilerini aç`}
+                  >
+                    <motion.div
+                      className="project-slide-parallax"
+                      style={currentProject?.coverImage ? { backgroundImage: `url(${currentProject.coverImage})` } : undefined}
+                      initial={{ scale: 1.08, x: direction >= 0 ? -30 : 30 }}
+                      animate={{ scale: 1.16, x: 0 }}
+                      exit={{ scale: 1.08, x: direction >= 0 ? 30 : -30 }}
+                      transition={{ duration: 0.75, ease: [0.16, 1, 0.3, 1] }}
+                    />
+                    {currentProject?.coverImage ? (
+                      <img src={currentProject.coverImage} alt={currentProject.title} />
+                    ) : null}
+                    <div className="project-overlay" />
+                    <div className="project-slide-glow" />
+                    <div className="project-slide-copy">
+                      <span className="vertical-text">{currentProject?.label}</span>
+                      <div>
+                        <h4>{currentProject?.title}</h4>
+                        <span className="project-slide-cta">
+                          <span className="project-slide-cta-line" aria-hidden="true" />
+                          <span>PROJE BİLGİSİ</span>
+                          <span className="material-symbols-outlined project-slide-cta-icon" aria-hidden="true">arrow_forward</span>
+                        </span>
+                      </div>
+                    </div>
+                  </button>
+                </motion.div>
+              </AnimatePresence>
+            </div>
+          </div>
+          
+          <div style={{ position: 'absolute', bottom: '4rem', left: '0', right: '0', display: 'flex', justifyContent: 'center', pointerEvents: 'none', zIndex: 10 }}>
+            <Link href="/galeri" className="premium-all-btn" style={{ pointerEvents: 'auto' }}>
               <span className="premium-btn-text">TÜM GALERİYİ GÖR</span>
               <span className="material-symbols-outlined premium-btn-icon">east</span>
             </Link>
           </div>
-        </div>
         </section>
 
-        <section className="about-section snap-section homepage-section homepage-about-section" id="about-us">
-        <div className="section-inner homepage-section-inner about-grid homepage-about-grid">
-          <div className="about-copy">
+        <section className="about-section snap-section homepage-section-v2" id="about-us">
+          <div className="section-header-area">
             <div>
               <h2>Geleneklerin ötesinde.</h2>
               <div className="section-line" />
             </div>
-            <div className="about-text">
-              <div className="about-label-row">
-                <span className="vertical-text">Atölye Felsefesi</span>
-                <p style={{ color: "#fff" }}>
-                  Mimarlığın yaşayan bir varlık olduğu ilkesiyle kurulan DEQOIN, yapı
-                  mühendisliğinin soğuk hassasiyetini, kişiye özel iç mekanların sıcak ruhuyla
-                  birleştiriyor. Biz sadece ev inşa etmiyoruz; atmosferler kurguluyoruz. Her proje
-                  benzersiz bir monolittir; kimliğin ve zamansızlığın tekil, uyumlu bir ifadesidir.
-                </p>
-              </div>
-              <div className="homepage-copy-cta">
-                <Link href="/faaliyet-alanlarimiz" className="premium-all-btn">
-                  <span className="premium-btn-text">Design & Collection</span>
-                  <span className="material-symbols-outlined premium-btn-icon">east</span>
-                </Link>
-              </div>
-            </div>
           </div>
+          
+          <div className="section-content-area">
+            <div className="section-inner about-grid homepage-about-grid" style={{ padding: 0 }}>
+              <div className="about-copy">
+                <div className="about-text">
+                  <div className="about-label-row">
+                    <span className="vertical-text">Atölye Felsefesi</span>
+                    <p style={{ color: "#fff" }}>
+                      Mimarlığın yaşayan bir varlık olduğu ilkesiyle kurulan DEQOIN, yapı
+                      mühendisliğinin soğuk hassasiyetini, kişiye özel iç mekanların sıcak ruhuyla
+                      birleştiriyor. Biz sadece ev inşa etmiyoruz; atmosferler kurguluyoruz. Her proje
+                      benzersiz bir monolittir; kimliğin ve zamansızlığın tekil, uyumlu bir ifadesidir.
+                    </p>
+                  </div>
+                  <div className="homepage-copy-cta">
+                    <Link href="/faaliyet-alanlarimiz" className="premium-all-btn">
+                      <span className="premium-btn-text">Design & Collection</span>
+                      <span className="material-symbols-outlined premium-btn-icon">east</span>
+                    </Link>
+                  </div>
+                </div>
+              </div>
 
-          <div className="about-visual">
-            <div className="about-frame">
-              <div className="about-image-wrap">
-                <img
-                  src="/images/about_interior.png"
-                  alt="Atmospheric architectural interior DEQOIN philosophy masterpiece"
-                />
+              <div className="about-visual">
+                <div className="about-frame">
+                  <div className="about-image-wrap">
+                    <img
+                      src="/images/about_interior.png"
+                      alt="Atmospheric architectural interior DEQOIN philosophy masterpiece"
+                    />
+                  </div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
         </section>
 
-        <section className="team-section snap-section homepage-section homepage-team-section" id="departman-ekipleri">
-        <div className="section-inner homepage-section-inner">
-          <div className="section-heading projects-heading">
-            <div>
+        <section className="team-section snap-section homepage-section-v2" id="departman-ekipleri">
+          <div className="section-header-area">
+            <div className="section-heading-v2">
               <h2>Departman Ekipleri</h2>
               <div className="section-line" />
             </div>
           </div>
-          <div className="team-mobile-slider team-home-mobile-slider desktop-only-team-slider" onTouchStart={handleTeamTouchStart} onTouchEnd={handleTeamTouchEnd}>
-            <button type="button" className="team-slider-arrow team-slider-arrow-left" onClick={() => navigateTeamSlide(-1)} aria-label="Önceki ekip">
-              <span className="material-symbols-outlined">arrow_back</span>
-            </button>
-            <button type="button" className="team-slider-arrow team-slider-arrow-right" onClick={() => navigateTeamSlide(1)} aria-label="Sonraki ekip">
-              <span className="material-symbols-outlined">arrow_forward</span>
-            </button>
-            <AnimatePresence mode="wait" initial={false}>
-              <motion.div
-                key={filteredTeam[teamSlideIndex]?.id}
-                className="team-mobile-slide"
-                drag="x"
-                dragConstraints={{ left: 0, right: 0 }}
-                dragElastic={0.12}
-                onDragEnd={(_, info) => {
-                  const threshold = 60;
-                  if (info.offset.x < -threshold) navigateTeamSlide(1);
-                  if (info.offset.x > threshold) navigateTeamSlide(-1);
-                }}
-                initial={{
-                  opacity: 0,
-                  x: teamSlideDirection >= 0 ? 100 : -100,
-                  scale: 1.05,
-                  filter: "blur(10px) saturate(0.9)",
-                }}
-                animate={{
-                  opacity: 1,
-                  x: 0,
-                  scale: 1,
-                  filter: "blur(0px) saturate(1)",
-                }}
-                exit={{
-                  opacity: 0,
-                  x: teamSlideDirection >= 0 ? -100 : 100,
-                  scale: 0.98,
-                  filter: "blur(8px) saturate(0.9)",
-                }}
-                transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
-              >
-                <Link href={currentTeamMember ? "/departman-ekipleri" : "#"} className="team-card-gallery team-mobile-card">
-                  <div className="team-card-img">
-                    {currentTeamMember?.image ? (
-                      <img src={currentTeamMember.image} alt={currentTeamMember.name} />
-                    ) : null}
-                    <div className="team-overlay" />
-                    <div className="team-card-content">
-                      <span className="team-card-role-vertical">{currentTeamMember?.role}</span>
-                      <div className="team-card-copy">
-                        <h3>{currentTeamMember?.name}</h3>
+          
+          <div className="section-content-area" style={{ padding: '0' }}>
+            <div className="team-mobile-slider team-home-mobile-slider desktop-only-team-slider" onTouchStart={handleTeamTouchStart} onTouchEnd={handleTeamTouchEnd} style={{ width: '100%', height: '100%' }}>
+              <button type="button" className="team-slider-arrow team-slider-arrow-left" onClick={() => navigateTeamSlide(-1)} aria-label="Önceki ekip">
+                <span className="material-symbols-outlined">arrow_back</span>
+              </button>
+              <button type="button" className="team-slider-arrow team-slider-arrow-right" onClick={() => navigateTeamSlide(1)} aria-label="Sonraki ekip">
+                <span className="material-symbols-outlined">arrow_forward</span>
+              </button>
+              <AnimatePresence mode="wait" initial={false}>
+                <motion.div
+                  key={filteredTeam[teamSlideIndex]?.id}
+                  className="team-mobile-slide"
+                  drag="x"
+                  dragConstraints={{ left: 0, right: 0 }}
+                  dragElastic={0.12}
+                  onDragEnd={(_, info) => {
+                    const threshold = 60;
+                    if (info.offset.x < -threshold) navigateTeamSlide(1);
+                    if (info.offset.x > threshold) navigateTeamSlide(-1);
+                  }}
+                  initial={{
+                    opacity: 0,
+                    x: teamSlideDirection >= 0 ? 100 : -100,
+                    scale: 1.05,
+                    filter: "blur(10px) saturate(0.9)",
+                  }}
+                  animate={{
+                    opacity: 1,
+                    x: 0,
+                    scale: 1,
+                    filter: "blur(0px) saturate(1)",
+                  }}
+                  exit={{
+                    opacity: 0,
+                    x: teamSlideDirection >= 0 ? -100 : 100,
+                    scale: 0.98,
+                    filter: "blur(8px) saturate(0.9)",
+                  }}
+                  transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
+                >
+                  <Link href={currentTeamMember ? "/departman-ekipleri" : "#"} className="team-card-gallery team-mobile-card">
+                    <div className="team-card-img">
+                      {currentTeamMember?.image ? (
+                        <img src={currentTeamMember.image} alt={currentTeamMember.name} />
+                      ) : null}
+                      <div className="team-overlay" />
+                      <div className="team-card-content">
+                        <span className="team-card-role-vertical">{currentTeamMember?.role}</span>
+                        <div className="team-card-copy">
+                          <h3>{currentTeamMember?.name}</h3>
+                        </div>
+                        <div className="team-card-footer">
+                          <span className="team-card-index">{String(teamSlideIndex + 1).padStart(2, "0")}</span>
+                          <span className="material-symbols-outlined">arrow_outward</span>
+                        </div>
                       </div>
-                      <div className="team-card-footer">
-                        <span className="team-card-index">{String(teamSlideIndex + 1).padStart(2, "0")}</span>
-                        <span className="material-symbols-outlined">arrow_outward</span>
-                      </div>
+                    </div>
+                  </Link>
+                </motion.div>
+              </AnimatePresence>
+            </div>
+
+            <div className="mobile-only-team-slider">
+              {filteredTeam.map((member, idx) => (
+                <Link key={member.id} href="/departman-ekipleri" className="team-native-card">
+                  <div className="team-native-img">
+                    {member.image ? <img src={member.image} alt={member.name} /> : null}
+                  </div>
+                  <div className="team-native-overlay" />
+                  <div className="team-native-content">
+                    <span className="team-native-role">{member.role}</span>
+                    <h3>{member.name}</h3>
+                    <div className="team-native-footer">
+                      <span className="team-native-idx">{String(idx + 1).padStart(2, "0")}</span>
+                      <span className="material-symbols-outlined">arrow_outward</span>
                     </div>
                   </div>
                 </Link>
-              </motion.div>
-            </AnimatePresence>
+              ))}
+            </div>
           </div>
-
-          <div className="mobile-only-team-slider">
-            {filteredTeam.map((member, idx) => (
-              <Link key={member.id} href="/departman-ekipleri" className="team-native-card">
-                <div className="team-native-img">
-                  {member.image ? <img src={member.image} alt={member.name} /> : null}
-                </div>
-                <div className="team-native-overlay" />
-                <div className="team-native-content">
-                  <span className="team-native-role">{member.role}</span>
-                  <h3>{member.name}</h3>
-                  <div className="team-native-footer">
-                    <span className="team-native-idx">{String(idx + 1).padStart(2, "0")}</span>
-                    <span className="material-symbols-outlined">arrow_outward</span>
-                  </div>
-                </div>
-              </Link>
-            ))}
-          </div>
-
-          <div className="homepage-section-cta">
-            <Link href="/departman-ekipleri" className="premium-all-btn">
+          
+          <div style={{ position: 'absolute', bottom: '4rem', left: '0', right: '0', display: 'flex', justifyContent: 'center', pointerEvents: 'none', zIndex: 10 }}>
+            <Link href="/departman-ekipleri" className="premium-all-btn" style={{ pointerEvents: 'auto' }}>
               <span className="premium-btn-text">TÜM EKİPLERİ GÖR</span>
               <span className="material-symbols-outlined premium-btn-icon">east</span>
             </Link>
           </div>
-        </div>
+        </section>
+
+        {/* ── CONTACT SECTION ── */}
+        <section className="contact-section snap-section homepage-section-v2" id="iletisim">
+          <div className="section-header-area">
+            <div>
+              <span className="section-small-label" style={{ letterSpacing: "0.5em", color: "#cca883", fontSize: "0.75rem", marginBottom: "0.5rem", display: "block" }}>GET IN TOUCH</span>
+              <h2>İletişim</h2>
+              <div className="section-line" />
+            </div>
+          </div>
+          
+          <div className="section-content-area">
+            <div className="contact-grid-v2" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4rem', width: '100%', maxWidth: '1200px' }}>
+              <div className="contact-info-v2">
+                <h3 style={{ fontSize: '2.5rem', color: '#fff', marginBottom: '2rem', fontFamily: 'var(--font-headline)' }}>Bir kahveye bekleriz.</h3>
+                <div className="contact-item-v2" style={{ marginBottom: '2rem' }}>
+                  <span style={{ color: '#cca883', fontSize: '0.8rem', letterSpacing: '0.2em', textTransform: 'uppercase', display: 'block', marginBottom: '0.5rem' }}>MERKEZ OFİS</span>
+                  <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: '1.2rem', lineHeight: '1.6' }}>Deqoin Plaza, No: 42<br />Levent, İstanbul</p>
+                </div>
+                <div className="contact-item-v2">
+                  <span style={{ color: '#cca883', fontSize: '0.8rem', letterSpacing: '0.2em', textTransform: 'uppercase', display: 'block', marginBottom: '0.5rem' }}>DİJİTAL ATÖLYE</span>
+                  <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: '1.2rem' }}>info@deqoin.com<br />+90 (212) 444 0 444</p>
+                </div>
+              </div>
+              <div className="contact-form-teaser-v2" style={{ background: 'rgba(255,255,255,0.03)', padding: '3rem', borderRadius: '4px', border: '1px solid rgba(255,255,255,0.05)', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'flex-start' }}>
+                <p style={{ color: 'rgba(255,255,255,0.6)', marginBottom: '2rem', fontSize: '1.1rem' }}>Projeniz için profesyonel bir keşif mi planlamak istiyorsunuz?</p>
+                <button 
+                  onClick={() => setIsConsultationOpen(true)}
+                  className="premium-all-btn"
+                >
+                  <span className="premium-btn-text">RANDEVU TALEBİ</span>
+                  <span className="material-symbols-outlined premium-btn-icon">calendar_month</span>
+                </button>
+              </div>
+            </div>
+          </div>
+          
+          <footer className="homepage-footer-mini" style={{ position: 'absolute', bottom: '2rem', width: '100%', padding: '0 5%', display: 'flex', justifyContent: 'space-between', alignItems: 'center', opacity: 0.4, fontSize: '0.8rem', color: '#fff' }}>
+             <span>© 2026 DEQOIN DESIGN STUDIO</span>
+             <span>CRAFTED WITH PRECISION</span>
+          </footer>
         </section>
       </div>
 

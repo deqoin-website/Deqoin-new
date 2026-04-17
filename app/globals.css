@@ -109,18 +109,55 @@ video {
 .snap-section {
   scroll-snap-align: start;
   scroll-snap-stop: always;
-  min-height: 100svh;
+  height: 100vh;
+  height: 100svh;
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
-body:has(.homepage-snap-shell) {
+.homepage-snap-shell {
+  height: 100vh;
+  height: 100svh;
+  overflow-y: auto;
   scroll-snap-type: y mandatory;
-  scroll-padding-top: 5rem;
+  scroll-behavior: smooth;
+  scroll-padding-top: 100px;
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
 }
 
-.homepage-snap-shell .homepage-section {
+.homepage-snap-shell::-webkit-scrollbar {
+  display: none; /* Chrome, Safari and Opera */
+}
+
+/* Standardization Framework */
+.section-header-area {
+  padding-top: 8rem;
+  padding-bottom: 2rem;
+  width: 100%;
+  padding-left: 5%;
+  padding-right: 5%;
+}
+
+.section-content-area {
+  flex: 1;
   display: flex;
   align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 0 5%;
+  overflow: hidden;
 }
+
+@media (max-width: 768px) {
+  .section-header-area {
+    padding-top: 6rem;
+  }
+}
+
 
 .homepage-snap-shell .homepage-section-inner {
   width: min(100%, 88rem);
