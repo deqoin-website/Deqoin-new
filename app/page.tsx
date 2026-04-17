@@ -8,10 +8,9 @@ import { teamFilters, teamMembers } from "../data/team";
 import ConsultationModal from "../components/ConsultationModal";
 import ProjectInsightPanel from "../components/ProjectInsightPanel";
 import SwipeAppointmentButton from "../components/SwipeAppointmentButton";
+import HeroSlider from "../components/HeroSlider";
 
 export default function Page() {
-  const [heroIndex, setHeroIndex] = useState(0);
-  const [heroDirection, setHeroDirection] = useState(0);
   const [isConsultationOpen, setIsConsultationOpen] = useState(false);
   const [activeTeamFilter, setActiveTeamFilter] = useState<(typeof teamFilters)[number]["key"]>("all");
   const [slides, setSlides] = useState<any[]>([]);
@@ -21,9 +20,6 @@ export default function Page() {
   const [activeProjectPanelSlug, setActiveProjectPanelSlug] = useState<string | null>(null);
   const [teamSlideIndex, setTeamSlideIndex] = useState(0);
   const [teamSlideDirection, setTeamSlideDirection] = useState(1);
-  const [heroIntroReady, setHeroIntroReady] = useState(false);
-  const heroTouchStartX = useRef<number | null>(null);
-  const heroTouchStartY = useRef<number | null>(null);
   const projectTouchStartX = useRef<number | null>(null);
   const projectTouchStartY = useRef<number | null>(null);
   const projectIndexRef = useRef(0);
@@ -293,29 +289,6 @@ export default function Page() {
     return () => window.clearInterval(interval);
   }, [filteredTeam.length]);
 
-  const navigateHero = (direction: number) => {
-    if (slides.length === 0) return;
-    setHeroDirection(direction);
-    setHeroIndex((current) => (current + direction + slides.length) % slides.length);
-  };
-
-  const handleHeroTouchStart = (event: React.TouchEvent<HTMLElement>) => {
-    const touch = event.touches[0];
-    heroTouchStartX.current = touch.clientX;
-    heroTouchStartY.current = touch.clientY;
-  };
-
-  const handleHeroTouchEnd = (event: React.TouchEvent<HTMLElement>) => {
-    const startX = heroTouchStartX.current;
-    const startY = heroTouchStartY.current;
-
-    heroTouchStartX.current = null;
-    heroTouchStartY.current = null;
-
-    if (startX == null || startY == null) return;
-
-    const touch = event.changedTouches[0];
-    const deltaX = touch.clientX - startX;
     const deltaY = touch.clientY - startY;
 
     if (Math.abs(deltaX) < 50 || Math.abs(deltaX) < Math.abs(deltaY)) return;
@@ -435,128 +408,10 @@ export default function Page() {
       }`}
     >
       <div className="site-shell-content">
-        <section
-          className="hero-section snap-section"
-          id="hero-slider"
-          onTouchStart={handleHeroTouchStart}
-          onTouchEnd={handleHeroTouchEnd}
-        >
-        <div className="hero-slide active" style={{ backgroundColor: "#000" }}>
-          <AnimatePresence mode="wait" initial={false}>
-            {currentHeroSlide?.mediaType === "image" && (
-              <motion.div
-                key={currentHeroSlide?.image || heroIndex}
-                className="hero-slide-media"
-                initial={{
-                  opacity: 0,
-                  scale: 1.12,
-                  x: heroDirection >= 0 ? 36 : -36,
-                  filter: `blur(${Math.max((currentHeroSlide?.blur || 0), 2) + 12}px) brightness(0.24) saturate(0.86)`,
-                }}
-                animate={{
-                  opacity: heroIntroReady ? 1 : 0,
-                  scale: 1,
-                  x: 0,
-                  filter: `blur(${Math.max((currentHeroSlide?.blur ?? 0), 2)}px) brightness(0.42) saturate(0.92)`,
-                }}
-                exit={{
-                  opacity: 0,
-                  scale: 1.08,
-                  x: heroDirection >= 0 ? -36 : 36,
-                  filter: `blur(${Math.max((currentHeroSlide?.blur || 0), 2) + 14}px) brightness(0.18) saturate(0.84)`,
-                }}
-                transition={{ duration: 1.15, ease: [0.77, 0, 0.175, 1] }}
-                style={{
-                  backgroundImage: `url(${currentHeroSlide?.image})`,
-                  backgroundSize: "cover",
-                  backgroundPosition: "center",
-                  backgroundRepeat: "no-repeat",
-                }}
-              />
-            )}
-            {currentHeroSlide?.mediaType === "video" && (
-              <motion.video
-                key={currentHeroSlide?.mediaUrl || heroIndex}
-                className="hero-video"
-                autoPlay
-                muted
-                loop
-                playsInline
-                initial={{
-                  opacity: 0,
-                  scale: 1.08,
-                  x: heroDirection >= 0 ? 36 : -36,
-                  filter: "blur(14px) brightness(0.24)",
-                }}
-                animate={{
-                  opacity: heroIntroReady ? 1 : 0,
-                  scale: 1,
-                  x: 0,
-                  filter: "blur(0px) brightness(0.4)",
-                }}
-                exit={{
-                  opacity: 0,
-                  scale: 1.08,
-                  x: heroDirection >= 0 ? -36 : 36,
-                  filter: "blur(16px) brightness(0.18)",
-                }}
-                transition={{ duration: 1.15, ease: [0.77, 0, 0.175, 1] }}
-              >
-                <source src={currentHeroSlide?.mediaUrl} />
-              </motion.video>
-            )}
-          </AnimatePresence>
-          <div className="hero-overlay" style={{ background: `rgba(0,0,0,${Math.max((slides[heroIndex]?.overlay ?? 30), 42) / 100})` }} />
-        </div>
-
-        <div className="hero-content" style={{ textAlign: "center", display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", gap: "3rem", height: "100%", width: "100%" }}>
-          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "1.5rem" }}>
-            <span
-              className="hero-studio-label"
-              style={{
-                fontFamily: "var(--font-smooch), sans-serif",
-                fontWeight: 200,
-                textTransform: "uppercase",
-                paddingLeft: "0.6em",
-              }}
-            >
-              {slides[heroIndex]?.motto}
-            </span>
-            <h1 style={{ 
-              fontFamily: "var(--font-smooch), sans-serif", 
-              fontSize: "clamp(6rem, 16vw, 15rem)", 
-              fontStyle: "normal", 
-              fontWeight: 100, 
-              color: "#ffffff", 
-              letterSpacing: "0.22em", 
-              textTransform: "uppercase", 
-              margin: 0, 
-              lineHeight: "0.85",
-              textShadow: "0 20px 60px rgba(0,0,0,0.95)",
-              paddingLeft: "0.25em"
-            }}>
-              {slides[heroIndex]?.title}
-            </h1>
-          </div>
-          <SwipeAppointmentButton
-            onActivate={() => setIsConsultationOpen(true)}
-            style={{ marginTop: "1rem", position: "relative", zIndex: 100 }}
-          />
-        </div>
-
-        <div className="hero-meta">
-          <div className="hero-count">
-            <span>{String(heroIndex + 1).padStart(2, "0")}</span>
-            <div />
-            <small>{String(slides.length).padStart(2, "0")}</small>
-          </div>
-          <p className="vertical-text">{slides[heroIndex]?.title}</p>
-        </div>
-
-        <div className="hero-progress">
-          <div key={heroIndex} style={heroProgressStyle} />
-        </div>
-        </section>
+        <HeroSlider 
+          slides={slides} 
+          onAppointmentClick={() => setIsConsultationOpen(true)} 
+        />
 
         {/* ── DESIGN & BUILD PROCESS SECTION ── */}
         <section className="process-section snap-section">

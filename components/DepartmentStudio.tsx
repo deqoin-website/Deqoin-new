@@ -6,6 +6,7 @@ import ConsultationModal from "./ConsultationModal";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import ProjectInsightPanel from "./ProjectInsightPanel";
+import HeroSlider from "./HeroSlider";
 
 interface DepartmentStudioProps {
   title: string;
@@ -63,15 +64,7 @@ export default function DepartmentStudio({
   const [isMobileDrawerOpen, setIsMobileDrawerOpen] = useState(false);
   const [activeProjectSlug, setActiveProjectSlug] = useState<string | null>(null);
   
-  const [currentSlide, setCurrentSlide] = useState(0);
   const heroSlides = images && images.length > 0 ? images : [heroImage, ...FALLBACK_SLIDES.filter(img => img !== heroImage)];
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % heroSlides.length);
-    }, 5000);
-    return () => clearInterval(timer);
-  }, [heroSlides.length]);
 
   const filteredProjects = useMemo(() => {
     return projects.filter((project) => {
@@ -109,62 +102,21 @@ export default function DepartmentStudio({
 
   return (
     <div className="studio-page studio-vertical-shell">
-      {/* FULL-SCREEN HERO SLIDER */}
-      <section className="studio-hero studio-snap-point">
-        <div className="studio-hero-slider">
-          {heroSlides.map((url: string, idx: number) => {
-            const isVideo = (idx === 0 && mediaType === 'video') || url.toLowerCase().match(/\.(mp4|webm|ogg)$/) !== null;
-            
-            return (
-              <div 
-                key={idx} 
-                className={`studio-hero-slide ${idx === currentSlide ? 'active' : ''}`}
-                style={!isVideo ? { backgroundImage: `url(${url})`, filter: `blur(${heroBlur}px)` } : { backgroundColor: '#000' }}
-              >
-                {isVideo && (
-                  <video 
-                    src={url} 
-                    autoPlay 
-                    muted 
-                    loop 
-                    playsInline 
-                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                  />
-                )}
-              </div>
-            );
-          })}
-        </div>
-
-        <div className="studio-hero-blur-overlay" />
-        <div className="studio-hero-dark-overlay" style={{ background: `rgba(8, 8, 8, ${heroOverlay / 100})` }} />
-
-        <div className="studio-hero-content">
-          <motion.span 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="section-small-label" 
-            style={{ color: "#cca883", marginBottom: "1rem", display: "inline-block", letterSpacing: "0.2em" }}
-          >
-            {eyebrow}
-          </motion.span>
-          <motion.h1
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-          >
-            {title}
-          </motion.h1>
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.4 }}
-          >
-            {subtitle}
-          </motion.p>
-          <div className="studio-hero-line" />
-        </div>
-      </section>
+      <HeroSlider 
+        slides={heroSlides.map((url, idx) => {
+          const isVideo = (idx === 0 && mediaType === 'video') || url.toLowerCase().match(/\.(mp4|webm|ogg)$/) !== null;
+          return {
+            title: title,
+            motto: subtitle,
+            mediaUrl: url,
+            image: !isVideo ? url : undefined,
+            mediaType: isVideo ? 'video' : 'image',
+            blur: heroBlur,
+            overlay: heroOverlay
+          };
+        })} 
+        onAppointmentClick={() => setIsConsultationOpen(true)}
+      />
 
       {/* RICH CONTENT SECTION: VISION & PROCESS */}
       <section className="rich-service-content studio-snap-point">

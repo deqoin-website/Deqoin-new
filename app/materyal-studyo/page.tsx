@@ -5,6 +5,7 @@ import Link from "next/link";
 import ConsultationModal from "../../components/ConsultationModal";
 import { Loader2 } from "lucide-react";
 import SwipeAppointmentButton from "../../components/SwipeAppointmentButton";
+import HeroSlider from "../../components/HeroSlider";
 import { materyalKategorileri } from "../../data/materyal-studyo";
 
 const materialCategories = materyalKategorileri.filter((item) =>
@@ -60,37 +61,17 @@ export default function MateryalStudyo() {
 
   return (
     <main className="site-shell project-detail-shell material-studio-page" style={{ background: "#0a0a0a" }}>
-      <section className="mimari-page-hero">
-        <div className="mimari-hero-slider">
-          <div
-            className="mimari-hero-slide active"
-            ref={heroRef}
-            style={{
-              backgroundImage: `url(${heroSection?.slides?.[0] || materialCategories[0]?.image || "https://images.unsplash.com/photo-1540932239986-30128078f3c5?q=80&w=2048&auto=format&fit=crop"})`,
-              filter: `blur(${heroBlur}px)`,
-            }}
-          />
-        </div>
-        <div className="mimari-hero-blur-overlay" />
-        <div className="mimari-hero-dark-overlay" style={{ background: `rgba(8, 8, 8, ${heroOverlay / 100})` }} />
-
-        <div className="mimari-hero-content-centric">
-          <span className="section-small-label" style={{ color: "#cca883", marginBottom: "1rem", display: "block" }}>
-            CREATIVE VISION
-          </span>
-          <h1 className="mimari-hero-title-main">{heroSection?.title || "MATERIAL STUDIO"}</h1>
-          <p className="mimari-hero-sub-main">{heroSection?.subtitle || "ÜRÜN VE MALZEME"}</p>
-          <div className="mimari-hero-line" />
-          <div className="mimari-hero-actions" style={{ justifyContent: "center", marginTop: "3rem" }}>
-            <SwipeAppointmentButton onActivate={() => setIsConsultationOpen(true)} />
-          </div>
-        </div>
-
-        <div className="mimari-hero-scroll-hint">
-          <span className="vertical-text">Detayları Gör</span>
-          <div className="scroll-line" />
-        </div>
-      </section>
+      <HeroSlider 
+        slides={(heroSection?.slides?.length > 0 ? heroSection.slides : [materialCategories[0]?.image]).map((img: string) => ({
+          title: heroSection?.title || "MATERIAL STUDIO",
+          motto: heroSection?.subtitle || "ÜRÜN VE MALZEME",
+          image: img,
+          blur: heroBlur,
+          overlay: heroOverlay
+        }))} 
+        onAppointmentClick={() => setIsConsultationOpen(true)}
+        showScrollHint={true}
+      />
 
       <section className="mimari-manifesto">
         <div className="mimari-manifesto-inner">

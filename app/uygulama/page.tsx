@@ -6,6 +6,7 @@ import ConsultationModal from "../../components/ConsultationModal";
 import { Loader2 } from "lucide-react";
 import SwipeAppointmentButton from "../../components/SwipeAppointmentButton";
 import { uygulamaBirimleri } from "../../data/uygulama-birimleri";
+import HeroSlider from "../../components/HeroSlider";
 
 const executionCategories = uygulamaBirimleri.filter((item) =>
   [
@@ -70,37 +71,17 @@ export default function UygulamaPage() {
     <main className="site-shell project-detail-shell material-studio-page" style={{ background: "#0a0a0a" }}>
 
       {/* HERO */}
-      <section className="mimari-page-hero">
-        <div className="mimari-hero-slider">
-          <div
-            className="mimari-hero-slide active"
-            ref={heroRef}
-            style={{
-              backgroundImage: `url(${heroSection?.slides?.[0] || executionCategories[0]?.image || "https://images.unsplash.com/photo-1541888946425-d81bb19480c5?q=80&w=2048&auto=format&fit=crop"})`,
-              filter: `blur(${heroBlur}px)`,
-            }}
-          />
-        </div>
-        <div className="mimari-hero-blur-overlay" />
-        <div className="mimari-hero-dark-overlay" style={{ background: `rgba(8, 8, 8, ${heroOverlay / 100})` }} />
-
-        <div className="mimari-hero-content-centric">
-          <span className="section-small-label" style={{ color: "#cca883", marginBottom: "1rem", display: "block" }}>
-            EXECUTION PHILOSOPHY
-          </span>
-          <h1 className="mimari-hero-title-main">{heroSection?.title || "EXECUTION STUDIO"}</h1>
-          <p className="mimari-hero-sub-main">{heroSection?.subtitle || "UYGULAMA HİZMETLERİ"}</p>
-          <div className="mimari-hero-line" />
-          <div className="mimari-hero-actions" style={{ justifyContent: "center", marginTop: "3rem" }}>
-            <SwipeAppointmentButton onActivate={() => setIsConsultationOpen(true)} />
-          </div>
-        </div>
-
-        <div className="mimari-hero-scroll-hint">
-          <span className="vertical-text">Detayları Gör</span>
-          <div className="scroll-line" />
-        </div>
-      </section>
+      <HeroSlider 
+        slides={(heroSection?.slides?.length > 0 ? heroSection.slides : [executionCategories[0]?.image]).map((img: string) => ({
+          title: heroSection?.title || "EXECUTION STUDIO",
+          motto: heroSection?.subtitle || "UYGULAMA HİZMETLERİ",
+          image: img,
+          blur: heroBlur,
+          overlay: heroOverlay
+        }))} 
+        onAppointmentClick={() => setIsConsultationOpen(true)}
+        showScrollHint={true}
+      />
 
       {/* MANİFESTO */}
       <section className="mimari-manifesto">

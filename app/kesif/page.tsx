@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import ConsultationModal from "../../components/ConsultationModal";
 import SwipeAppointmentButton from "../../components/SwipeAppointmentButton";
+import HeroSlider from "../../components/HeroSlider";
 
 const heroSlides = [
   "/images/slider/mimari_slide.png",
@@ -56,34 +57,16 @@ export default function KesifPage() {
   return (
     <main className="site-shell project-detail-shell">
       {/* ── HERO ── */}
-      <section className="mimari-page-hero">
-        <div className="mimari-hero-slider">
-          {heroSlides.map((img, idx) => (
-            <div 
-              key={idx} 
-              className={`mimari-hero-slide ${idx === currentSlide ? 'active' : ''}`}
-              style={{
-                backgroundImage: `url(${img})`,
-                filter: `blur(2px)`,
-              }}
-            />
-          ))}
-        </div>
-        
-        <div className="mimari-hero-blur-overlay" />
-        <div className="mimari-hero-dark-overlay" style={{ background: `rgba(8, 8, 8, 0.4)` }} />
-
-        <div className="mimari-hero-content-centric">
-          <span className="section-small-label" style={{ color: "#cca883", marginBottom: "1rem", display: "block" }}>
-            DISCOVERY PHASE
-          </span>
-          <h1 className="mimari-hero-title-main">KEŞİF VE ANALİZ</h1>
-          <p className="mimari-hero-sub-main">
-            DOĞRU TASARIM, DOĞRU SORULARLA BAŞLAR. SÜRECİN TEMELİNİ SAĞLAM VERİLERLE KURGULUYORUZ.
-          </p>
-          <div className="mimari-hero-line" />
-        </div>
-      </section>
+      <HeroSlider 
+        slides={heroSlides.map(img => ({
+          title: "KEŞİF VE ANALİZ",
+          motto: "DISCOVERY PHASE",
+          image: img,
+          blur: 2,
+          overlay: 40
+        }))} 
+        onAppointmentClick={() => setIsConsultationOpen(true)}
+      />
 
       {/* ── STAGES ── */}
       <section className="services-section" style={{ background: "transparent", paddingTop: "6rem" }}>

@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import ConsultationModal from "../../components/ConsultationModal";
 import SwipeAppointmentButton from "../../components/SwipeAppointmentButton";
+import HeroSlider from "../../components/HeroSlider";
 
 const heroSlides = [
   "/images/slider/mimari_slide.png",
@@ -130,35 +131,17 @@ export default function MimariPage() {
   return (
     <main className="site-shell project-detail-shell">
       {/* ── DYNAMIC BLURRED HERO ── */}
-      <section className="mimari-page-hero">
-        <div className="mimari-hero-slider">
-          {slides.map((img: string, idx: number) => (
-            <div 
-              key={idx} 
-              className={`mimari-hero-slide ${idx === currentSlide ? 'active' : ''}`}
-              style={{
-                backgroundImage: `url(${img})`,
-                filter: `blur(${heroVisual.blur}px)`,
-              }}
-            />
-          ))}
-        </div>
-        
-        {/* Glassmorphism Blur Overlay */}
-        <div className="mimari-hero-blur-overlay" />
-        <div className="mimari-hero-dark-overlay" style={{ background: `rgba(8, 8, 8, ${(heroVisual.overlay ?? 30) / 100})` }} />
-
-        <div className="mimari-hero-content-centric">
-          <span className="section-small-label" style={{ color: "#cca883", marginBottom: "1rem", display: "block" }}>
-            CREATIVE VISION
-          </span>
-          <h1 className="mimari-hero-title-main">{pageInfo.title}</h1>
-          <p className="mimari-hero-sub-main">
-            {pageInfo.subtitle}
-          </p>
-          <div className="mimari-hero-line" />
-        </div>
-      </section>
+      <HeroSlider 
+        slides={slides.map(img => ({
+          title: pageInfo.title,
+          motto: pageInfo.subtitle,
+          image: img,
+          blur: heroVisual.blur,
+          overlay: heroVisual.overlay
+        }))} 
+        onAppointmentClick={() => setIsConsultationOpen(true)}
+        showScrollHint={true}
+      />
 
       <section className="services-section" style={{ background: "transparent", paddingTop: "6rem" }}>
         
