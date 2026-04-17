@@ -89,29 +89,7 @@ export default function UygulamaPage() {
       <StudioWorkflow steps={UYGULAMA_WORKFLOW(() => setIsConsultationOpen(true))} />
 
       {/* MANİFESTO */}
-      <section className="mimari-manifesto">
-        <div className="mimari-manifesto-inner">
-          <div className="mimari-manifesto-label">
-            <span className="vertical-text">Studio Manifesto</span>
-          </div>
-          <div className="mimari-manifesto-body">
-            <span className="section-small-label">UYGULAMA VİZYONUMUZ</span>
-            <blockquote className="mimari-quote" style={{ fontSize: "clamp(2rem, 5vw, 3.5rem)", lineHeight: "1.2" }}>
-              "Tüm değerlerinizi ve vizyonunuzu<br />ortaya koyan tek nokta."
-            </blockquote>
-            <p className="mimari-manifesto-text">
-              DEQOIN'de uygulama, dışarıdan kiralanan bir hizmet değil; projenin ruhunu sahada koruyan özgün bir disiplindir. 
-              Belki de henüz farkında olmadığınız uygulama risklerini önceden öngörüyoruz. 
-              Bünyemizdeki sanatsal ve teknik kadrolarla, her detayı tasarımın bir parçası olarak inşa ediyoruz. 
-              Bizimle çalışırken usta aramanıza gerek kalmaz; her fırça darbesi ve her yapısal bağlantı DEQOIN standartlarında hayata geçer.
-            </p>
 
-            <div style={{ marginTop: "4rem" }}>
-              <SwipeAppointmentButton onActivate={() => setIsConsultationOpen(true)} />
-            </div>
-          </div>
-        </div>
-      </section>
 
       <section className="services-section material-studio-collection" style={{ background: "transparent", paddingTop: "0" }}>
         <div className="material-studio-collection-shell material-studio-collection-inner" style={{ paddingTop: "0" }}>

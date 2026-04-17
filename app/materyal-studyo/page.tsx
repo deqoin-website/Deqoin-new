@@ -78,35 +78,7 @@ export default function MateryalStudyo() {
       {/* WORKFLOW SECTION */}
       <StudioWorkflow steps={MATERIAL_WORKFLOW(() => setIsConsultationOpen(true))} />
 
-      <section className="mimari-manifesto">
-        <div className="mimari-manifesto-inner">
-          <div className="mimari-manifesto-label">
-            <span className="vertical-text">{heroSection?.sideLabel || "Bespoke Material World"}</span>
-          </div>
-          <div className="mimari-manifesto-body">
-            <span className="section-small-label">VİZYONUMUZ</span>
-            <h2 className="mimari-quote" style={{ fontSize: "clamp(2rem, 5vw, 3rem)", lineHeight: "1.2", marginBottom: "3rem" }}>
-              {heroSection?.title || "Material Studio"} ile hayat bulan mekanlar
-            </h2>
-            <div className="mimari-manifesto-text">
-              {(heroSection?.content || [
-                "Burada sergilenen ürün grupları yalnızca kendi projelerimiz ve özel tasarımlarımız için kullanılmaktadır.",
-                "Malzeme, doku ve formu aynı mimari disiplin içinde ele alıyor; projeye uygun, seçkin yüzey ve obje kurguları oluşturuyoruz.",
-                "İhtiyacınıza uygun materyal senaryosunu birlikte netleştirmek için ekibimizle iletişime geçebilirsiniz.",
-              ]).map((paragraph: string, index: number) => (
-                <p key={index} style={{ marginBottom: "2rem" }}>{paragraph}</p>
-              ))}
-              <p style={{ marginBottom: 0, color: "#cca883", fontSize: "0.85rem", letterSpacing: "0.08em", lineHeight: "1.8" }}>
-                Sergilenen bu ürünler ve malzemeler yalnızca özel projeleriniz ve tasarımlarınız için kullanılacak olup, kesinlikle perakende satışı yapılmayacaktır.
-              </p>
-            </div>
 
-            <div style={{ marginTop: "4rem" }}>
-              <SwipeAppointmentButton onActivate={() => setIsConsultationOpen(true)} />
-            </div>
-          </div>
-        </div>
-      </section>
 
       <section className="services-section material-studio-collection" style={{ background: "transparent", paddingTop: "0" }}>
         <div className="material-studio-collection-shell material-studio-collection-inner" style={{ paddingTop: "0" }}>
