@@ -75,6 +75,7 @@ export default function MimariDetail({ params }: { params: Promise<ServiceParams
           categories={categories}
           process={process}
           focusAreas={focusAreas}
+          workflowType="design"
         />
       </main>
       <Footer />

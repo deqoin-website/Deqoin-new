@@ -71,6 +71,7 @@ export default function MaterialDetail({ params }: { params: Promise<ServicePara
           categories={categories}
           process={process}
           focusAreas={focusAreas}
+          workflowType="material"
         />
       </main>
       <Footer />

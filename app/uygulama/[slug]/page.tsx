@@ -71,6 +71,7 @@ export default function ExecutionDetail({ params }: { params: Promise<ServicePar
           categories={categories}
           process={process}
           focusAreas={focusAreas}
+          workflowType="execution"
         />
       </main>
       <Footer />

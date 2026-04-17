@@ -7,6 +7,8 @@ import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import ProjectInsightPanel from "./ProjectInsightPanel";
 import HeroSlider from "./HeroSlider";
+import StudioWorkflow from "./StudioWorkflow";
+import { MIMARI_WORKFLOW, MATERIAL_WORKFLOW, UYGULAMA_WORKFLOW } from "../data/workflows";
 
 interface DepartmentStudioProps {
   title: string;
@@ -22,6 +24,7 @@ interface DepartmentStudioProps {
   categories?: { label: string; value: Category | string }[];
   process?: { title: string; desc: string }[];
   focusAreas?: { title: string; icon: string; desc: string }[];
+  workflowType?: 'design' | 'material' | 'execution';
 }
 
 const FALLBACK_SLIDES = [
@@ -55,7 +58,8 @@ export default function DepartmentStudio({
   projects, 
   categories,
   process,
-  focusAreas
+  focusAreas,
+  workflowType = 'design'
 }: DepartmentStudioProps) {
   const displayCategories = categories || DEFAULT_CATEGORIES;
   const [searchQuery, setSearchQuery] = useState("");
@@ -116,6 +120,15 @@ export default function DepartmentStudio({
           };
         })} 
         onAppointmentClick={() => setIsConsultationOpen(true)}
+      />
+
+      {/* WORKFLOW SECTION */}
+      <StudioWorkflow 
+        steps={
+          workflowType === 'material' ? MATERIAL_WORKFLOW(() => setIsConsultationOpen(true)) :
+          workflowType === 'execution' ? UYGULAMA_WORKFLOW(() => setIsConsultationOpen(true)) :
+          MIMARI_WORKFLOW(() => setIsConsultationOpen(true))
+        } 
       />
 
       {/* RICH CONTENT SECTION: VISION & PROCESS */}

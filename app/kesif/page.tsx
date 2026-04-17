@@ -5,6 +5,8 @@ import Link from "next/link";
 import ConsultationModal from "../../components/ConsultationModal";
 import SwipeAppointmentButton from "../../components/SwipeAppointmentButton";
 import HeroSlider from "../../components/HeroSlider";
+import StudioWorkflow from "../../components/StudioWorkflow";
+import { MIMARI_WORKFLOW } from "../../data/workflows";
 
 const heroSlides = [
   "/images/slider/mimari_slide.png",
@@ -67,6 +69,9 @@ export default function KesifPage() {
         }))} 
         onAppointmentClick={() => setIsConsultationOpen(true)}
       />
+
+      {/* WORKFLOW SECTION */}
+      <StudioWorkflow steps={MIMARI_WORKFLOW(() => setIsConsultationOpen(true))} />
 
       {/* ── STAGES ── */}
       <section className="services-section" style={{ background: "transparent", paddingTop: "6rem" }}>

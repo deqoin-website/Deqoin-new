@@ -6,6 +6,8 @@ import ConsultationModal from "../../components/ConsultationModal";
 import { Loader2 } from "lucide-react";
 import SwipeAppointmentButton from "../../components/SwipeAppointmentButton";
 import HeroSlider from "../../components/HeroSlider";
+import StudioWorkflow from "../../components/StudioWorkflow";
+import { MATERIAL_WORKFLOW } from "../../data/workflows";
 import { materyalKategorileri } from "../../data/materyal-studyo";
 
 const materialCategories = materyalKategorileri.filter((item) =>
@@ -72,6 +74,9 @@ export default function MateryalStudyo() {
         onAppointmentClick={() => setIsConsultationOpen(true)}
         showScrollHint={true}
       />
+
+      {/* WORKFLOW SECTION */}
+      <StudioWorkflow steps={MATERIAL_WORKFLOW(() => setIsConsultationOpen(true))} />
 
       <section className="mimari-manifesto">
         <div className="mimari-manifesto-inner">

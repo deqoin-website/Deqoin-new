@@ -7,6 +7,8 @@ import { Loader2 } from "lucide-react";
 import SwipeAppointmentButton from "../../components/SwipeAppointmentButton";
 import { uygulamaBirimleri } from "../../data/uygulama-birimleri";
 import HeroSlider from "../../components/HeroSlider";
+import StudioWorkflow from "../../components/StudioWorkflow";
+import { UYGULAMA_WORKFLOW } from "../../data/workflows";
 
 const executionCategories = uygulamaBirimleri.filter((item) =>
   [
@@ -82,6 +84,9 @@ export default function UygulamaPage() {
         onAppointmentClick={() => setIsConsultationOpen(true)}
         showScrollHint={true}
       />
+
+      {/* WORKFLOW SECTION */}
+      <StudioWorkflow steps={UYGULAMA_WORKFLOW(() => setIsConsultationOpen(true))} />
 
       {/* MANİFESTO */}
       <section className="mimari-manifesto">
