@@ -109,9 +109,9 @@ video {
 .snap-section {
   scroll-snap-align: start;
   scroll-snap-stop: always;
-  height: 100vh;
-  height: 100svh;
-  width: 100%;
+  height: 100vh !important;
+  height: 100svh !important;
+  width: 100% !important;
   position: relative;
   overflow: hidden;
   display: flex;
@@ -127,6 +127,7 @@ video {
   scroll-padding-top: 100px;
   -ms-overflow-style: none; /* IE and Edge */
   scrollbar-width: none; /* Firefox */
+  position: relative;
 }
 
 .homepage-snap-shell::-webkit-scrollbar {
@@ -149,7 +150,21 @@ video {
   justify-content: center;
   width: 100%;
   padding: 0 5%;
-  overflow: hidden;
+  overflow-y: auto;
+  max-height: 100%;
+  position: relative;
+}
+
+/* Custom scrollbar for internal areas if needed (subtle) */
+.section-content-area::-webkit-scrollbar {
+  width: 4px;
+}
+.section-content-area::-webkit-scrollbar-track {
+  background: transparent;
+}
+.section-content-area::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
 }
 
 @media (max-width: 768px) {
@@ -179,7 +194,7 @@ video {
 .homepage-snap-shell .homepage-services-section .services-grid {
   width: 100%;
   flex: 1;
-  min-height: 100svh;
+  max-height: 100%;
 }
 
 .homepage-snap-shell .homepage-projects-section .section-heading,
@@ -232,15 +247,15 @@ video {
 }
 
 .homepage-snap-shell .homepage-services-section .service-card {
-  min-height: 100svh;
+  height: 100%;
 }
 
 .homepage-snap-shell .homepage-projects-section .project-slider-window {
-  min-height: 100svh;
+  height: 100%;
 }
 
 .homepage-snap-shell .homepage-team-section .team-mobile-slider {
-  min-height: 100svh;
+  height: 100%;
 }
 
 .homepage-footer-snap {
