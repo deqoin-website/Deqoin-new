@@ -29,6 +29,20 @@ export default function Page() {
   const teamTouchStartY = useRef<number | null>(null);
   const projectWheelLockRef = useRef(false);
   const teamWheelLockRef = useRef(false);
+  const flipAudioRef = useRef<HTMLAudioElement | null>(null);
+
+  useEffect(() => {
+    flipAudioRef.current = new Audio("/sounds/page-flip.mp3");
+    flipAudioRef.current.volume = 0.25;
+    flipAudioRef.current.load();
+  }, []);
+
+  const playFlipSound = () => {
+    if (!flipAudioRef.current) return;
+    const sound = flipAudioRef.current.cloneNode() as HTMLAudioElement;
+    sound.volume = 0.25;
+    sound.play().catch(() => {});
+  };
 
   const [serviceCards, setServiceCards] = useState<any[]>([
     {
@@ -314,6 +328,7 @@ export default function Page() {
 
   const navigateTeamSlide = (direction: number) => {
     if (filteredTeam.length === 0) return;
+    playFlipSound();
     setTeamSlideDirection(direction);
     setTeamSlideIndex((current) => (current + direction + filteredTeam.length) % filteredTeam.length);
   };

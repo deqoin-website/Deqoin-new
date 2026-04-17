@@ -26,6 +26,20 @@ export default function HeroSlider({ slides, onAppointmentClick, showScrollHint 
   const [isIntroReady, setIsIntroReady] = useState(false);
   const touchX = useRef<number | null>(null);
   const touchY = useRef<number | null>(null);
+  const flipAudioRef = useRef<HTMLAudioElement | null>(null);
+
+  useEffect(() => {
+    flipAudioRef.current = new Audio("/sounds/page-flip.mp3");
+    flipAudioRef.current.volume = 0.25;
+    flipAudioRef.current.load();
+  }, []);
+
+  const playFlipSound = () => {
+    if (!flipAudioRef.current) return;
+    const sound = flipAudioRef.current.cloneNode() as HTMLAudioElement;
+    sound.volume = 0.25;
+    sound.play().catch(() => {});
+  };
 
   useEffect(() => {
     setIsIntroReady(true);
@@ -41,6 +55,7 @@ export default function HeroSlider({ slides, onAppointmentClick, showScrollHint 
   }, [slides.length]);
 
   const navigate = (newDirection: number) => {
+    playFlipSound();
     setDirection(newDirection);
     setIndex((prev) => (prev + newDirection + slides.length) % slides.length);
   };
