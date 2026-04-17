@@ -3,6 +3,7 @@ import { Manrope, Noto_Serif, Outfit, Playfair_Display, Smooch_Sans } from "next
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import InteractiveBackground from "@/components/InteractiveBackground";
+import PageTransitionSound from "@/components/PageTransitionSound";
 import MaintenancePage from "./maintenance/page";
 import connectToDatabase from "@/lib/mongodb";
 import Settings from "@/models/Settings";
@@ -111,6 +112,7 @@ export default async function RootLayout({
         suppressHydrationWarning
       >
         <InteractiveBackground />
+        <PageTransitionSound />
         {isMaintenance && !isAdminPath ? (
           <MaintenancePage />
         ) : (
