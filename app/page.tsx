@@ -72,7 +72,6 @@ export default function Page() {
               motto: s.subtitle,
               mediaType: s.mediaType || 'image'
             })));
-            setHeroIndex(0);
           }
         }
       } catch (err) {
