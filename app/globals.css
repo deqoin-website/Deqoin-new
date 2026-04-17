@@ -154,7 +154,7 @@ video {
 
 /* Standardization Framework */
 .section-header-area {
-  padding-top: clamp(3rem, 10vh, 6rem);
+  padding-top: clamp(2.8rem, 10vh, 5.8rem); /* Nudged up slightly globaly */
   padding-bottom: 1.5rem;
   width: 100%;
   padding-left: 5%;
