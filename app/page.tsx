@@ -352,7 +352,16 @@ export default function Page() {
           <div className="section-header-area">
             <div className="section-heading-v2">
               <span className="section-small-label" style={{ letterSpacing: "0.5em", color: "#cca883", fontSize: "0.75rem", marginBottom: "0.5rem", display: "block" }}>STUDIO SELECTION</span>
-              <h2 style={{ marginBottom: "0.2rem", textTransform: "uppercase", color: "#fff" }}>DESIGN & COLLECTION</h2>
+              <h2 style={{ 
+                fontFamily: "var(--font-smooch), sans-serif", 
+                fontSize: "clamp(4rem, 10vw, 8rem)", 
+                fontWeight: 100, 
+                letterSpacing: "0.15em",
+                marginBottom: "0.2rem", 
+                textTransform: "uppercase", 
+                color: "#fff",
+                lineHeight: "1"
+              }}>DESIGN & COLLECTION</h2>
               <div className="section-line" style={{ background: "#fff", width: '100px', height: '1px', opacity: 0.3 }} />
             </div>
           </div>
@@ -399,7 +408,14 @@ export default function Page() {
           <div className="section-header-area">
             <div className="section-heading projects-heading-v2" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', width: '100%' }}>
               <div>
-                <h2>Galeri</h2>
+                <h2 style={{ 
+                  fontFamily: "var(--font-smooch), sans-serif", 
+                  fontSize: "clamp(4rem, 10vw, 8rem)", 
+                  fontWeight: 100, 
+                  letterSpacing: "0.15em",
+                  color: "#fff",
+                  lineHeight: "1"
+                }}>Galeri</h2>
                 <div className="section-line" />
               </div>
               <div className="project-slider-controls">
@@ -498,9 +514,23 @@ export default function Page() {
                     <div className="project-overlay" />
                     <div className="project-slide-glow" />
                     <div className="project-slide-copy">
-                      <span className="vertical-text">{currentProject?.label}</span>
                       <div>
-                        <h4>{currentProject?.title}</h4>
+                        <span className="project-category-label" style={{ 
+                          display: 'block', 
+                          color: '#cca883', 
+                          fontSize: '0.9rem', 
+                          letterSpacing: '0.3em', 
+                          marginBottom: '0.8rem',
+                          textTransform: 'uppercase'
+                        }}>{currentProject?.label}</span>
+                        <h4 style={{
+                          fontFamily: "var(--font-smooch), sans-serif",
+                          fontWeight: 100,
+                          fontSize: "clamp(2rem, 5vw, 4.5rem)",
+                          letterSpacing: "0.1em",
+                          lineHeight: "1.1",
+                          color: "#fff"
+                        }}>{currentProject?.title}</h4>
                         <span className="project-slide-cta">
                           <span className="project-slide-cta-line" aria-hidden="true" />
                           <span>PROJE BİLGİSİ</span>
@@ -525,7 +555,14 @@ export default function Page() {
         <section className="about-section snap-section homepage-section-v2" id="about-us">
           <div className="section-header-area">
             <div>
-              <h2>Geleneklerin ötesinde.</h2>
+              <h2 style={{ 
+                fontFamily: "var(--font-smooch), sans-serif", 
+                fontSize: "clamp(3rem, 7vw, 6rem)", 
+                fontWeight: 100, 
+                letterSpacing: "0.12em",
+                color: "#fff",
+                lineHeight: "1.1"
+              }}>Geleneklerin ötesinde.</h2>
               <div className="section-line" />
             </div>
           </div>
@@ -569,7 +606,14 @@ export default function Page() {
         <section className="team-section snap-section homepage-section-v2" id="departman-ekipleri">
           <div className="section-header-area">
             <div className="section-heading-v2">
-              <h2>Departman Ekipleri</h2>
+              <h2 style={{ 
+                fontFamily: "var(--font-smooch), sans-serif", 
+                fontSize: "clamp(4rem, 10vw, 8rem)", 
+                fontWeight: 100, 
+                letterSpacing: "0.15em",
+                color: "#fff",
+                lineHeight: "1"
+              }}>Departman Ekipleri</h2>
               <div className="section-line" />
             </div>
           </div>
