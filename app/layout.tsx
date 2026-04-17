@@ -18,7 +18,8 @@ const smooch = Smooch_Sans({ weight: ["100", "200", "300", "400"], subsets: ["la
 
 async function getSettings() {
   try {
-    await connectToDatabase();
+    const conn = await connectToDatabase();
+    if (!conn) return null;
     return await Settings.findOne({ key: "site-settings" });
   } catch (e) {
     return null;
