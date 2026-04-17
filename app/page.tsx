@@ -104,22 +104,6 @@ export default function Page() {
 
     fetchSlides();
     fetchServiceCards();
-
-    const introTimer = window.setTimeout(() => setHeroIntroReady(true), 220);
-
-    const interval = window.setInterval(() => {
-      setSlides(current => {
-        if (current.length > 0) {
-          setHeroIndex((idx) => (idx + 1) % current.length);
-        }
-        return current;
-      });
-    }, 8000);
-
-    return () => {
-      window.clearInterval(interval);
-      window.clearTimeout(introTimer);
-    };
   }, []);
 
   const filteredProjects = useMemo(() => projectsData, []);
