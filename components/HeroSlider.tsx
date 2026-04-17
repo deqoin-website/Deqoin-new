@@ -178,7 +178,7 @@ export default function HeroSlider({ slides, onAppointmentClick, showScrollHint 
               textTransform: "uppercase",
               paddingLeft: "0.6em",
               color: '#cca883',
-              fontSize: "clamp(1rem, 4vw, 2.8rem)",
+              fontSize: "clamp(1rem, 6vw, 3.8rem)",
               letterSpacing: "0.4em"
             }}
           >
