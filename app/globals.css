@@ -1240,6 +1240,11 @@ video {
   grid-template-columns: 1fr;
 }
 
+/* Studio pages (not homepage) — ensure grid has height so cards appear */
+.project-detail-shell .services-grid {
+  min-height: 300px;
+}
+
 .material-studio-collection-shell {
   width: 100%;
   max-width: none;
@@ -2633,10 +2638,16 @@ video {
   }
 
   .service-card {
-    height: 100%;
-    min-height: 0;
+    height: auto;
+    min-height: 420px;
     border-bottom: 0;
     border-right: 1px solid var(--line);
+  }
+
+  /* For homepage snap shell, service cards fill the container height */
+  .homepage-snap-shell .service-card {
+    height: 100%;
+    min-height: 0;
   }
 
   .service-card:last-child {
