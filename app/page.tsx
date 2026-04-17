@@ -567,13 +567,23 @@ export default function Page() {
 
         <div className="process-timeline">
           {[
-            { id: "01", icon: "event_note", title: "Randevu", detail: "Kusursuz sürecin ilk adımı." },
-            { id: "02", icon: "manage_search", title: "Keşif", detail: "İhtiyaçların ve potansiyelin öngörülmesi." },
-            { id: "03", icon: "draw", title: "Tasarım", detail: "Vizyonun ve mimari kimliğin kurgulanması." },
-            { id: "04", icon: "layers", title: "Malzeme", detail: "Projeye özel premium donatıların entegrasyonu." },
-            { id: "05", icon: "precision_manufacturing", title: "Uygulama", detail: "Tüm değerlerinizi ortaya koyan usta işi inşa süreci." }
+            { id: "01", icon: "event_note", title: "Randevu", detail: "Kusursuz sürecin ilk adımı.", href: "#", action: () => setIsConsultationOpen(true) },
+            { id: "02", icon: "manage_search", title: "Keşif", detail: "İhtiyaçların ve potansiyelin öngörülmesi.", href: "/kesif" },
+            { id: "03", icon: "draw", title: "Tasarım", detail: "Vizyonun ve mimari kimliğin kurgulanması.", href: "/mimari" },
+            { id: "04", icon: "layers", title: "Malzeme", detail: "Projeye özel premium donatıların entegrasyonu.", href: "/materyal-studyo" },
+            { id: "05", icon: "precision_manufacturing", title: "Uygulama", detail: "Tüm değerlerinizi ortaya koyan usta işi inşa süreci.", href: "/uygulama" }
           ].map((step, idx) => (
-            <div key={idx} className="process-step">
+            <Link 
+              key={idx} 
+              href={step.href} 
+              className="process-step"
+              onClick={(e) => {
+                if (step.action) {
+                  e.preventDefault();
+                  step.action();
+                }
+              }}
+            >
               <div className="step-number">
                 <span
                   className="material-symbols-outlined step-icon"
@@ -587,7 +597,7 @@ export default function Page() {
                 <h3>{step.title}</h3>
                 <p>{step.detail}</p>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
         </section>
