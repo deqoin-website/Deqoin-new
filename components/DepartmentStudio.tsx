@@ -101,7 +101,14 @@ export default function DepartmentStudio({
   };
 
   return (
-    <div className="studio-page studio-vertical-shell">
+    <>
+      <div className="detail-page-back-nav">
+        <Link href="/" className="back-button-horizontal">
+          <span className="material-symbols-outlined">arrow_back</span>
+          <span>ANASAYFAYA DÖN</span>
+        </Link>
+      </div>
+      <div className="studio-page studio-vertical-shell">
       <HeroSlider 
         slides={heroSlides.map((url, idx) => {
           const isVideo = (idx === 0 && mediaType === 'video') || url.toLowerCase().match(/\.(mp4|webm|ogg)$/) !== null;
@@ -395,5 +402,6 @@ export default function DepartmentStudio({
         }
       `}</style>
     </div>
+    </>
   );
 }
