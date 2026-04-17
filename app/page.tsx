@@ -309,8 +309,8 @@ export default function Page() {
             </div>
           </div>
           
-          <div className="section-content-area" style={{ overflowX: 'auto' }}>
-            <div className="process-timeline" style={{ width: 'max-content', margin: '0 auto' }}>
+          <div className="section-content-area" style={{ overflowX: 'hidden' }}>
+            <div className="process-timeline">
               {[
                 { id: "01", icon: "event_note", title: "Randevu", detail: "Kusursuz sürecin ilk adımı.", href: "#", action: () => setIsConsultationOpen(true) },
                 { id: "02", icon: "manage_search", title: "Keşif", detail: "İhtiyaçların ve potansiyelin öngörülmesi.", href: "/kesif" },
@@ -446,7 +446,7 @@ export default function Page() {
             </div>
           </div>
 
-          <div className="section-content-area">
+          <div className="section-content-area" style={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <div
               className="project-slider-window"
               onTouchStart={handleProjectTouchStart}
