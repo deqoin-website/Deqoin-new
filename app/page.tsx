@@ -704,8 +704,6 @@ export default function Page() {
              <span>CRAFTED WITH PRECISION</span>
           </footer>
         </section>
-      </div>
-
       <ProjectInsightPanel project={selectedProject} onClose={() => setActiveProjectPanelSlug(null)} />
 
       <ConsultationModal 
