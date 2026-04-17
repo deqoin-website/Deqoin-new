@@ -251,7 +251,7 @@ export default function ConsultationModal({ isOpen, onClose }: ConsultationModal
                           style={{
                             width: "40px",
                             height: "2px",
-                            background: step <= currentStep ? "var(--text)" : "var(--line)",
+                            background: step <= currentStep ? "#fff" : "rgba(255, 255, 255, 0.15)",
                             transition: "all 0.4s ease",
                           }}
                         />
@@ -386,7 +386,7 @@ export default function ConsultationModal({ isOpen, onClose }: ConsultationModal
                       )}
 
                       <div className="form-group">
-                        <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '1rem', fontFamily: 'var(--font-display)', letterSpacing: '0.1em' }}>
+                        <p style={{ fontSize: '0.85rem', color: 'rgba(255, 255, 255, 0.5)', marginBottom: '1rem', fontFamily: 'var(--font-display)', letterSpacing: '0.1em' }}>
                           HAYALİNİZDEKİ PROJEYİ BİZE ANLATIN
                         </p>
                         <textarea
@@ -408,10 +408,10 @@ export default function ConsultationModal({ isOpen, onClose }: ConsultationModal
                         type="button"
                         className="premium-all-btn"
                         onClick={prevStep}
-                        style={{ background: 'transparent', border: '1px solid var(--line)', flex: 1, color: 'var(--text)' }}
+                        style={{ background: 'transparent', border: '1px solid rgba(255, 255, 255, 0.2)', flex: 1, color: '#fff' }}
                       >
-                        <span className="material-symbols-outlined premium-btn-icon" style={{ marginLeft: 0, marginRight: '1rem', transform: 'rotate(180deg)', color: 'var(--text)' }}>east</span>
-                        <span className="premium-btn-text" style={{ color: 'var(--text)' }}>GERİ</span>
+                        <span className="material-symbols-outlined premium-btn-icon" style={{ marginLeft: 0, marginRight: '1rem', transform: 'rotate(180deg)', color: '#fff' }}>east</span>
+                        <span className="premium-btn-text" style={{ color: '#fff' }}>GERİ</span>
                       </button>
                     )}
                     <button

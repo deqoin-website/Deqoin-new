@@ -3435,8 +3435,8 @@ body:has(.homepage-snap-shell) {
 }
 
 .consultation-overlay-wrapper {
-  background: var(--surface);
-  border: 1px solid var(--line);
+  background: #050505;
+  border: 1px solid rgba(255, 255, 255, 0.1);
   padding: 3.25rem 3.5rem 2.5rem;
   width: min(100%, 880px);
   max-width: 880px;
@@ -3447,9 +3447,10 @@ body:has(.homepage-snap-shell) {
     transform 0.65s cubic-bezier(0.16, 1, 0.3, 1),
     box-shadow 0.65s cubic-bezier(0.16, 1, 0.3, 1);
   border-radius: 28px;
-  box-shadow: var(--shadow);
+  box-shadow: 0 40px 100px rgba(0, 0, 0, 0.82);
   overflow-y: auto;
   max-height: min(95vh, 1040px);
+  color: #fff;
 }
 
 .consultation-overlay-master.open .consultation-overlay-wrapper {
@@ -3511,7 +3512,7 @@ body:has(.homepage-snap-shell) {
 .consultation-title {
   font-family: var(--font-smooch), sans-serif;
   font-size: clamp(3rem, 6vw, 4.5rem);
-  color: var(--text);
+  color: #fff;
   font-weight: 200;
   letter-spacing: 0.1em;
   margin: 0 0 1rem 0;
@@ -3519,7 +3520,7 @@ body:has(.homepage-snap-shell) {
 
 .consultation-subtitle {
   font-family: var(--font-body), sans-serif;
-  color: var(--text-muted);
+  color: rgba(255, 255, 255, 0.65);
   font-size: 1rem;
   font-weight: 300;
   line-height: 1.6;
@@ -3565,19 +3566,19 @@ body:has(.homepage-snap-shell) {
   width: 100%;
   background: transparent;
   border: none;
-  border-bottom: 1px solid var(--line);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   padding: 1rem 0;
-  color: var(--text);
+  color: #fff;
   font-family: var(--font-body), sans-serif;
   font-size: 1.1rem;
   font-weight: 300;
   outline: none;
-  transition: border-color 0.4s ease, box-shadow 0.4s ease;
+  transition: all 0.4s ease;
   border-radius: 0;
 }
 
 .consultation-input::placeholder {
-  color: var(--text-muted);
+  color: rgba(255, 255, 255, 0.35);
 }
 
 .consultation-input:focus {
@@ -3606,7 +3607,13 @@ body:has(.homepage-snap-shell) {
 
 .consultation-overlay-wrapper .close-button,
 .consultation-overlay-wrapper .close-button span {
-  color: #101010 !important;
+  color: #fff !important;
+  opacity: 0.85;
+  transition: opacity 0.3s ease;
+}
+
+.consultation-overlay-wrapper .close-button:hover {
+  opacity: 1;
 }
 
 .submit-btn-invert:hover {
