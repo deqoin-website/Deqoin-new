@@ -232,6 +232,36 @@ video {
   color: #fff;
 }
 
+.homepage-snap-shell .contact-section {
+  background: #ffffff;
+  color: #080808;
+}
+
+.homepage-snap-shell .contact-section h2,
+.homepage-snap-shell .contact-section h3 {
+  color: #080808 !important;
+}
+
+.homepage-snap-shell .contact-section p {
+  color: rgba(0, 0, 0, 0.7) !important;
+}
+
+/* Gallery Titles to White */
+.project-slide-copy h4 {
+  color: #ffffff !important;
+}
+
+/* Team Card Text to White and Bigger */
+.team-card-copy h3 {
+  color: #ffffff !important;
+  font-size: clamp(1.8rem, 4vw, 2.5rem);
+}
+
+.team-card-role-vertical {
+  color: #ffffff !important;
+}
+
+
 .homepage-snap-shell .process-header h2,
 .homepage-snap-shell .section-heading h2,
 .homepage-snap-shell .process-step h3,

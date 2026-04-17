@@ -676,18 +676,18 @@ export default function Page() {
           <div className="section-content-area">
             <div className="contact-grid-v2" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4rem', width: '100%', maxWidth: '1200px' }}>
               <div className="contact-info-v2">
-                <h3 style={{ fontSize: '2.5rem', color: '#fff', marginBottom: '2rem', fontFamily: 'var(--font-headline)' }}>Bir kahveye bekleriz.</h3>
+                <h3 style={{ fontSize: '2.5rem', marginBottom: '2rem', fontFamily: 'var(--font-headline)' }}>Bir kahveye bekleriz.</h3>
                 <div className="contact-item-v2" style={{ marginBottom: '2rem' }}>
                   <span style={{ color: '#cca883', fontSize: '0.8rem', letterSpacing: '0.2em', textTransform: 'uppercase', display: 'block', marginBottom: '0.5rem' }}>MERKEZ OFİS</span>
-                  <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: '1.2rem', lineHeight: '1.6' }}>Deqoin Plaza, No: 42<br />Levent, İstanbul</p>
+                  <p style={{ fontSize: '1.2rem', lineHeight: '1.6' }}>Deqoin Plaza, No: 42<br />Levent, İstanbul</p>
                 </div>
                 <div className="contact-item-v2">
                   <span style={{ color: '#cca883', fontSize: '0.8rem', letterSpacing: '0.2em', textTransform: 'uppercase', display: 'block', marginBottom: '0.5rem' }}>DİJİTAL ATÖLYE</span>
-                  <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: '1.2rem' }}>info@deqoin.com<br />+90 (212) 444 0 444</p>
+                  <p style={{ fontSize: '1.2rem' }}>info@deqoin.com<br />+90 (212) 444 0 444</p>
                 </div>
               </div>
-              <div className="contact-form-teaser-v2" style={{ background: 'rgba(255,255,255,0.03)', padding: '3rem', borderRadius: '4px', border: '1px solid rgba(255,255,255,0.05)', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'flex-start' }}>
-                <p style={{ color: 'rgba(255,255,255,0.6)', marginBottom: '2rem', fontSize: '1.1rem' }}>Projeniz için profesyonel bir keşif mi planlamak istiyorsunuz?</p>
+              <div className="contact-form-teaser-v2" style={{ background: 'rgba(0,0,0,0.03)', padding: '3rem', borderRadius: '4px', border: '1px solid rgba(0,0,0,0.1)', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'flex-start' }}>
+                <p style={{ marginBottom: '2rem', fontSize: '1.1rem' }}>Projeniz için profesyonel bir keşif mi planlamak istiyorsunuz?</p>
                 <button 
                   onClick={() => setIsConsultationOpen(true)}
                   className="premium-all-btn"
@@ -699,7 +699,7 @@ export default function Page() {
             </div>
           </div>
           
-          <footer className="homepage-footer-mini" style={{ position: 'absolute', bottom: '2rem', width: '100%', padding: '0 5%', display: 'flex', justifyContent: 'space-between', alignItems: 'center', opacity: 0.4, fontSize: '0.8rem', color: '#fff' }}>
+          <footer className="homepage-footer-mini" style={{ position: 'absolute', bottom: '2rem', width: '100%', padding: '0 5%', display: 'flex', justifyContent: 'space-between', alignItems: 'center', opacity: 0.4, fontSize: '0.8rem' }}>
              <span>© 2026 DEQOIN DESIGN STUDIO</span>
              <span>CRAFTED WITH PRECISION</span>
           </footer>
