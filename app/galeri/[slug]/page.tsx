@@ -45,12 +45,12 @@ export default function ProjectDetail({ params }: { params: Promise<ProjectParam
 
   return (
     <main className="site-shell project-detail-shell gallery-detail-vertical-shell">
-      <header className="detail-topbar gallery-snap-point">
-        <Link href="/galeri" className="back-button">
+      <div className="detail-page-back-nav gallery-snap-point">
+        <Link href="/galeri" className="back-button-horizontal">
           <span className="material-symbols-outlined">arrow_back</span>
-          <span className="back-text">Galeriye Dön</span>
+          <span>GALERİYE DÖN</span>
         </Link>
-      </header>
+      </div>
 
       <div className="project-detail-hero gallery-snap-point">
         <div className="hero-bg" style={{ backgroundImage: `url(${project.coverImage})` }}>
