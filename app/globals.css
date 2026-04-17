@@ -106,41 +106,66 @@ video {
   transform: scale(0.992);
 }
 
-.snap-section {
-  scroll-snap-align: start;
-  scroll-snap-stop: always;
-  height: 100vh !important;
-  height: 100svh !important;
-  width: 100% !important;
+.homepage-snap-shell {
   position: relative;
-  overflow: hidden;
+  width: 100%;
+}
+
+@media (min-width: 1024px) {
+  .homepage-snap-shell {
+    height: 100vh;
+    height: 100svh;
+    overflow-y: auto;
+    scroll-snap-type: y mandatory;
+    scroll-behavior: smooth;
+    scroll-padding-top: 100px;
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+  }
+
+  .homepage-snap-shell::-webkit-scrollbar {
+    display: none; /* Chrome, Safari and Opera */
+  }
+
+  .snap-section {
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+    height: 100vh !important;
+    height: 100svh !important;
+    width: 100% !important;
+    overflow: hidden;
+  }
+}
+
+.snap-section {
+  position: relative;
   display: flex;
   flex-direction: column;
 }
 
-.homepage-snap-shell {
-  height: 100vh;
-  height: 100svh;
-  overflow-y: auto;
-  scroll-snap-type: y mandatory;
-  scroll-behavior: smooth;
-  scroll-padding-top: 100px;
-  -ms-overflow-style: none; /* IE and Edge */
-  scrollbar-width: none; /* Firefox */
-  position: relative;
-}
-
-.homepage-snap-shell::-webkit-scrollbar {
-  display: none; /* Chrome, Safari and Opera */
+@media (max-width: 1023px) {
+  .snap-section {
+    height: auto !important;
+    min-height: auto;
+    padding-bottom: 4rem;
+    overflow: visible;
+  }
 }
 
 /* Standardization Framework */
 .section-header-area {
-  padding-top: 8rem;
+  padding-top: clamp(4rem, 15vh, 8rem);
   padding-bottom: 2rem;
   width: 100%;
   padding-left: 5%;
   padding-right: 5%;
+}
+
+@media (max-width: 1023px) {
+  .section-header-area {
+    padding-top: 4rem;
+    padding-bottom: 1.5rem;
+  }
 }
 
 .section-content-area {
@@ -153,6 +178,16 @@ video {
   overflow-y: auto;
   max-height: 100%;
   position: relative;
+}
+
+@media (max-width: 1023px) {
+  .section-content-area {
+    display: block;
+    height: auto;
+    min-height: auto;
+    overflow: visible;
+    max-height: none;
+  }
 }
 
 /* Custom scrollbar for internal areas if needed (subtle) */
