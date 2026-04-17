@@ -120,7 +120,7 @@ export default async function RootLayout({
             {!isAdminPath && <Header />}
             {isAdminPath && <Header />} {/* Keep header for admin if needed, or modify logic */}
             {children}
-            {!isAdminPath && <Footer />}
+            {!isAdminPath && pathname !== '/' && pathname !== '' && <Footer />}
           </>
         )}
       </body>
