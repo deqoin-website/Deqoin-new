@@ -2907,7 +2907,7 @@ video {
   }
 
   .homepage-team-section .team-card-content {
-    padding: 1.5rem 1.8rem 1.8rem;
+    padding: 1.5rem 1.8rem 5rem; /* Increased bottom padding to lift text up */
   }
 
   .homepage-team-section .team-card-role-vertical {
