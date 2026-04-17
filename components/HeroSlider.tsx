@@ -190,10 +190,10 @@ export default function HeroSlider({ slides, onAppointmentClick, showScrollHint 
             transition={{ delay: 0.7, duration: 0.8 }}
             style={{ 
               fontFamily: "var(--font-smooch), sans-serif", 
-              fontSize: "clamp(3.5rem, 15vw, 15rem)", 
+              fontSize: "clamp(3.5rem, 15vw, 11.5rem)", 
               fontWeight: 100, 
               color: "#ffffff", 
-              letterSpacing: "0.18em", 
+              letterSpacing: "0.15em", 
               textTransform: "uppercase", 
               margin: 0, 
               lineHeight: "0.85",
