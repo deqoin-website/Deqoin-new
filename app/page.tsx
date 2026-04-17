@@ -348,9 +348,9 @@ export default function Page() {
           </div>
         </section>
 
-        <section className="services-section snap-section homepage-section-v2 homepage-services-section">
-          <div className="studio-selection-wrapper">
-            <div className="section-heading-v2" style={{ paddingLeft: '5%', paddingRight: '5%' }}>
+        <section className="services-section snap-section homepage-section-v2">
+          <div className="section-header-area">
+            <div className="section-heading-v2">
               <span className="section-small-label" style={{ letterSpacing: "0.5em", color: "#cca883", fontSize: "0.75rem", marginBottom: "0.5rem", display: "block" }}>STUDIO SELECTION</span>
               <h2 style={{ 
                 fontFamily: "var(--font-smooch), sans-serif", 
@@ -364,8 +364,10 @@ export default function Page() {
               }}>DESIGN & COLLECTION</h2>
               <div className="section-line" style={{ background: "#fff", width: '100px', height: '1px', opacity: 0.3 }} />
             </div>
-            
-            <div className="services-grid">
+          </div>
+          
+          <div className="section-content-area" style={{ padding: '0' }}>
+            <div className="services-grid" style={{ width: '100%', height: '100%' }}>
               {serviceCards.map((card) => (
                 <a
                   key={card.title}
