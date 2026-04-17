@@ -1178,7 +1178,7 @@ body:has(.homepage-snap-shell) {
 }
 
 .hero-studio-label {
-  font-size: clamp(0.82rem, 1.3vw, 1rem);
+  font-size: clamp(1rem, 1.8vw, 1.35rem);
   letter-spacing: 0.7em;
   color: #cca883;
   text-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
