@@ -1240,26 +1240,13 @@ video {
   grid-template-columns: 1fr;
 }
 
-/* Studio pages (not homepage) — cards match homepage Design & Collection height */
-.project-detail-shell .services-section {
-  height: 100svh;
-  display: flex;
-  flex-direction: column;
-  justify-content: stretch;
-  padding-top: 0 !important;
-}
-
+/* Studio pages (not homepage) — tall portrait rectangle cards like original design */
 .project-detail-shell .services-grid {
-  flex: 1;
-  height: 100%;
-  min-height: 0;
+  grid-auto-rows: 65vh;
 }
 
 .material-studio-page .services-section.material-studio-collection {
-  height: 100svh;
-  display: flex;
-  flex-direction: column;
-  padding-top: 0 !important;
+  background: #080808 !important;
 }
 
 .material-studio-collection-shell {
@@ -2667,7 +2654,7 @@ video {
     min-height: 0;
   }
 
-  /* Studio pages — cards fill their grid row (100svh grid) */
+  /* Studio pages — portrait card height fills the grid row (65vh per row) */
   .project-detail-shell .service-card {
     height: 100%;
     min-height: 0;
