@@ -56,7 +56,7 @@ export default function InteractiveBackground() {
         width: "100%",
         height: "100%",
         pointerEvents: "none",
-        zIndex: 9999, // On top of everything but transparent
+        zIndex: 9999,
         overflow: "hidden",
       }}
     >
@@ -69,14 +69,14 @@ export default function InteractiveBackground() {
               left: ripple.x, 
               width: 0, 
               height: 0, 
-              opacity: 0.5,
+              opacity: 0.8,
               scale: 0,
               x: "-50%",
               y: "-50%" 
             }}
             animate={{ 
-              width: 600, 
-              height: 600, 
+              width: 500, 
+              height: 500, 
               opacity: 0,
               scale: 1,
             }}
@@ -88,10 +88,11 @@ export default function InteractiveBackground() {
             style={{
               position: "absolute",
               borderRadius: "50%",
-              background: "radial-gradient(circle, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0) 70%)",
-              backgroundBlendMode: "screen",
-              backgroundColor: "rgba(255, 255, 255, 0.02)",
-              filter: "blur(20px)",
+              // Lux Gold Gradient
+              background: "radial-gradient(circle, rgba(166,137,102,0.4) 0%, rgba(166,137,102,0) 70%)",
+              border: "1px solid rgba(166,137,102,0.1)",
+              filter: "blur(10px)",
+              mixBlendMode: "screen",
             }}
           />
         ))}
