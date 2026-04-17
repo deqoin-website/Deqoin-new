@@ -3602,7 +3602,7 @@ body:has(.homepage-snap-shell) {
 }
 .submit-btn-invert .premium-btn-text,
 .submit-btn-invert .premium-btn-icon {
-  color: #101010 !important;
+  color: #fff !important;
 }
 
 .consultation-overlay-wrapper .close-button,
