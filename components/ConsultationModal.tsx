@@ -55,6 +55,7 @@ export default function ConsultationModal({ isOpen, onClose }: ConsultationModal
   const [isVisible, setIsVisible] = useState(false);
   const dragControls = useDragControls();
   const [currentStep, setCurrentStep] = useState(1);
+  const sheetRef = useRef<HTMLDivElement | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const lastPlayTime = useRef<number>(0);
   const [formData, setFormData] = useState({
