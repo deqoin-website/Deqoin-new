@@ -18,7 +18,7 @@ interface StudioWorkflowProps {
 
 export default function StudioWorkflow({ steps, title = "İŞ AKIŞI" }: StudioWorkflowProps) {
   return (
-    <section className="process-section snap-section">
+    <section className="process-section">
       <div className="process-header">
         <h2>{title}</h2>
         <div className="section-line" />
