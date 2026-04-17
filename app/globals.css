@@ -127,7 +127,8 @@ video {
     display: none; /* Chrome, Safari and Opera */
   }
 
-  .snap-section {
+  /* Only apply full-height snap inside the homepage shell */
+  .homepage-snap-shell .snap-section {
     scroll-snap-align: start;
     scroll-snap-stop: always;
     height: 100vh !important;
