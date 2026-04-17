@@ -139,16 +139,10 @@ export default function Page() {
 
   const currentProject = filteredProjects[projectIndex];
   const currentTeamMember = filteredTeam[teamSlideIndex];
-  const currentHeroSlide = slides[heroIndex];
 
   useEffect(() => {
     projectIndexRef.current = projectIndex;
   }, [projectIndex]);
-
-  const heroProgressStyle = {
-    width: "100%",
-    animation: "progressFill 8s linear infinite",
-  };
 
   useEffect(() => {
     if (filteredProjects.length === 0 || activeProjectPanelSlug) return;
