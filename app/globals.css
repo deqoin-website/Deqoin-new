@@ -3593,7 +3593,7 @@ body:has(.homepage-snap-shell) {
 
 .select-style option {
   background: #111;
-  color: var(--text);
+  color: #fff;
 }
 
 .submit-btn-invert {

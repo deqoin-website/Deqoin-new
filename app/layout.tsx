@@ -2,7 +2,6 @@ import type { Metadata, ResolvingMetadata } from "next";
 import { Manrope, Noto_Serif, Outfit, Playfair_Display, Smooch_Sans } from "next/font/google";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import GlobalRouteLoader from "@/components/GlobalRouteLoader";
 import MaintenancePage from "./maintenance/page";
 import connectToDatabase from "@/lib/mongodb";
 import Settings from "@/models/Settings";
@@ -115,7 +114,6 @@ export default async function RootLayout({
           <>
             {!isAdminPath && <Header />}
             {isAdminPath && <Header />} {/* Keep header for admin if needed, or modify logic */}
-            {!isAdminPath && <GlobalRouteLoader logoSrc={settings?.logoUrl || "/images/logo-new.jpeg"} />}
             {children}
             {!isAdminPath && <Footer />}
           </>
