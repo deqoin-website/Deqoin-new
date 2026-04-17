@@ -289,12 +289,6 @@ export default function Page() {
     return () => window.clearInterval(interval);
   }, [filteredTeam.length]);
 
-    const deltaY = touch.clientY - startY;
-
-    if (Math.abs(deltaX) < 50 || Math.abs(deltaX) < Math.abs(deltaY)) return;
-    navigateHero(deltaX < 0 ? 1 : -1);
-  };
-
   const navigateProject = (direction: number) => {
     if (filteredProjects.length === 0) return;
     const nextIndex =
