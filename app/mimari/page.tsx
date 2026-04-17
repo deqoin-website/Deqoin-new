@@ -134,7 +134,7 @@ export default function MimariPage() {
       <HeroSlider 
         slides={slides.map(img => ({
           title: pageInfo.title,
-          motto: pageInfo.subtitle,
+          motto: "TASARIM",
           image: img,
           blur: heroVisual.blur,
           overlay: heroVisual.overlay

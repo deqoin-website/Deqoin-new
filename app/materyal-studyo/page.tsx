@@ -64,7 +64,7 @@ export default function MateryalStudyo() {
       <HeroSlider 
         slides={(heroSection?.slides?.length > 0 ? heroSection.slides : [materialCategories[0]?.image]).map((img: string) => ({
           title: heroSection?.title || "MATERIAL STUDIO",
-          motto: heroSection?.subtitle || "ÜRÜN VE MALZEME",
+          motto: "MALZEME",
           image: img,
           blur: heroBlur,
           overlay: heroOverlay

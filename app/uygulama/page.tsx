@@ -74,7 +74,7 @@ export default function UygulamaPage() {
       <HeroSlider 
         slides={(heroSection?.slides?.length > 0 ? heroSection.slides : [executionCategories[0]?.image]).map((img: string) => ({
           title: heroSection?.title || "EXECUTION STUDIO",
-          motto: heroSection?.subtitle || "UYGULAMA HİZMETLERİ",
+          motto: "UYGULAMA",
           image: img,
           blur: heroBlur,
           overlay: heroOverlay
