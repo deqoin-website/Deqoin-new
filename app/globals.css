@@ -2604,29 +2604,29 @@ body:has(.homepage-snap-shell) {
 
   .homepage-team-section .team-card-gallery {
     min-height: auto;
-    min-height: clamp(28rem, 60svh, 42rem);
+    min-height: clamp(34rem, 72svh, 52rem);
   }
 
   .homepage-team-section .team-card-content {
-    padding: 0.68rem 0.76rem 0.78rem;
+    padding: 1.5rem 1.8rem 1.8rem;
   }
 
   .homepage-team-section .team-card-role-vertical {
-    font-size: 0.29rem;
-    letter-spacing: 0.13em;
+    font-size: 0.45rem;
+    letter-spacing: 0.18em;
   }
 
   .homepage-team-section .team-card-copy h3 {
-    font-size: clamp(0.95rem, 2.3vw, 1.5rem);
+    font-size: clamp(1.4rem, 3.2vw, 2.5rem);
     line-height: 0.88;
   }
 
   .homepage-team-section .team-card-index {
-    font-size: 0.5rem;
+    font-size: 0.8rem;
   }
 
   .homepage-team-section .team-card-footer .material-symbols-outlined {
-    font-size: 0.7rem;
+    font-size: 1.2rem;
   }
 
 .homepage-team-section .team-mobile-slide {
