@@ -3289,10 +3289,31 @@ video {
 }
 
 .search-overlay-header {
-  position: absolute;
-  top: 2rem;
-  right: 2rem;
-  z-index: 1001;
+  position: fixed;
+  top: clamp(1.5rem, 4vh, 2.5rem);
+  right: clamp(1.5rem, 4vw, 2.5rem);
+  z-index: 1010;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.search-overlay-header .close-button {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.search-overlay-header .close-button:hover {
+  background: rgba(255, 255, 255, 0.15);
+  transform: rotate(90deg);
 }
 
 .search-overlay-content {
