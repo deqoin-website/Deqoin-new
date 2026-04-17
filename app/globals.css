@@ -354,7 +354,12 @@ video {
     border-radius: 12px !important;
     background: rgba(255, 255, 255, 0.02) !important;
   }
+
+  .premium-all-btn {
+    display: none !important;
+  }
 }
+
 
 
 
