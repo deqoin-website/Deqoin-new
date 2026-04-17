@@ -3290,30 +3290,57 @@ video {
 
 .search-overlay-header {
   position: fixed;
-  top: clamp(1.5rem, 4vh, 2.5rem);
-  right: clamp(1.5rem, 4vw, 2.5rem);
-  z-index: 1010;
-  display: flex;
-  justify-content: flex-end;
+  top: 2rem;
+  right: 2rem;
+  z-index: 9999;
 }
 
-.search-overlay-header .close-button {
-  background: rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+.search-close-x-btn {
   width: 50px;
   height: 50px;
+  background: #fff;
+  border: none;
   border-radius: 50%;
+  cursor: pointer;
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.3s ease;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
 }
 
-.search-overlay-header .close-button:hover {
-  background: rgba(255, 255, 255, 0.15);
-  transform: rotate(90deg);
+.search-close-x-btn:hover {
+  transform: scale(1.1) rotate(90deg);
+  background: #cca883;
+}
+
+.x-line {
+  position: absolute;
+  width: 24px;
+  height: 2px;
+  background: #000;
+  border-radius: 2px;
+}
+
+.x-line-1 {
+  transform: rotate(45deg);
+}
+
+.x-line-2 {
+  transform: rotate(-45deg);
+}
+
+@media (max-width: 1023px) {
+  .search-overlay-header {
+    top: 1.5rem;
+    right: 1.5rem;
+  }
+  
+  .search-close-x-btn {
+    width: 44px;
+    height: 44px;
+  }
 }
 
 .search-overlay-content {

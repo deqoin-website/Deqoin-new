@@ -120,8 +120,9 @@ export default function Header() {
       {/* World-Class Search Overlay */}
       <div className={`search-overlay-master ${isSearchOpen ? "open" : ""}`}>
         <div className="search-overlay-header">
-          <button className="icon-button close-button" type="button" onClick={() => setIsSearchOpen(false)} aria-label="Aramayı Kapat">
-            <span className="material-symbols-outlined">close</span>
+          <button className="search-close-x-btn" type="button" onClick={() => setIsSearchOpen(false)} aria-label="Aramayı Kapat">
+            <div className="x-line x-line-1"></div>
+            <div className="x-line x-line-2"></div>
           </button>
         </div>
         
