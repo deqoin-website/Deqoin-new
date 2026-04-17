@@ -82,6 +82,12 @@ export default function ConsultationModal({ isOpen, onClose }: ConsultationModal
 
     setIsVisible(false);
     document.body.style.overflow = "";
+    
+    // Stop writing sound when closing
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.currentTime = 0;
+    }
 
     const timeout = window.setTimeout(() => {
       setShouldRender(false);
