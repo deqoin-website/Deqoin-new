@@ -227,7 +227,7 @@ video {
 }
 
 .homepage-snap-shell .homepage-services-section .section-header-area {
-  padding-top: clamp(1.5rem, 5vh, 4rem) !important; /* Specific nudge for this section */
+  padding-top: clamp(1rem, 5vh, 3.8rem) !important; /* Another nudge up as requested */
 }
 
 .homepage-snap-shell .homepage-services-section .services-grid {
