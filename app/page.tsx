@@ -486,9 +486,9 @@ export default function Page() {
                     <motion.div
                       className="project-slide-parallax"
                       style={currentProject?.coverImage ? { backgroundImage: `url(${currentProject.coverImage})` } : undefined}
-                      initial={{ scale: 1.08, x: direction >= 0 ? -30 : 30 }}
+                      initial={{ scale: 1.08, x: projectDirection >= 0 ? -30 : 30 }}
                       animate={{ scale: 1.16, x: 0 }}
-                      exit={{ scale: 1.08, x: direction >= 0 ? 30 : -30 }}
+                      exit={{ scale: 1.08, x: projectDirection >= 0 ? 30 : -30 }}
                       transition={{ duration: 0.75, ease: [0.16, 1, 0.3, 1] }}
                     />
                     {currentProject?.coverImage ? (
