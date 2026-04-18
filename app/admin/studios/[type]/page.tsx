@@ -13,7 +13,7 @@ export default function DepartmentManagerPage() {
   const rawType = params?.type; 
   const slug = Array.isArray(rawType) ? rawType[0] : rawType || 'mimarlik';
 
-  const [activeTab, setActiveTab] = useState<'genel' | 'surec' | 'odak' | 'kategoriler' | 'projeler'>('genel');
+  const [activeTab, setActiveTab] = useState<'genel' | 'surec' | 'odak' | 'kategoriler' | 'urunler' | 'projeler'>('genel');
   const [loading, setLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [isDirty, setIsDirty] = useState(false);
@@ -314,6 +314,7 @@ export default function DepartmentManagerPage() {
   if (loading) return <div className="loader-wrap"><Loader2 className="animate-spin" /></div>;
 
   return (
+    <>
     <div className="dept-manager-layout">
       <div className="dept-header">
         <div>
@@ -655,8 +656,9 @@ export default function DepartmentManagerPage() {
           )}
         </AnimatePresence>
       </div>
+    </div>
 
-      {/* EDIT MODAL INTEGRATION */}
+    {/* EDIT MODAL INTEGRATION */}
       <AnimatePresence>
         {isModalOpen && (
           <div className="hybrid-modal-overlay">
@@ -863,7 +865,7 @@ export default function DepartmentManagerPage() {
         )}
       </AnimatePresence>
 
-      <style jsx>{`
+    <style jsx>{`
         .dept-manager-layout { display: flex; flex-direction: column; gap: 2rem; }
         
         .dept-header { display: flex; justify-content: space-between; align-items: flex-end; gap: 1.5rem; }
@@ -1187,6 +1189,6 @@ export default function DepartmentManagerPage() {
         .remove-product-btn:hover { background: #ff4d4d; color: #fff; }
         .empty-state-lux { padding: 4rem; text-align: center; color: rgba(255,255,255,0.3); font-size: 0.9rem; letter-spacing: 0.1em; border: 1px dashed rgba(255,255,255,0.1); border-radius: 12px; }
       `}</style>
-    </div>
+    </>
   );
 }
