@@ -607,19 +607,6 @@ export default function DepartmentManagerPage() {
                 )}
               </div>
               
-              <style jsx>{`
-                .product-management-grid { display: flex; flex-direction: column; gap: 1.5rem; }
-                .admin-product-card { display: grid; grid-template-columns: 180px 1fr auto; gap: 2rem; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); padding: 1.5rem; border-radius: 12px; position: relative; }
-                .product-media-side { position: relative; }
-                .product-img-upload-box { width: 100%; aspect-ratio: 1; border: 1px dashed rgba(255,255,255,0.2); border-radius: 8px; overflow: hidden; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.3s; }
-                .product-img-upload-box:hover { border-color: #a68966; background: rgba(166,137,102,0.05); }
-                .product-img-upload-box img { width: 100%; height: 100%; object-fit: cover; }
-                .upload-placeholder { display: flex; flex-direction: column; align-items: center; gap: 0.5rem; color: rgba(255,255,255,0.4); font-size: 0.7rem; }
-                .product-info-side { display: flex; flex-direction: column; gap: 1rem; }
-                .remove-product-btn { background: rgba(255,0,0,0.1); border: 1px solid rgba(255,0,0,0.2); color: #ff4d4d; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border-radius: 8px; cursor: pointer; transition: 0.3s; }
-                .remove-product-btn:hover { background: #ff4d4d; color: #fff; }
-                .empty-state-lux { padding: 4rem; text-align: center; color: rgba(255,255,255,0.3); font-size: 0.9rem; letter-spacing: 0.1em; border: 1px dashed rgba(255,255,255,0.1); border-radius: 12px; }
-              `}</style>
             </motion.div>
           )}
 
@@ -1186,6 +1173,19 @@ export default function DepartmentManagerPage() {
         .mb-8 { margin-bottom: 2rem; }
         .mt-8 { margin-top: 2rem; }
         .hidden { display: none; }
+
+        /* PRODUCT MANAGEMENT STYLES */
+        .product-management-grid { display: flex; flex-direction: column; gap: 1.5rem; }
+        .admin-product-card { display: grid; grid-template-columns: 180px 1fr auto; gap: 2rem; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); padding: 1.5rem; border-radius: 12px; position: relative; }
+        .product-media-side { position: relative; }
+        .product-img-upload-box { width: 100%; aspect-ratio: 1; border: 1px dashed rgba(255,255,255,0.2); border-radius: 8px; overflow: hidden; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.3s; }
+        .product-img-upload-box:hover { border-color: #a68966; background: rgba(166,137,102,0.05); }
+        .product-img-upload-box img { width: 100%; height: 100%; object-fit: cover; }
+        .upload-placeholder { display: flex; flex-direction: column; align-items: center; gap: 0.5rem; color: rgba(255,255,255,0.4); font-size: 0.7rem; }
+        .product-info-side { display: flex; flex-direction: column; gap: 1rem; }
+        .remove-product-btn { background: rgba(255,0,0,0.1); border: 1px solid rgba(255,0,0,0.2); color: #ff4d4d; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border-radius: 8px; cursor: pointer; transition: 0.3s; }
+        .remove-product-btn:hover { background: #ff4d4d; color: #fff; }
+        .empty-state-lux { padding: 4rem; text-align: center; color: rgba(255,255,255,0.3); font-size: 0.9rem; letter-spacing: 0.1em; border: 1px dashed rgba(255,255,255,0.1); border-radius: 12px; }
       `}</style>
     </div>
   );
