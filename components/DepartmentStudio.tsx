@@ -383,19 +383,20 @@ export default function DepartmentStudio({
       <ProjectInsightPanel project={selectedProject} onClose={() => setActiveProjectSlug(null)} />
 
 
-      <style jsx>{`
+      <style jsx global>{`
         .studio-back-btn-floating {
           position: fixed;
           top: 7rem;
           left: 3rem;
-          z-index: 1500;
+          z-index: 9999;
           display: flex;
           align-items: center;
           gap: 1.25rem;
           text-decoration: none;
-          color: #fff;
+          color: #fff !important;
           transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
           padding: 0.5rem;
+          pointer-events: auto;
         }
 
         .back-icon-box {
@@ -404,15 +405,17 @@ export default function DepartmentStudio({
           display: flex;
           align-items: center;
           justify-content: center;
-          background: rgba(0, 0, 0, 0.4);
-          backdrop-filter: blur(12px);
-          border: 1px solid rgba(255, 255, 255, 0.1);
+          background: rgba(0, 0, 0, 0.6);
+          backdrop-filter: blur(15px);
+          -webkit-backdrop-filter: blur(15px);
+          border: 1px solid rgba(255, 255, 255, 0.15);
           border-radius: 50%;
           color: #a68966;
           transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         .back-text {
+          font-family: var(--font-display), sans-serif;
           font-size: 0.7rem;
           font-weight: 700;
           letter-spacing: 0.25em;
@@ -421,7 +424,7 @@ export default function DepartmentStudio({
           transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
           color: #fff;
           white-space: nowrap;
-          text-shadow: 0 4px 15px rgba(0,0,0,0.5);
+          text-shadow: 0 4px 15px rgba(0,0,0,0.8);
         }
 
         .studio-back-btn-floating:hover .back-icon-box {
@@ -429,7 +432,7 @@ export default function DepartmentStudio({
           color: #000;
           transform: scale(1.1);
           border-color: #a68966;
-          box-shadow: 0 0 30px rgba(166,137,102,0.4);
+          box-shadow: 0 0 30px rgba(166,137,102,0.5);
         }
 
         .studio-back-btn-floating:hover .back-text {
