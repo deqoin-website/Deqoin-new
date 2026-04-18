@@ -22,6 +22,7 @@ interface DepartmentStudioProps {
   projects: ProjectDetail[];
   categories?: { label: string; value: Category | string }[];
   focusAreas?: { title: string; icon: string; desc: string }[];
+  products?: { title: string; image: string; desc: string; price?: string; link?: string }[];
   workflowType?: 'design' | 'material' | 'execution';
 }
 
@@ -55,6 +56,7 @@ export default function DepartmentStudio({
   projects, 
   categories,
   focusAreas,
+  products,
   workflowType = 'design'
 }: DepartmentStudioProps) {
   const displayCategories = categories || DEFAULT_CATEGORIES;
@@ -155,6 +157,46 @@ export default function DepartmentStudio({
           )}
         </div>
       </section>
+
+      {/* PRODUCTS SECTION */}
+      {products && products.length > 0 && (
+        <section className="studio-products-section">
+          <div className="products-inner">
+            <div className="products-header">
+              <span className="section-small-label">ÜRÜN KOLEKSİYONU</span>
+              <h2 className="products-section-title">TASARIM DETAYLARDA GİZLİDİR</h2>
+              <div className="products-header-line" />
+            </div>
+
+            <div className="products-collection-grid">
+              {products.map((product, idx) => (
+                <div key={idx} className="studio-product-card">
+                  <div className="product-card-visual">
+                    <img src={product.image} alt={product.title} />
+                    <div className="product-card-overlay">
+                      <div className="product-hover-content">
+                        <p>{product.desc}</p>
+                        {product.link && (
+                          <Link href={product.link} className="product-more-btn">
+                            İNCELE <span className="material-symbols-outlined">north_east</span>
+                          </Link>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="product-card-footer">
+                    <div className="product-meta-main">
+                      <h3>{product.title}</h3>
+                      {product.price && <span className="product-price-tag">{product.price}</span>}
+                    </div>
+                    <div className="product-brand-line" />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* SEARCH & MOBILE FILTER BAR */}
       <div className="studio-search-container studio-snap-point">
@@ -399,6 +441,160 @@ export default function DepartmentStudio({
             line-height: 1.6;
             overflow-wrap: anywhere;
           }
+        }
+
+        /* NEW PRODUCTS SECTION STYLES */
+        .studio-products-section {
+          background: #080808;
+          padding: 8rem 0 12rem;
+          color: #fff;
+          border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .products-inner {
+          max-width: 1400px;
+          margin: 0 auto;
+          padding: 0 5%;
+        }
+
+        .products-header {
+          text-align: center;
+          margin-bottom: 6rem;
+        }
+
+        .products-section-title {
+          font-family: var(--font-smooch), sans-serif;
+          font-size: clamp(2.5rem, 6vw, 4.5rem);
+          font-weight: 100;
+          letter-spacing: 0.1em;
+          margin-top: 1rem;
+          text-transform: uppercase;
+        }
+
+        .products-header-line {
+          width: 50px;
+          height: 1px;
+          background: #a68966;
+          margin: 2.5rem auto;
+        }
+
+        .products-collection-grid {
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+          gap: 3rem;
+        }
+
+        .studio-product-card {
+           display: flex;
+           flex-direction: column;
+           gap: 1.5rem;
+           transition: 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .product-card-visual {
+          position: relative;
+          aspect-ratio: 4 / 5;
+          overflow: hidden;
+          background: #111;
+        }
+
+        .product-card-visual img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          transition: 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .product-card-overlay {
+          position: absolute;
+          inset: 0;
+          background: rgba(0, 0, 0, 0.85);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: 3rem;
+          opacity: 0;
+          transition: 0.4s;
+          backdrop-filter: blur(5px);
+        }
+
+        .product-hover-content {
+          text-align: center;
+          transform: translateY(20px);
+          transition: 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .product-hover-content p {
+          font-size: 0.95rem;
+          line-height: 1.8;
+          color: rgba(255,255,255,0.8);
+          margin-bottom: 2rem;
+          font-weight: 300;
+        }
+
+        .product-more-btn {
+          display: inline-flex;
+          align-items: center;
+          gap: 0.75rem;
+          color: #a68966;
+          font-size: 0.75rem;
+          letter-spacing: 0.2em;
+          font-weight: 700;
+          padding-bottom: 0.5rem;
+          border-bottom: 1px solid #a68966;
+        }
+
+        .studio-product-card:hover .product-card-overlay { opacity: 1; }
+        .studio-product-card:hover .product-hover-content { transform: translateY(0); }
+        .studio-product-card:hover img { transform: scale(1.1) rotate(1deg); }
+
+        .product-card-footer {
+          display: flex;
+          flex-direction: column;
+          gap: 0.75rem;
+        }
+
+        .product-meta-main {
+          display: flex;
+          justify-content: space-between;
+          align-items: baseline;
+        }
+
+        .product-card-footer h3 {
+          font-family: var(--font-smooch), sans-serif;
+          font-size: 1.8rem;
+          font-weight: 300;
+          letter-spacing: 0.1em;
+          color: #fff;
+          text-transform: uppercase;
+        }
+
+        .product-price-tag {
+          font-size: 0.9rem;
+          color: #a68966;
+          font-family: var(--font-display);
+          font-weight: 400;
+        }
+
+        .product-brand-line {
+          width: 100%;
+          height: 1px;
+          background: linear-gradient(to right, #a68966 0%, rgba(255,255,255,0.05) 100%);
+          opacity: 0.6;
+        }
+
+        @media (max-width: 1024px) {
+          .products-collection-grid { grid-template-columns: 1fr 1fr; gap: 2rem; }
+          .studio-product-card { gap: 1rem; }
+        }
+
+        @media (max-width: 767px) {
+          .studio-products-section { padding: 5rem 0 8rem; }
+          .products-header { margin-bottom: 3.5rem; }
+          .products-collection-grid { grid-template-columns: 1fr; gap: 3rem; }
+          .product-card-visual { aspect-ratio: 1; }
+          .product-card-footer h3 { font-size: 1.5rem; }
+          .product-card-overlay { padding: 2rem; }
         }
       `}</style>
     </div>

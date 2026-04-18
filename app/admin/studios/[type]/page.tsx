@@ -37,7 +37,8 @@ export default function DepartmentManagerPage() {
     sliderImages: [] as string[],
     process: [] as { title: string; desc: string }[],
     focusAreas: [] as { title: string; icon: string; desc: string }[],
-    categories: [] as { label: string; value: string }[]
+    categories: [] as { label: string; value: string }[],
+    products: [] as { title: string; image: string; desc: string; price?: string; link?: string }[]
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -110,7 +111,8 @@ export default function DepartmentManagerPage() {
           sliderImages: json.sliderImages || [],
           process: json.process || [],
           focusAreas: json.focusAreas || [],
-          categories: json.categories || []
+          categories: json.categories || [],
+          products: json.products || []
         };
         setData(loadedData);
         setInitialData(JSON.parse(JSON.stringify(loadedData)));
@@ -198,13 +200,13 @@ export default function DepartmentManagerPage() {
     showToast("Değişiklikler geri alındı.", "info");
   };
 
-  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>, field: 'image' | 'cover' | 'gallery') => {
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>, field: 'image' | 'cover' | 'gallery' | 'product', productIndex?: number) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    uploadFile(file, field);
+    uploadFile(file, field, productIndex);
   };
 
-  const uploadFile = async (file: File, field: 'image' | 'cover' | 'gallery') => {
+  const uploadFile = async (file: File, field: 'image' | 'cover' | 'gallery' | 'product', productIndex?: number) => {
     try {
       const res = await fetch(`/api/upload?filename=${file.name}`, { method: 'POST', body: file });
       const blob = await res.json();
@@ -217,6 +219,8 @@ export default function DepartmentManagerPage() {
         setFormData(prev => ({ ...prev, coverImage: blob.url }));
       } else if (field === 'gallery') {
         setFormData(prev => ({ ...prev, gallery: [...prev.gallery, { url: blob.url, imageAlt: '', caption: '' }] }));
+      } else if (field === 'product' && productIndex !== undefined) {
+        updateItem('products', productIndex, 'image', blob.url);
       }
     } catch (err) {
       showToast("Yükleme başarısız.", "error");
@@ -288,17 +292,17 @@ export default function DepartmentManagerPage() {
     }
   };
 
-  const addItem = (field: 'process' | 'focusAreas' | 'categories', emptyItem: any) => {
+  const addItem = (field: 'process' | 'focusAreas' | 'categories' | 'products', emptyItem: any) => {
     setData(prev => ({ ...prev, [field]: [...prev[field], emptyItem] }));
     setIsDirty(true);
   };
 
-  const removeItem = (field: 'process' | 'focusAreas' | 'categories', index: number) => {
+  const removeItem = (field: 'process' | 'focusAreas' | 'categories' | 'products', index: number) => {
     setData(prev => ({ ...prev, [field]: prev[field].filter((_, i) => i !== index) }));
     setIsDirty(true);
   };
 
-  const updateItem = (field: 'process' | 'focusAreas' | 'categories', index: number, key: string, value: string) => {
+  const updateItem = (field: 'process' | 'focusAreas' | 'categories' | 'products', index: number, key: string, value: string) => {
     setData(prev => {
       const newArray = [...prev[field]];
       (newArray[index] as any)[key] = value;
@@ -331,6 +335,7 @@ export default function DepartmentManagerPage() {
           { id: 'surec', label: 'İŞ AKIŞI (PROCESS)' },
           { id: 'odak', label: 'ODAK ALANLARI (CARDS)' },
           { id: 'kategoriler', label: 'PROJE KATEGORİSİ' },
+          { id: 'urunler', label: 'ÜRÜN KOLEKSİYONU' },
           { id: 'projeler', label: 'PROJELER (PORTFOLIO)' }
         ].map(tab => (
           <button 
@@ -512,6 +517,112 @@ export default function DepartmentManagerPage() {
               </div>
             </motion.div>
           )}
+          {/* ÜRÜNLER (PRODUCTS) */}
+          {activeTab === 'urunler' && (
+            <motion.div key="urunler" initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 10 }} className="tab-panel list-panel">
+              <div className="panel-header">
+                <div>
+                  <h3>Ürün Katalog Yönetimi</h3>
+                  <p className="hint">Aydınlatma armatürleri, mobilya tasarımları veya özel üretim parçaları buradan yönetin.</p>
+                </div>
+                <button className="add-item-btn" onClick={() => addItem('products', { title: '', image: '', desc: '', price: '', link: '' })}>
+                  <Plus size={16} /> YENİ ÜRÜN EKLE
+                </button>
+              </div>
+
+              <div className="product-management-grid">
+                {data.products.map((product, i) => (
+                  <div key={i} className="admin-product-card">
+                    <div className="product-media-side">
+                      <div 
+                        className="product-img-upload-box"
+                        onClick={() => document.getElementById(`product-img-${i}`)?.click()}
+                      >
+                        {product.image ? (
+                          <img src={product.image} alt="Product" />
+                        ) : (
+                          <div className="upload-placeholder">
+                            <Upload size={20} />
+                            <span>Görsel Yükle</span>
+                          </div>
+                        )}
+                      </div>
+                      <input 
+                        id={`product-img-${i}`}
+                        type="file"
+                        className="hidden"
+                        onChange={e => handleImageUpload(e, 'product', i)}
+                        accept="image/*"
+                      />
+                    </div>
+                    <div className="product-info-side">
+                      <div className="lux-group">
+                        <label>ÜRÜN ADI</label>
+                        <input 
+                          type="text" 
+                          placeholder="Örn: Minimalist Avize" 
+                          value={product.title} 
+                          onChange={e => updateItem('products', i, 'title', e.target.value)} 
+                        />
+                      </div>
+                      <div className="lux-group">
+                        <label>KISA AÇIKLAMA</label>
+                        <textarea 
+                          placeholder="Ürün detayları..." 
+                          value={product.desc} 
+                          onChange={e => updateItem('products', i, 'desc', e.target.value)} 
+                          rows={2}
+                        />
+                      </div>
+                      <div className="form-cols-2">
+                        <div className="lux-group">
+                          <label>FİYAT (OPSİYONEL)</label>
+                          <input 
+                            type="text" 
+                            placeholder="Örn: 1.200 TL" 
+                            value={product.price || ''} 
+                            onChange={e => updateItem('products', i, 'price', e.target.value)} 
+                          />
+                        </div>
+                        <div className="lux-group">
+                          <label>LİNK (OPSİYONEL)</label>
+                          <input 
+                            type="text" 
+                            placeholder="Dış bağlantı..." 
+                            value={product.link || ''} 
+                            onChange={e => updateItem('products', i, 'link', e.target.value)} 
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    <button className="remove-product-btn" onClick={() => removeItem('products', i)}>
+                      <Trash2 size={16} />
+                    </button>
+                  </div>
+                ))}
+                {data.products.length === 0 && (
+                  <div className="empty-state-lux">
+                    <p>Henüz bu departman için ürün eklenmemiş.</p>
+                  </div>
+                )}
+              </div>
+              
+              <style jsx>{`
+                .product-management-grid { display: flex; flex-direction: column; gap: 1.5rem; }
+                .admin-product-card { display: grid; grid-template-columns: 180px 1fr auto; gap: 2rem; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); padding: 1.5rem; border-radius: 12px; position: relative; }
+                .product-media-side { position: relative; }
+                .product-img-upload-box { width: 100%; aspect-ratio: 1; border: 1px dashed rgba(255,255,255,0.2); border-radius: 8px; overflow: hidden; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.3s; }
+                .product-img-upload-box:hover { border-color: #a68966; background: rgba(166,137,102,0.05); }
+                .product-img-upload-box img { width: 100%; height: 100%; object-fit: cover; }
+                .upload-placeholder { display: flex; flex-direction: column; align-items: center; gap: 0.5rem; color: rgba(255,255,255,0.4); font-size: 0.7rem; }
+                .product-info-side { display: flex; flex-direction: column; gap: 1rem; }
+                .remove-product-btn { background: rgba(255,0,0,0.1); border: 1px solid rgba(255,0,0,0.2); color: #ff4d4d; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border-radius: 8px; cursor: pointer; transition: 0.3s; }
+                .remove-product-btn:hover { background: #ff4d4d; color: #fff; }
+                .empty-state-lux { padding: 4rem; text-align: center; color: rgba(255,255,255,0.3); font-size: 0.9rem; letter-spacing: 0.1em; border: 1px dashed rgba(255,255,255,0.1); border-radius: 12px; }
+              `}</style>
+            </motion.div>
+          )}
+
           {/* PROJELER TAB */}
           {activeTab === 'projeler' && (
             <motion.div key="projeler" initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 10 }} className="tab-panel">

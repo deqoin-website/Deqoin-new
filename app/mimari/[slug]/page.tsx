@@ -56,6 +56,7 @@ export default function MimariDetail({ params }: { params: Promise<ServiceParams
   const gallery = content?.sliderImages || [];
   const categories = content?.categories || [];
   const focusAreas = content?.focusAreas || [];
+  const products = content?.products || [];
 
   return (
     <>
@@ -71,6 +72,7 @@ export default function MimariDetail({ params }: { params: Promise<ServiceParams
           projects={projectsData}
           categories={categories}
           focusAreas={focusAreas}
+          products={products}
           workflowType="design"
         />
       </main>

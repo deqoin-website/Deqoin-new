@@ -40,7 +40,8 @@ export async function GET(
         sliderImages: match.sliderImages || [],
         categories: match.categories || [],
         process: match.process || (match.longDescription ? match.longDescription.content.map((c: string) => ({ title: "Açıklama Satırı", desc: c })) : []),
-        focusAreas: match.focusAreas || []
+        focusAreas: match.focusAreas || [],
+        products: match.products || []
       };
       return NextResponse.json(fallbackData);
     }

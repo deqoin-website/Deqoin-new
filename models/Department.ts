@@ -31,6 +31,15 @@ const DepartmentSchema = new mongoose.Schema(
         label: { type: String }, // "TÜM PROJELER"
         value: { type: String }  // "ALL"
       }
+    ],
+    products: [
+      {
+        title: { type: String },
+        image: { type: String },
+        desc: { type: String },
+        price: { type: String },
+        link: { type: String }
+      }
     ]
   },
   { timestamps: true }
