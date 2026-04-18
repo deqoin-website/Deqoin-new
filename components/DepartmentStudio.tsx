@@ -64,6 +64,7 @@ export default function DepartmentStudio({
   const [searchQuery, setSearchQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState<Category | string>("ALL");
   const [isConsultationOpen, setIsConsultationOpen] = useState(false);
+  const [isMobileDrawerOpen, setIsMobileDrawerOpen] = useState(false);
   const [activeProjectSlug, setActiveProjectSlug] = useState<string | null>(null);
   const [activeProductCategory, setActiveProductCategory] = useState<string>("ALL");
   
