@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { ProjectDetail, Category } from "../data/projects";
 import ConsultationModal from "./ConsultationModal";
 import Link from "next/link";
@@ -66,6 +67,11 @@ export default function DepartmentStudio({
   const [isMobileDrawerOpen, setIsMobileDrawerOpen] = useState(false);
   const [activeProjectSlug, setActiveProjectSlug] = useState<string | null>(null);
   const [activeProductCategory, setActiveProductCategory] = useState<string>("ALL");
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
   
   const heroSlides = images && images.length > 0 ? images : [heroImage, ...FALLBACK_SLIDES.filter(img => img !== heroImage)];
 
@@ -117,13 +123,17 @@ export default function DepartmentStudio({
 
   return (
     <>
-      <div className="studio-page studio-vertical-shell">
+      {mounted && createPortal(
         <Link href="/" className="studio-back-btn-floating">
           <div className="back-icon-box">
              <span className="material-symbols-outlined">west</span>
           </div>
           <span className="back-text">ANASAYFAYA DÖN</span>
-        </Link>
+        </Link>,
+        document.body
+      )}
+
+      <div className="studio-page studio-vertical-shell">
 
       <HeroSlider 
         slides={heroSlides.map((url, idx) => {
