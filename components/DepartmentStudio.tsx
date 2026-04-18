@@ -85,7 +85,7 @@ export default function DepartmentStudio({
 
   const productCategories = useMemo(() => {
     if (!products) return ["ALL"];
-    const cats = new Set(products.map(p => p.category).filter(Boolean));
+    const cats = new Set(products.map(p => p.category).filter((c): c is string => !!c));
     return ["ALL", ...Array.from(cats)];
   }, [products]);
 
