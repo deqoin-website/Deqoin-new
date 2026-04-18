@@ -38,7 +38,7 @@ export default function DepartmentManagerPage() {
     process: [] as { title: string; desc: string }[],
     focusAreas: [] as { title: string; icon: string; desc: string }[],
     categories: [] as { label: string; value: string }[],
-    products: [] as { title: string; image: string; desc: string; price?: string; link?: string }[]
+    products: [] as { title: string; image: string; category?: string; desc: string; price?: string; link?: string }[]
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
