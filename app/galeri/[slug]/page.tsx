@@ -4,6 +4,7 @@ import { use, useState, useEffect } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Loader2 } from "lucide-react";
+import StudioBackButton from "../../../components/StudioBackButton";
 
 type ProjectParams = {
   slug: string;
@@ -45,12 +46,7 @@ export default function ProjectDetail({ params }: { params: Promise<ProjectParam
 
   return (
     <main className="site-shell project-detail-shell gallery-detail-vertical-shell">
-      <div className="detail-page-back-nav gallery-snap-point">
-        <Link href="/galeri" className="back-button-horizontal">
-          <span className="material-symbols-outlined">arrow_back</span>
-          <span>GALERİYE DÖN</span>
-        </Link>
-      </div>
+      <StudioBackButton href="/galeri" label="GALERİYE DÖN" />
 
       <div className="project-detail-hero gallery-snap-point">
         <div className="hero-bg" style={{ backgroundImage: `url(${project.coverImage})` }}>
