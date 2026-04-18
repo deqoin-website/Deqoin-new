@@ -22,7 +22,7 @@ interface DepartmentStudioProps {
   projects: ProjectDetail[];
   categories?: { label: string; value: Category | string }[];
   focusAreas?: { title: string; icon: string; desc: string }[];
-  products?: { title: string; image: string; desc: string; price?: string; link?: string }[];
+  products?: { title: string; image: string; category?: string; desc: string; price?: string; link?: string }[];
   workflowType?: 'design' | 'material' | 'execution';
 }
 
@@ -65,6 +65,7 @@ export default function DepartmentStudio({
   const [isConsultationOpen, setIsConsultationOpen] = useState(false);
   const [isMobileDrawerOpen, setIsMobileDrawerOpen] = useState(false);
   const [activeProjectSlug, setActiveProjectSlug] = useState<string | null>(null);
+  const [activeProductCategory, setActiveProductCategory] = useState<string>("ALL");
   
   const heroSlides = images && images.length > 0 ? images : [heroImage, ...FALLBACK_SLIDES.filter(img => img !== heroImage)];
 
@@ -81,6 +82,18 @@ export default function DepartmentStudio({
     () => filteredProjects.find((project) => project.slug === activeProjectSlug) ?? null,
     [activeProjectSlug, filteredProjects],
   );
+
+  const productCategories = useMemo(() => {
+    if (!products) return ["ALL"];
+    const cats = new Set(products.map(p => p.category).filter(Boolean));
+    return ["ALL", ...Array.from(cats)];
+  }, [products]);
+
+  const filteredProductsList = useMemo(() => {
+    if (!products) return [];
+    if (activeProductCategory === "ALL") return products;
+    return products.filter(p => p.category === activeProductCategory);
+  }, [products, activeProductCategory]);
 
   useEffect(() => {
     if (!activeProjectSlug) return;
@@ -168,8 +181,22 @@ export default function DepartmentStudio({
               <div className="products-header-line" />
             </div>
 
+            {productCategories.length > 2 && (
+              <div className="product-filter-bar">
+                {productCategories.map(cat => (
+                  <button
+                    key={cat}
+                    className={`product-filter-chip ${activeProductCategory === cat ? 'active' : ''}`}
+                    onClick={() => setActiveProductCategory(cat)}
+                  >
+                    {cat === 'ALL' ? 'TÜM KOLEKSİYON' : cat.toUpperCase()}
+                  </button>
+                ))}
+              </div>
+            )}
+
             <div className="products-collection-grid">
-              {products.map((product, idx) => (
+              {filteredProductsList.map((product, idx) => (
                 <div key={idx} className="studio-product-card">
                   <div className="product-card-visual">
                     <img src={product.image} alt={product.title} />
@@ -582,6 +609,28 @@ export default function DepartmentStudio({
           background: linear-gradient(to right, #a68966 0%, rgba(255,255,255,0.05) 100%);
           opacity: 0.6;
         }
+
+        .product-filter-bar {
+          display: flex;
+          justify-content: center;
+          gap: 1.5rem;
+          margin-bottom: 4rem;
+          flex-wrap: wrap;
+        }
+        .product-filter-chip {
+          background: transparent;
+          border: 1px solid rgba(166,137,102,0.2);
+          color: rgba(255,255,255,0.6);
+          padding: 0.6rem 1.4rem;
+          border-radius: 4px;
+          font-size: 0.65rem;
+          font-weight: 700;
+          letter-spacing: 0.15em;
+          cursor: pointer;
+          transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .product-filter-chip:hover { border-color: #a68966; color: #fff; }
+        .product-filter-chip.active { background: #a68966; color: #000; border-color: #a68966; box-shadow: 0 5px 15px rgba(166,137,102,0.3); }
 
         @media (max-width: 1024px) {
           .products-collection-grid { grid-template-columns: 1fr 1fr; gap: 2rem; }

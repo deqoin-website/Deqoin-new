@@ -526,7 +526,7 @@ export default function DepartmentManagerPage() {
                   <h3>Ürün Katalog Yönetimi</h3>
                   <p className="hint">Aydınlatma armatürleri, mobilya tasarımları veya özel üretim parçaları buradan yönetin.</p>
                 </div>
-                <button className="add-item-btn" onClick={() => addItem('products', { title: '', image: '', desc: '', price: '', link: '' })}>
+                <button className="add-item-btn" onClick={() => addItem('products', { title: '', image: '', category: '', desc: '', price: '', link: '' })}>
                   <Plus size={16} /> YENİ ÜRÜN EKLE
                 </button>
               </div>
@@ -557,14 +557,25 @@ export default function DepartmentManagerPage() {
                       />
                     </div>
                     <div className="product-info-side">
-                      <div className="lux-group">
-                        <label>ÜRÜN ADI</label>
-                        <input 
-                          type="text" 
-                          placeholder="Örn: Minimalist Avize" 
-                          value={product.title} 
-                          onChange={e => updateItem('products', i, 'title', e.target.value)} 
-                        />
+                      <div className="form-cols-2">
+                        <div className="lux-group">
+                          <label>ÜRÜN ADI</label>
+                          <input 
+                            type="text" 
+                            placeholder="Örn: Minimalist Avize" 
+                            value={product.title} 
+                            onChange={e => updateItem('products', i, 'title', e.target.value)} 
+                          />
+                        </div>
+                        <div className="lux-group">
+                          <label>ÜRÜN KATEGORİSİ</label>
+                          <input 
+                            type="text" 
+                            placeholder="Örn: Avizeler" 
+                            value={product.category || ''} 
+                            onChange={e => updateItem('products', i, 'category', e.target.value)} 
+                          />
+                        </div>
                       </div>
                       <div className="lux-group">
                         <label>KISA AÇIKLAMA</label>

@@ -36,6 +36,7 @@ const DepartmentSchema = new mongoose.Schema(
       {
         title: { type: String },
         image: { type: String },
+        category: { type: String },
         desc: { type: String },
         price: { type: String },
         link: { type: String }
