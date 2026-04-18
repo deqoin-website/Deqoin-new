@@ -167,9 +167,9 @@ export default function AboutUs() {
         }
 
         .about-page-title {
-          font-family: var(--font-display), sans-serif;
+          font-family: var(--font-smooch), sans-serif;
           font-size: clamp(3rem, 8vw, 5.5rem);
-          font-weight: 200;
+          font-weight: 100;
           color: #fff;
           letter-spacing: 0.05em;
           text-transform: uppercase;
@@ -253,6 +253,7 @@ export default function AboutUs() {
         .about-page-stat-value {
           font-size: 3.5rem;
           font-family: var(--font-smooch);
+          font-weight: 100;
           color: #fff;
         }
 
@@ -271,11 +272,13 @@ export default function AboutUs() {
         }
 
         .about-page-workflow-title {
-          font-family: var(--font-display), sans-serif;
-          font-size: clamp(2rem, 5vw, 3rem);
+          font-family: var(--font-smooch), sans-serif;
+          font-size: clamp(2.5rem, 6vw, 4rem);
+          font-weight: 100;
           color: #fff;
           margin-top: 1.5rem;
           letter-spacing: 0.1em;
+          line-height: 1;
         }
 
         .about-page-workflow-line {
@@ -321,11 +324,13 @@ export default function AboutUs() {
 
         .about-page-step-title {
           color: #fff;
-          font-size: 1.25rem;
-          letter-spacing: 0.15em;
+          font-family: var(--font-smooch), sans-serif;
+          font-weight: 300;
+          font-size: 1.8rem;
+          letter-spacing: 0.1em;
           margin-bottom: 1.5rem;
           text-transform: uppercase;
-          line-height: 1.5;
+          line-height: 1.2;
         }
 
         .about-page-step-text {
