@@ -54,6 +54,7 @@ export default function ExecutionDetail({ params }: { params: Promise<ServicePar
   const gallery = content?.sliderImages || [];
   const categories = content?.categories || [];
   const focusAreas = content?.focusAreas || [];
+  const products = content?.products || [];
 
   return (
     <>
@@ -67,6 +68,7 @@ export default function ExecutionDetail({ params }: { params: Promise<ServicePar
           projects={projectsData}
           categories={categories}
           focusAreas={focusAreas}
+          products={products}
           workflowType="execution"
         />
       </main>
