@@ -1,5 +1,8 @@
 "use client";
 
+import { useState, useMemo, useEffect } from "react";
+import { ProjectDetail, Category } from "../data/projects";
+import ConsultationModal from "./ConsultationModal";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import StudioBackButton from "./StudioBackButton";
