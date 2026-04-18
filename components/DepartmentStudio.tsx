@@ -376,7 +376,7 @@ export default function DepartmentStudio({
       <style jsx>{`
         .studio-back-btn-floating {
           position: fixed;
-          top: 3rem;
+          top: 7rem;
           left: 3rem;
           z-index: 1500;
           display: flex;
@@ -396,7 +396,7 @@ export default function DepartmentStudio({
           justify-content: center;
           background: rgba(0, 0, 0, 0.4);
           backdrop-filter: blur(12px);
-          border: 1px solid rgba(166,137,102,0.3);
+          border: 1px solid rgba(255, 255, 255, 0.1);
           border-radius: 50%;
           color: #a68966;
           transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
@@ -428,7 +428,7 @@ export default function DepartmentStudio({
         }
 
         @media (max-width: 1024px) {
-          .studio-back-btn-floating { top: 1.5rem; left: 1.5rem; gap: 0.75rem; }
+          .studio-back-btn-floating { top: 6rem; left: 1.5rem; gap: 0.75rem; }
           .back-icon-box { width: 44px; height: 44px; }
           .back-text { display: none; }
         }
