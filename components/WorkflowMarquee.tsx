@@ -148,7 +148,7 @@ export default function WorkflowMarquee({
         <h2
           style={{
             fontFamily: "var(--font-smooch), sans-serif",
-            fontSize: "clamp(2rem, 4vw, 3rem)",
+            fontSize: "clamp(4rem, 8vw, 6rem)",
             fontWeight: 100,
             letterSpacing: "0.18em",
             textTransform: "uppercase",
