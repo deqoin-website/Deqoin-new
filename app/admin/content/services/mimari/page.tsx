@@ -61,6 +61,28 @@ const DEFAULT_MIMARI_CATEGORIES = [
   },
 ];
 
+const categoryFallbackByTitle: Record<string, string> = {
+  muhendislik: "/images/workflow/muhendislik-custom.png",
+  mimarlik: "/images/workflow/mimarlik-custom.png",
+  mekanik: "/images/workflow/mekanik-custom.png",
+  icmimarlik: "/images/workflow/ic-mimarlik-custom.png",
+  restorasyon: "/images/workflow/restorasyon-custom.png",
+  peyzaj: "/images/workflow/peyzaj-custom.png",
+};
+
+function normalizeTitle(value?: string) {
+  return (value || "")
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z]/g, "");
+}
+
+function resolveCategoryImage(item: any, preview?: string) {
+  const normalizedTitle = normalizeTitle(item?.title);
+  return preview || item?.image || categoryFallbackByTitle[normalizedTitle] || "/images/workflow/mimarlik-custom.png";
+}
+
 function withVersion(url?: string, version?: string) {
   if (!url) return "";
   if (!version) return url;
@@ -611,8 +633,8 @@ export default function MimariEditor() {
               <div key={idx} className="category-item-card">
               <div className="cat-image-column">
                 <div className="cat-image" onClick={() => openCategoryImagePicker(idx)}>
-                    {categoryPreviews[idx] || item.image ? (
-                      <img src={withVersion(categoryPreviews[idx] || item.image, contentVersion)} alt={item.title} />
+                    {resolveCategoryImage(item, categoryPreviews[idx]) ? (
+                      <img src={withVersion(resolveCategoryImage(item, categoryPreviews[idx]), contentVersion)} alt={item.title} />
                     ) : (
                       <div className="cat-image-empty">Gorsel Yok</div>
                     )}
@@ -624,12 +646,12 @@ export default function MimariEditor() {
                     GÖRSELİ DEĞİŞTİR
                   </button>
                   <div className="cat-image-filename">
-                    {categoryPreviews[idx] || item.image ? "Önizleme aktif" : "Görsel bekleniyor"}
+                    {resolveCategoryImage(item, categoryPreviews[idx]) ? "Önizleme aktif" : "Görsel bekleniyor"}
                   </div>
                   <input
                     type="text"
                     className="cat-image-url"
-                    value={categoryPreviews[idx] || item.image || ''}
+                    value={resolveCategoryImage(item, categoryPreviews[idx]) || ''}
                     placeholder="Görsel URL"
                     onChange={e => updateCategoryImageValue(idx, e.target.value)}
                     onBlur={async e => {

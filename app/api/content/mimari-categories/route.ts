@@ -50,6 +50,31 @@ const DEFAULT_MIMARI_CATEGORIES = [
   },
 ];
 
+const categoryFallbackByTitle: Record<string, string> = {
+  muhendislik: "/images/workflow/muhendislik-custom.png",
+  mimarlik: "/images/workflow/mimarlik-custom.png",
+  mekanik: "/images/workflow/mekanik-custom.png",
+  icmimarlik: "/images/workflow/ic-mimarlik-custom.png",
+  restorasyon: "/images/workflow/restorasyon-custom.png",
+  peyzaj: "/images/workflow/peyzaj-custom.png",
+};
+
+function normalizeTitle(value?: string) {
+  return (value || "")
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z]/g, "");
+}
+
+function normalizeCategoryItem(item: any) {
+  const normalizedTitle = normalizeTitle(item?.title);
+  return {
+    ...item,
+    image: item?.image || categoryFallbackByTitle[normalizedTitle] || "/images/workflow/mimarlik-custom.png",
+  };
+}
+
 function createDefaultSections() {
   return [
     {
@@ -81,6 +106,7 @@ export async function POST(request: Request) {
     await connectToDatabase();
     const body = await request.json();
     const items = Array.isArray(body?.items) ? body.items : [];
+    const normalizedItems = items.map(normalizeCategoryItem);
 
     if (!items.length) {
       return NextResponse.json({ error: "Items are required" }, { status: 400 });
@@ -97,10 +123,10 @@ export async function POST(request: Request) {
       sections.push({
         id: "categories",
         type: "categories",
-        items,
+        items: normalizedItems,
       });
     } else {
-      categoriesSection.items = items;
+      categoriesSection.items = normalizedItems;
     }
 
     const nextDocument = {

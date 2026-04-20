@@ -75,13 +75,26 @@ const mimariSubCategories = [
 ];
 
 const categoryFallbackByTitle: Record<string, string> = {
-  "Mühendislik": "/images/workflow/muhendislik-custom.png",
-  "Mimarlık": "/images/workflow/mimarlik-custom.png",
-  "Mekanik": "/images/workflow/mekanik-custom.png",
-  "İç Mimarlık": "/images/workflow/ic-mimarlik-custom.png",
-  "Restorasyon": "/images/workflow/restorasyon-custom.png",
-  "Peyzaj": "/images/workflow/peyzaj-custom.png",
+  muhendislik: "/images/workflow/muhendislik-custom.png",
+  mimarlik: "/images/workflow/mimarlik-custom.png",
+  mekanik: "/images/workflow/mekanik-custom.png",
+  icmimarlik: "/images/workflow/ic-mimarlik-custom.png",
+  restorasyon: "/images/workflow/restorasyon-custom.png",
+  peyzaj: "/images/workflow/peyzaj-custom.png",
 };
+
+function normalizeTitle(value?: string) {
+  return (value || "")
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z]/g, "");
+}
+
+function resolveCategoryImage(card: any) {
+  const normalizedTitle = normalizeTitle(card?.title);
+  return card?.image || categoryFallbackByTitle[normalizedTitle] || "/images/workflow/mimarlik-custom.png";
+}
 
 function withVersion(url?: string, version?: string) {
   if (!url) return "";
@@ -127,7 +140,7 @@ export default function MimariPage() {
           if (cats?.items?.length > 0) {
             setCategories(cats.items.map((item: any) => ({
               ...item,
-              image: item?.image || categoryFallbackByTitle[item?.title] || item?.image,
+              image: resolveCategoryImage(item),
             })));
           }
           const cta = data.sections.find((s: any) => s.id === 'cta');
@@ -182,7 +195,7 @@ export default function MimariPage() {
               className="service-card"
               style={{ minHeight: "72vh" }}
             >
-              <img src={withVersion(card.image, contentVersion)} alt={card.title} style={{ filter: `blur(${card.blur || 0}px)` }} />
+              <img src={withVersion(resolveCategoryImage(card), contentVersion)} alt={card.title} style={{ filter: `blur(${card.blur || 0}px)` }} />
               <div className="service-overlay" style={{ background: `rgba(0,0,0,${(card.overlay ?? 30) / 100})` }} />
               <div className="service-copy">
                 <div>
