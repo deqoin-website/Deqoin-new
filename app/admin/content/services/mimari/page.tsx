@@ -126,25 +126,34 @@ export default function MimariEditor() {
     return refreshed;
   };
 
-  const persistCategoriesSection = async (nextContent: any) => {
-    const baseContent = cloneContent(nextContent || content || createDefaultContent());
-    const categorySection = baseContent.sections.find((s: any) => s.id === 'categories');
-    if (!categorySection) {
-      throw new Error('Categories section missing');
+  const persistCategoriesSection = async (items: any[]) => {
+    const res = await fetch('/api/content/mimari-categories', {
+      method: 'POST',
+      cache: 'no-store',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ items }),
+    });
+
+    if (!res.ok) {
+      let details = 'Categories save failed';
+      try {
+        const errorBody = await res.json();
+        details = errorBody?.details || errorBody?.error || errorBody?.message || details;
+        console.error('[mimari/categories-save] failed', { status: res.status, details, errorBody });
+      } catch (parseErr) {
+        console.error('[mimari/categories-save] failed to parse error body', { status: res.status, parseErr });
+      }
+      throw new Error(details);
     }
-    const items = categorySection.items || [];
-    const saved = await persistContent(baseContent);
-    const savedCategories = saved?.sections?.find((s: any) => s.id === 'categories')?.items || [];
-    const mismatched = items.some((item: any, idx: number) => item?.image && savedCategories?.[idx]?.image !== item.image);
-    if (mismatched) {
-      console.error('[mimari/categories] saved image mismatch', {
-        expected: items.map((item: any) => item?.image),
-        actual: savedCategories.map((item: any) => item?.image),
-        saved,
-      });
-      throw new Error('Kaydedilen görsel veritabanında farklı görünüyor');
+
+    const refreshed = await res.json();
+    if (refreshed?.metadata?.updatedAt) {
+      setContentVersion(String(refreshed.metadata.updatedAt));
     }
-    return saved;
+    setContent(refreshed);
+    setInitialContent(cloneContent(refreshed));
+    setIsDirty(false);
+    return refreshed;
   };
 
   const createDefaultContent = () => ({
@@ -270,7 +279,7 @@ export default function MimariEditor() {
         if (!section.items[index]) section.items[index] = {};
         section.items[index].image = uploadedUrl;
         setCategoryPreviews(prev => ({ ...prev, [index]: uploadedUrl }));
-        await persistCategoriesSection(newContent);
+        await persistCategoriesSection(section.items);
         showToast("Görsel yüklendi ve kaydedildi.", "success");
         e.target.value = "";
         return;
@@ -373,7 +382,7 @@ export default function MimariEditor() {
     categorySection.items[index].image = value;
     setCategoryPreviews(prev => ({ ...prev, [index]: value }));
     setContent(nextContent);
-    await persistCategoriesSection(nextContent);
+    await persistCategoriesSection(categorySection.items);
     showToast("Kart görseli güncellendi.", "success");
     console.log('[mimari/category-image] saved', { index, value });
   };
