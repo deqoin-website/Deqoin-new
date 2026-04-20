@@ -75,6 +75,8 @@ export default function MimariEditor() {
     fetchContent();
   }, []);
 
+  const cloneContent = (value: any) => JSON.parse(JSON.stringify(value));
+
   const createDefaultContent = () => ({
     page: 'mimari',
     sections: [
@@ -132,13 +134,13 @@ export default function MimariEditor() {
         }
       }
       setContent(safeData);
-      setInitialContent(JSON.parse(JSON.stringify(safeData)));
+      setInitialContent(cloneContent(safeData));
     } catch (err) {
       console.error(err);
       showToast("İçerik yüklenemedi.", "error");
       const fallback = createDefaultContent();
       setContent(fallback);
-      setInitialContent(JSON.parse(JSON.stringify(fallback)));
+      setInitialContent(cloneContent(fallback));
     } finally {
       setIsLoading(false);
     }
@@ -153,12 +155,14 @@ export default function MimariEditor() {
         method: 'POST',
         body: file
       });
+      if (!res.ok) throw new Error('Upload failed');
       const blob = await res.json();
-      
-      const newContent = { ...content };
+
+      const newContent = cloneContent(content);
       const section = newContent.sections.find((s: any) => s.id === sectionId);
       
       if (isCategory && index !== undefined) {
+        if (!section.items[index]) section.items[index] = {};
         section.items[index].image = blob.url;
       } else if (index !== undefined) {
         section.slides[index] = blob.url;
@@ -181,7 +185,7 @@ export default function MimariEditor() {
   const addService = async () => {
     if (!newService.title || !newService.slug) return showToast("Başlık ve Slug zorunludur.", "error");
     
-    const newContent = { ...content };
+    const newContent = cloneContent(content);
     const catSection = newContent.sections.find((s: any) => s.id === 'categories');
     
     catSection.items.push({
@@ -203,7 +207,7 @@ export default function MimariEditor() {
       isDanger: true
     });
     if (!ok) return;
-    const newContent = { ...content };
+    const newContent = cloneContent(content);
     const catSection = newContent.sections.find((s: any) => s.id === 'categories');
     catSection.items.splice(index, 1);
     setContent(newContent);
@@ -221,7 +225,8 @@ export default function MimariEditor() {
       });
       if (res.ok) {
         showToast("Değişiklikler başarıyla kaydedildi!", "success");
-        setInitialContent(JSON.parse(JSON.stringify(content)));
+        await fetchContent();
+        setInitialContent(cloneContent(content));
         setIsDirty(false);
       } else {
         showToast("Kayıt sırasında hata oluştu.", "error");
@@ -471,6 +476,9 @@ export default function MimariEditor() {
                     <Upload size={14} />
                     GÖRSELİ DEĞİŞTİR
                   </button>
+                  <div className="cat-image-filename">
+                    {item.image ? "Önizleme aktif" : "Görsel bekleniyor"}
+                  </div>
                   <input
                     type="text"
                     className="cat-image-url"
@@ -575,13 +583,14 @@ export default function MimariEditor() {
 
         .category-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1.5rem; }
         .category-item-card { background: var(--surface-muted); border: 1px solid var(--line); padding: 1.25rem; display: flex; gap: 1.25rem; align-items: flex-start; }
-        .cat-image-column { width: 140px; display: flex; flex-direction: column; gap: 0.6rem; flex-shrink: 0; }
-        .cat-image { width: 100%; aspect-ratio: 1; position: relative; cursor: pointer; border: 1px solid rgba(255,255,255,0.1); overflow: hidden; }
+        .cat-image-column { width: 180px; display: flex; flex-direction: column; gap: 0.6rem; flex-shrink: 0; }
+        .cat-image { width: 100%; aspect-ratio: 1; position: relative; cursor: pointer; border: 1px solid rgba(255,255,255,0.1); overflow: hidden; background: #111; }
         .cat-image img { width: 100%; height: 100%; object-fit: cover; }
         .cat-overlay { position: absolute; inset: 0; background: rgba(166,137,102,0.8); display: flex; align-items: center; justify-content: center; opacity: 0; transition: 0.3s; color: #000; }
         .cat-image:hover .cat-overlay { opacity: 1; }
         .cat-image-btn { width: 100%; display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; background: rgba(166,137,102,0.1); border: 1px solid rgba(166,137,102,0.35); color: #a68966; padding: 0.65rem 0.8rem; font-size: 0.62rem; font-weight: 800; letter-spacing: 0.14em; cursor: pointer; transition: 0.25s ease; }
         .cat-image-btn:hover { background: rgba(166,137,102,0.18); transform: translateY(-1px); }
+        .cat-image-filename { font-size: 0.64rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); opacity: 0.75; }
         .cat-image-url { width: 100%; background: var(--background); border: 1px solid var(--line); color: var(--text); padding: 0.7rem 0.8rem; font-size: 0.8rem; }
 
         .cat-info { flex: 1; display: flex; flex-direction: column; gap: 0.5rem; }
@@ -611,6 +620,7 @@ export default function MimariEditor() {
         @media (max-width: 860px) {
           .section-title-split { flex-direction: column; align-items: flex-start; }
           .add-area-btn { width: 100%; justify-content: center; }
+          .cat-image-column { width: 100%; }
         }
       `}</style>
     </div>
