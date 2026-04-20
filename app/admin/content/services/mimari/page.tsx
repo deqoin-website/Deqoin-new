@@ -133,7 +133,18 @@ export default function MimariEditor() {
       throw new Error('Categories section missing');
     }
     categorySection.items = items;
-    return persistContent(baseContent);
+    const saved = await persistContent(baseContent);
+    const savedCategories = saved?.sections?.find((s: any) => s.id === 'categories')?.items || [];
+    const mismatched = items.some((item, idx) => item?.image && savedCategories?.[idx]?.image !== item.image);
+    if (mismatched) {
+      console.error('[mimari/categories] saved image mismatch', {
+        expected: items.map((item) => item?.image),
+        actual: savedCategories.map((item: any) => item?.image),
+        saved,
+      });
+      throw new Error('Kaydedilen görsel veritabanında farklı görünüyor');
+    }
+    return saved;
   };
 
   const createDefaultContent = () => ({
