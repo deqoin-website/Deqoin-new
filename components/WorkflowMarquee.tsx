@@ -68,6 +68,24 @@ export default function WorkflowMarquee({
 }: WorkflowMarqueeProps) {
   const [hoveredId, setHoveredId] = React.useState<string | null>(null);
 
+  const getBackCopy = (step: WorkflowStep) => {
+    if (step.backText) return step.backText;
+    switch (step.id) {
+      case "01":
+        return "İlk temas, ihtiyaç analizi ve hedeflerin netleştiği başlangıç görüşmesi.";
+      case "02":
+        return "Ölçü, ışık, mevcut yapı ve potansiyel; kararları belirleyen saha okuması.";
+      case "03":
+        return "Konsept, kompozisyon ve oran; markaya özel mimari dile dönüşür.";
+      case "04":
+        return "Yüzey, renk ve doku seçimi; lüks algıyı taşıyan malzeme kurgusu.";
+      case "05":
+        return "Planlama, koordinasyon ve kusursuz saha yönetimi ile final teslim.";
+      default:
+        return step.description;
+    }
+  };
+
   return (
     <section
       className={className}
@@ -291,12 +309,13 @@ export default function WorkflowMarquee({
                       <p
                         style={{
                           fontSize: "0.95rem",
-                          lineHeight: 1.75,
+                          lineHeight: 1.8,
                           color: "#d4d4d8",
                           margin: 0,
+                          maxWidth: "28ch",
                         }}
                       >
-                        {step.backText}
+                        {getBackCopy(step)}
                       </p>
                       <div
                         style={{
