@@ -147,9 +147,11 @@ export default function WorkflowMarquee({
       >
         <h2
           style={{
+            fontFamily: "var(--font-smooch), sans-serif",
             fontSize: "clamp(2rem, 4vw, 3rem)",
-            fontWeight: 300,
-            letterSpacing: "0.25em",
+            fontWeight: 100,
+            letterSpacing: "0.18em",
+            textTransform: "uppercase",
             margin: 0,
           }}
         >
@@ -260,9 +262,12 @@ export default function WorkflowMarquee({
                       <span
                         style={{
                           display: "block",
+                          fontFamily: "var(--font-smooch), sans-serif",
                           fontSize: "clamp(3rem, 6vw, 4.5rem)",
                           lineHeight: 1,
-                          fontWeight: 300,
+                          fontWeight: 100,
+                          letterSpacing: "0.14em",
+                          textTransform: "uppercase",
                           color: "rgba(255,255,255,0.14)",
                           marginBottom: "0.5rem",
                         }}
@@ -271,20 +276,25 @@ export default function WorkflowMarquee({
                       </span>
                       <h3
                         style={{
-                          fontSize: "clamp(1.5rem, 2.3vw, 2rem)",
-                          fontWeight: 500,
-                          letterSpacing: "0.08em",
+                          fontFamily: "var(--font-smooch), sans-serif",
+                          fontSize: "clamp(2rem, 4vw, 3rem)",
+                          fontWeight: 100,
+                          letterSpacing: "0.16em",
                           margin: 0,
                           marginBottom: "0.5rem",
                           textTransform: "uppercase",
+                          lineHeight: 1,
                         }}
                       >
                         {step.title}
                       </h3>
                       <p
                         style={{
-                          fontSize: "0.875rem",
-                          color: "#a1a1aa",
+                          fontFamily: "var(--font-display), sans-serif",
+                          fontSize: "0.8rem",
+                          letterSpacing: "0.1em",
+                          textTransform: "uppercase",
+                          color: "rgba(255,255,255,0.72)",
                           margin: 0,
                           lineHeight: 1.6,
                           maxWidth: "24ch",
@@ -390,7 +400,9 @@ export default function WorkflowMarquee({
                         <p
                           style={{
                             fontFamily: "var(--font-display), sans-serif",
-                            fontSize: "0.92rem",
+                            fontSize: "0.82rem",
+                            letterSpacing: "0.08em",
+                            textTransform: "uppercase",
                             lineHeight: 1.85,
                             color: "#e7e1d9",
                             margin: 0,
