@@ -3549,6 +3549,10 @@ video {
   -webkit-overflow-scrolling: touch;
 }
 
+.mimari-vertical-shell .site-footer {
+  min-height: 100svh;
+}
+
 .gallery-snap-point,
 .studio-snap-point {
   scroll-snap-align: start;

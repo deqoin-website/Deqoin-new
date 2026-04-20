@@ -5,6 +5,7 @@ import Link from "next/link";
 import ConsultationModal from "../../components/ConsultationModal";
 import SwipeAppointmentButton from "../../components/SwipeAppointmentButton";
 import HeroSlider from "../../components/HeroSlider";
+import Footer from "../../components/Footer";
 import WorkflowMarquee from "../../components/WorkflowMarquee";
 import { useWorkflowContent } from "../../components/useWorkflowContent";
 
@@ -197,6 +198,10 @@ export default function MimariPage() {
         isOpen={isConsultationOpen} 
         onClose={() => setIsConsultationOpen(false)} 
       />
+
+      <section className="snap-section gallery-snap-point" style={{ minHeight: "100svh" }}>
+        <Footer />
+      </section>
     </main>
   );
 }
