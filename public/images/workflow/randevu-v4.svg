@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1600">
+  <defs>
+    <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0%" stop-color="#171717"/>
+      <stop offset="100%" stop-color="#050505"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="1600" fill="url(#bg)"/>
+  <rect x="160" y="170" width="880" height="1260" rx="36" fill="#0f0f0f" stroke="#2a2a2a" stroke-width="2"/>
+  <rect x="250" y="250" width="700" height="150" rx="22" fill="#c7a57f" opacity="0.16"/>
+  <rect x="290" y="290" width="180" height="18" rx="9" fill="#f3efe9" opacity="0.22"/>
+  <rect x="290" y="322" width="260" height="12" rx="6" fill="#f3efe9" opacity="0.12"/>
+  <circle cx="770" cy="315" r="48" fill="none" stroke="#d1b08a" stroke-width="8" opacity="0.85"/>
+  <path d="M746 315h48M770 291v48" stroke="#d1b08a" stroke-width="6" stroke-linecap="round"/>
+  <rect x="250" y="460" width="700" height="720" rx="28" fill="#121212" stroke="#333" stroke-width="2"/>
+  <g fill="none" stroke="#f3efe9" stroke-opacity="0.12" stroke-width="2">
+    <path d="M320 560h560M320 680h560M320 800h560M320 920h560"/>
+    <path d="M400 520v620M520 520v620M640 520v620M760 520v620"/>
+  </g>
+  <rect x="300" y="560" width="240" height="110" rx="18" fill="#f3efe9" opacity="0.1"/>
+  <rect x="560" y="560" width="240" height="110" rx="18" fill="#f3efe9" opacity="0.06"/>
+  <rect x="300" y="700" width="500" height="90" rx="16" fill="#d1b08a" opacity="0.14"/>
+  <path d="M360 1000c120-80 240-80 360 0" fill="none" stroke="#d1b08a" stroke-width="8" stroke-linecap="round" opacity="0.75"/>
+</svg>

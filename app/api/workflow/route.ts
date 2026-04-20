@@ -13,58 +13,83 @@ const DEFAULT_WORKFLOW = {
       id: "01",
       title: "RANDEVU",
       description: "Kusursuz sürecin ilk adımı.",
-      image: "/images/workflow/randevu.svg?v=3",
+      image: "/images/workflow/randevu-v4.svg",
     },
     {
       id: "02",
       title: "KEŞİF",
       description: "İhtiyaçları ve potansiyeli yerinde okuruz.",
-      image: "/images/workflow/kesif.svg?v=3",
+      image: "/images/workflow/kesif-v4.svg",
     },
     {
       id: "03",
       title: "TASARIM",
       description: "Vizyonu mimari bir dile dönüştürürüz.",
-      image: "/images/workflow/tasarim.svg?v=3",
+      image: "/images/workflow/tasarim-v4.svg",
     },
     {
       id: "04",
       title: "MALZEME",
       description: "Doku, kalite ve karakteri seçeriz.",
-      image: "/images/workflow/malzeme.svg?v=3",
+      image: "/images/workflow/malzeme-v4.svg",
     },
     {
       id: "05",
       title: "UYGULAMA",
       description: "Tasarıyı sahada gerçeğe dönüştürürüz.",
-      image: "/images/workflow/uygulama.svg?v=3",
+      image: "/images/workflow/uygulama-v4.svg",
     },
   ],
 };
 
-function normalizeWorkflow(workflow: any) {
-  const defaultSteps = DEFAULT_WORKFLOW.steps;
-  const steps = Array.isArray(workflow?.steps) ? workflow.steps : [];
+const WORKFLOW_IMAGE_MAP: Record<string, string> = {
+  "/images/workflow/randevu.svg": "/images/workflow/randevu-v4.svg",
+  "/images/workflow/kesif.svg": "/images/workflow/kesif-v4.svg",
+  "/images/workflow/tasarim.svg": "/images/workflow/tasarim-v4.svg",
+  "/images/workflow/malzeme.svg": "/images/workflow/malzeme-v4.svg",
+  "/images/workflow/uygulama.svg": "/images/workflow/uygulama-v4.svg",
+  "/images/workflow/randevu.svg?v=3": "/images/workflow/randevu-v4.svg",
+  "/images/workflow/kesif.svg?v=3": "/images/workflow/kesif-v4.svg",
+  "/images/workflow/tasarim.svg?v=3": "/images/workflow/tasarim-v4.svg",
+  "/images/workflow/malzeme.svg?v=3": "/images/workflow/malzeme-v4.svg",
+  "/images/workflow/uygulama.svg?v=3": "/images/workflow/uygulama-v4.svg",
+  "/images/workflow/randevu-v3.svg": "/images/workflow/randevu-v4.svg",
+  "/images/workflow/kesif-v3.svg": "/images/workflow/kesif-v4.svg",
+  "/images/workflow/tasarim-v3.svg": "/images/workflow/tasarim-v4.svg",
+  "/images/workflow/malzeme-v3.svg": "/images/workflow/malzeme-v4.svg",
+  "/images/workflow/uygulama-v3.svg": "/images/workflow/uygulama-v4.svg",
+  "/images/workflow/randevu-v4.svg": "/images/workflow/randevu-v4.svg",
+  "/images/workflow/kesif-v4.svg": "/images/workflow/kesif-v4.svg",
+  "/images/workflow/tasarim-v4.svg": "/images/workflow/tasarim-v4.svg",
+  "/images/workflow/malzeme-v4.svg": "/images/workflow/malzeme-v4.svg",
+  "/images/workflow/uygulama-v4.svg": "/images/workflow/uygulama-v4.svg",
+};
 
+function normalizeWorkflowImage(image: unknown, fallback: string) {
+  if (typeof image !== "string") return fallback;
+  const base = image.split("?")[0];
+  return WORKFLOW_IMAGE_MAP[image] || WORKFLOW_IMAGE_MAP[base] || fallback;
+}
+
+function normalizeStep(step: any, fallbackStep: (typeof DEFAULT_WORKFLOW.steps)[number]) {
   return {
-    key: "home-workflow",
-    title: workflow?.title || DEFAULT_WORKFLOW.title,
-    steps: defaultSteps.map((defaultStep, index) => {
-      const current = steps[index] || {};
-      const image =
-        typeof current.image === "string" && current.image.startsWith("/images/workflow/")
-          ? `${current.image.split("?")[0]}?v=3`
-          : defaultStep.image;
-
-      return {
-        id: current.id || defaultStep.id,
-        title: current.title || defaultStep.title,
-        description: current.description || defaultStep.description,
-        image,
-      };
-    }),
+    id: step?.id || fallbackStep.id,
+    title: step?.title || fallbackStep.title,
+    description: step?.description || fallbackStep.description,
+    image: normalizeWorkflowImage(step?.image, fallbackStep.image),
   };
 }
+
+function normalizeWorkflow(workflow: any) {
+  const defaultSteps = DEFAULT_WORKFLOW.steps;
+    const steps = Array.isArray(workflow?.steps) ? workflow.steps : [];
+
+    return {
+      key: "home-workflow",
+      title: workflow?.title || DEFAULT_WORKFLOW.title,
+      steps: defaultSteps.map((defaultStep, index) => normalizeStep(steps[index] || {}, defaultStep)),
+    };
+  }
 
 export async function GET() {
   try {
@@ -120,12 +145,7 @@ export async function PUT(request: Request) {
       {
         key: "home-workflow",
         title: body.title || "İŞ AKIŞI",
-        steps: body.steps.map((step: any) => ({
-          ...step,
-          image: typeof step.image === "string" && step.image.startsWith("/images/workflow/")
-            ? `${step.image.split("?")[0]}?v=3`
-            : step.image,
-        })),
+        steps: body.steps.map((step: any, index: number) => normalizeStep(step, DEFAULT_WORKFLOW.steps[index] || DEFAULT_WORKFLOW.steps[0])),
         metadata: {
           updatedAt: now,
           lastUpdatedBy: body.lastUpdatedBy || "admin",
