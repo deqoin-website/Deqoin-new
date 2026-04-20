@@ -295,6 +295,25 @@ export default function CorporateAboutAdmin() {
                 {data.sections?.map((step: any, idx: number) => (
                   <div key={idx} className="workflow-edit-item">
                     <div className="step-num">0{idx + 1}</div>
+                    <div className="workflow-thumb" onClick={() => document.getElementById(`workflow-corporate-image-${idx}`)?.click()}>
+                      {step.image ? <img src={step.image} alt={`Adım ${idx + 1}`} /> : <span>Görsel</span>}
+                    </div>
+                    <input
+                      id={`workflow-corporate-image-${idx}`}
+                      type="file"
+                      className="hidden"
+                      accept="image/*"
+                      onChange={async e => {
+                        const file = e.target.files?.[0];
+                        if (!file) return;
+                        const res = await fetch(`/api/upload?filename=${file.name}`, { method: 'POST', body: file });
+                        const blob = await res.json();
+                        const newSections = [...data.sections];
+                        newSections[idx].image = blob.url;
+                        setData({...data, sections: newSections});
+                        setIsDirty(true);
+                      }}
+                    />
                     <div className="step-fields">
                       <input 
                         type="text" 
@@ -376,6 +395,8 @@ export default function CorporateAboutAdmin() {
 
         .workflow-editor-list { display: flex; flex-direction: column; gap: 1.5rem; }
         .workflow-edit-item { display: flex; gap: 1.5rem; padding: 1.5rem; background: rgba(255,255,255,0.03); border-radius: 12px; align-items: flex-start; }
+        .workflow-thumb { width: 140px; height: 200px; border-radius: 12px; overflow: hidden; flex-shrink: 0; background: #0b0b0b; border: 1px solid rgba(255,255,255,0.08); cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--text-muted); font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase; }
+        .workflow-thumb img { width: 100%; height: 100%; object-fit: cover; }
         @media (max-width: 600px) { .workflow-edit-item { flex-direction: column; gap: 1rem; position: relative; } .remove-step-btn { position: absolute; top: 1rem; right: 1rem; } }
         .step-num { font-family: var(--font-display); font-size: 2rem; color: rgba(166,137,102,0.2); line-height: 1; }
         .step-fields { flex: 1; display: flex; flex-direction: column; gap: 1rem; }

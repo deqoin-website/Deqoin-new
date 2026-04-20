@@ -8,7 +8,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import StudioBackButton from "./StudioBackButton";
 import ProjectInsightPanel from "./ProjectInsightPanel";
 import HeroSlider from "./HeroSlider";
-import StudioWorkflow from "./StudioWorkflow";
+import WorkflowMarquee from "./WorkflowMarquee";
 import { MIMARI_WORKFLOW, MATERIAL_WORKFLOW, UYGULAMA_WORKFLOW } from "../data/workflows";
 
 interface DepartmentStudioProps {
@@ -138,11 +138,11 @@ export default function DepartmentStudio({
       />
 
       {/* WORKFLOW SECTION */}
-      <StudioWorkflow 
+      <WorkflowMarquee 
         steps={
-          workflowType === 'material' ? MATERIAL_WORKFLOW(() => setIsConsultationOpen(true)) :
-          workflowType === 'execution' ? UYGULAMA_WORKFLOW(() => setIsConsultationOpen(true)) :
-          MIMARI_WORKFLOW(() => setIsConsultationOpen(true))
+          workflowType === 'material' ? MATERIAL_WORKFLOW :
+          workflowType === 'execution' ? UYGULAMA_WORKFLOW :
+          MIMARI_WORKFLOW
         } 
       />
 

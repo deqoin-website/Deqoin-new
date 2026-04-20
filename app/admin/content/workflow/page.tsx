@@ -128,7 +128,7 @@ export default function CorporateContentPage() {
   };
 
   const addWorkflowStep = () => {
-    setData(prev => ({ ...prev, sections: [...prev.sections, { title: '', content: '' }] }));
+    setData(prev => ({ ...prev, sections: [...prev.sections, { title: '', content: '', image: '' }] }));
     setIsDirty(true);
   };
 
@@ -144,6 +144,12 @@ export default function CorporateContentPage() {
   const removeWorkflowStep = (index: number) => {
     setData(prev => ({ ...prev, sections: prev.sections.filter((_, i) => i !== index) }));
     setIsDirty(true);
+  };
+
+  const uploadWorkflowImage = async (index: number, file: File) => {
+    const res = await fetch(`/api/upload?filename=${file.name}`, { method: 'POST', body: file });
+    const blob = await res.json();
+    updateWorkflowStep(index, 'image', blob.url);
   };
 
   if (loading) return <div className="loader-wrap"><Loader2 className="animate-spin" /></div>;
@@ -258,6 +264,10 @@ export default function CorporateContentPage() {
                 {data.sections.map((step, i) => (
                   <div key={i} className="workflow-item-card">
                     <div className="step-badge">ADIM {i + 1}</div>
+                    <div className="workflow-image-wrap" onClick={() => document.getElementById(`workflow-image-${i}`)?.click()}>
+                      {step.image ? <img src={step.image} alt={`Adım ${i + 1}`} /> : <div className="workflow-image-placeholder"><ImageIcon size={20} /><span>Görsel Yükle</span></div>}
+                    </div>
+                    <input id={`workflow-image-${i}`} type="file" className="hidden" accept="image/*" onChange={e => { const file = e.target.files?.[0]; if (file) void uploadWorkflowImage(i, file); }} />
                     <div className="step-inputs-wrap">
                       <div className="form-group border-none">
                          <input 
@@ -351,7 +361,10 @@ export default function CorporateContentPage() {
 
         /* WORKFLOW SPECIFIC */
         .workflow-list-admin { display: flex; flex-direction: column; gap: 1.5rem; }
-        .workflow-item-card { background: var(--surface-muted); border: 1px solid var(--line); border-radius: 12px; padding: 2rem; position: relative; display: flex; gap: 2rem; align-items: flex-start; }
+        .workflow-item-card { background: var(--surface-muted); border: 1px solid var(--line); border-radius: 12px; padding: 2rem; position: relative; display: flex; gap: 1.5rem; align-items: flex-start; }
+        .workflow-image-wrap { width: 180px; height: 240px; border-radius: 12px; overflow: hidden; background: #0b0b0b; border: 1px solid var(--line); cursor: pointer; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+        .workflow-image-wrap img { width: 100%; height: 100%; object-fit: cover; }
+        .workflow-image-placeholder { display: flex; flex-direction: column; gap: 0.5rem; align-items: center; justify-content: center; color: var(--text-muted); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.15em; }
         .step-badge { background: #a68966; color: #000; font-size: 0.6rem; font-weight: 900; padding: 4px 10px; border-radius: 4px; letter-spacing: 0.1em; }
         .step-inputs-wrap { flex: 1; display: flex; flex-direction: column; gap: 1rem; }
         .border-none input, .border-none textarea { background: var(--background) !important; border: 1px solid var(--line) !important; }

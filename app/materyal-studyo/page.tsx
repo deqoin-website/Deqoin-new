@@ -6,7 +6,7 @@ import ConsultationModal from "../../components/ConsultationModal";
 import { Loader2 } from "lucide-react";
 import SwipeAppointmentButton from "../../components/SwipeAppointmentButton";
 import HeroSlider from "../../components/HeroSlider";
-import StudioWorkflow from "../../components/StudioWorkflow";
+import WorkflowMarquee from "../../components/WorkflowMarquee";
 import { MATERIAL_WORKFLOW } from "../../data/workflows";
 import { materyalKategorileri } from "../../data/materyal-studyo";
 
@@ -76,7 +76,7 @@ export default function MateryalStudyo() {
       />
 
       {/* WORKFLOW SECTION */}
-      <StudioWorkflow steps={MATERIAL_WORKFLOW(() => setIsConsultationOpen(true))} />
+      <WorkflowMarquee steps={MATERIAL_WORKFLOW} />
 
 
 
