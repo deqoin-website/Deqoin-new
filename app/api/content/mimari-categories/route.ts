@@ -24,7 +24,7 @@ const DEFAULT_MIMARI_CATEGORIES = [
     href: "/mimari/elektrik-elektronik-muhendisligi",
     title: "Mekanik",
     sideLabel: "Power & Logic",
-    image: "/images/projects/gallery_2.png",
+    image: "/images/workflow/mekanik-custom.png",
     slug: "elektrik-elektronik-muhendisligi",
   },
   {
@@ -45,7 +45,7 @@ const DEFAULT_MIMARI_CATEGORIES = [
     href: "/mimari/peyzaj-mimarligi",
     title: "Peyzaj",
     sideLabel: "Natural Canvas",
-    image: "/images/projects/gallery_2.png",
+    image: "/images/workflow/mekanik-custom.png",
     slug: "peyzaj-mimarligi",
   },
 ];

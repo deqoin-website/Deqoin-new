@@ -40,7 +40,7 @@ const mimariSubCategories = [
     href: "/mimari/elektrik-elektronik-muhendisligi",
     title: "Mekanik",
     sideLabel: "Power & Logic",
-    image: "/images/projects/gallery_2.png",
+    image: "/images/workflow/mekanik-custom.png",
     blur: 0,
     overlay: 30,
     slug: "elektrik-elektronik-muhendisligi"
@@ -67,7 +67,7 @@ const mimariSubCategories = [
     href: "/mimari/peyzaj-mimarligi",
     title: "Peyzaj",
     sideLabel: "Natural Canvas",
-    image: "/images/projects/gallery_2.png",
+    image: "/images/workflow/mekanik-custom.png",
     blur: 0,
     overlay: 30,
     slug: "peyzaj-mimarligi"
