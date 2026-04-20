@@ -11,7 +11,7 @@ import { useWorkflowContent } from "../../components/useWorkflowContent";
 import { materyalKategorileri } from "../../data/materyal-studyo";
 
 const materialCategories = materyalKategorileri.filter((item) =>
-  ["mobilya", "aydinlatma", "italyan-sivalar", "sanatsal-calismalar", "tugla-ve-tas"].includes(item.slug)
+  ["italyan-sivalar", "dekoratif-boyalar", "mikro-cimento"].includes(item.slug)
 );
 
 export default function MateryalStudyo() {

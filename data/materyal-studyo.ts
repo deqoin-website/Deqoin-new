@@ -73,7 +73,7 @@ export const materyalKategorileri: MateryalKategori[] = [
   },
   {
     slug: "italyan-sivalar",
-    title: "İtalyan Sıvalar ve Dekoratif Boyalar",
+    title: "İtalyan Sıvalar",
     sideLabel: "High-End Texture",
     image: "https://images.unsplash.com/photo-1517430816045-df4b7de11d1d?q=80&w=2000&auto=format&fit=crop",
     sliderImages: [
@@ -94,8 +94,62 @@ export const materyalKategorileri: MateryalKategori[] = [
       title: "Yüzeylerin Derinliği: İtalyan Sıvalar",
       content: [
         "Duvarlar bir mekanın en geniş tuvalidir. Geleneksel bitişlerin ötesine geçerek, dokulu ve derinlikli İtalyan sıva uygulamalarıyla yüzeylere ruh katıyoruz.",
-        "Malzemenin ham gücünü ve ustalıklı el işçiliğini birleştirerek, her bir duvarı birer sanat eserine dönüştürüyoruz. Projelerimizde yüzey kalitesini en üst seviyeye taşıyan dekoratif boya kurguları gerçekleştiriyoruz.",
+        "Malzemenin ham gücünü ve ustalıklı el işçiliğini birleştirerek, her bir duvarı birer sanat eserine dönüştürüyoruz.",
         "Dokuların uyumu ve renklerin derinliğiyle, yaşam alanlarınıza zamansız bir estetik kazandırıyoruz."
+      ]
+    }
+  },
+  {
+    slug: "dekoratif-boyalar",
+    title: "Dekoratif Boyalar",
+    sideLabel: "Paint & Mood",
+    image: "https://images.unsplash.com/photo-1523419409543-0c9a1d7b1b2e?q=80&w=2000&auto=format&fit=crop",
+    sliderImages: [
+      "https://images.unsplash.com/photo-1523419409543-0c9a1d7b1b2e?q=80&w=2000&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1494526585095-c41746248156?q=80&w=2000&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1534655615591-6c7d0c8d1f5c?q=80&w=2000&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1513694203232-719a280e022f?q=80&w=2000&auto=format&fit=crop"
+    ],
+    categories: [
+      { label: "MATTE FINISH", value: "matte" },
+      { label: "SATEN DOKU", value: "satin" },
+      { label: "MİNERAL BOYA", value: "mineral" },
+      { label: "KİREÇ ESASLI", value: "kilic" },
+      { label: "RENK PALETİ", value: "palette" }
+    ],
+    description: "Mekanın karakterini belirleyen, derin tonlu ve yüksek kaliteli dekoratif boya sistemleri.",
+    longDescription: {
+      title: "Mekana Atmosfer Katan Dekoratif Boyalar",
+      content: [
+        "Renk, mekanın duygusal dilidir. Dekoratif boya sistemleriyle bir yüzeyi sadece boyamıyor, ona karakter ve atmosfer kazandırıyoruz.",
+        "Mat, saten, mineral ve kireç esaslı çözümlerle ışığı farklı biçimlerde kıran, sofistike yüzeyler oluşturuyoruz.",
+        "Her proje için seçtiğimiz renk paleti, mekandaki malzeme ve ışık dengesiyle bütünleşerek rafine bir sonuç üretir."
+      ]
+    }
+  },
+  {
+    slug: "mikro-cimento",
+    title: "Mikro Çimento",
+    sideLabel: "Seamless Surface",
+    image: "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?q=80&w=2000&auto=format&fit=crop",
+    sliderImages: [
+      "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?q=80&w=2000&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=2000&q=80",
+      "https://images.unsplash.com/photo-1540932239986-30128078f3c5?q=80&w=2000&auto=format&fit=crop"
+    ],
+    categories: [
+      { label: "DUŞ ALANI", value: "dus" },
+      { label: "ZEMİN", value: "zemin" },
+      { label: "DUVAR", value: "duvar" },
+      { label: "TEZGAH", value: "tezgah" }
+    ],
+    description: "Derzsiz, modern ve dayanıklı yüzeylerle kesintisiz mekan deneyimi sunan mikro çimento çözümleri.",
+    longDescription: {
+      title: "Kesintisiz Yüzeyler: Mikro Çimento",
+      content: [
+        "Mikro çimento, hem çağdaş hem de zamansız bir yüzey dili kurar. Derzsiz yapısıyla mekanda bütünsel bir akış sağlar.",
+        "Islak hacimlerden yaşam alanlarına kadar farklı ölçeklerde uygulanabilen bu yüzey, dayanıklılık ve estetiği bir araya getirir.",
+        "Minimal mimari dilini destekleyen kusursuz yüzeyler oluşturuyoruz."
       ]
     }
   },
