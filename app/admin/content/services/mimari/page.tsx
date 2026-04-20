@@ -111,6 +111,16 @@ export default function MimariEditor() {
     return refreshed;
   };
 
+  const persistCategoriesSection = async (items: any[]) => {
+    const baseContent = cloneContent(content || createDefaultContent());
+    const categorySection = baseContent.sections.find((s: any) => s.id === 'categories');
+    if (!categorySection) {
+      throw new Error('Categories section missing');
+    }
+    categorySection.items = items;
+    return persistContent(baseContent);
+  };
+
   const createDefaultContent = () => ({
     page: 'mimari',
     sections: [
@@ -170,7 +180,6 @@ export default function MimariEditor() {
           categorySection.items = DEFAULT_MIMARI_CATEGORIES;
         }
       }
-      setCategoryPreviews({});
       setContent(safeData);
       setInitialContent(cloneContent(safeData));
     } catch (err) {
@@ -210,6 +219,7 @@ export default function MimariEditor() {
         if (!section.items[index]) section.items[index] = {};
         section.items[index].image = uploadedUrl;
         setCategoryPreviews(prev => ({ ...prev, [index]: uploadedUrl }));
+        await persistCategoriesSection(section.items);
       } else if (index !== undefined) {
         section.slides[index] = uploadedUrl;
       } else if (section.image !== undefined) {
@@ -307,11 +317,7 @@ export default function MimariEditor() {
     categorySection.items[index].image = value;
     setCategoryPreviews(prev => ({ ...prev, [index]: value }));
     setContent(nextContent);
-    const saved = await persistContent(nextContent);
-    if (saved) {
-      setContent(saved);
-      setInitialContent(cloneContent(saved));
-    }
+    await persistCategoriesSection(categorySection.items);
     showToast("Kart görseli güncellendi.", "success");
   };
 
@@ -552,7 +558,7 @@ export default function MimariEditor() {
                     GÖRSELİ DEĞİŞTİR
                   </button>
                   <div className="cat-image-filename">
-                    {item.image ? "Önizleme aktif" : "Görsel bekleniyor"}
+                    {categoryPreviews[idx] || item.image ? "Önizleme aktif" : "Görsel bekleniyor"}
                   </div>
                   <input
                     type="text"
