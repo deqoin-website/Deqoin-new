@@ -9,6 +9,8 @@ import ConsultationModal from "../components/ConsultationModal";
 import ProjectInsightPanel from "../components/ProjectInsightPanel";
 import SwipeAppointmentButton from "../components/SwipeAppointmentButton";
 import HeroSlider from "../components/HeroSlider";
+import WorkflowMarquee from "../components/WorkflowMarquee";
+import { MIMARI_WORKFLOW } from "../data/workflows";
 import Footer from "@/components/Footer";
 
 export default function Page() {
@@ -300,53 +302,7 @@ export default function Page() {
         onAppointmentClick={() => setIsConsultationOpen(true)} 
       />
 
-        {/* ── DESIGN & BUILD PROCESS SECTION ── */}
-        <section className="process-section snap-section">
-          <div className="section-header-area">
-            <div className="process-header">
-              <h2>İŞ AKIŞI</h2>
-              <div className="section-line" />
-            </div>
-          </div>
-          
-          <div className="section-content-area" style={{ overflowX: 'hidden' }}>
-            <div className="process-timeline">
-              {[
-                { id: "01", icon: "event_note", title: "Randevu", detail: "Kusursuz sürecin ilk adımı.", href: "#", action: () => setIsConsultationOpen(true) },
-                { id: "02", icon: "manage_search", title: "Keşif", detail: "İhtiyaçların ve potansiyelin öngörülmesi.", href: "/kesif" },
-                { id: "03", icon: "draw", title: "Tasarım", detail: "Vizyonun ve mimari kimliğin kurgulanması.", href: "/mimari" },
-                { id: "04", icon: "layers", title: "Malzeme", detail: "Projeye özel premium donatıların entegrasyonu.", href: "/materyal-studyo" },
-                { id: "05", icon: "precision_manufacturing", title: "Uygulama", detail: "Tüm değerlerinizi ortaya koyan usta işi inşa süreci.", href: "/uygulama" }
-              ].map((step, idx) => (
-                <Link 
-                  key={idx} 
-                  href={step.href} 
-                  className="process-step"
-                  onClick={(e) => {
-                    if (step.action) {
-                      e.preventDefault();
-                      step.action();
-                    }
-                  }}
-                >
-                  <div className="step-number">
-                    <span
-                      className="material-symbols-outlined step-icon"
-                      style={{ fontVariationSettings: "'FILL' 0, 'wght' 200, 'opsz' 24" }}
-                    >
-                      {step.icon}
-                    </span>
-                    <span className="step-id">{step.id}</span>
-                  </div>
-                  <div className="step-content">
-                    <h3>{step.title}</h3>
-                    <p>{step.detail}</p>
-                  </div>
-                </Link>
-              ))}
-            </div>
-          </div>
-        </section>
+        <WorkflowMarquee steps={MIMARI_WORKFLOW} className="snap-section" />
 
         <section className="services-section snap-section homepage-section-v2">
           <div className="section-header-area">
