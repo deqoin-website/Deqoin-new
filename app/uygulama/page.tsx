@@ -105,9 +105,14 @@ export default function UygulamaPage() {
             </div>
           </div>
 
-          <div className="services-grid material-studio-grid">
+          <div className="services-grid material-studio-grid" style={{ gridAutoRows: "72vh" }}>
             {executionCategories.map((card) => (
-              <Link key={card.slug} href={`/uygulama/${card.slug}`} className="service-card">
+              <Link
+                key={card.slug}
+                href={`/uygulama/${card.slug}`}
+                className="service-card"
+                style={{ minHeight: "72vh" }}
+              >
                 <img src={card.image} alt={card.title} />
                 <div className="service-overlay" />
                 <div className="service-copy">
