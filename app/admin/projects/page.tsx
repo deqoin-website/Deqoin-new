@@ -74,6 +74,46 @@ export default function AdminProjects() {
   const [dragOverCover, setDragOverCover] = useState(false);
   const [dragOverGallery, setDragOverGallery] = useState<number | null>(null);
 
+  const uploadAsset = async (file: File) => {
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('filename', file.name);
+
+    const res = await fetch('/api/upload', {
+      method: 'POST',
+      body: formData
+    });
+
+    if (!res.ok) {
+      throw new Error('Upload failed');
+    }
+
+    const blob = await res.json();
+    const uploadedUrl = blob?.url || blob?.downloadUrl;
+    if (!uploadedUrl) {
+      throw new Error('Upload URL missing');
+    }
+
+    return uploadedUrl;
+  };
+
+  const persistProjectDraft = async (patch: Partial<typeof formData>) => {
+    if (!editingProject?._id) return;
+
+    const res = await fetch(`/api/projects/${editingProject._id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ...formData, ...patch })
+    });
+
+    if (!res.ok) {
+      throw new Error('Project draft save failed');
+    }
+
+    const saved = await res.json();
+    setEditingProject(saved);
+  };
+
   const fetchProjects = async () => {
     try {
       const res = await fetch('/api/projects');
@@ -93,12 +133,10 @@ export default function AdminProjects() {
     if (file) {
       setUploading(true);
       try {
-        const res = await fetch(`/api/upload?filename=${file.name}`, {
-          method: 'POST',
-          body: file
-        });
-        const blob = await res.json();
-        setFormData({ ...formData, coverImage: blob.url });
+        const uploadedUrl = await uploadAsset(file);
+        const next = { ...formData, coverImage: uploadedUrl };
+        setFormData(next);
+        await persistProjectDraft({ coverImage: uploadedUrl });
       } catch (err) {
         showToast("Yükleme başarısız.", "error");
       } finally {
@@ -115,20 +153,17 @@ export default function AdminProjects() {
       setUploading(true);
       try {
         const uploads = await Promise.all(
-          files.map(async (file) => {
-            const res = await fetch(`/api/upload?filename=${file.name}`, {
-              method: 'POST',
-              body: file
-            });
-            return res.json();
-          })
+          files.map((file) => uploadAsset(file))
         );
         
-        const newItems = uploads.map(blob => ({ url: blob.url, imageAlt: '', caption: '' }));
+        const newItems = uploads.map(url => ({ url, imageAlt: '', caption: '' }));
         setFormData({ 
           ...formData, 
           gallery: [...formData.gallery, ...newItems] 
         });
+        if (editingProject?._id) {
+          await persistProjectDraft({ gallery: [...formData.gallery, ...newItems] });
+        }
       } catch (err) {
         showToast("Bazı görseller yüklenemedi.", "error");
       } finally {
@@ -142,19 +177,21 @@ export default function AdminProjects() {
     if (!file) return;
 
     try {
-      const res = await fetch(`/api/upload?filename=${file.name}`, {
-        method: 'POST',
-        body: file
-      });
-      const blob = await res.json();
+      const uploadedUrl = await uploadAsset(file);
       
       if (isCover) {
-        setFormData({ ...formData, coverImage: blob.url });
+        const next = { ...formData, coverImage: uploadedUrl };
+        setFormData(next);
+        await persistProjectDraft({ coverImage: uploadedUrl });
       } else {
+        const nextGallery = [...formData.gallery, { url: uploadedUrl, imageAlt: '', caption: '' }];
         setFormData({ 
           ...formData, 
-          gallery: [...formData.gallery, { url: blob.url, imageAlt: '', caption: '' }] 
+          gallery: nextGallery
         });
+        if (editingProject?._id) {
+          await persistProjectDraft({ gallery: nextGallery });
+        }
       }
     } catch (err) {
       showToast("Yükleme başarısız.", "error");
