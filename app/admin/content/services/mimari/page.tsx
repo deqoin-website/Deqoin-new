@@ -98,7 +98,22 @@ export default function MimariEditor() {
     });
 
     if (!res.ok) {
-      throw new Error('Content save failed');
+      let details = 'Content save failed';
+      try {
+        const errorBody = await res.json();
+        details = errorBody?.details || errorBody?.error || errorBody?.message || details;
+        console.error('[mimari/content-save] failed', {
+          status: res.status,
+          details,
+          errorBody,
+        });
+      } catch (parseErr) {
+        console.error('[mimari/content-save] failed to parse error body', {
+          status: res.status,
+          parseErr,
+        });
+      }
+      throw new Error(details);
     }
 
     const refreshed = await res.json();
@@ -207,7 +222,32 @@ export default function MimariEditor() {
         method: 'POST',
         body: formData
       });
-      if (!res.ok) throw new Error('Upload failed');
+      if (!res.ok) {
+        let details = 'Upload failed';
+        try {
+          const errorBody = await res.json();
+          details = errorBody?.details || errorBody?.error || errorBody?.message || details;
+          console.error('[mimari/upload] failed', {
+            status: res.status,
+            details,
+            errorBody,
+            sectionId,
+            index,
+            isCategory,
+            filename: file.name,
+          });
+        } catch (parseErr) {
+          console.error('[mimari/upload] failed to parse error body', {
+            status: res.status,
+            parseErr,
+            sectionId,
+            index,
+            isCategory,
+            filename: file.name,
+          });
+        }
+        throw new Error(details);
+      }
       const blob = await res.json();
       const uploadedUrl = blob?.url || blob?.downloadUrl;
       if (!uploadedUrl) throw new Error('Upload URL missing');
@@ -235,7 +275,8 @@ export default function MimariEditor() {
       }
       showToast("Görsel yüklendi ve kaydedildi.", "success");
     } catch (err) {
-      showToast("Görsel yüklenemedi.", "error");
+      console.error('[mimari/upload] unexpected error', err);
+      showToast(`Görsel yüklenemedi: ${err instanceof Error ? err.message : 'Bilinmeyen hata'}`, "error");
     } finally {
       e.target.value = "";
     }
@@ -287,7 +328,8 @@ export default function MimariEditor() {
       }
       showToast("Değişiklikler başarıyla kaydedildi!", "success");
     } catch (err) {
-      showToast("Bağlantı hatası.", "error");
+      console.error('[mimari/save] failed', err);
+      showToast(`Bağlantı hatası: ${err instanceof Error ? err.message : 'Bilinmeyen hata'}`, "error");
     } finally {
       setIsSaving(false);
     }
@@ -319,6 +361,7 @@ export default function MimariEditor() {
     setContent(nextContent);
     await persistCategoriesSection(categorySection.items);
     showToast("Kart görseli güncellendi.", "success");
+    console.log('[mimari/category-image] saved', { index, value });
   };
 
   if (isLoading) return <div className="loader-wrap"><Loader2 className="animate-spin" /></div>;
