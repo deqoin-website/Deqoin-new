@@ -211,6 +211,7 @@ export default function MimariEditor() {
       }
       setContent(newContent);
       await persistContent(newContent);
+      await fetchContent();
       showToast("Görsel yüklendi ve kaydedildi.", "success");
     } catch (err) {
       showToast("Görsel yüklenemedi.", "error");
@@ -259,6 +260,7 @@ export default function MimariEditor() {
     setIsSaving(true);
     try {
       await persistContent(content);
+      await fetchContent();
       showToast("Değişiklikler başarıyla kaydedildi!", "success");
     } catch (err) {
       showToast("Bağlantı hatası.", "error");
@@ -292,6 +294,7 @@ export default function MimariEditor() {
     setCategoryPreviews(prev => ({ ...prev, [index]: value }));
     setContent(nextContent);
     await persistContent(nextContent);
+    await fetchContent();
     showToast("Kart görseli güncellendi.", "success");
   };
 
