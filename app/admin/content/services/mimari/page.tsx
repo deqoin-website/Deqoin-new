@@ -16,6 +16,51 @@ import {
 import { useNotification } from '@/components/admin/AdminNotificationProvider';
 import { AdminSaveBar } from '@/components/admin/AdminSaveBar';
 
+const DEFAULT_MIMARI_CATEGORIES = [
+  {
+    href: "/mimari/insaat-muhendisligi",
+    title: "Mühendislik",
+    sideLabel: "Structural Strength",
+    image: "/images/projects/gallery_1.png",
+    slug: "insaat-muhendisligi",
+  },
+  {
+    href: "/mimari/mimarlik",
+    title: "Mimarlık",
+    sideLabel: "Structural Form",
+    image: "/images/slider/mimari_slide.png",
+    slug: "mimarlik",
+  },
+  {
+    href: "/mimari/elektrik-elektronik-muhendisligi",
+    title: "Mekanik",
+    sideLabel: "Power & Logic",
+    image: "/images/projects/gallery_2.png",
+    slug: "elektrik-elektronik-muhendisligi",
+  },
+  {
+    href: "/mimari/ic-mimarlik",
+    title: "İç Mimarlık",
+    sideLabel: "Interior Essence",
+    image: "/images/about_interior.png",
+    slug: "ic-mimarlik",
+  },
+  {
+    href: "/mimari/restorasyon",
+    title: "Restorasyon",
+    sideLabel: "Heritage Revival",
+    image: "/images/projects/gallery_1.png",
+    slug: "restorasyon",
+  },
+  {
+    href: "/mimari/peyzaj-mimarligi",
+    title: "Peyzaj",
+    sideLabel: "Natural Canvas",
+    image: "/images/projects/gallery_2.png",
+    slug: "peyzaj-mimarligi",
+  },
+];
+
 export default function MimariEditor() {
   const { showToast, confirm: premiumConfirm } = useNotification();
   const [content, setContent] = useState<any>(null);
@@ -52,7 +97,7 @@ export default function MimariEditor() {
       {
         id: 'categories',
         type: 'categories',
-        items: [],
+        items: DEFAULT_MIMARI_CATEGORIES,
       },
     ],
   });
@@ -81,7 +126,11 @@ export default function MimariEditor() {
         });
       }
       const categorySection = safeData.sections.find((s: any) => s.id === 'categories');
-      if (categorySection && !categorySection.items) categorySection.items = [];
+      if (categorySection) {
+        if (!Array.isArray(categorySection.items) || categorySection.items.length === 0) {
+          categorySection.items = DEFAULT_MIMARI_CATEGORIES;
+        }
+      }
       setContent(safeData);
       setInitialContent(JSON.parse(JSON.stringify(safeData)));
     } catch (err) {
@@ -196,6 +245,7 @@ export default function MimariEditor() {
   const heroSection = content.sections?.find((s: any) => s.id === 'hero');
   const catSection = content.sections?.find((s: any) => s.id === 'categories');
   const ctaSection = content.sections?.find((s: any) => s.id === 'cta');
+  const categoryItems = Array.isArray(catSection?.items) && catSection.items.length > 0 ? catSection.items : DEFAULT_MIMARI_CATEGORIES;
 
   return (
     <div className="editor-container">
@@ -409,7 +459,7 @@ export default function MimariEditor() {
           </div>
 
           <div className="category-grid">
-            {catSection?.items?.map((item: any, idx: number) => (
+            {categoryItems.map((item: any, idx: number) => (
               <div key={idx} className="category-item-card">
                 <div className="cat-image-column">
                   <div className="cat-image" onClick={() => openCategoryImagePicker(idx)}>
