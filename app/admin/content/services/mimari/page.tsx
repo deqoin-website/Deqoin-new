@@ -56,7 +56,7 @@ const DEFAULT_MIMARI_CATEGORIES = [
     href: "/mimari/peyzaj-mimarligi",
     title: "Peyzaj",
     sideLabel: "Natural Canvas",
-    image: "/images/workflow/mekanik-custom.png",
+    image: "/images/workflow/peyzaj-custom.png",
     slug: "peyzaj-mimarligi",
   },
 ];

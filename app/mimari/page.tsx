@@ -67,12 +67,21 @@ const mimariSubCategories = [
     href: "/mimari/peyzaj-mimarligi",
     title: "Peyzaj",
     sideLabel: "Natural Canvas",
-    image: "/images/workflow/mekanik-custom.png",
+    image: "/images/workflow/peyzaj-custom.png",
     blur: 0,
     overlay: 30,
     slug: "peyzaj-mimarligi"
   },
 ];
+
+const categoryFallbackByTitle: Record<string, string> = {
+  "Mühendislik": "/images/workflow/muhendislik-custom.png",
+  "Mimarlık": "/images/workflow/mimarlik-custom.png",
+  "Mekanik": "/images/workflow/mekanik-custom.png",
+  "İç Mimarlık": "/images/workflow/ic-mimarlik-custom.png",
+  "Restorasyon": "/images/workflow/restorasyon-custom.png",
+  "Peyzaj": "/images/workflow/peyzaj-custom.png",
+};
 
 function withVersion(url?: string, version?: string) {
   if (!url) return "";
@@ -116,7 +125,10 @@ export default function MimariPage() {
             });
           }
           if (cats?.items?.length > 0) {
-            setCategories(cats.items);
+            setCategories(cats.items.map((item: any) => ({
+              ...item,
+              image: item?.image || categoryFallbackByTitle[item?.title] || item?.image,
+            })));
           }
           const cta = data.sections.find((s: any) => s.id === 'cta');
           if (cta) {
