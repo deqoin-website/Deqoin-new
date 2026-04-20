@@ -86,11 +86,15 @@ export default function MimariEditor() {
   const cloneContent = (value: any) => JSON.parse(JSON.stringify(value));
 
   const persistContent = async (nextContent: any) => {
+    const payload = {
+      page: nextContent?.page || 'mimari',
+      sections: nextContent?.sections || [],
+    };
     const res = await fetch('/api/content', {
       method: 'POST',
       cache: 'no-store',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(nextContent)
+      body: JSON.stringify(payload)
     });
 
     if (!res.ok) {
@@ -199,7 +203,7 @@ export default function MimariEditor() {
       const uploadedUrl = blob?.url || blob?.downloadUrl;
       if (!uploadedUrl) throw new Error('Upload URL missing');
 
-      const newContent = cloneContent(content);
+      const newContent = cloneContent(content || createDefaultContent());
       const section = newContent.sections.find((s: any) => s.id === sectionId);
       
       if (isCategory && index !== undefined) {
@@ -234,7 +238,7 @@ export default function MimariEditor() {
   const addService = async () => {
     if (!newService.title || !newService.slug) return showToast("Başlık ve Slug zorunludur.", "error");
     
-    const newContent = cloneContent(content);
+    const newContent = cloneContent(content || createDefaultContent());
     const catSection = newContent.sections.find((s: any) => s.id === 'categories');
     
     catSection.items.push({
@@ -256,7 +260,7 @@ export default function MimariEditor() {
       isDanger: true
     });
     if (!ok) return;
-    const newContent = cloneContent(content);
+    const newContent = cloneContent(content || createDefaultContent());
     const catSection = newContent.sections.find((s: any) => s.id === 'categories');
     catSection.items.splice(index, 1);
     setContent(newContent);
@@ -287,7 +291,7 @@ export default function MimariEditor() {
   };
 
   const updateCategoryImageValue = (index: number, value: string) => {
-    const nextContent = cloneContent(content);
+    const nextContent = cloneContent(content || createDefaultContent());
     const categorySection = nextContent.sections.find((s: any) => s.id === 'categories');
     if (!categorySection?.items?.[index]) return;
     categorySection.items[index].image = value;
@@ -297,7 +301,7 @@ export default function MimariEditor() {
   };
 
   const persistCategoryImageValue = async (index: number, value: string) => {
-    const nextContent = cloneContent(content);
+    const nextContent = cloneContent(content || createDefaultContent());
     const categorySection = nextContent.sections.find((s: any) => s.id === 'categories');
     if (!categorySection?.items?.[index]) return;
     categorySection.items[index].image = value;
@@ -533,8 +537,8 @@ export default function MimariEditor() {
           <div className="category-grid">
             {categoryItems.map((item: any, idx: number) => (
               <div key={idx} className="category-item-card">
-                <div className="cat-image-column">
-                  <div className="cat-image" onClick={() => openCategoryImagePicker(idx)}>
+              <div className="cat-image-column">
+                <div className="cat-image" onClick={() => openCategoryImagePicker(idx)}>
                     {categoryPreviews[idx] || item.image ? (
                       <img src={withVersion(categoryPreviews[idx] || item.image, contentVersion)} alt={item.title} />
                     ) : (
@@ -553,7 +557,7 @@ export default function MimariEditor() {
                   <input
                     type="text"
                     className="cat-image-url"
-                    value={item.image || ''}
+                    value={categoryPreviews[idx] || item.image || ''}
                     placeholder="Görsel URL"
                     onChange={e => updateCategoryImageValue(idx, e.target.value)}
                     onBlur={async e => {
