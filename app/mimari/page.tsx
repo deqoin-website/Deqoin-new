@@ -31,7 +31,7 @@ const mimariSubCategories = [
     href: "/mimari/mimarlik",
     title: "Mimarlık",
     sideLabel: "Structural Form",
-    image: "/images/slider/mimari_slide.png",
+    image: "/images/workflow/mimarlik-custom.png",
     blur: 0,
     overlay: 30,
     slug: "mimarlik"
@@ -49,7 +49,7 @@ const mimariSubCategories = [
     href: "/mimari/ic-mimarlik",
     title: "İç Mimarlık",
     sideLabel: "Interior Essence",
-    image: "/images/about_interior.png",
+    image: "/images/workflow/ic-mimarlik-custom.png",
     blur: 0,
     overlay: 30,
     slug: "ic-mimarlik"
