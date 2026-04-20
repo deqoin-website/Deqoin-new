@@ -24,11 +24,7 @@ export async function POST(request: Request): Promise<NextResponse> {
     const token = process.env.BLOB_READ_WRITE_TOKEN || process.env.VERCEL_BLOB_READ_WRITE_TOKEN;
 
     console.log('UPLOAD START', { rawFilename, filename, mimeType, hasToken: Boolean(token) });
-
-    const arrayBuffer = await request.arrayBuffer();
-    const inputBuffer = Buffer.from(arrayBuffer);
-
-    if (!inputBuffer.length) {
+    if (!request.body) {
       throw new Error('Empty upload payload');
     }
 
@@ -36,11 +32,10 @@ export async function POST(request: Request): Promise<NextResponse> {
       ? 'png'
       : mimeType.includes('webp')
         ? 'webp'
-        : mimeType.includes('jpeg') || mimeType.includes('jpg')
-          ? 'jpg'
-          : 'bin';
+          : mimeType.includes('jpeg') || mimeType.includes('jpg')
+            ? 'jpg'
+            : 'bin';
     const safeFilename = `${filename.replace(/\.[^.]+$/, '') || 'upload'}.${extension}`;
-    const uploadBuffer: Buffer = inputBuffer;
 
     if (!token) {
       return NextResponse.json(
@@ -59,9 +54,11 @@ export async function POST(request: Request): Promise<NextResponse> {
       );
     }
 
-    const blob = await put(safeFilename, uploadBuffer, {
+    const blob = await put(safeFilename, request.body, {
       access: 'public',
       token,
+      addRandomSuffix: true,
+      contentType: mimeType || undefined,
     });
 
     return NextResponse.json({
@@ -69,8 +66,6 @@ export async function POST(request: Request): Promise<NextResponse> {
       fallback: 'blob',
       debug: {
         safeFilename,
-        inputBytes: inputBuffer.length,
-        uploadBytes: uploadBuffer.length,
         mimeType,
         hasToken: true,
       },
