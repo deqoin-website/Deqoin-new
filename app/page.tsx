@@ -10,8 +10,8 @@ import ProjectInsightPanel from "../components/ProjectInsightPanel";
 import SwipeAppointmentButton from "../components/SwipeAppointmentButton";
 import HeroSlider from "../components/HeroSlider";
 import WorkflowMarquee from "../components/WorkflowMarquee";
-import { MIMARI_WORKFLOW } from "../data/workflows";
 import Footer from "@/components/Footer";
+import { WORKFLOW_STEPS } from "../data/workflows";
 
 export default function Page() {
   const [isConsultationOpen, setIsConsultationOpen] = useState(false);
@@ -70,6 +70,7 @@ export default function Page() {
       image: "https://lh3.googleusercontent.com/aida-public/AB6AXuBg-MKl4zF6vfhExOXkEX-PKVlktOgQYI9EevfKIIYXVJ2wtmRpvybiQLaOtQdeYc_lIPrntEOUrCatq_Efo6fw-z-0-6TilLvAsA4tcYK-QcbjqdetFT2T2EreDjugTzsElsUeoEqEM9i_daWDWBBOJXiZvrjMKWtS2z5I5ZuzOLXWozpZ8MroEnEj5yRtFuaubPctxfeO_ZAZ5E5Tawo9b6yB5w0pmG4_axQCW--XoR8nAAImAE_M5UpM2vFx3tuR2ePYvZ-VmaY",
     },
   ]);
+  const [workflowSteps, setWorkflowSteps] = useState(WORKFLOW_STEPS);
 
   useEffect(() => {
     const fetchSlides = async () => {
@@ -119,8 +120,23 @@ export default function Page() {
       }
     };
 
+    const fetchWorkflow = async () => {
+      try {
+        const res = await fetch('/api/workflow', { cache: 'no-store' });
+        if (res.ok) {
+          const json = await res.json();
+          if (Array.isArray(json.steps) && json.steps.length > 0) {
+            setWorkflowSteps(json.steps);
+          }
+        }
+      } catch (err) {
+        console.error("Failed to fetch workflow content:", err);
+      }
+    };
+
     fetchSlides();
     fetchServiceCards();
+    fetchWorkflow();
   }, []);
 
   const filteredProjects = useMemo(() => projectsData, []);
@@ -302,7 +318,7 @@ export default function Page() {
         onAppointmentClick={() => setIsConsultationOpen(true)} 
       />
 
-        <WorkflowMarquee steps={MIMARI_WORKFLOW} className="snap-section" />
+        <WorkflowMarquee steps={workflowSteps} className="snap-section" />
 
         <section className="services-section snap-section homepage-section-v2">
           <div className="section-header-area">
