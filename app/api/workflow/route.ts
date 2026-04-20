@@ -68,7 +68,10 @@ const WORKFLOW_IMAGE_MAP: Record<string, string> = {
 function normalizeWorkflowImage(image: unknown, fallback: string) {
   if (typeof image !== "string") return fallback;
   const base = image.split("?")[0];
-  return WORKFLOW_IMAGE_MAP[image] || WORKFLOW_IMAGE_MAP[base] || fallback;
+  if (WORKFLOW_IMAGE_MAP[image]) return WORKFLOW_IMAGE_MAP[image];
+  if (WORKFLOW_IMAGE_MAP[base]) return WORKFLOW_IMAGE_MAP[base];
+  if (image.trim()) return image;
+  return fallback;
 }
 
 function normalizeStep(step: any, fallbackStep: (typeof DEFAULT_WORKFLOW.steps)[number]) {
@@ -82,14 +85,14 @@ function normalizeStep(step: any, fallbackStep: (typeof DEFAULT_WORKFLOW.steps)[
 
 function normalizeWorkflow(workflow: any) {
   const defaultSteps = DEFAULT_WORKFLOW.steps;
-    const steps = Array.isArray(workflow?.steps) ? workflow.steps : [];
+  const steps = Array.isArray(workflow?.steps) ? workflow.steps : [];
 
-    return {
-      key: "home-workflow",
-      title: workflow?.title || DEFAULT_WORKFLOW.title,
-      steps: defaultSteps.map((defaultStep, index) => normalizeStep(steps[index] || {}, defaultStep)),
-    };
-  }
+  return {
+    key: "home-workflow",
+    title: workflow?.title || DEFAULT_WORKFLOW.title,
+    steps: defaultSteps.map((defaultStep, index) => normalizeStep(steps[index] || {}, defaultStep)),
+  };
+}
 
 export async function GET() {
   try {
