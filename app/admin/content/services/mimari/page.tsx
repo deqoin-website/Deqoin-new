@@ -268,6 +268,27 @@ export default function MimariEditor() {
     showToast("Değişiklikler geri alındı.", "info");
   };
 
+  const updateCategoryImageValue = (index: number, value: string) => {
+    const nextContent = cloneContent(content);
+    const categorySection = nextContent.sections.find((s: any) => s.id === 'categories');
+    if (!categorySection?.items?.[index]) return;
+    categorySection.items[index].image = value;
+    setCategoryPreviews(prev => ({ ...prev, [index]: value }));
+    setContent(nextContent);
+    setIsDirty(true);
+  };
+
+  const persistCategoryImageValue = async (index: number, value: string) => {
+    const nextContent = cloneContent(content);
+    const categorySection = nextContent.sections.find((s: any) => s.id === 'categories');
+    if (!categorySection?.items?.[index]) return;
+    categorySection.items[index].image = value;
+    setCategoryPreviews(prev => ({ ...prev, [index]: value }));
+    setContent(nextContent);
+    await persistContent(nextContent);
+    showToast("Kart görseli güncellendi.", "success");
+  };
+
   if (isLoading) return <div className="loader-wrap"><Loader2 className="animate-spin" /></div>;
   if (!content) return <div className="loader-wrap">Veri yüklenemedi.</div>;
 
@@ -508,11 +529,28 @@ export default function MimariEditor() {
                     className="cat-image-url"
                     value={item.image || ''}
                     placeholder="Görsel URL"
-                    onChange={e => {
-                      const nc = { ...content };
-                      nc.sections.find((s:any)=>s.id==='categories').items[idx].image = e.target.value;
-                      setContent(nc);
-                      setIsDirty(true);
+                    onChange={e => updateCategoryImageValue(idx, e.target.value)}
+                    onBlur={async e => {
+                      const value = e.target.value.trim();
+                      if (!value || value === (initialContent?.sections?.find((s: any) => s.id === 'categories')?.items?.[idx]?.image || '')) {
+                        return;
+                      }
+                      try {
+                        await persistCategoryImageValue(idx, value);
+                      } catch {
+                        showToast("Kart görseli kaydedilemedi.", "error");
+                      }
+                    }}
+                    onKeyDown={async e => {
+                      if (e.key !== 'Enter') return;
+                      e.preventDefault();
+                      const value = (e.currentTarget.value || '').trim();
+                      if (!value) return;
+                      try {
+                        await persistCategoryImageValue(idx, value);
+                      } catch {
+                        showToast("Kart görseli kaydedilemedi.", "error");
+                      }
                     }}
                   />
                 </div>
