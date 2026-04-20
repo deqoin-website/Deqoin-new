@@ -70,6 +70,7 @@ export default function MimariEditor() {
   const [isSaving, setIsSaving] = useState(false);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [newService, setNewService] = useState({ title: '', sideLabel: '', slug: '', image: '/images/slider/mimari_slide.png' });
+  const [categoryPreviews, setCategoryPreviews] = useState<Record<number, string>>({});
 
   useEffect(() => {
     fetchContent();
@@ -152,6 +153,7 @@ export default function MimariEditor() {
           categorySection.items = DEFAULT_MIMARI_CATEGORIES;
         }
       }
+      setCategoryPreviews({});
       setContent(safeData);
       setInitialContent(cloneContent(safeData));
     } catch (err) {
@@ -176,19 +178,22 @@ export default function MimariEditor() {
       });
       if (!res.ok) throw new Error('Upload failed');
       const blob = await res.json();
+      const uploadedUrl = blob?.url || blob?.downloadUrl;
+      if (!uploadedUrl) throw new Error('Upload URL missing');
 
       const newContent = cloneContent(content);
       const section = newContent.sections.find((s: any) => s.id === sectionId);
       
       if (isCategory && index !== undefined) {
         if (!section.items[index]) section.items[index] = {};
-        section.items[index].image = blob.url;
+        section.items[index].image = uploadedUrl;
+        setCategoryPreviews(prev => ({ ...prev, [index]: uploadedUrl }));
       } else if (index !== undefined) {
-        section.slides[index] = blob.url;
+        section.slides[index] = uploadedUrl;
       } else if (section.image !== undefined) {
-        section.image = blob.url;
+        section.image = uploadedUrl;
       } else if (section.slides) {
-        section.slides.push(blob.url);
+        section.slides.push(uploadedUrl);
       }
       setContent(newContent);
       await persistContent(newContent);
@@ -250,6 +255,7 @@ export default function MimariEditor() {
 
   const handleCancel = () => {
     setContent(JSON.parse(JSON.stringify(initialContent)));
+    setCategoryPreviews({});
     setIsDirty(false);
     showToast("Değişiklikler geri alındı.", "info");
   };
@@ -478,7 +484,7 @@ export default function MimariEditor() {
               <div key={idx} className="category-item-card">
                 <div className="cat-image-column">
                   <div className="cat-image" onClick={() => openCategoryImagePicker(idx)}>
-                    <img src={item.image} alt={item.title} />
+                    <img src={categoryPreviews[idx] || item.image} alt={item.title} />
                     <div className="cat-overlay"><Upload size={16} /></div>
                     <input id={`cat-up-${idx}`} type="file" className="hidden" accept="image/*" onChange={e => handleImageUpload(e, 'categories', idx, true)} />
                   </div>
