@@ -271,6 +271,9 @@ export default function MimariEditor() {
         section.items[index].image = uploadedUrl;
         setCategoryPreviews(prev => ({ ...prev, [index]: uploadedUrl }));
         await persistCategoriesSection(newContent);
+        showToast("Görsel yüklendi ve kaydedildi.", "success");
+        e.target.value = "";
+        return;
       } else if (index !== undefined) {
         section.slides[index] = uploadedUrl;
       } else if (section.image !== undefined) {
