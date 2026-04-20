@@ -1,21 +1,21 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1600">
   <defs>
     <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1">
-      <stop offset="0%" stop-color="#151515"/>
+      <stop offset="0%" stop-color="#171717"/>
       <stop offset="100%" stop-color="#050505"/>
     </linearGradient>
   </defs>
   <rect width="1200" height="1600" fill="url(#bg)"/>
-  <rect x="165" y="195" width="870" height="1220" rx="30" fill="#0d0d0d" stroke="#2e2e2e" stroke-width="2"/>
-  <rect x="250" y="270" width="700" height="900" rx="24" fill="#111111" stroke="#3c3c3c" stroke-width="2"/>
-  <rect x="300" y="340" width="600" height="26" rx="13" fill="#d1b08a" opacity="0.55"/>
-  <rect x="300" y="400" width="420" height="14" rx="7" fill="#f3efe9" opacity="0.15"/>
-  <rect x="300" y="440" width="520" height="14" rx="7" fill="#f3efe9" opacity="0.15"/>
-  <rect x="300" y="480" width="360" height="14" rx="7" fill="#f3efe9" opacity="0.15"/>
-  <path d="M290 930h620" stroke="#d1b08a" stroke-width="6" opacity="0.45"/>
-  <path d="M290 990h620" stroke="#f3efe9" stroke-width="3" opacity="0.12"/>
-  <path d="M290 1050h620" stroke="#f3efe9" stroke-width="3" opacity="0.12"/>
-  <rect x="325" y="650" width="550" height="220" rx="24" fill="#c7a57f" opacity="0.12"/>
-  <path d="M340 860c120-120 220-180 450-220" fill="none" stroke="#c7a57f" stroke-width="10" stroke-linecap="round" opacity="0.65"/>
-  <path d="M390 840c90-80 170-120 330-160" fill="none" stroke="#f3efe9" stroke-width="6" stroke-linecap="round" opacity="0.18"/>
+  <rect x="145" y="160" width="910" height="1280" rx="36" fill="#0f0f0f" stroke="#2c2c2c" stroke-width="2"/>
+  <rect x="230" y="250" width="740" height="1100" rx="24" fill="#111111" stroke="#353535" stroke-width="2"/>
+  <g stroke="#f3efe9" stroke-opacity="0.12" stroke-width="2">
+    <path d="M280 320h640M280 420h640M280 520h640M280 620h640M280 720h640M280 820h640M280 920h640M280 1020h640"/>
+    <path d="M360 280v1040M460 280v1040M560 280v1040M660 280v1040M760 280v1040M860 280v1040"/>
+  </g>
+  <path d="M280 1080C430 840 520 820 880 560" fill="none" stroke="#d1b08a" stroke-width="14" stroke-linecap="round" opacity="0.8"/>
+  <path d="M320 1000C470 860 580 820 740 700" fill="none" stroke="#f3efe9" stroke-width="6" stroke-linecap="round" opacity="0.14"/>
+  <path d="M520 360h260M520 420h160M520 480h320" stroke="#d1b08a" stroke-width="10" stroke-linecap="round" opacity="0.55"/>
+  <rect x="320" y="760" width="560" height="220" rx="22" fill="#c7a57f" opacity="0.08"/>
+  <rect x="350" y="790" width="180" height="160" rx="18" fill="#d1b08a" opacity="0.16"/>
+  <rect x="560" y="790" width="280" height="160" rx="18" fill="#f3efe9" opacity="0.06"/>
 </svg>
