@@ -118,7 +118,7 @@ video {
     overflow-y: auto;
     scroll-snap-type: y mandatory;
     scroll-behavior: smooth;
-    scroll-padding-top: 100px;
+    scroll-padding-top: 0;
     -ms-overflow-style: none; /* IE and Edge */
     scrollbar-width: none; /* Firefox */
   }
@@ -134,7 +134,15 @@ video {
     height: 100vh !important;
     height: 100svh !important;
     width: 100% !important;
+    min-height: 100vh !important;
+    min-height: 100svh !important;
     overflow: hidden;
+    box-sizing: border-box;
+  }
+
+  .homepage-snap-shell > .snap-section,
+  .homepage-snap-shell > .homepage-footer-snap {
+    width: 100%;
   }
 }
 
@@ -179,6 +187,7 @@ video {
   overflow-y: auto;
   max-height: 100%;
   position: relative;
+  min-height: 0;
 }
 
 @media (max-width: 1023px) {
@@ -225,6 +234,7 @@ video {
   display: flex;
   flex-direction: column;
   align-items: stretch;
+  overflow: hidden;
 }
 
 .homepage-snap-shell .homepage-services-section .section-header-area {
@@ -236,6 +246,32 @@ video {
   flex: 1;
   min-height: 0;
   display: flex;
+}
+
+.homepage-snap-shell .services-section {
+  box-sizing: border-box;
+}
+
+@media (min-width: 1024px) {
+  .homepage-snap-shell .services-section {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    height: 100svh;
+  }
+
+  .homepage-snap-shell .services-section .section-content-area {
+    min-height: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-bottom: 0;
+  }
+
+  .homepage-snap-shell .services-section .services-grid {
+    height: 100%;
+    min-height: 0;
+    align-items: stretch;
+  }
 }
 
 .homepage-snap-shell .homepage-projects-section .section-heading,
@@ -396,10 +432,108 @@ video {
   height: 100%;
 }
 
+@media (min-width: 1024px) {
+  .homepage-snap-shell .projects-section {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    height: 100svh;
+    overflow: hidden;
+    box-sizing: border-box;
+  }
+
+  .homepage-snap-shell .projects-section .section-content-area {
+    min-height: 0;
+    overflow: hidden;
+    padding-bottom: 5rem;
+  }
+
+  .homepage-snap-shell .projects-section .project-slider-window {
+    width: 100%;
+    height: 100%;
+    min-height: 0 !important;
+    max-height: calc(100vh - 180px);
+    max-height: calc(100svh - 180px);
+    overflow: hidden;
+  }
+
+  .homepage-snap-shell .projects-section .project-slide,
+  .homepage-snap-shell .projects-section .project-card,
+  .homepage-snap-shell .projects-section .project-card img {
+    height: 100%;
+  }
+
+  .homepage-snap-shell .team-section {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    height: 100svh;
+    overflow: hidden;
+    box-sizing: border-box;
+  }
+
+  .homepage-snap-shell .team-section .section-content-area {
+    min-height: 0;
+    overflow: hidden;
+    padding-bottom: 5rem;
+  }
+
+  .homepage-snap-shell .team-section .team-mobile-slider,
+  .homepage-snap-shell .team-section .team-home-mobile-slider {
+    width: min(90vw, 1600px);
+    max-width: 1600px;
+    height: calc(100vh - 220px);
+    height: calc(100svh - 220px);
+    min-height: 0;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+  }
+
+  .homepage-snap-shell .team-section .team-mobile-slide,
+  .homepage-snap-shell .team-section .team-card-gallery,
+  .homepage-snap-shell .team-section .team-card-img {
+    height: 100%;
+    min-height: 0;
+  }
+
+  .homepage-snap-shell .team-section .team-card-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+  }
+}
+
 .homepage-footer-snap {
   scroll-snap-align: start;
   scroll-snap-stop: always;
   min-height: 100svh;
+}
+
+@media (min-width: 1024px) {
+  .homepage-footer-snap {
+    height: 100vh;
+    height: 100svh;
+    min-height: 100vh;
+    min-height: 100svh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  .homepage-footer-snap .footer-top {
+    flex: 1;
+    display: flex;
+    align-items: center;
+  }
+
+  .homepage-footer-snap .footer-main {
+    align-items: center;
+  }
 }
 
 .topbar {
@@ -1652,7 +1786,7 @@ video {
   position: relative;
   overflow: hidden;
   border-radius: 0;
-  min-height: min(102vh, 72rem);
+  min-height: 0;
   overscroll-behavior: contain;
 }
 
@@ -1697,7 +1831,7 @@ video {
 }
 
 .project-slide {
-  min-height: inherit;
+  min-height: 0;
   cursor: grab;
 }
 
@@ -2676,7 +2810,7 @@ video {
   }
 
   .project-slider-window {
-    min-height: 102vh;
+    min-height: 0;
   }
 
   .projects-section .section-inner {
@@ -2743,103 +2877,6 @@ video {
   }
 
   /* TEAM SECTION DESKTOP OVERHAUL */
-  @media (min-width: 1024px) {
-    .homepage-team-section {
-      min-height: 100vh;
-      display: flex !important;
-      flex-direction: column;
-      justify-content: center;
-      padding: 6rem 0 !important;
-      position: relative;
-    }
-
-    .homepage-team-section .section-inner {
-      max-width: 100% !important;
-      width: 100% !important;
-      padding: 0 !important;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-
-    .homepage-team-section .section-heading {
-      margin-bottom: 4rem;
-      width: 90vw;
-      max-width: 1400px;
-    }
-
-    .homepage-team-section .team-home-mobile-slider {
-      width: 90vw !important;
-      max-width: 1600px !important;
-      min-height: 70vh !important;
-      height: 70vh !important;
-      margin: 0 auto;
-      position: relative !important;
-    }
-
-    .homepage-team-section .team-card-gallery,
-    .homepage-team-section .team-card-img {
-      min-height: 70vh !important;
-      height: 70vh !important;
-      border-radius: 4px;
-      overflow: hidden;
-    }
-
-    .homepage-team-section .team-card-img img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover !important;
-      object-position: center center !important;
-    }
-
-    /* Pushing arrows to screen edges */
-    .homepage-team-section .team-slider-arrow {
-      position: absolute !important;
-      top: 50% !important;
-      transform: translateY(-50%) !important;
-      z-index: 20;
-      background: rgba(255, 255, 255, 0.05) !important;
-      border: 1px solid rgba(255, 255, 255, 0.1) !important;
-      width: 5rem !important;
-      height: 5rem !important;
-    }
-
-    .homepage-team-section .team-slider-arrow-left {
-      left: -3vw !important;
-    }
-
-    .homepage-team-section .team-slider-arrow-right {
-      right: -3vw !important;
-    }
-
-    .homepage-team-section .team-slider-arrow:hover {
-      background: rgba(255, 255, 255, 0.1) !important;
-      transform: translateY(-50%) scale(1.1) !important;
-      border-color: rgba(255, 255, 255, 0.3) !important;
-    }
-
-    /* CTA spacing */
-    .homepage-team-section .homepage-section-cta {
-      margin-top: 4rem;
-    }
-
-    /* Label aesthetics */
-    .homepage-team-section .team-card-content {
-      padding: 3rem 4rem !important;
-    }
-
-    .homepage-team-section .team-card-copy h3 {
-      font-size: clamp(2.5rem, 5vw, 4rem) !important;
-      margin-bottom: 0.5rem;
-    }
-
-    .homepage-team-section .team-card-role-vertical {
-      font-size: 0.75rem !important;
-      letter-spacing: 0.35em !important;
-      opacity: 0.8;
-    }
-  }
-
   .team-slider-arrow:hover,
   .team-slider-arrow:active {
     transform: translateY(-50%) scale(0.96);

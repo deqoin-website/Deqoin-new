@@ -92,7 +92,7 @@ export default function HeroSlider({ slides, onAppointmentClick, showScrollHint 
       className="hero-section snap-section" 
       onTouchStart={handleTouchStart} 
       onTouchEnd={handleTouchEnd}
-      style={{ minHeight: '100vh', position: 'relative', overflow: 'hidden' }}
+      style={{ height: '100vh', minHeight: '100vh', position: 'relative', overflow: 'hidden', boxSizing: 'border-box' }}
     >
       <div className="hero-slide active" style={{ backgroundColor: "#000", position: 'absolute', inset: 0 }}>
         <AnimatePresence mode="wait" initial={false}>
