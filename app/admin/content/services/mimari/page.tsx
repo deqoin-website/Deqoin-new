@@ -126,19 +126,19 @@ export default function MimariEditor() {
     return refreshed;
   };
 
-  const persistCategoriesSection = async (items: any[]) => {
-    const baseContent = cloneContent(content || createDefaultContent());
+  const persistCategoriesSection = async (nextContent: any) => {
+    const baseContent = cloneContent(nextContent || content || createDefaultContent());
     const categorySection = baseContent.sections.find((s: any) => s.id === 'categories');
     if (!categorySection) {
       throw new Error('Categories section missing');
     }
-    categorySection.items = items;
+    const items = categorySection.items || [];
     const saved = await persistContent(baseContent);
     const savedCategories = saved?.sections?.find((s: any) => s.id === 'categories')?.items || [];
-    const mismatched = items.some((item, idx) => item?.image && savedCategories?.[idx]?.image !== item.image);
+    const mismatched = items.some((item: any, idx: number) => item?.image && savedCategories?.[idx]?.image !== item.image);
     if (mismatched) {
       console.error('[mimari/categories] saved image mismatch', {
-        expected: items.map((item) => item?.image),
+        expected: items.map((item: any) => item?.image),
         actual: savedCategories.map((item: any) => item?.image),
         saved,
       });
@@ -270,7 +270,7 @@ export default function MimariEditor() {
         if (!section.items[index]) section.items[index] = {};
         section.items[index].image = uploadedUrl;
         setCategoryPreviews(prev => ({ ...prev, [index]: uploadedUrl }));
-        await persistCategoriesSection(section.items);
+        await persistCategoriesSection(newContent);
       } else if (index !== undefined) {
         section.slides[index] = uploadedUrl;
       } else if (section.image !== undefined) {
@@ -370,7 +370,7 @@ export default function MimariEditor() {
     categorySection.items[index].image = value;
     setCategoryPreviews(prev => ({ ...prev, [index]: value }));
     setContent(nextContent);
-    await persistCategoriesSection(categorySection.items);
+    await persistCategoriesSection(nextContent);
     showToast("Kart görseli güncellendi.", "success");
     console.log('[mimari/category-image] saved', { index, value });
   };
