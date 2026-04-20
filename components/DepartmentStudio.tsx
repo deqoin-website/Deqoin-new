@@ -9,7 +9,7 @@ import StudioBackButton from "./StudioBackButton";
 import ProjectInsightPanel from "./ProjectInsightPanel";
 import HeroSlider from "./HeroSlider";
 import WorkflowMarquee from "./WorkflowMarquee";
-import { MIMARI_WORKFLOW, MATERIAL_WORKFLOW, UYGULAMA_WORKFLOW } from "../data/workflows";
+import { useWorkflowContent } from "./useWorkflowContent";
 
 interface DepartmentStudioProps {
   title: string;
@@ -67,6 +67,7 @@ export default function DepartmentStudio({
   const [isMobileDrawerOpen, setIsMobileDrawerOpen] = useState(false);
   const [activeProjectSlug, setActiveProjectSlug] = useState<string | null>(null);
   const [activeProductCategory, setActiveProductCategory] = useState<string>("ALL");
+  const { workflow } = useWorkflowContent();
   
   const heroSlides = images && images.length > 0 ? images : [heroImage, ...FALLBACK_SLIDES.filter(img => img !== heroImage)];
 
@@ -138,13 +139,7 @@ export default function DepartmentStudio({
       />
 
       {/* WORKFLOW SECTION */}
-      <WorkflowMarquee 
-        steps={
-          workflowType === 'material' ? MATERIAL_WORKFLOW :
-          workflowType === 'execution' ? UYGULAMA_WORKFLOW :
-          MIMARI_WORKFLOW
-        } 
-      />
+      <WorkflowMarquee steps={workflow.steps} title={workflow.title} />
 
       {/* RICH CONTENT SECTION: FOCUS AREAS */}
       <section className="rich-service-content studio-snap-point">

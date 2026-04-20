@@ -6,7 +6,7 @@ import ConsultationModal from "../../components/ConsultationModal";
 import SwipeAppointmentButton from "../../components/SwipeAppointmentButton";
 import HeroSlider from "../../components/HeroSlider";
 import WorkflowMarquee from "../../components/WorkflowMarquee";
-import { MIMARI_WORKFLOW } from "../../data/workflows";
+import { useWorkflowContent } from "../../components/useWorkflowContent";
 
 const heroSlides = [
   "/images/slider/mimari_slide.png",
@@ -48,6 +48,7 @@ const kesifStages = [
 export default function KesifPage() {
   const [isConsultationOpen, setIsConsultationOpen] = useState(false);
   const [currentSlide, setCurrentSlide] = useState(0);
+  const { workflow } = useWorkflowContent();
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -71,7 +72,7 @@ export default function KesifPage() {
       />
 
       {/* WORKFLOW SECTION */}
-      <WorkflowMarquee steps={MIMARI_WORKFLOW} />
+      <WorkflowMarquee steps={workflow.steps} title={workflow.title} />
 
       {/* ── STAGES ── */}
       <section className="services-section" style={{ background: "transparent", paddingTop: "6rem" }}>

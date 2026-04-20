@@ -7,7 +7,7 @@ import { Loader2 } from "lucide-react";
 import SwipeAppointmentButton from "../../components/SwipeAppointmentButton";
 import HeroSlider from "../../components/HeroSlider";
 import WorkflowMarquee from "../../components/WorkflowMarquee";
-import { MATERIAL_WORKFLOW } from "../../data/workflows";
+import { useWorkflowContent } from "../../components/useWorkflowContent";
 import { materyalKategorileri } from "../../data/materyal-studyo";
 
 const materialCategories = materyalKategorileri.filter((item) =>
@@ -19,6 +19,7 @@ export default function MateryalStudyo() {
   const [isLoading, setIsLoading] = useState(true);
   const [isConsultationOpen, setIsConsultationOpen] = useState(false);
   const heroRef = useRef<HTMLDivElement>(null);
+  const { workflow } = useWorkflowContent();
 
   useEffect(() => {
     const fetchContent = async () => {
@@ -76,7 +77,7 @@ export default function MateryalStudyo() {
       />
 
       {/* WORKFLOW SECTION */}
-      <WorkflowMarquee steps={MATERIAL_WORKFLOW} />
+      <WorkflowMarquee steps={workflow.steps} title={workflow.title} />
 
 
 

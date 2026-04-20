@@ -8,7 +8,7 @@ import SwipeAppointmentButton from "../../components/SwipeAppointmentButton";
 import { uygulamaBirimleri } from "../../data/uygulama-birimleri";
 import HeroSlider from "../../components/HeroSlider";
 import WorkflowMarquee from "../../components/WorkflowMarquee";
-import { UYGULAMA_WORKFLOW } from "../../data/workflows";
+import { useWorkflowContent } from "../../components/useWorkflowContent";
 
 const executionCategories = uygulamaBirimleri.filter((item) =>
   [
@@ -26,6 +26,7 @@ export default function UygulamaPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [isConsultationOpen, setIsConsultationOpen] = useState(false);
   const heroRef = useRef<HTMLDivElement>(null);
+  const { workflow } = useWorkflowContent();
 
   useEffect(() => {
     const fetchContent = async () => {
@@ -86,7 +87,7 @@ export default function UygulamaPage() {
       />
 
       {/* WORKFLOW SECTION */}
-      <WorkflowMarquee steps={UYGULAMA_WORKFLOW} />
+      <WorkflowMarquee steps={workflow.steps} title={workflow.title} />
 
       {/* MANİFESTO */}
 
