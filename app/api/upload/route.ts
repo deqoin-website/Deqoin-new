@@ -1,5 +1,8 @@
 import { put } from '@vercel/blob';
 import { NextResponse } from 'next/server';
+import { mkdir, writeFile } from 'fs/promises';
+import path from 'path';
+import crypto from 'crypto';
 
 export const maxDuration = 60; // 1 minute timeout for video uploads
 
@@ -13,9 +16,26 @@ export async function POST(request: Request): Promise<NextResponse> {
   try {
     const arrayBuffer = await request.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
-    
+
+    if (!buffer.length) {
+      throw new Error('Empty upload payload');
+    }
+
     if (!process.env.BLOB_READ_WRITE_TOKEN) {
-      throw new Error('BLOB_READ_WRITE_TOKEN is missing in .env file');
+      const ext = path.extname(filename) || '.png';
+      const base = path.basename(filename, ext).replace(/[^a-zA-Z0-9_-]/g, '').slice(0, 40) || 'upload';
+      const finalName = `${base}-${crypto.randomUUID()}${ext}`;
+      const uploadDir = path.join(process.cwd(), 'public', 'uploads');
+      const outputPath = path.join(uploadDir, finalName);
+
+      await mkdir(uploadDir, { recursive: true });
+      await writeFile(outputPath, buffer);
+
+      return NextResponse.json({
+        url: `/uploads/${finalName}`,
+        pathname: `/uploads/${finalName}`,
+        downloadUrl: `/uploads/${finalName}`,
+      });
     }
 
     const blob = await put(filename, buffer, {
