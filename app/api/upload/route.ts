@@ -30,6 +30,7 @@ export async function POST(request: Request): Promise<NextResponse> {
 
     let uploadBuffer: Buffer = inputBuffer;
     let safeFilename = `${filename.replace(/\.[^.]+$/, '') || 'upload'}.webp`;
+    let transformMode: "sharp-webp" | "raw-fallback" = "sharp-webp";
     try {
       uploadBuffer = await sharp(inputBuffer)
         .rotate()
@@ -42,6 +43,7 @@ export async function POST(request: Request): Promise<NextResponse> {
         .webp({ quality: 72, effort: 4 })
         .toBuffer();
     } catch (sharpError) {
+      transformMode = "raw-fallback";
       console.error('SHARP OPTIMIZATION FAILED:', sharpError instanceof Error ? sharpError.message : String(sharpError));
       const mimeType = request.headers.get('content-type') || '';
       const extension = mimeType.includes('png')
@@ -57,7 +59,7 @@ export async function POST(request: Request): Promise<NextResponse> {
 
     const token = process.env.BLOB_READ_WRITE_TOKEN || process.env.VERCEL_BLOB_READ_WRITE_TOKEN;
     if (!token) {
-      throw new Error('BLOB_READ_WRITE_TOKEN is missing in .env file');
+      throw new Error('BLOB token is missing in production env');
     }
 
     const blob = await put(safeFilename, uploadBuffer, {
@@ -68,13 +70,20 @@ export async function POST(request: Request): Promise<NextResponse> {
     return NextResponse.json({
       ...blob,
       fallback: 'blob',
+      debug: {
+        transformMode,
+        safeFilename,
+        inputBytes: inputBuffer.length,
+        uploadBytes: uploadBuffer.length,
+      },
     });
   } catch (error: any) {
-    console.error('SERVER SIDE ERROR:', error.message);
+    console.error('SERVER SIDE ERROR:', error?.stack || error?.message || String(error));
     return NextResponse.json(
       { 
         error: 'Upload failed', 
-        details: error.message,
+        details: error?.message || String(error),
+        step: error?.message?.includes('token') ? 'blob-token' : error?.message?.includes('Empty upload payload') ? 'empty-payload' : 'transform-or-blob',
         hint: 'Kendi terminalinizde (npm run dev ekranında) SERVER SIDE ERROR araması yapın.' 
       },
       { status: 500 }
