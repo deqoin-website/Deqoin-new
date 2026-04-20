@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
-import { Loader2, Save, Plus, Trash2, Image as ImageIcon } from 'lucide-react';
+import { Loader2, Save, Plus, Trash2, Image as ImageIcon, Upload } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { AdminSaveBar } from '@/components/admin/AdminSaveBar';
 import { useNotification } from '@/components/admin/AdminNotificationProvider';
@@ -157,6 +157,10 @@ export default function WorkflowAdminPage() {
     }
   };
 
+  const openWorkflowImagePicker = (index: number) => {
+    document.getElementById(`workflow-image-${index}`)?.click();
+  };
+
   const canSave = useMemo(() => data.steps.length > 0, [data.steps.length]);
 
   if (loading) {
@@ -207,7 +211,7 @@ export default function WorkflowAdminPage() {
           <div className="workflow-list-admin">
             <AnimatePresence initial={false}>
               {data.steps.map((step, i) => (
-                <motion.div
+                  <motion.div
                   key={`${step.id}-${i}`}
                   layout
                   initial={{ opacity: 0, y: 10 }}
@@ -215,7 +219,8 @@ export default function WorkflowAdminPage() {
                   exit={{ opacity: 0, y: -10 }}
                   className="workflow-item-card"
                   >
-                    <div className="workflow-image-wrap" onClick={() => document.getElementById(`workflow-image-${i}`)?.click()}>
+                    <div className="workflow-image-column">
+                      <div className="workflow-image-wrap" onClick={() => openWorkflowImagePicker(i)}>
                       {step.image ? <img src={step.image} alt={`Adım ${i + 1}`} /> : <div className="workflow-image-placeholder"><ImageIcon size={20} /><span>Görsel Yükle</span></div>}
                       {uploadStates[`${i}`] === "uploading" && (
                         <div className="upload-badge uploading">Yükleniyor...</div>
@@ -223,12 +228,22 @@ export default function WorkflowAdminPage() {
                       {uploadStates[`${i}`] === "uploaded" && (
                         <div className="upload-badge success">Yüklendi</div>
                       )}
+                      </div>
+                      <div className="workflow-image-actions">
+                        <button type="button" className="workflow-image-btn" onClick={() => openWorkflowImagePicker(i)}>
+                          <Upload size={14} />
+                          GÖRSELİ DEĞİŞTİR
+                        </button>
+                        <span className="workflow-image-hint">
+                          Ana sayfa ve tüm ilgili sayfalarda aynı görsel kullanılır.
+                        </span>
+                      </div>
                     </div>
                     <input
                       id={`workflow-image-${i}`}
                       type="file"
                       className="hidden"
-                    accept="image/*"
+                      accept="image/*"
                       onChange={e => {
                         const file = e.target.files?.[0];
                         if (file) void uploadImage(i, file).then(() => setIsDirty(true)).catch(() => showToast('Fotoğraf yüklenemedi.', 'error'));
@@ -295,10 +310,15 @@ export default function WorkflowAdminPage() {
         .add-btn-small { background: var(--surface-muted); color: var(--text); border: 1px solid var(--line); padding: 0.5rem 1rem; border-radius: 4px; font-size: 0.7rem; display: flex; align-items: center; gap: 0.5rem; cursor: pointer; }
         .workflow-list-admin { display: flex; flex-direction: column; gap: 1.5rem; }
         .workflow-item-card { background: var(--surface-muted); border: 1px solid var(--line); border-radius: 12px; padding: 1.5rem; position: relative; display: flex; gap: 1.5rem; align-items: flex-start; }
+        .workflow-image-column { width: 180px; display: flex; flex-direction: column; gap: 0.85rem; flex-shrink: 0; }
         .workflow-image-wrap { width: 180px; height: 240px; border-radius: 12px; overflow: hidden; background: #0b0b0b; border: 1px solid var(--line); cursor: pointer; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
         .workflow-image-wrap { position: relative; }
         .workflow-image-wrap img { width: 100%; height: 100%; object-fit: cover; }
         .workflow-image-placeholder { display: flex; flex-direction: column; gap: 0.5rem; align-items: center; justify-content: center; color: var(--text-muted); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.15em; }
+        .workflow-image-actions { display: flex; flex-direction: column; gap: 0.45rem; }
+        .workflow-image-btn { display: inline-flex; align-items: center; justify-content: center; gap: 0.45rem; width: 100%; border: 1px solid rgba(166,137,102,0.35); background: rgba(166,137,102,0.08); color: #a68966; padding: 0.7rem 0.8rem; border-radius: 10px; font-size: 0.68rem; font-weight: 800; letter-spacing: 0.12em; cursor: pointer; transition: 0.25s ease; }
+        .workflow-image-btn:hover { background: rgba(166,137,102,0.16); transform: translateY(-1px); }
+        .workflow-image-hint { font-size: 0.68rem; line-height: 1.5; color: var(--text-soft); opacity: 0.72; }
         .upload-badge { position: absolute; left: 12px; bottom: 12px; z-index: 2; padding: 0.45rem 0.7rem; border-radius: 999px; font-size: 0.65rem; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; backdrop-filter: blur(8px); }
         .upload-badge.uploading { color: #fff; background: rgba(166,137,102,0.45); border: 1px solid rgba(255,255,255,0.08); }
         .upload-badge.success { color: #fff; background: rgba(34,197,94,0.35); border: 1px solid rgba(255,255,255,0.08); }
@@ -314,6 +334,7 @@ export default function WorkflowAdminPage() {
         @media (max-width: 800px) {
           .manager-header { flex-direction: column; align-items: stretch; gap: 1rem; }
           .workflow-item-card { flex-direction: column; }
+          .workflow-image-column { width: 100%; }
           .workflow-image-wrap { width: 100%; height: 260px; }
           .delete-step-btn { position: absolute; top: 1rem; right: 1rem; }
         }
