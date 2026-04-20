@@ -125,6 +125,10 @@ export default function MimariEditor() {
     }
   };
 
+  const openCategoryImagePicker = (index: number) => {
+    document.getElementById(`cat-up-${index}`)?.click();
+  };
+
   const addService = async () => {
     if (!newService.title || !newService.slug) return showToast("Başlık ve Slug zorunludur.", "error");
     
@@ -404,10 +408,28 @@ export default function MimariEditor() {
           <div className="category-grid">
             {catSection?.items?.map((item: any, idx: number) => (
               <div key={idx} className="category-item-card">
-                <div className="cat-image" onClick={() => document.getElementById(`cat-up-${idx}`)?.click()}>
-                  <img src={item.image} alt={item.title} />
-                  <div className="cat-overlay"><Upload size={16} /></div>
-                  <input id={`cat-up-${idx}`} type="file" className="hidden" onChange={e => handleImageUpload(e, 'categories', idx, true)} />
+                <div className="cat-image-column">
+                  <div className="cat-image" onClick={() => openCategoryImagePicker(idx)}>
+                    <img src={item.image} alt={item.title} />
+                    <div className="cat-overlay"><Upload size={16} /></div>
+                    <input id={`cat-up-${idx}`} type="file" className="hidden" accept="image/*" onChange={e => handleImageUpload(e, 'categories', idx, true)} />
+                  </div>
+                  <button type="button" className="cat-image-btn" onClick={() => openCategoryImagePicker(idx)}>
+                    <Upload size={14} />
+                    GÖRSELİ DEĞİŞTİR
+                  </button>
+                  <input
+                    type="text"
+                    className="cat-image-url"
+                    value={item.image || ''}
+                    placeholder="Görsel URL"
+                    onChange={e => {
+                      const nc = { ...content };
+                      nc.sections.find((s:any)=>s.id==='categories').items[idx].image = e.target.value;
+                      setContent(nc);
+                      setIsDirty(true);
+                    }}
+                  />
                 </div>
                 <div className="cat-info">
                   <input className="cat-title-input" value={item.title} onChange={e => {
@@ -455,6 +477,10 @@ export default function MimariEditor() {
                 <label>URL Slug (Örn: restorasyon)</label>
                 <input type="text" value={newService.slug} onChange={e => setNewService({...newService, slug: e.target.value})} />
               </div>
+              <div className="input-group">
+                <label>Görsel URL</label>
+                <input type="text" value={newService.image} onChange={e => setNewService({...newService, image: e.target.value})} />
+              </div>
               <button className="save-btn" style={{ width: '100%', marginTop: '1rem' }} onClick={addService}>EKLE</button>
             </div>
           </div>
@@ -491,12 +517,15 @@ export default function MimariEditor() {
         .range-row input[type="range"] { width: 100%; accent-color: #a68966; cursor: pointer; padding: 0; border: none; background: transparent; }
 
         .category-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1.5rem; }
-        .category-item-card { background: var(--surface-muted); border: 1px solid var(--line); padding: 1.25rem; display: flex; gap: 1.25rem; }
-        
-        .cat-image { width: 100px; aspect-ratio: 1; position: relative; cursor: pointer; border: 1px solid rgba(255,255,255,0.1); }
+        .category-item-card { background: var(--surface-muted); border: 1px solid var(--line); padding: 1.25rem; display: flex; gap: 1.25rem; align-items: flex-start; }
+        .cat-image-column { width: 140px; display: flex; flex-direction: column; gap: 0.6rem; flex-shrink: 0; }
+        .cat-image { width: 100%; aspect-ratio: 1; position: relative; cursor: pointer; border: 1px solid rgba(255,255,255,0.1); overflow: hidden; }
         .cat-image img { width: 100%; height: 100%; object-fit: cover; }
         .cat-overlay { position: absolute; inset: 0; background: rgba(166,137,102,0.8); display: flex; align-items: center; justify-content: center; opacity: 0; transition: 0.3s; color: #000; }
         .cat-image:hover .cat-overlay { opacity: 1; }
+        .cat-image-btn { width: 100%; display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; background: rgba(166,137,102,0.1); border: 1px solid rgba(166,137,102,0.35); color: #a68966; padding: 0.65rem 0.8rem; font-size: 0.62rem; font-weight: 800; letter-spacing: 0.14em; cursor: pointer; transition: 0.25s ease; }
+        .cat-image-btn:hover { background: rgba(166,137,102,0.18); transform: translateY(-1px); }
+        .cat-image-url { width: 100%; background: var(--background); border: 1px solid var(--line); color: var(--text); padding: 0.7rem 0.8rem; font-size: 0.8rem; }
 
         .cat-info { flex: 1; display: flex; flex-direction: column; gap: 0.5rem; }
         .cat-title-input { background: transparent; border: none; border-bottom: 1px solid var(--line); color: var(--text); font-size: 1rem; font-weight: 600; padding: 0.3rem 0; width: 100%; }
