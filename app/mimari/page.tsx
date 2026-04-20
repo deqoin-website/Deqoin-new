@@ -22,7 +22,7 @@ const mimariSubCategories = [
     href: "/mimari/insaat-muhendisligi",
     title: "Mühendislik",
     sideLabel: "Structural Strength",
-    image: "/images/projects/gallery_1.png",
+    image: "/images/workflow/muhendislik-custom.png",
     blur: 0,
     overlay: 30,
     slug: "insaat-muhendisligi"
@@ -58,7 +58,7 @@ const mimariSubCategories = [
     href: "/mimari/restorasyon",
     title: "Restorasyon",
     sideLabel: "Heritage Revival",
-    image: "/images/projects/gallery_1.png",
+    image: "/images/workflow/muhendislik-custom.png",
     blur: 0,
     overlay: 30,
     slug: "restorasyon"

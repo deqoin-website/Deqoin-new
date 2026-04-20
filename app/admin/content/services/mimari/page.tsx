@@ -21,7 +21,7 @@ const DEFAULT_MIMARI_CATEGORIES = [
     href: "/mimari/insaat-muhendisligi",
     title: "Mühendislik",
     sideLabel: "Structural Strength",
-    image: "/images/projects/gallery_1.png",
+    image: "/images/workflow/muhendislik-custom.png",
     slug: "insaat-muhendisligi",
   },
   {
@@ -49,7 +49,7 @@ const DEFAULT_MIMARI_CATEGORIES = [
     href: "/mimari/restorasyon",
     title: "Restorasyon",
     sideLabel: "Heritage Revival",
-    image: "/images/projects/gallery_1.png",
+    image: "/images/workflow/muhendislik-custom.png",
     slug: "restorasyon",
   },
   {
