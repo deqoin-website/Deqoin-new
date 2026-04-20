@@ -46,6 +46,20 @@ export default function HeroSlider({ slides, onAppointmentClick, showScrollHint 
   }, []);
 
   useEffect(() => {
+    if (slides.length === 0) return;
+
+    const preloadIndexes = [index, index + 1, index + 2, index - 1];
+    preloadIndexes.forEach((slideIndex) => {
+      const safeIndex = (slideIndex + slides.length) % slides.length;
+      const slide = slides[safeIndex];
+      const src = slide?.mediaUrl || slide?.image;
+      if (!src || slide?.mediaType === "video") return;
+      const img = new Image();
+      img.src = src;
+    });
+  }, [index, slides]);
+
+  useEffect(() => {
     if (slides.length <= 1) return;
     const timer = setInterval(() => {
       setDirection(1);
@@ -120,19 +134,19 @@ export default function HeroSlider({ slides, onAppointmentClick, showScrollHint 
                 opacity: 0, 
                 scale: 1.12, 
                 x: direction >= 0 ? 40 : -40, 
-                filter: `blur(${Math.max((currentSlide?.blur || 0), 2) + 12}px) brightness(0.24) saturate(0.8)` 
+                filter: `blur(${Math.max((currentSlide?.blur || 0), 1) + 6}px) brightness(0.28) saturate(0.9)` 
               }}
               animate={{ 
                 opacity: isIntroReady ? 1 : 0, 
                 scale: 1, 
                 x: 0, 
-                filter: `blur(${Math.max((currentSlide?.blur ?? 0), 2)}px) brightness(0.4) saturate(0.9)` 
+                filter: `blur(${Math.max((currentSlide?.blur ?? 0), 0)}px) brightness(0.46) saturate(0.95)` 
               }}
               exit={{ 
                 opacity: 0, 
                 scale: 1.1, 
                 x: direction >= 0 ? -40 : 40, 
-                filter: `blur(${Math.max((currentSlide?.blur || 0), 2) + 14}px) brightness(0.18) saturate(0.8)` 
+                filter: `blur(${Math.max((currentSlide?.blur || 0), 1) + 8}px) brightness(0.2) saturate(0.85)` 
               }}
               transition={{ duration: 1.2, ease: [0.77, 0, 0.175, 1] }}
               style={{

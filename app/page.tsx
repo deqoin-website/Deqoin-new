@@ -158,6 +158,18 @@ export default function Page() {
   const currentTeamMember = filteredTeam[teamSlideIndex];
 
   useEffect(() => {
+    if (filteredProjects.length === 0) return;
+    const preloadIndexes = [projectIndex, projectIndex + 1, projectIndex - 1, projectIndex + 2];
+    preloadIndexes.forEach((projectIdx) => {
+      const safeIndex = (projectIdx + filteredProjects.length) % filteredProjects.length;
+      const project = filteredProjects[safeIndex];
+      if (!project?.coverImage) return;
+      const img = new Image();
+      img.src = project.coverImage;
+    });
+  }, [projectIndex, filteredProjects]);
+
+  useEffect(() => {
     projectIndexRef.current = projectIndex;
   }, [projectIndex]);
 
@@ -475,13 +487,19 @@ export default function Page() {
                     <motion.div
                       className="project-slide-parallax"
                       style={currentProject?.coverImage ? { backgroundImage: `url(${currentProject.coverImage})` } : undefined}
-                      initial={{ scale: 1.08, x: projectDirection >= 0 ? -30 : 30 }}
-                      animate={{ scale: 1.16, x: 0 }}
-                      exit={{ scale: 1.08, x: projectDirection >= 0 ? 30 : -30 }}
+                      initial={{ scale: 1.04, x: projectDirection >= 0 ? -20 : 20 }}
+                      animate={{ scale: 1.08, x: 0 }}
+                      exit={{ scale: 1.04, x: projectDirection >= 0 ? 20 : -20 }}
                       transition={{ duration: 0.75, ease: [0.16, 1, 0.3, 1] }}
                     />
                     {currentProject?.coverImage ? (
-                      <img src={currentProject.coverImage} alt={currentProject.title} />
+                      <img
+                        src={currentProject.coverImage}
+                        alt={currentProject.title}
+                        loading="eager"
+                        fetchPriority="high"
+                        decoding="async"
+                      />
                     ) : null}
                     <div className="project-overlay" />
                     <div className="project-slide-glow" />
