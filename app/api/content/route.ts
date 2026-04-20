@@ -66,31 +66,16 @@ export async function POST(request: Request) {
     }
 
     const now = new Date();
-    const existingCount = await PageContent.collection.countDocuments({ page });
+    await PageContent.collection.deleteMany({ page });
+    const inserted = await PageContent.collection.insertOne({
+      page,
+      sections,
+      metadata: { updatedAt: now },
+      createdAt: now,
+      updatedAt: now,
+    });
 
-    if (existingCount > 0) {
-      await PageContent.collection.updateMany(
-        { page },
-        {
-          $set: {
-            page,
-            sections,
-            "metadata.updatedAt": now,
-            updatedAt: now,
-          },
-        }
-      );
-    } else {
-      await PageContent.collection.insertOne({
-        page,
-        sections,
-        metadata: { updatedAt: now },
-        createdAt: now,
-        updatedAt: now,
-      });
-    }
-
-    const updatedContent = await PageContent.findOne({ page }).sort({ "metadata.updatedAt": -1, updatedAt: -1, createdAt: -1 });
+    const updatedContent = await PageContent.collection.findOne({ _id: inserted.insertedId });
     return NextResponse.json(updatedContent, {
       headers: {
         "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate",
