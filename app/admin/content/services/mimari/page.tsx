@@ -77,6 +77,25 @@ export default function MimariEditor() {
 
   const cloneContent = (value: any) => JSON.parse(JSON.stringify(value));
 
+  const persistContent = async (nextContent: any) => {
+    const res = await fetch('/api/content', {
+      method: 'POST',
+      cache: 'no-store',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(nextContent)
+    });
+
+    if (!res.ok) {
+      throw new Error('Content save failed');
+    }
+
+    const refreshed = await res.json();
+    setContent(refreshed);
+    setInitialContent(cloneContent(refreshed));
+    setIsDirty(false);
+    return refreshed;
+  };
+
   const createDefaultContent = () => ({
     page: 'mimari',
     sections: [
@@ -172,9 +191,12 @@ export default function MimariEditor() {
         section.slides.push(blob.url);
       }
       setContent(newContent);
-      setIsDirty(true);
+      await persistContent(newContent);
+      showToast("Görsel yüklendi ve kaydedildi.", "success");
     } catch (err) {
       showToast("Görsel yüklenemedi.", "error");
+    } finally {
+      e.target.value = "";
     }
   };
 
@@ -217,20 +239,8 @@ export default function MimariEditor() {
   const saveContent = async () => {
     setIsSaving(true);
     try {
-      const res = await fetch('/api/content', {
-        method: 'POST',
-        cache: 'no-store',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(content)
-      });
-      if (res.ok) {
-        showToast("Değişiklikler başarıyla kaydedildi!", "success");
-        await fetchContent();
-        setInitialContent(cloneContent(content));
-        setIsDirty(false);
-      } else {
-        showToast("Kayıt sırasında hata oluştu.", "error");
-      }
+      await persistContent(content);
+      showToast("Değişiklikler başarıyla kaydedildi!", "success");
     } catch (err) {
       showToast("Bağlantı hatası.", "error");
     } finally {
