@@ -186,9 +186,13 @@ export default function MimariEditor() {
     if (!file) return;
 
     try {
-      const res = await fetch(`/api/upload?filename=${file.name}`, {
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('filename', file.name);
+
+      const res = await fetch('/api/upload', {
         method: 'POST',
-        body: file
+        body: formData
       });
       if (!res.ok) throw new Error('Upload failed');
       const blob = await res.json();
