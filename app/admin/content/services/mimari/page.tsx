@@ -394,10 +394,13 @@ export default function MimariEditor() {
 
         {/* CATEGORIES SECTION */}
         <section className="section-card">
-          <div className="section-title" style={{ justifyContent: 'space-between' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-              <ExternalLink size={20} />
-              <h2>Hizmet Alanları (Departmanlar)</h2>
+          <div className="section-title section-title-split">
+            <div className="section-title-copy">
+              <span className="section-eyebrow">MİMARİ STÜDYO</span>
+              <div className="section-title-row">
+                <ExternalLink size={20} />
+                <h2>Hizmet Alanları (Departmanlar)</h2>
+              </div>
             </div>
             <button className="add-area-btn" onClick={() => setIsAddModalOpen(true)}>
               <PlusCircle size={18} />
@@ -502,7 +505,11 @@ export default function MimariEditor() {
         .editor-sections { display: flex; flex-direction: column; gap: 2.5rem; }
         .section-card { background: var(--surface); padding: 2.5rem; border: 1px solid var(--line); }
         .section-title { display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem; }
-        .section-title h2 { font-family: var(--font-display), sans-serif; font-size: 0.85rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--text); }
+        .section-title-split { justify-content: space-between; align-items: flex-end; gap: 2rem; }
+        .section-title-copy { display: flex; flex-direction: column; gap: 0.6rem; min-width: 0; }
+        .section-eyebrow { font-size: 0.62rem; letter-spacing: 0.24em; text-transform: uppercase; color: #a68966; font-weight: 800; }
+        .section-title-row { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
+        .section-title h2 { font-family: var(--font-display), sans-serif; font-size: 1.05rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--text); margin: 0; }
 
         .add-area-btn { background: rgba(166,137,102,0.1); border: 1px solid #a68966; color: #a68966; padding: 0.6rem 1.2rem; display: flex; align-items: center; gap: 0.8rem; font-size: 0.65rem; font-weight: 800; cursor: pointer; transition: 0.3s; }
         .add-area-btn:hover { background: #a68966; color: #000; }
@@ -551,6 +558,10 @@ export default function MimariEditor() {
 
         .loader-wrap { height: 400px; display: flex; align-items: center; justify-content: center; color: #a68966; }
         .hidden { display: none; }
+        @media (max-width: 860px) {
+          .section-title-split { flex-direction: column; align-items: flex-start; }
+          .add-area-btn { width: 100%; justify-content: center; }
+        }
       `}</style>
     </div>
   );
