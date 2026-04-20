@@ -87,7 +87,7 @@ export async function POST(request: Request) {
     }
 
     const now = new Date();
-    const existing = await PageContent.findOne({ page: "mimari" });
+    const existing = await PageContent.collection.findOne({ page: "mimari" });
     const sections = Array.isArray(existing?.sections) && existing.sections.length > 0
       ? JSON.parse(JSON.stringify(existing.sections))
       : createDefaultSections();
@@ -103,21 +103,25 @@ export async function POST(request: Request) {
       categoriesSection.items = items;
     }
 
-    const updated = await PageContent.findOneAndUpdate(
-      { page: "mimari" },
-      {
-        $set: {
-          page: "mimari",
-          sections,
-          "metadata.updatedAt": now,
-          updatedAt: now,
-        },
-        $setOnInsert: {
-          createdAt: now,
-        },
+    const nextDocument = {
+      ...(existing || {}),
+      page: "mimari",
+      sections,
+      metadata: {
+        ...(existing?.metadata || {}),
+        updatedAt: now,
       },
-      { upsert: true, new: true }
-    );
+      updatedAt: now,
+      createdAt: existing?.createdAt || now,
+    };
+
+    if (existing?._id) {
+      await PageContent.collection.replaceOne({ _id: existing._id }, nextDocument, { upsert: true });
+    } else {
+      await PageContent.collection.insertOne(nextDocument);
+    }
+
+    const updated = await PageContent.collection.findOne({ page: "mimari" });
 
     return NextResponse.json(updated, {
       headers: {
