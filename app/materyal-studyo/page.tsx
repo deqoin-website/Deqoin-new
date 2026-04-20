@@ -10,9 +10,7 @@ import WorkflowMarquee from "../../components/WorkflowMarquee";
 import { useWorkflowContent } from "../../components/useWorkflowContent";
 import { materyalKategorileri } from "../../data/materyal-studyo";
 
-const materialCategories = materyalKategorileri.filter((item) =>
-  ["italyan-sivalar", "dekoratif-boyalar", "mikro-cimento"].includes(item.slug)
-);
+const materialCategories = materyalKategorileri;
 
 export default function MateryalStudyo() {
   const [content, setContent] = useState<any>(null);

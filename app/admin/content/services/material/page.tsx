@@ -13,6 +13,7 @@ import {
   PlusCircle,
   X
 } from 'lucide-react';
+import { materyalKategorileri } from "../../../../../data/materyal-studyo";
 
 export default function MaterialEditor() {
   const [content, setContent] = useState<any>(null);
@@ -41,26 +42,7 @@ export default function MaterialEditor() {
       {
         id: 'categories',
         type: 'categories',
-        items: [
-          {
-            title: 'İtalyan Sıvalar',
-            sideLabel: 'High-End Texture',
-            slug: 'italyan-sivalar',
-            image: 'https://images.unsplash.com/photo-1517430816045-df4b7de11d1d?q=80&w=2000&auto=format&fit=crop',
-          },
-          {
-            title: 'Dekoratif Boyalar',
-            sideLabel: 'Paint & Mood',
-            slug: 'dekoratif-boyalar',
-            image: 'https://images.unsplash.com/photo-1523419409543-0c9a1d7b1b2e?q=80&w=2000&auto=format&fit=crop',
-          },
-          {
-            title: 'Mikro Çimento',
-            sideLabel: 'Seamless Surface',
-            slug: 'mikro-cimento',
-            image: 'https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?q=80&w=2000&auto=format&fit=crop',
-          },
-        ],
+        items: materyalKategorileri.map(({ slug, title, sideLabel, image }) => ({ slug, title, sideLabel, image })),
       },
       {
         id: 'cta',
