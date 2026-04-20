@@ -38,7 +38,7 @@ const DEFAULT_MIMARI_CATEGORIES = [
     href: "/mimari/restorasyon",
     title: "Restorasyon",
     sideLabel: "Heritage Revival",
-    image: "/images/workflow/muhendislik-custom.png",
+    image: "/images/workflow/restorasyon-custom.png",
     slug: "restorasyon",
   },
   {

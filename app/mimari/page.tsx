@@ -58,7 +58,7 @@ const mimariSubCategories = [
     href: "/mimari/restorasyon",
     title: "Restorasyon",
     sideLabel: "Heritage Revival",
-    image: "/images/workflow/muhendislik-custom.png",
+    image: "/images/workflow/restorasyon-custom.png",
     blur: 0,
     overlay: 30,
     slug: "restorasyon"
