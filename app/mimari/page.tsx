@@ -132,7 +132,7 @@ export default function MimariPage() {
   }, []);
 
   return (
-    <main className="site-shell project-detail-shell">
+    <main className="site-shell project-detail-shell mimari-vertical-shell">
       {/* ── DYNAMIC BLURRED HERO ── */}
       <HeroSlider 
         slides={slides.map(img => ({
@@ -149,7 +149,7 @@ export default function MimariPage() {
       {/* WORKFLOW SECTION */}
       <WorkflowMarquee steps={workflow.steps} title={workflow.title} />
 
-      <section className="services-section" style={{ background: "transparent", paddingTop: "6rem" }}>
+      <section className="services-section snap-section gallery-snap-point" style={{ background: "transparent", paddingTop: "6rem", minHeight: "100svh" }}>
         
         <div className="services-grid" style={{ gridAutoRows: "72vh" }}>
           {categories.map((card) => (
@@ -178,7 +178,7 @@ export default function MimariPage() {
       </section>
 
       {/* CTA BANNER */}
-      <section className="mimari-cta-banner">
+      <section className="mimari-cta-banner snap-section gallery-snap-point" style={{ minHeight: "100svh" }}>
         <div className="mimari-cta-bg">
           <img src={ctaSection.image} alt="CTA" style={{ filter: `blur(${ctaSection.blur ?? 0}px)` }} />
         </div>

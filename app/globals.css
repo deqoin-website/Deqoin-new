@@ -3538,7 +3538,8 @@ video {
 
 .gallery-vertical-shell,
 .gallery-detail-vertical-shell,
-.studio-vertical-shell {
+.studio-vertical-shell,
+.mimari-vertical-shell {
   height: 100svh;
   overflow-y: auto;
   overflow-x: hidden;
