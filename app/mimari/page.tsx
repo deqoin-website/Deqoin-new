@@ -214,7 +214,7 @@ export default function MimariPage() {
       </section>
 
       {/* CTA BANNER */}
-      <section className="mimari-cta-banner snap-section gallery-snap-point" style={{ minHeight: "100svh" }}>
+      <section className="mimari-cta-banner snap-section gallery-snap-point">
         <div className="mimari-cta-bg">
           <img src={withVersion(ctaSection.image, contentVersion)} alt="CTA" style={{ filter: `blur(${ctaSection.blur ?? 0}px)` }} />
         </div>
