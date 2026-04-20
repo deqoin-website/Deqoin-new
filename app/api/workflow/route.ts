@@ -47,6 +47,29 @@ const DEFAULT_WORKFLOW = {
   ],
 };
 
+function normalizeWorkflow(workflow: any) {
+  const defaultSteps = DEFAULT_WORKFLOW.steps;
+  const steps = Array.isArray(workflow?.steps) ? workflow.steps : [];
+
+  return {
+    key: "home-workflow",
+    title: workflow?.title || DEFAULT_WORKFLOW.title,
+    steps: defaultSteps.map((defaultStep, index) => {
+      const current = steps[index] || {};
+      const image = typeof current.image === "string" && current.image.startsWith("/images/workflow/")
+        ? current.image
+        : defaultStep.image;
+
+      return {
+        id: current.id || defaultStep.id,
+        title: current.title || defaultStep.title,
+        description: current.description || defaultStep.description,
+        image,
+      };
+    }),
+  };
+}
+
 export async function GET() {
   try {
     await connectToDatabase();
@@ -54,6 +77,25 @@ export async function GET() {
 
     if (!workflow) {
       workflow = await WorkflowContent.create(DEFAULT_WORKFLOW);
+    } else {
+      const normalized = normalizeWorkflow(workflow);
+      const hasExternalImages = JSON.stringify(workflow.steps || []).includes("http");
+
+      if (hasExternalImages) {
+        workflow = await WorkflowContent.findOneAndUpdate(
+          { key: "home-workflow" },
+          {
+            ...normalized,
+            metadata: {
+              updatedAt: new Date(),
+              lastUpdatedBy: "system",
+            },
+          },
+          { new: true }
+        );
+      } else {
+        workflow = normalized;
+      }
     }
 
     return NextResponse.json(workflow, {
