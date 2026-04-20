@@ -13,31 +13,31 @@ const DEFAULT_WORKFLOW = {
       id: "01",
       title: "RANDEVU",
       description: "Kusursuz sürecin ilk adımı.",
-      image: "/images/workflow/randevu.svg?v=2",
+      image: "/images/workflow/randevu.svg?v=3",
     },
     {
       id: "02",
       title: "KEŞİF",
       description: "İhtiyaçları ve potansiyeli yerinde okuruz.",
-      image: "/images/workflow/kesif.svg?v=2",
+      image: "/images/workflow/kesif.svg?v=3",
     },
     {
       id: "03",
       title: "TASARIM",
       description: "Vizyonu mimari bir dile dönüştürürüz.",
-      image: "/images/workflow/tasarim.svg?v=2",
+      image: "/images/workflow/tasarim.svg?v=3",
     },
     {
       id: "04",
       title: "MALZEME",
       description: "Doku, kalite ve karakteri seçeriz.",
-      image: "/images/workflow/malzeme.svg?v=2",
+      image: "/images/workflow/malzeme.svg?v=3",
     },
     {
       id: "05",
       title: "UYGULAMA",
       description: "Tasarıyı sahada gerçeğe dönüştürürüz.",
-      image: "/images/workflow/uygulama.svg?v=2",
+      image: "/images/workflow/uygulama.svg?v=3",
     },
   ],
 };
@@ -51,9 +51,10 @@ function normalizeWorkflow(workflow: any) {
     title: workflow?.title || DEFAULT_WORKFLOW.title,
     steps: defaultSteps.map((defaultStep, index) => {
       const current = steps[index] || {};
-      const image = typeof current.image === "string" && current.image.startsWith("/images/workflow/")
-        ? `${current.image.split("?")[0]}?v=2`
-        : defaultStep.image;
+      const image =
+        typeof current.image === "string" && current.image.startsWith("/images/workflow/")
+          ? `${current.image.split("?")[0]}?v=3`
+          : defaultStep.image;
 
       return {
         id: current.id || defaultStep.id,
@@ -70,28 +71,28 @@ export async function GET() {
     await connectToDatabase();
     let workflow = await WorkflowContent.findOne({ key: "home-workflow" });
 
-    if (!workflow) {
-      workflow = await WorkflowContent.create(DEFAULT_WORKFLOW);
-    } else {
-      const normalized = normalizeWorkflow(workflow);
-      const hasNonLocalImages = JSON.stringify(workflow.steps || []).includes("http") ||
-        JSON.stringify(workflow.steps || []).includes("/images/workflow/") === false;
+    const normalized = normalizeWorkflow(workflow || DEFAULT_WORKFLOW);
 
-      if (hasNonLocalImages) {
-        workflow = await WorkflowContent.findOneAndUpdate(
-          { key: "home-workflow" },
-          {
-            ...normalized,
-            metadata: {
-              updatedAt: new Date(),
-              lastUpdatedBy: "system",
-            },
+    if (!workflow) {
+      workflow = await WorkflowContent.create({
+        ...normalized,
+        metadata: {
+          updatedAt: new Date(),
+          lastUpdatedBy: "system",
+        },
+      });
+    } else {
+      workflow = await WorkflowContent.findOneAndUpdate(
+        { key: "home-workflow" },
+        {
+          ...normalized,
+          metadata: {
+            updatedAt: new Date(),
+            lastUpdatedBy: "system",
           },
-          { new: true }
-        );
-      } else {
-        workflow = normalized;
-      }
+        },
+        { new: true }
+      );
     }
 
     return NextResponse.json(workflow, {
@@ -119,7 +120,12 @@ export async function PUT(request: Request) {
       {
         key: "home-workflow",
         title: body.title || "İŞ AKIŞI",
-      steps: body.steps,
+        steps: body.steps.map((step: any) => ({
+          ...step,
+          image: typeof step.image === "string" && step.image.startsWith("/images/workflow/")
+            ? `${step.image.split("?")[0]}?v=3`
+            : step.image,
+        })),
         metadata: {
           updatedAt: now,
           lastUpdatedBy: body.lastUpdatedBy || "admin",
