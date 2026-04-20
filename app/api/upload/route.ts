@@ -3,13 +3,22 @@ import { NextResponse } from 'next/server';
 import sharp from 'sharp';
 
 export const maxDuration = 60; // 1 minute timeout for video uploads
+export const runtime = 'nodejs';
+
+function normalizeFilename(input: string) {
+  return input
+    .normalize('NFKD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/\s+/g, '-')
+    .replace(/[^a-zA-Z0-9.-]/g, '');
+}
 
 export async function POST(request: Request): Promise<NextResponse> {
   const { searchParams } = new URL(request.url);
   const rawFilename = searchParams.get('filename') || 'logo.png';
   
   // Clean filename: remove spaces and special characters
-  const filename = rawFilename.replace(/\s+/g, '-').replace(/[^a-zA-Z0-9.-]/g, '');
+  const filename = normalizeFilename(rawFilename) || 'upload.png';
 
   try {
     const arrayBuffer = await request.arrayBuffer();
@@ -30,15 +39,15 @@ export async function POST(request: Request): Promise<NextResponse> {
       .webp({ quality: 72, effort: 4 })
       .toBuffer();
 
-    const buffer = optimizedBuffer;
-    if (!process.env.BLOB_READ_WRITE_TOKEN) {
+    const token = process.env.BLOB_READ_WRITE_TOKEN || process.env.VERCEL_BLOB_READ_WRITE_TOKEN;
+    if (!token) {
       throw new Error('BLOB_READ_WRITE_TOKEN is missing in .env file');
     }
 
     const safeFilename = `${filename.replace(/\.[^.]+$/, '') || 'upload'}.webp`;
-    const blob = await put(safeFilename, buffer, {
+    const blob = await put(safeFilename, optimizedBuffer, {
       access: 'public',
-      token: process.env.BLOB_READ_WRITE_TOKEN
+      token,
     });
 
     return NextResponse.json({
