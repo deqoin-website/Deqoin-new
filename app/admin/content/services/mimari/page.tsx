@@ -71,6 +71,7 @@ export default function MimariEditor() {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [newService, setNewService] = useState({ title: '', sideLabel: '', slug: '', image: '/images/slider/mimari_slide.png' });
   const [categoryPreviews, setCategoryPreviews] = useState<Record<number, string>>({});
+  const [contentVersion, setContentVersion] = useState<string>("");
 
   useEffect(() => {
     fetchContent();
@@ -91,6 +92,9 @@ export default function MimariEditor() {
     }
 
     const refreshed = await res.json();
+    if (refreshed?.metadata?.updatedAt) {
+      setContentVersion(String(refreshed.metadata.updatedAt));
+    }
     setContent(refreshed);
     setInitialContent(cloneContent(refreshed));
     setIsDirty(false);
@@ -128,6 +132,9 @@ export default function MimariEditor() {
     try {
       const res = await fetch(`/api/content?page=mimari&ts=${Date.now()}`, { cache: 'no-store' });
       const data = await res.json();
+      if (data?.metadata?.updatedAt) {
+        setContentVersion(String(data.metadata.updatedAt));
+      }
       const safeData = data && Array.isArray(data.sections) && data.sections.length > 0
         ? data
         : createDefaultContent();
@@ -160,6 +167,7 @@ export default function MimariEditor() {
       console.error(err);
       showToast("İçerik yüklenemedi.", "error");
       const fallback = createDefaultContent();
+      setContentVersion(String(Date.now()));
       setContent(fallback);
       setInitialContent(cloneContent(fallback));
     } finally {
@@ -484,7 +492,7 @@ export default function MimariEditor() {
               <div key={idx} className="category-item-card">
                 <div className="cat-image-column">
                   <div className="cat-image" onClick={() => openCategoryImagePicker(idx)}>
-                    <img src={categoryPreviews[idx] || item.image} alt={item.title} />
+                    <img src={(categoryPreviews[idx] || item.image) + (contentVersion ? `?v=${encodeURIComponent(contentVersion)}` : "")} alt={item.title} />
                     <div className="cat-overlay"><Upload size={16} /></div>
                     <input id={`cat-up-${idx}`} type="file" className="hidden" accept="image/*" onChange={e => handleImageUpload(e, 'categories', idx, true)} />
                   </div>

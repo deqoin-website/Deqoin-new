@@ -79,6 +79,7 @@ export default function MimariPage() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [slides, setSlides] = useState(heroSlides);
   const [categories, setCategories] = useState(mimariSubCategories);
+  const [contentVersion, setContentVersion] = useState<string>("");
   const [pageInfo, setPageInfo] = useState({ title: 'DESIGN STUDIO', subtitle: 'MİMARİ TASARIMIN GELECEĞİNİ ŞEKİLLENDİRİYORUZ' });
   const [heroVisual, setHeroVisual] = useState({ blur: 2, overlay: 30 });
   const [ctaSection, setCtaSection] = useState({
@@ -93,6 +94,9 @@ export default function MimariPage() {
       try {
         const res = await fetch(`/api/content?page=mimari&ts=${Date.now()}`, { cache: 'no-store' });
         const data = await res.json();
+        if (data?.metadata?.updatedAt) {
+          setContentVersion(String(data.metadata.updatedAt));
+        }
         if (data.sections) {
           const hero = data.sections.find((s: any) => s.id === 'hero');
           const cats = data.sections.find((s: any) => s.id === 'categories');
@@ -154,13 +158,13 @@ export default function MimariPage() {
         
         <div className="services-grid" style={{ gridAutoRows: "72vh" }}>
           {categories.map((card) => (
-            <Link
+          <Link
               key={card.title}
               href={card.href || `/mimari/${card.slug}`}
               className="service-card"
               style={{ minHeight: "72vh" }}
             >
-              <img src={card.image} alt={card.title} style={{ filter: `blur(${card.blur || 0}px)` }} />
+              <img src={contentVersion ? `${card.image}?v=${encodeURIComponent(contentVersion)}` : card.image} alt={card.title} style={{ filter: `blur(${card.blur || 0}px)` }} />
               <div className="service-overlay" style={{ background: `rgba(0,0,0,${(card.overlay ?? 30) / 100})` }} />
               <div className="service-copy">
                 <div>
@@ -181,7 +185,7 @@ export default function MimariPage() {
       {/* CTA BANNER */}
       <section className="mimari-cta-banner snap-section gallery-snap-point" style={{ minHeight: "100svh" }}>
         <div className="mimari-cta-bg">
-          <img src={ctaSection.image} alt="CTA" style={{ filter: `blur(${ctaSection.blur ?? 0}px)` }} />
+          <img src={contentVersion ? `${ctaSection.image}?v=${encodeURIComponent(contentVersion)}` : ctaSection.image} alt="CTA" style={{ filter: `blur(${ctaSection.blur ?? 0}px)` }} />
         </div>
         <div className="mimari-cta-overlay" style={{ background: `rgba(0,0,0,${(ctaSection.overlay ?? 30) / 100})` }} />
         <div className="mimari-cta-content">
