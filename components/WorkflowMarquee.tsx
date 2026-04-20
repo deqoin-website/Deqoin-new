@@ -52,6 +52,7 @@ export default function WorkflowMarquee({
 }: WorkflowMarqueeProps) {
   const repeatedSteps = React.useMemo(() => [...steps, ...steps], [steps]);
   const duration = Math.max(18, speed);
+  const [isPaused, setIsPaused] = React.useState(false);
   const animationName = direction === "left" ? "workflow-marquee-left" : "workflow-marquee-right";
 
   return (
@@ -64,8 +65,22 @@ export default function WorkflowMarquee({
           <div className="w-12 h-[1px] bg-white/50 mx-auto mt-4" />
         </div>
 
-        <div className="relative">
-          <div className="workflow-marquee-track flex gap-6 w-max px-4 hover:[animation-play-state:paused]">
+        <div className="relative overflow-hidden">
+          <div
+            className="workflow-marquee-track flex gap-6 w-max px-4"
+            onMouseEnter={() => setIsPaused(true)}
+            onMouseLeave={() => setIsPaused(false)}
+            style={
+              {
+                animationName,
+                animationDuration: `${duration}s`,
+                animationTimingFunction: "linear",
+                animationIterationCount: "infinite",
+                animationPlayState: isPaused ? "paused" : "running",
+                willChange: "transform",
+              } as React.CSSProperties
+            }
+          >
             {repeatedSteps.map((step, index) => (
               <article
                 key={`${step.id}-${index}`}
@@ -92,14 +107,6 @@ export default function WorkflowMarquee({
       <style jsx global>{`
         .workflow-marquee-track:hover {
           animation-play-state: paused !important;
-        }
-
-        .workflow-marquee-track {
-          animation-duration: ${duration}s;
-          animation-timing-function: linear;
-          animation-iteration-count: infinite;
-          animation-name: ${animationName};
-          will-change: transform;
         }
 
         @keyframes workflow-marquee-left {
