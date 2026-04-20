@@ -1,6 +1,7 @@
 import { put } from '@vercel/blob';
 import { NextResponse } from 'next/server';
 import path from 'path';
+import sharp from 'sharp';
 
 export const maxDuration = 60; // 1 minute timeout for video uploads
 
@@ -13,26 +14,31 @@ export async function POST(request: Request): Promise<NextResponse> {
 
   try {
     const arrayBuffer = await request.arrayBuffer();
-    const buffer = Buffer.from(arrayBuffer);
+    const inputBuffer = Buffer.from(arrayBuffer);
 
-    if (!buffer.length) {
+    if (!inputBuffer.length) {
       throw new Error('Empty upload payload');
     }
 
+    const optimizedBuffer = await sharp(inputBuffer)
+      .rotate()
+      .resize({
+        width: 1400,
+        height: 1800,
+        fit: 'inside',
+        withoutEnlargement: true,
+      })
+      .webp({ quality: 72, effort: 4 })
+      .toBuffer();
+
+    const buffer = optimizedBuffer;
     const ext = path.extname(filename).toLowerCase();
-    const mimeType =
-      ext === '.jpg' || ext === '.jpeg'
-        ? 'image/jpeg'
-        : ext === '.webp'
-          ? 'image/webp'
-          : ext === '.gif'
-            ? 'image/gif'
-            : 'image/png';
-    const dataUrl = `data:${mimeType};base64,${buffer.toString('base64')}`;
+    const dataUrl = `data:image/webp;base64,${buffer.toString('base64')}`;
 
     try {
       if (process.env.BLOB_READ_WRITE_TOKEN) {
-        const blob = await put(filename, buffer, {
+        const safeFilename = `${filename.replace(/\.[^.]+$/, '') || 'upload'}.webp`;
+        const blob = await put(safeFilename, buffer, {
           access: 'public',
           token: process.env.BLOB_READ_WRITE_TOKEN
         });
