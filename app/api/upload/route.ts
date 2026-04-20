@@ -21,9 +21,7 @@ export async function POST(request: Request): Promise<NextResponse> {
 
   try {
     const mimeType = request.headers.get('content-type') || '';
-    const token = process.env.BLOB_READ_WRITE_TOKEN || process.env.VERCEL_BLOB_READ_WRITE_TOKEN;
-
-    console.log('UPLOAD START', { rawFilename, filename, mimeType, hasToken: Boolean(token) });
+    console.log('UPLOAD START', { rawFilename, filename, mimeType, hasBody: Boolean(request.body) });
     if (!request.body) {
       throw new Error('Empty upload payload');
     }
@@ -37,26 +35,8 @@ export async function POST(request: Request): Promise<NextResponse> {
             : 'bin';
     const safeFilename = `${filename.replace(/\.[^.]+$/, '') || 'upload'}.${extension}`;
 
-    if (!token) {
-      return NextResponse.json(
-        {
-          error: 'Upload failed',
-          details: 'BLOB token is missing in production env',
-          step: 'blob-token',
-          debug: {
-            rawFilename,
-            filename,
-            mimeType,
-            hasToken: false,
-          },
-        },
-        { status: 500 }
-      );
-    }
-
     const blob = await put(safeFilename, request.body, {
       access: 'public',
-      token,
       addRandomSuffix: true,
       contentType: mimeType || undefined,
     });
@@ -67,7 +47,7 @@ export async function POST(request: Request): Promise<NextResponse> {
       debug: {
         safeFilename,
         mimeType,
-        hasToken: true,
+        hasBody: true,
       },
     });
   } catch (error: any) {
@@ -76,7 +56,7 @@ export async function POST(request: Request): Promise<NextResponse> {
       { 
         error: 'Upload failed', 
         details: error?.message || String(error),
-        step: error?.message?.includes('token') ? 'blob-token' : error?.message?.includes('Empty upload payload') ? 'empty-payload' : 'transform-or-blob',
+        step: error?.message?.includes('Empty upload payload') ? 'empty-payload' : 'blob-upload',
         hint: 'Kendi terminalinizde (npm run dev ekranında) SERVER SIDE ERROR araması yapın.' 
       },
       { status: 500 }
