@@ -13,36 +13,31 @@ const DEFAULT_WORKFLOW = {
       id: "01",
       title: "RANDEVU",
       description: "Kusursuz sürecin ilk adımı.",
-      image:
-        "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=1200&q=80",
+      image: "/images/workflow/randevu.svg?v=2",
     },
     {
       id: "02",
       title: "KEŞİF",
       description: "İhtiyaçları ve potansiyeli yerinde okuruz.",
-      image:
-        "https://images.unsplash.com/photo-1484154218962-a197022b5858?auto=format&fit=crop&w=1200&q=80",
+      image: "/images/workflow/kesif.svg?v=2",
     },
     {
       id: "03",
       title: "TASARIM",
       description: "Vizyonu mimari bir dile dönüştürürüz.",
-      image:
-        "https://images.unsplash.com/photo-1494526585095-c41746248156?auto=format&fit=crop&w=1200&q=80",
+      image: "/images/workflow/tasarim.svg?v=2",
     },
     {
       id: "04",
       title: "MALZEME",
       description: "Doku, kalite ve karakteri seçeriz.",
-      image:
-        "https://images.unsplash.com/photo-1489515217757-5fd1be406fef?auto=format&fit=crop&w=1200&q=80",
+      image: "/images/workflow/malzeme.svg?v=2",
     },
     {
       id: "05",
       title: "UYGULAMA",
       description: "Tasarıyı sahada gerçeğe dönüştürürüz.",
-      image:
-        "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=1200&q=80",
+      image: "/images/workflow/uygulama.svg?v=2",
     },
   ],
 };
@@ -57,7 +52,7 @@ function normalizeWorkflow(workflow: any) {
     steps: defaultSteps.map((defaultStep, index) => {
       const current = steps[index] || {};
       const image = typeof current.image === "string" && current.image.startsWith("/images/workflow/")
-        ? current.image
+        ? `${current.image.split("?")[0]}?v=2`
         : defaultStep.image;
 
       return {
@@ -79,9 +74,10 @@ export async function GET() {
       workflow = await WorkflowContent.create(DEFAULT_WORKFLOW);
     } else {
       const normalized = normalizeWorkflow(workflow);
-      const hasExternalImages = JSON.stringify(workflow.steps || []).includes("http");
+      const hasNonLocalImages = JSON.stringify(workflow.steps || []).includes("http") ||
+        JSON.stringify(workflow.steps || []).includes("/images/workflow/") === false;
 
-      if (hasExternalImages) {
+      if (hasNonLocalImages) {
         workflow = await WorkflowContent.findOneAndUpdate(
           { key: "home-workflow" },
           {
@@ -123,7 +119,7 @@ export async function PUT(request: Request) {
       {
         key: "home-workflow",
         title: body.title || "İŞ AKIŞI",
-        steps: body.steps,
+      steps: body.steps,
         metadata: {
           updatedAt: now,
           lastUpdatedBy: body.lastUpdatedBy || "admin",
