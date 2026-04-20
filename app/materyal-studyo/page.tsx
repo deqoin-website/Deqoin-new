@@ -92,9 +92,14 @@ export default function MateryalStudyo() {
 
           </div>
 
-          <div className="services-grid material-studio-grid">
+          <div className="services-grid material-studio-grid" style={{ gridAutoRows: "72vh" }}>
             {materialCategories.map((card) => (
-              <Link key={card.slug} href={`/materyal-studyo/${card.slug}`} className="service-card">
+              <Link
+                key={card.slug}
+                href={`/materyal-studyo/${card.slug}`}
+                className="service-card"
+                style={{ minHeight: "72vh" }}
+              >
                 <img src={card.image} alt={card.title} />
                 <div className="service-overlay" />
                 <div className="service-copy">
