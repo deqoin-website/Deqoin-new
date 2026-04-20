@@ -1,6 +1,5 @@
 import { put } from '@vercel/blob';
 import { NextResponse } from 'next/server';
-import path from 'path';
 import sharp from 'sharp';
 
 export const maxDuration = 60; // 1 minute timeout for video uploads
@@ -32,31 +31,19 @@ export async function POST(request: Request): Promise<NextResponse> {
       .toBuffer();
 
     const buffer = optimizedBuffer;
-    const ext = path.extname(filename).toLowerCase();
-    const dataUrl = `data:image/webp;base64,${buffer.toString('base64')}`;
-
-    try {
-      if (process.env.BLOB_READ_WRITE_TOKEN) {
-        const safeFilename = `${filename.replace(/\.[^.]+$/, '') || 'upload'}.webp`;
-        const blob = await put(safeFilename, buffer, {
-          access: 'public',
-          token: process.env.BLOB_READ_WRITE_TOKEN
-        });
-
-        return NextResponse.json({
-          ...blob,
-          fallback: 'blob',
-        });
-      }
-    } catch (blobError: any) {
-      console.warn('Blob upload failed, falling back to data URL:', blobError?.message || blobError);
+    if (!process.env.BLOB_READ_WRITE_TOKEN) {
+      throw new Error('BLOB_READ_WRITE_TOKEN is missing in .env file');
     }
 
+    const safeFilename = `${filename.replace(/\.[^.]+$/, '') || 'upload'}.webp`;
+    const blob = await put(safeFilename, buffer, {
+      access: 'public',
+      token: process.env.BLOB_READ_WRITE_TOKEN
+    });
+
     return NextResponse.json({
-      url: dataUrl,
-      pathname: dataUrl,
-      downloadUrl: dataUrl,
-      fallback: 'data-url',
+      ...blob,
+      fallback: 'blob',
     });
   } catch (error: any) {
     console.error('SERVER SIDE ERROR:', error.message);
