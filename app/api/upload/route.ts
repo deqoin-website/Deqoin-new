@@ -28,24 +28,39 @@ export async function POST(request: Request): Promise<NextResponse> {
       throw new Error('Empty upload payload');
     }
 
-    const optimizedBuffer = await sharp(inputBuffer)
-      .rotate()
-      .resize({
-        width: 1400,
-        height: 1800,
-        fit: 'inside',
-        withoutEnlargement: true,
-      })
-      .webp({ quality: 72, effort: 4 })
-      .toBuffer();
+    let uploadBuffer: Buffer = inputBuffer;
+    let safeFilename = `${filename.replace(/\.[^.]+$/, '') || 'upload'}.webp`;
+    try {
+      uploadBuffer = await sharp(inputBuffer)
+        .rotate()
+        .resize({
+          width: 1400,
+          height: 1800,
+          fit: 'inside',
+          withoutEnlargement: true,
+        })
+        .webp({ quality: 72, effort: 4 })
+        .toBuffer();
+    } catch (sharpError) {
+      console.error('SHARP OPTIMIZATION FAILED:', sharpError instanceof Error ? sharpError.message : String(sharpError));
+      const mimeType = request.headers.get('content-type') || '';
+      const extension = mimeType.includes('png')
+        ? 'png'
+        : mimeType.includes('webp')
+          ? 'webp'
+          : mimeType.includes('jpeg') || mimeType.includes('jpg')
+            ? 'jpg'
+            : 'bin';
+      safeFilename = `${filename.replace(/\.[^.]+$/, '') || 'upload'}.${extension}`;
+      uploadBuffer = inputBuffer;
+    }
 
     const token = process.env.BLOB_READ_WRITE_TOKEN || process.env.VERCEL_BLOB_READ_WRITE_TOKEN;
     if (!token) {
       throw new Error('BLOB_READ_WRITE_TOKEN is missing in .env file');
     }
 
-    const safeFilename = `${filename.replace(/\.[^.]+$/, '') || 'upload'}.webp`;
-    const blob = await put(safeFilename, optimizedBuffer, {
+    const blob = await put(safeFilename, uploadBuffer, {
       access: 'public',
       token,
     });
