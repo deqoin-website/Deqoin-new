@@ -5,12 +5,30 @@ import { Loader2, Save, Plus, Trash2, Image as ImageIcon } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { AdminSaveBar } from '@/components/admin/AdminSaveBar';
 import { useNotification } from '@/components/admin/AdminNotificationProvider';
+import { WORKFLOW_STEPS } from '@/data/workflows';
 
 type WorkflowStep = {
   id: string;
   title: string;
   description: string;
   image: string;
+  backText?: string;
+};
+
+type WorkflowContentState = {
+  title: string;
+  steps: WorkflowStep[];
+};
+
+const DEFAULT_WORKFLOW: WorkflowContentState = {
+  title: 'İŞ AKIŞI',
+  steps: WORKFLOW_STEPS.map((step) => ({
+    id: step.id,
+    title: step.title,
+    description: step.description,
+    image: step.image,
+    backText: step.backText,
+  })),
 };
 
 export default function WorkflowAdminPage() {
@@ -18,29 +36,39 @@ export default function WorkflowAdminPage() {
   const [loading, setLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [isDirty, setIsDirty] = useState(false);
-  const [initialData, setInitialData] = useState<{ title: string; steps: WorkflowStep[] } | null>(null);
-  const [data, setData] = useState<{ title: string; steps: WorkflowStep[] }>({
-    title: 'İŞ AKIŞI',
-    steps: [],
-  });
+  const [error, setError] = useState<string | null>(null);
+  const [initialData, setInitialData] = useState<WorkflowContentState | null>(null);
+  const [data, setData] = useState<WorkflowContentState>(DEFAULT_WORKFLOW);
 
   useEffect(() => {
     void fetchWorkflow();
   }, []);
 
   const fetchWorkflow = async () => {
+    setError(null);
     try {
       const res = await fetch('/api/workflow', { cache: 'no-store' });
       if (!res.ok) throw new Error('Workflow içerikleri alınamadı');
       const json = await res.json();
       const formatted = {
         title: json.title || 'İŞ AKIŞI',
-        steps: Array.isArray(json.steps) ? json.steps : [],
+        steps: Array.isArray(json.steps) && json.steps.length > 0
+          ? json.steps.map((step: any, index: number) => ({
+              id: step?.id || DEFAULT_WORKFLOW.steps[index]?.id || String(index + 1).padStart(2, '0'),
+              title: step?.title || DEFAULT_WORKFLOW.steps[index]?.title || '',
+              description: step?.description || DEFAULT_WORKFLOW.steps[index]?.description || '',
+              image: step?.image || DEFAULT_WORKFLOW.steps[index]?.image || '',
+              backText: step?.backText || DEFAULT_WORKFLOW.steps[index]?.backText,
+            }))
+          : DEFAULT_WORKFLOW.steps,
       };
       setData(formatted);
       setInitialData(JSON.parse(JSON.stringify(formatted)));
     } catch (error) {
       console.error(error);
+      setError('Workflow içerikleri yüklenemedi. Varsayılan içerik gösteriliyor.');
+      setData(DEFAULT_WORKFLOW);
+      setInitialData(JSON.parse(JSON.stringify(DEFAULT_WORKFLOW)));
       showToast('Workflow içerikleri yüklenemedi.', 'error');
     } finally {
       setLoading(false);
@@ -59,12 +87,13 @@ export default function WorkflowAdminPage() {
       const json = await res.json();
       const formatted = {
         title: json.title || 'İŞ AKIŞI',
-        steps: Array.isArray(json.steps) ? json.steps : [],
+        steps: Array.isArray(json.steps) && json.steps.length > 0 ? json.steps : DEFAULT_WORKFLOW.steps,
       };
       setData(formatted);
       setInitialData(JSON.parse(JSON.stringify(formatted)));
       setIsDirty(false);
       showToast('Workflow başarıyla güncellendi.', 'success');
+      await fetchWorkflow();
     } catch (error) {
       console.error(error);
       showToast('Workflow kaydedilemedi.', 'error');
@@ -85,7 +114,7 @@ export default function WorkflowAdminPage() {
       ...prev,
       steps: [
         ...prev.steps,
-        { id: String(prev.steps.length + 1).padStart(2, '0'), title: '', description: '', image: '' },
+        { id: String(prev.steps.length + 1).padStart(2, '0'), title: '', description: '', image: '', backText: '' },
       ],
     }));
     setIsDirty(true);
@@ -145,6 +174,12 @@ export default function WorkflowAdminPage() {
       <AdminSaveBar isVisible={isDirty} onSave={handleSave} onCancel={handleCancel} isSaving={isSaving} />
 
       <div className="tab-content admin-card">
+        {error && (
+          <div className="workflow-error-banner">
+            <span>{error}</span>
+            <button type="button" onClick={() => void fetchWorkflow()}>Yeniden Dene</button>
+          </div>
+        )}
         <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="panel">
           <div className="panel-header-inline">
             <h3>Workflow Adımları</h3>
@@ -203,6 +238,14 @@ export default function WorkflowAdminPage() {
                         onChange={e => updateStep(i, 'image', e.target.value)}
                       />
                     </div>
+                    <div className="form-group border-none">
+                      <textarea
+                        rows={2}
+                        placeholder="Arka yüz mesajı (opsiyonel)"
+                        value={step.backText || ''}
+                        onChange={e => updateStep(i, 'backText' as keyof WorkflowStep, e.target.value)}
+                      />
+                    </div>
                   </div>
                   <button className="delete-step-btn" onClick={() => removeStep(i)}>
                     <Trash2 size={18} />
@@ -238,6 +281,8 @@ export default function WorkflowAdminPage() {
         .title-input-large { font-size: 1.1rem !important; font-weight: 600; color: #a68966 !important; }
         .delete-step-btn { background: rgba(255,77,77,0.05); color: #ff4d4d; border: 1px solid rgba(255,77,77,0.1); width: 44px; height: 44px; border-radius: 8px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.3s; flex-shrink: 0; }
         .delete-step-btn:hover { background: #ff4d4d; color: #fff; }
+        .workflow-error-banner { display: flex; justify-content: space-between; align-items: center; gap: 1rem; margin-bottom: 1rem; padding: 1rem 1.25rem; border: 1px solid rgba(166,137,102,0.25); border-radius: 12px; background: rgba(166,137,102,0.08); color: var(--text); }
+        .workflow-error-banner button { background: transparent; border: 1px solid rgba(166,137,102,0.3); color: #a68966; border-radius: 999px; padding: 0.55rem 0.9rem; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.08em; cursor: pointer; }
         .loader-wrap { height: 60vh; display: flex; align-items: center; justify-content: center; }
         .hidden { display: none; }
         @media (max-width: 800px) {
