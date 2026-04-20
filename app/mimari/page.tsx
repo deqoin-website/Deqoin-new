@@ -151,9 +151,14 @@ export default function MimariPage() {
 
       <section className="services-section" style={{ background: "transparent", paddingTop: "6rem" }}>
         
-        <div className="services-grid">
+        <div className="services-grid" style={{ gridAutoRows: "72vh" }}>
           {categories.map((card) => (
-            <Link key={card.title} href={card.href || `/mimari/${card.slug}`} className="service-card">
+            <Link
+              key={card.title}
+              href={card.href || `/mimari/${card.slug}`}
+              className="service-card"
+              style={{ minHeight: "72vh" }}
+            >
               <img src={card.image} alt={card.title} style={{ filter: `blur(${card.blur || 0}px)` }} />
               <div className="service-overlay" style={{ background: `rgba(0,0,0,${(card.overlay ?? 30) / 100})` }} />
               <div className="service-copy">
