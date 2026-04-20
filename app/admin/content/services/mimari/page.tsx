@@ -61,6 +61,12 @@ const DEFAULT_MIMARI_CATEGORIES = [
   },
 ];
 
+function withVersion(url?: string, version?: string) {
+  if (!url) return "";
+  if (!version) return url;
+  return `${url}${url.includes("?") ? "&" : "?"}v=${encodeURIComponent(version)}`;
+}
+
 export default function MimariEditor() {
   const { showToast, confirm: premiumConfirm } = useNotification();
   const [content, setContent] = useState<any>(null);
@@ -513,7 +519,11 @@ export default function MimariEditor() {
               <div key={idx} className="category-item-card">
                 <div className="cat-image-column">
                   <div className="cat-image" onClick={() => openCategoryImagePicker(idx)}>
-                    <img src={(categoryPreviews[idx] || item.image) + (contentVersion ? `?v=${encodeURIComponent(contentVersion)}` : "")} alt={item.title} />
+                    {categoryPreviews[idx] || item.image ? (
+                      <img src={withVersion(categoryPreviews[idx] || item.image, contentVersion)} alt={item.title} />
+                    ) : (
+                      <div className="cat-image-empty">Gorsel Yok</div>
+                    )}
                     <div className="cat-overlay"><Upload size={16} /></div>
                     <input id={`cat-up-${idx}`} type="file" className="hidden" accept="image/*" onChange={e => handleImageUpload(e, 'categories', idx, true)} />
                   </div>
@@ -648,6 +658,7 @@ export default function MimariEditor() {
         .cat-image-column { width: 180px; display: flex; flex-direction: column; gap: 0.6rem; flex-shrink: 0; }
         .cat-image { width: 100%; aspect-ratio: 1; position: relative; cursor: pointer; border: 1px solid rgba(255,255,255,0.1); overflow: hidden; background: #111; }
         .cat-image img { width: 100%; height: 100%; object-fit: cover; }
+        .cat-image-empty { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: rgba(255,255,255,0.45); font-size: 0.75rem; letter-spacing: 0.18em; text-transform: uppercase; }
         .cat-overlay { position: absolute; inset: 0; background: rgba(166,137,102,0.8); display: flex; align-items: center; justify-content: center; opacity: 0; transition: 0.3s; color: #000; }
         .cat-image:hover .cat-overlay { opacity: 1; }
         .cat-image-btn { width: 100%; display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; background: rgba(166,137,102,0.1); border: 1px solid rgba(166,137,102,0.35); color: #a68966; padding: 0.65rem 0.8rem; font-size: 0.62rem; font-weight: 800; letter-spacing: 0.14em; cursor: pointer; transition: 0.25s ease; }

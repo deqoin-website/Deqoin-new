@@ -74,6 +74,12 @@ const mimariSubCategories = [
   },
 ];
 
+function withVersion(url?: string, version?: string) {
+  if (!url) return "";
+  if (!version) return url;
+  return `${url}${url.includes("?") ? "&" : "?"}v=${encodeURIComponent(version)}`;
+}
+
 export default function MimariPage() {
   const [isConsultationOpen, setIsConsultationOpen] = useState(false);
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -164,7 +170,7 @@ export default function MimariPage() {
               className="service-card"
               style={{ minHeight: "72vh" }}
             >
-              <img src={contentVersion ? `${card.image}?v=${encodeURIComponent(contentVersion)}` : card.image} alt={card.title} style={{ filter: `blur(${card.blur || 0}px)` }} />
+              <img src={withVersion(card.image, contentVersion)} alt={card.title} style={{ filter: `blur(${card.blur || 0}px)` }} />
               <div className="service-overlay" style={{ background: `rgba(0,0,0,${(card.overlay ?? 30) / 100})` }} />
               <div className="service-copy">
                 <div>
@@ -185,7 +191,7 @@ export default function MimariPage() {
       {/* CTA BANNER */}
       <section className="mimari-cta-banner snap-section gallery-snap-point" style={{ minHeight: "100svh" }}>
         <div className="mimari-cta-bg">
-          <img src={contentVersion ? `${ctaSection.image}?v=${encodeURIComponent(contentVersion)}` : ctaSection.image} alt="CTA" style={{ filter: `blur(${ctaSection.blur ?? 0}px)` }} />
+          <img src={withVersion(ctaSection.image, contentVersion)} alt="CTA" style={{ filter: `blur(${ctaSection.blur ?? 0}px)` }} />
         </div>
         <div className="mimari-cta-overlay" style={{ background: `rgba(0,0,0,${(ctaSection.overlay ?? 30) / 100})` }} />
         <div className="mimari-cta-content">
