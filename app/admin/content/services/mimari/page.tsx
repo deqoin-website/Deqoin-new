@@ -214,8 +214,11 @@ export default function MimariEditor() {
         section.slides.push(uploadedUrl);
       }
       setContent(newContent);
-      await persistContent(newContent);
-      await fetchContent();
+      const saved = await persistContent(newContent);
+      if (saved) {
+        setContent(saved);
+        setInitialContent(cloneContent(saved));
+      }
       showToast("Görsel yüklendi ve kaydedildi.", "success");
     } catch (err) {
       showToast("Görsel yüklenemedi.", "error");
@@ -263,8 +266,11 @@ export default function MimariEditor() {
   const saveContent = async () => {
     setIsSaving(true);
     try {
-      await persistContent(content);
-      await fetchContent();
+      const saved = await persistContent(content);
+      if (saved) {
+        setContent(saved);
+        setInitialContent(cloneContent(saved));
+      }
       showToast("Değişiklikler başarıyla kaydedildi!", "success");
     } catch (err) {
       showToast("Bağlantı hatası.", "error");
@@ -297,8 +303,11 @@ export default function MimariEditor() {
     categorySection.items[index].image = value;
     setCategoryPreviews(prev => ({ ...prev, [index]: value }));
     setContent(nextContent);
-    await persistContent(nextContent);
-    await fetchContent();
+    const saved = await persistContent(nextContent);
+    if (saved) {
+      setContent(saved);
+      setInitialContent(cloneContent(saved));
+    }
     showToast("Kart görseli güncellendi.", "success");
   };
 
