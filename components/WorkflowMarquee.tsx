@@ -86,6 +86,40 @@ export default function WorkflowMarquee({
     }
   };
 
+  const getBackTag = (step: WorkflowStep) => {
+    switch (step.id) {
+      case "01":
+        return "Discovery";
+      case "02":
+        return "Site Reading";
+      case "03":
+        return "Concept";
+      case "04":
+        return "Selection";
+      case "05":
+        return "Delivery";
+      default:
+        return "Workflow";
+    }
+  };
+
+  const getBackKicker = (step: WorkflowStep) => {
+    switch (step.id) {
+      case "01":
+        return "Initial briefing";
+      case "02":
+        return "Spatial analysis";
+      case "03":
+        return "Design direction";
+      case "04":
+        return "Material curation";
+      case "05":
+        return "On-site execution";
+      default:
+        return "Project phase";
+    }
+  };
+
   return (
     <section
       className={className}
@@ -269,10 +303,11 @@ export default function WorkflowMarquee({
                       backfaceVisibility: "hidden",
                       WebkitBackfaceVisibility: "hidden",
                       overflow: "hidden",
-                      backgroundColor: "#111111",
-                      border: "1px solid rgba(255,255,255,0.1)",
+                      background:
+                        "linear-gradient(180deg, rgba(18,18,18,0.98) 0%, rgba(8,8,8,0.98) 100%)",
+                      border: "1px solid rgba(255,255,255,0.08)",
                       display: "flex",
-                      alignItems: "flex-end",
+                      alignItems: "stretch",
                     }}
                   >
                     <div
@@ -280,53 +315,102 @@ export default function WorkflowMarquee({
                         width: "100%",
                         padding: "2rem",
                         boxSizing: "border-box",
+                        minHeight: "100%",
+                        display: "flex",
+                        flexDirection: "column",
+                        justifyContent: "space-between",
+                        gap: "1rem",
                       }}
                     >
-                      <span
-                        style={{
-                          display: "block",
-                          fontSize: "0.75rem",
-                          letterSpacing: "0.45em",
-                          textTransform: "uppercase",
-                          color: "rgba(255,255,255,0.45)",
-                          marginBottom: "1rem",
-                        }}
-                      >
-                        Detay
-                      </span>
-                      <h4
-                        style={{
-                          fontSize: "1.4rem",
-                          fontWeight: 500,
-                          letterSpacing: "0.06em",
-                          margin: 0,
-                          marginBottom: "0.75rem",
-                          textTransform: "uppercase",
-                        }}
-                      >
-                        {step.title}
-                      </h4>
-                      <p
-                        style={{
-                          fontSize: "0.95rem",
-                          lineHeight: 1.8,
-                          color: "#d4d4d8",
-                          margin: 0,
-                          maxWidth: "28ch",
-                        }}
-                      >
-                        {getBackCopy(step)}
-                      </p>
+                      <div>
+                        <span
+                          style={{
+                            display: "block",
+                            fontFamily: "var(--font-smooch), sans-serif",
+                            fontSize: "clamp(2rem, 4vw, 3.2rem)",
+                            lineHeight: 1,
+                            fontWeight: 100,
+                            letterSpacing: "0.14em",
+                            textTransform: "uppercase",
+                            color: "rgba(255,255,255,0.94)",
+                            marginBottom: "0.75rem",
+                          }}
+                        >
+                          {step.title}
+                        </span>
+                        <div
+                          style={{
+                            width: "4rem",
+                            height: "1px",
+                            backgroundColor: "rgba(255,255,255,0.24)",
+                          }}
+                        />
+                      </div>
+
+                      <div>
+                        <span
+                          style={{
+                            display: "block",
+                            fontFamily: "var(--font-smooch), sans-serif",
+                            fontSize: "clamp(4.5rem, 9vw, 6.75rem)",
+                            lineHeight: 0.9,
+                            fontWeight: 100,
+                            color: "rgba(255,255,255,0.08)",
+                            marginBottom: "0.75rem",
+                            textTransform: "uppercase",
+                          }}
+                        >
+                          {step.id}
+                        </span>
+
+                        <div
+                          style={{
+                            display: "inline-flex",
+                            alignItems: "center",
+                            gap: "0.5rem",
+                            marginBottom: "1rem",
+                            color: "#cca883",
+                            textTransform: "uppercase",
+                            letterSpacing: "0.25em",
+                            fontSize: "0.65rem",
+                            fontWeight: 700,
+                          }}
+                        >
+                          <span
+                            style={{
+                              width: "0.45rem",
+                              height: "0.45rem",
+                              borderRadius: "999px",
+                              backgroundColor: "#cca883",
+                            }}
+                          />
+                          {getBackTag(step)}
+                        </div>
+
+                        <p
+                          style={{
+                            fontFamily: "var(--font-display), sans-serif",
+                            fontSize: "0.92rem",
+                            lineHeight: 1.85,
+                            color: "#e7e1d9",
+                            margin: 0,
+                            maxWidth: "28ch",
+                          }}
+                        >
+                          {getBackCopy(step)}
+                        </p>
+                      </div>
+
                       <div
                         style={{
-                          marginTop: "1.25rem",
-                          fontSize: "0.72rem",
+                          fontFamily: "var(--font-display), sans-serif",
+                          fontSize: "0.68rem",
                           letterSpacing: "0.35em",
                           textTransform: "uppercase",
-                          color: "#a68966",
+                          color: "rgba(255,255,255,0.48)",
                         }}
                       >
-                        Tıklayın ve inceleyin
+                        {getBackKicker(step)}
                       </div>
                     </div>
                   </div>
