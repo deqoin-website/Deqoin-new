@@ -137,10 +137,12 @@ export default function WorkflowMarquee({
           boxSizing: "border-box",
           position: "relative",
           zIndex: 1,
+          overflow: "visible",
         }}
       >
         <div
           className="flex flex-col gap-12 items-center md:flex-row md:justify-center md:items-stretch md:gap-8 lg:gap-12"
+          style={{ overflow: "visible" }}
         >
           {steps.map((step, index) => {
             const staggerClass =
@@ -152,11 +154,12 @@ export default function WorkflowMarquee({
               <Link
                 key={step.id}
                 href={step.href || "/iletisim"}
-                className={`group relative block w-[85%] md:w-[400px] h-[500px] md:h-[600px] overflow-hidden bg-[#1c1b1b] border border-white/10 shadow-[0_0_60px_rgba(198,198,199,0.05)] transition-transform duration-700 ${staggerClass}`}
+                className={`group relative block flex-none w-[85%] md:w-[400px] h-[500px] md:h-[600px] overflow-hidden bg-[#1c1b1b] border border-white/10 shadow-[0_0_60px_rgba(198,198,199,0.05)] transition-transform duration-700 ${staggerClass}`}
                 style={{
                   textDecoration: "none",
                   color: "inherit",
                   minWidth: "0",
+                  flex: "0 0 auto",
                 }}
               >
                 <img
