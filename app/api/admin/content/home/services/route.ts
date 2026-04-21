@@ -9,7 +9,7 @@ const DEFAULT_CARDS = [
     title: 'Design Studio', 
     description: 'Mimari Tasarım', 
     icon: 'PenTool', 
-    image: '/images/slider/mimari_slide.png', 
+    image: 'https://zzawgisa3efgdxnm.public.blob.vercel-storage.com/design-studio-home.png', 
     blur: 0,
     overlay: 30,
     order: 0 

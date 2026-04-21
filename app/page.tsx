@@ -14,7 +14,7 @@ import Footer from "@/components/Footer";
 import { WORKFLOW_STEPS } from "../data/workflows";
 
 const SERVICE_CARD_IMAGE_BY_TYPE: Record<string, string> = {
-  design: "/images/slider/mimari_slide.png",
+  design: "https://zzawgisa3efgdxnm.public.blob.vercel-storage.com/design-studio-home.png",
   material: "/images/slider/tasarim_slide.png",
   execution: "/images/slider/uygulama_slide.png",
 };
@@ -59,7 +59,7 @@ export default function Page() {
       title: "Design Studio",
       subTitle: "Mimari Tasarım",
       sideLabel: "Structural Integrity",
-      image: "https://lh3.googleusercontent.com/aida-public/AB6AXuDbQTBOayjmIt4JzHbORA9-NQOes7Uaoo4WrcuGAAwzEXJzUo0V4OeCDNGGyxzFDBzG1_DbgXDr5aROetwtqZ4iPhEiaV39HyWZ67_PbpZY6a2KYJHEC2_-3JaDiLZ_71qMkfLsbA991AHjCOdDh70fnYJ3lWy-tXN7nbh5DnUk-PZt4xV5nniOugFFMI4ACHWAkPu85H_YU43TPpuqCiveXM-RLOTvgub4LA47ECVZBRKJhuyDW83lyXynnNyLY1ieUH6-gh23YZs",
+      image: SERVICE_CARD_IMAGE_BY_TYPE.design,
     },
     {
       href: "/materyal-studyo",
