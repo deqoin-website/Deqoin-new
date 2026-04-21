@@ -44,9 +44,9 @@ export const uygulamaBirimleri: UygulamaBirimi[] = [
     slug: "siva-ve-alci-ekipleri",
     title: "Sıva ve Alçı",
     sideLabel: "Surface Structuring",
-    image: "https://lh3.googleusercontent.com/aida-public/AB6AXuDQ33Fr_mp_94UQUZyYOcRBRBK4SsC3hdWkie-fw6V2__i_B1h6AdSqBrcIxAAgXdz-v3B0bxiTC-ksADc_Szblsz7rQvFfbm-HT7bZ1XL4bsM_asUURcwntMziJsDYv2IG_IZ29E-x6Q-o8X94qQUEmwhhDhnCvzR73u_lPOfR2qgqCLbkcFE__mn9WB-1VfwW7H_DqV9DkwKYK7M0io-43LvxYatvgMsrwap-p4wEffe-ljtcBwrQlBdN4PP7Q0JGnYBjixX0YQ0",
+    image: "/images/workflow/siva-alci-custom.png",
     sliderImages: [
-      "https://images.unsplash.com/photo-1589939705384-5185137a7f0f?q=80&w=2000&auto=format&fit=crop",
+      "/images/workflow/siva-alci-custom.png",
       "https://images.unsplash.com/photo-1560185127-6ed189bf02f4?q=80&w=2000&auto=format&fit=crop",
       "https://images.unsplash.com/photo-1525909002160-d49880e719b0?q=80&w=2000&auto=format&fit=crop"
     ],
