@@ -19,7 +19,7 @@ const DEFAULT_CARDS = [
     title: 'Material Studio', 
     description: 'Ürün ve Malzeme', 
     icon: 'Layers', 
-    image: '/images/slider/tasarim_slide.png', 
+    image: 'https://zzawgisa3efgdxnm.public.blob.vercel-storage.com/material-studio-home.png', 
     blur: 0,
     overlay: 30,
     order: 1 
@@ -29,7 +29,7 @@ const DEFAULT_CARDS = [
     title: 'Execution Studio', 
     description: 'Uygulama Hizmetleri', 
     icon: 'Hammer', 
-    image: '/images/slider/uygulama_slide.png', 
+    image: 'https://zzawgisa3efgdxnm.public.blob.vercel-storage.com/execution-studio-home.png', 
     blur: 0,
     overlay: 30,
     order: 2 

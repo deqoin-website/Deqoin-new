@@ -15,8 +15,8 @@ import { WORKFLOW_STEPS } from "../data/workflows";
 
 const SERVICE_CARD_IMAGE_BY_TYPE: Record<string, string> = {
   design: "https://zzawgisa3efgdxnm.public.blob.vercel-storage.com/design-studio-home.png",
-  material: "/images/slider/tasarim_slide.png",
-  execution: "/images/slider/uygulama_slide.png",
+  material: "https://zzawgisa3efgdxnm.public.blob.vercel-storage.com/material-studio-home.png",
+  execution: "https://zzawgisa3efgdxnm.public.blob.vercel-storage.com/execution-studio-home.png",
 };
 
 export default function Page() {
@@ -66,14 +66,14 @@ export default function Page() {
       title: "Material Studio",
       subTitle: "Ürün ve Malzeme",
       sideLabel: "Aesthetic Soul",
-      image: "https://lh3.googleusercontent.com/aida-public/AB6AXuCVUCHLvB4gqKIu87ZlNcr3oZLDY1XgwMEMQcp-pzAUlFS1Nn-nmjan1oheeXLiJ94VJmZA_oBfMSPF7jZZuVG47cEkP7h1goKj5Y9WgqVshN-x4CHN0Cdm1zFfAK5KszWNO6pl8w1-gfW6Wb3njqQOsjkQ8-pCuF6dDd8ggmvjFL-N9m4Fe4Lj-pi8WbEEAKONv-Sz-Yl9wNOSPvazMnMZ5Gjdm2myTHVi_vIL4aoeENqkME8bn_RKrHn4r6XvpVXXxsRugi5gKPU",
+      image: SERVICE_CARD_IMAGE_BY_TYPE.material,
     },
     {
       href: "/uygulama",
       title: "Execution Studio",
       subTitle: "Uygulama Hizmetleri",
       sideLabel: "Precision Craft",
-      image: "https://lh3.googleusercontent.com/aida-public/AB6AXuBg-MKl4zF6vfhExOXkEX-PKVlktOgQYI9EevfKIIYXVJ2wtmRpvybiQLaOtQdeYc_lIPrntEOUrCatq_Efo6fw-z-0-6TilLvAsA4tcYK-QcbjqdetFT2T2EreDjugTzsElsUeoEqEM9i_daWDWBBOJXiZvrjMKWtS2z5I5ZuzOLXWozpZ8MroEnEj5yRtFuaubPctxfeO_ZAZ5E5Tawo9b6yB5w0pmG4_axQCW--XoR8nAAImAE_M5UpM2vFx3tuR2ePYvZ-VmaY",
+      image: SERVICE_CARD_IMAGE_BY_TYPE.execution,
     },
   ]);
   const [workflowSteps, setWorkflowSteps] = useState(WORKFLOW_STEPS);
