@@ -6982,3 +6982,91 @@ video {
   }
 }
 
+
+.workflow-wrapper {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: #0E0E0E;
+  position: relative;
+  overflow: hidden;
+}
+@media (min-width: 768px) {
+  .workflow-wrapper {
+    min-height: 100svh;
+  }
+}
+
+.workflow-title {
+  font-family: var(--font-headline), sans-serif;
+  font-size: 2.25rem;
+  font-weight: 300;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: #ffffff;
+  margin-bottom: 1.5rem;
+  line-height: 1;
+}
+@media (min-width: 768px) {
+  .workflow-title {
+    font-size: 3rem;
+  }
+}
+
+.workflow-title-line {
+  height: 1px;
+  width: 16rem;
+  background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.4), transparent);
+}
+
+.workflow-step-num {
+  font-family: var(--font-headline), sans-serif;
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.4);
+  letter-spacing: 0.2em;
+  margin-bottom: 0.5rem;
+  font-weight: 300;
+}
+@media (min-width: 1024px) {
+  .workflow-step-num {
+    font-size: 0.875rem;
+  }
+}
+
+.workflow-card-heading {
+  font-family: var(--font-headline), sans-serif;
+  font-size: 1.25rem;
+  font-weight: 300;
+  letter-spacing: 0.15em;
+  color: #ffffff;
+  text-transform: uppercase;
+  margin-bottom: 0.75rem;
+}
+@media (min-width: 1024px) {
+  .workflow-card-heading {
+    font-size: 1.5rem;
+  }
+}
+
+.workflow-card-desc {
+  font-family: var(--font-body), sans-serif;
+  color: rgba(255, 255, 255, 0.6);
+  line-height: 1.625;
+  font-size: 0.75rem;
+  letter-spacing: 0.02em;
+  max-width: 20ch;
+}
+@media (min-width: 768px) {
+  .workflow-card-desc {
+    max-width: none;
+  }
+}
+@media (min-width: 1024px) {
+  .workflow-card-desc {
+    font-size: 0.875rem;
+  }
+}
+

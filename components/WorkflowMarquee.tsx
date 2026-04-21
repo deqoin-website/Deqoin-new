@@ -62,25 +62,28 @@ export default function WorkflowMarquee({
   className = "",
 }: WorkflowMarqueeProps) {
   return (
-    <section className={`snap-section w-full min-h-screen md:min-h-svh flex flex-col items-center justify-center bg-[#0E0E0E] relative overflow-hidden ${className}`}>
+    <section className={`snap-section workflow-wrapper ${className}`}>
       {/* Background Glow similar to design */}
       <div 
         className="absolute inset-0 pointer-events-none" 
         style={{
-          background: "radial-gradient(circle at 50% 50%, rgba(255,255,255,0.03) 0%, rgba(14,14,14,0.1) 40%, rgba(10,10,10,1) 100%)"
+          background: "radial-gradient(circle at 50% 50%, rgba(255,255,255,0.03) 0%, rgba(14,14,14,0.1) 40%, rgba(10,10,10,1) 100%)",
+          position: "absolute",
+          inset: 0,
+          pointerEvents: "none"
         }}
       />
 
       {/* Header */}
-      <header className="relative z-10 workflow-header">
-        <h2 className="font-headline text-4xl md:text-5xl font-light tracking-[0.3em] uppercase text-white mb-6">
+      <header className="relative z-10 workflow-header" style={{ position: 'relative', zIndex: 10 }}>
+        <h2 className="workflow-title">
           {title}
         </h2>
-        <div className="h-[1px] w-64 bg-gradient-to-r from-transparent via-white/40 to-transparent"></div>
+        <div className="workflow-title-line"></div>
       </header>
 
       {/* Grid Area */}
-      <div className="relative z-10 w-full overflow-visible">
+      <div className="relative z-10 w-full overflow-visible" style={{ position: 'relative', zIndex: 10, width: '100%', overflow: 'visible' }}>
         <div className="workflow-grid">
           {steps.map((step, index) => {
             // Alternating offsets for cards
@@ -102,13 +105,13 @@ export default function WorkflowMarquee({
                 
                 {/* Content */}
                 <div className="workflow-card-content">
-                  <span className="font-headline text-xs lg:text-sm text-white/40 tracking-[0.2em] mb-2 font-light">
+                  <span className="workflow-step-num">
                     {step.id}
                   </span>
-                  <h3 className="font-headline text-xl lg:text-2xl font-light tracking-[0.15em] text-white uppercase mb-3">
+                  <h3 className="workflow-card-heading">
                     {step.title}
                   </h3>
-                  <p className="font-body text-white/60 leading-relaxed text-xs lg:text-sm tracking-[0.02em] max-w-[20ch] md:max-w-none">
+                  <p className="workflow-card-desc">
                     {step.description}
                   </p>
                 </div>
