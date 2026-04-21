@@ -7000,7 +7000,7 @@ video {
 
 .workflow-title {
   font-family: var(--font-smooch), sans-serif;
-  font-size: clamp(2.5rem, 8vw, 5.5rem);
+  font-size: clamp(3.5rem, 12vw, 8.5rem);
   font-weight: 100;
   letter-spacing: 0.15em;
   text-transform: uppercase;
