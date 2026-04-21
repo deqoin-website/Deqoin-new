@@ -221,9 +221,9 @@ export default function MimariPage() {
         <div className="mimari-cta-overlay" style={{ background: `rgba(0,0,0,${(ctaSection.overlay ?? 30) / 100})` }} />
         <div className="mimari-cta-content">
           <span className="section-small-label" style={{ color: "#cca883" }}>BİR SONRAKI ADIM</span>
-          <h2 className="mimari-cta-title">Mimari Vizyonunuzu Gerçeğe Dönüştürelim</h2>
+          <h2 className="mimari-cta-title">Mimari Vizyonunuzu Projeye Dönüştürelim</h2>
           <p className="mimari-cta-sub">
-            Hayalinizdeki projeyi uzman ekibimizle planlamak için profesyonel randevu oluşturun.
+            Seçtiğiniz mimari fikri birlikte teknik, estetik ve uygulanabilir bir projeye çevirelim.
           </p>
           <SwipeAppointmentButton onActivate={() => setIsConsultationOpen(true)} />
         </div>
