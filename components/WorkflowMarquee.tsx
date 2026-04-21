@@ -123,20 +123,30 @@ export default function WorkflowMarquee({
   return (
     <section
       className={className}
-        style={{
-          width: "100%",
-          minHeight: "100vh",
-          backgroundColor: "#080808",
-          color: "#ffffff",
+      style={{
+        width: "100%",
+        minHeight: "100vh",
+        backgroundColor: "#080808",
+        color: "#ffffff",
         display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          overflow: "hidden",
-          position: "relative",
-          boxSizing: "border-box",
-          padding: "6rem 0",
+        flexDirection: "column",
+        justifyContent: "center",
+        overflow: "hidden",
+        position: "relative",
+        boxSizing: "border-box",
+        padding: "6rem 0",
+      }}
+    >
+      <div
+        aria-hidden="true"
+        style={{
+          position: "absolute",
+          inset: 0,
+          background:
+            "radial-gradient(ellipse at center, rgba(24,24,27,0.42) 0%, rgba(10,10,10,0.24) 38%, rgba(10,10,10,0) 70%)",
+          pointerEvents: "none",
         }}
-      >
+      />
       <div
         style={{
           width: "100%",
@@ -173,6 +183,8 @@ export default function WorkflowMarquee({
           maxWidth: "100%",
           boxSizing: "border-box",
           padding: "0 1rem",
+          position: "relative",
+          zIndex: 1,
         }}
       >
         <div
@@ -184,12 +196,12 @@ export default function WorkflowMarquee({
             alignItems: "stretch",
             width: "100%",
             margin: "0 auto",
-            padding: "6rem 0",
+            padding: "7rem 0",
           }}
         >
           {steps.map((step, index) => {
             const isHovering = hoveredId === step.id;
-            const staggerOffset = index % 2 === 1 ? "translateY(3rem)" : "translateY(-1.5rem)";
+            const staggerOffset = index % 2 === 1 ? "translateY(5rem)" : "translateY(-1.5rem)";
             return (
               <Link
                 key={step.id}
@@ -218,7 +230,7 @@ export default function WorkflowMarquee({
                     transformStyle: "preserve-3d",
                     transition: "transform 900ms cubic-bezier(0.16, 1, 0.3, 1)",
                     transform: isHovering ? "rotateY(180deg)" : "rotateY(0deg)",
-                    boxShadow: "0 30px 90px rgba(0,0,0,0.35)",
+                    filter: "drop-shadow(0 0 18px rgba(255,255,255,0.05)) drop-shadow(0 24px 70px rgba(0,0,0,0.45))",
                   }}
                 >
                   <div
@@ -229,9 +241,9 @@ export default function WorkflowMarquee({
                       WebkitBackfaceVisibility: "hidden",
                       overflow: "hidden",
                       backgroundColor: "#18181b",
-                      border: "none",
-                      borderRadius: "0.375rem",
-                      boxShadow: "0 30px 90px rgba(0,0,0,0.35)",
+                      border: "1px solid rgba(255,255,255,0.1)",
+                      borderRadius: "0.75rem",
+                      boxShadow: "0 0 0 1px rgba(255,255,255,0.03), 0 0 24px rgba(255,255,255,0.04), 0 24px 80px rgba(0,0,0,0.45)",
                     }}
                   >
                     <div
@@ -239,7 +251,7 @@ export default function WorkflowMarquee({
                         position: "absolute",
                         inset: 0,
                         overflow: "hidden",
-                        borderRadius: "0.375rem",
+                        borderRadius: "0.75rem",
                       }}
                     >
                       <img
@@ -334,8 +346,9 @@ export default function WorkflowMarquee({
                       overflow: "hidden",
                       background:
                         "linear-gradient(180deg, rgba(18,18,18,0.98) 0%, rgba(8,8,8,0.98) 100%)",
-                      border: "none",
-                      borderRadius: "0.375rem",
+                      border: "1px solid rgba(255,255,255,0.1)",
+                      borderRadius: "0.75rem",
+                      boxShadow: "0 0 0 1px rgba(255,255,255,0.03), 0 0 24px rgba(255,255,255,0.04), 0 24px 80px rgba(0,0,0,0.45)",
                       display: "flex",
                       alignItems: "stretch",
                     }}
