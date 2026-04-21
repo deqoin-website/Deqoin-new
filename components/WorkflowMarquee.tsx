@@ -66,8 +66,6 @@ export default function WorkflowMarquee({
   title = "İŞ AKIŞI",
   className = "",
 }: WorkflowMarqueeProps) {
-  const gridOffset = (index: number) => (index % 2 === 1 ? "3.5rem" : "0rem");
-
   return (
     <section
       className={className}
@@ -144,20 +142,21 @@ export default function WorkflowMarquee({
         }}
       >
         <div
-          className="grid grid-cols-1 gap-10 md:grid-cols-5 md:gap-4 lg:gap-5"
+          className="flex flex-col gap-10 md:flex-row md:gap-4 lg:gap-6"
           style={{
             overflow: "visible",
-            alignItems: "end",
+            alignItems: "flex-start",
           }}
         >
           {steps.map((step, index) => {
+            const offset = index % 2 === 1 ? "md:translate-y-16" : "md:-translate-y-4";
+
             return (
               <div
                 key={step.id}
+                className={`relative overflow-visible md:flex-1 md:min-w-0 ${offset}`}
                 style={{
-                  position: "relative",
-                  paddingTop: index % 2 === 1 ? gridOffset(index) : "0rem",
-                  overflow: "visible",
+                  minWidth: 0,
                 }}
               >
                 <Link
@@ -167,82 +166,82 @@ export default function WorkflowMarquee({
                     textDecoration: "none",
                     color: "inherit",
                     minWidth: "0",
-                    height: "clamp(28rem, 31vw, 38rem)",
+                    height: "32rem",
                   }}
                 >
-                <img
-                  src={step.image}
-                  alt={step.title}
-                  style={{
-                    position: "absolute",
-                    inset: 0,
-                    width: "100%",
-                    height: "100%",
-                    objectFit: "cover",
-                    display: "block",
-                    transition: "transform 1000ms cubic-bezier(0.16, 1, 0.3, 1)",
-                  }}
-                  className="group-hover:scale-105"
-                />
-                <div
-                  style={{
-                    position: "absolute",
-                    inset: 0,
-                    background: "linear-gradient(to top, #050505 0%, rgba(5,5,5,0.72) 58%, rgba(5,5,5,0) 100%)",
-                  }}
-                />
-                <div
-                  style={{
-                    position: "absolute",
-                    bottom: 0,
-                    left: 0,
-                    width: "100%",
-                    zIndex: 10,
-                    padding: "1.5rem",
-                    boxSizing: "border-box",
-                  }}
-                >
-                  <span
+                  <img
+                    src={step.image}
+                    alt={step.title}
                     style={{
+                      position: "absolute",
+                      inset: 0,
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "cover",
                       display: "block",
-                      fontFamily: "var(--font-display), sans-serif",
-                      fontSize: "0.78rem",
-                      color: "rgba(229,226,225,0.5)",
-                      letterSpacing: "0.2em",
-                      marginBottom: "0.45rem",
-                      fontWeight: 300,
+                      transition: "transform 1000ms cubic-bezier(0.16, 1, 0.3, 1)",
                     }}
-                  >
-                    {step.id}
-                  </span>
-                  <h3
+                    className="group-hover:scale-105"
+                  />
+                  <div
                     style={{
-                      fontFamily: "var(--font-display), sans-serif",
-                      fontSize: "clamp(1.35rem, 1.2vw, 1.65rem)",
-                      fontWeight: 300,
-                      letterSpacing: "0.15em",
-                      color: "#ffffff",
-                      textTransform: "uppercase",
-                      margin: 0,
-                      marginBottom: "0.65rem",
+                      position: "absolute",
+                      inset: 0,
+                      background: "linear-gradient(to top, #050505 0%, rgba(5,5,5,0.72) 58%, rgba(5,5,5,0) 100%)",
                     }}
-                  >
-                    {step.title}
-                  </h3>
-                  <p
+                  />
+                  <div
                     style={{
-                      fontFamily: "var(--font-body), sans-serif",
-                      color: "rgba(229,226,225,0.74)",
-                      lineHeight: 1.65,
-                      fontSize: "0.78rem",
-                      letterSpacing: "0.02em",
-                      margin: 0,
-                      maxWidth: "16ch",
+                      position: "absolute",
+                      bottom: 0,
+                      left: 0,
+                      width: "100%",
+                      zIndex: 10,
+                      padding: "1.5rem",
+                      boxSizing: "border-box",
                     }}
                   >
-                    {step.description}
-                  </p>
-                </div>
+                    <span
+                      style={{
+                        display: "block",
+                        fontFamily: "var(--font-display), sans-serif",
+                        fontSize: "0.78rem",
+                        color: "rgba(229,226,225,0.5)",
+                        letterSpacing: "0.2em",
+                        marginBottom: "0.45rem",
+                        fontWeight: 300,
+                      }}
+                    >
+                      {step.id}
+                    </span>
+                    <h3
+                      style={{
+                        fontFamily: "var(--font-display), sans-serif",
+                        fontSize: "clamp(1.35rem, 1.2vw, 1.65rem)",
+                        fontWeight: 300,
+                        letterSpacing: "0.15em",
+                        color: "#ffffff",
+                        textTransform: "uppercase",
+                        margin: 0,
+                        marginBottom: "0.65rem",
+                      }}
+                    >
+                      {step.title}
+                    </h3>
+                    <p
+                      style={{
+                        fontFamily: "var(--font-body), sans-serif",
+                        color: "rgba(229,226,225,0.74)",
+                        lineHeight: 1.65,
+                        fontSize: "0.78rem",
+                        letterSpacing: "0.02em",
+                        margin: 0,
+                        maxWidth: "16ch",
+                      }}
+                    >
+                      {step.description}
+                    </p>
+                  </div>
                 </Link>
               </div>
             );
