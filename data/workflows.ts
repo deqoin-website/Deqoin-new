@@ -29,7 +29,7 @@ export const WORKFLOW_STEPS: WorkflowStep[] = [
     id: "04",
     title: "MALZEME",
     description: "Doku, kalite ve dayanıklılık ekseninde seçim yaparız.",
-    image: "/images/workflow/malzeme-v4.svg",
+    image: "/images/workflow/malzeme-v4.png",
     backText:
       "Yüzey, renk ve doku seçimleri mekanın algısını belirler. Lüks hissi taşıyan, uzun ömürlü ve dengeli materyaller seçilir.",
   },
