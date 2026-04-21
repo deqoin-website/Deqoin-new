@@ -5,7 +5,7 @@ export const WORKFLOW_STEPS: WorkflowStep[] = [
     id: "01",
     title: "RANDEVU",
     description: "Kusursuz sürecin ilk adımı.",
-    image: "/images/workflow/randevu-v4.svg",
+    image: "/images/workflow/randevu-v4.png",
     backText:
       "İlk görüşmede ihtiyaçlar, beklentiler ve proje kapsamı netleştirilir. Bu aşama, sonraki tüm kararların temelini oluşturur.",
   },
