@@ -140,13 +140,7 @@ export default function WorkflowMarquee({
         }}
       >
         <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            gap: "3rem",
-            alignItems: "center",
-          }}
-          className="md:flex-row md:justify-center md:items-stretch md:gap-8 lg:gap-12"
+          className="flex flex-col gap-12 items-center md:flex-row md:justify-center md:items-stretch md:gap-8 lg:gap-12"
         >
           {steps.map((step, index) => {
             const staggerClass =
