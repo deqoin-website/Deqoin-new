@@ -148,9 +148,9 @@ export const uygulamaBirimleri: UygulamaBirimi[] = [
     slug: "heykeltiraslar",
     title: "Heykel",
     sideLabel: "3D Artistry",
-    image: "https://lh3.googleusercontent.com/aida-public/AB6AXuDb8oJUAbKO838Rur4GmMdhoZA52T9apeuU9wT1MD8aED3l4BUvMiWzCyCUvgmQ_hUnxgOfF8IiulBiI2jOUD_rMvhMhY5q4XF5oN3Orkq525thVCe6a7Qn84IkmcCKdp7RVHGwlMXKCQZWlSwoQRYqNQ54bsoQ6pAqtTv5QeYJjApl9fwBFVCYyWIR0fqefLofCqY7cPmi_F1xk7yjOVIZsTO7FKo0OjDyPcryEMVFbFFRsn19bmHoDjlgz-s838-TizdClIfaG6s",
+    image: "/images/workflow/heykel-custom.png",
     sliderImages: [
-      "https://images.unsplash.com/photo-1549490349-8643362247b5?q=80&w=2000&auto=format&fit=crop",
+      "/images/workflow/heykel-custom.png",
       "https://images.unsplash.com/photo-1621360841013-c7683c659ec6?q=80&w=2000&auto=format&fit=crop",
       "https://images.unsplash.com/photo-1518349619113-03114f06ac3a?q=80&w=2000&auto=format&fit=crop"
     ],
