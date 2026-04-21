@@ -17,9 +17,9 @@ export const uygulamaBirimleri: UygulamaBirimi[] = [
     slug: "insaat-ekipleri",
     title: "İnşaat",
     sideLabel: "Structural Integrity",
-    image: "https://lh3.googleusercontent.com/aida-public/AB6AXuBg-MKl4zF6vfhExOXkEX-PKVlktOgQYI9EevfKIIYXVJ2wtmRpvybiQLaOtQdeYc_lIPrntEOUrCatq_Efo6fw-z-0-6TilLvAsA4tcYK-QcbjqdetFT2T2EreDjugTzsElsUeoEqEM9i_daWDWBBOJXiZvrjMKWtS2z5I5ZuzOLXWozpZ8MroEnEj5yRtFuaubPctxfeO_ZAZ5E5Tawo9b6yB5w0pmG4_axQCW--XoR8nAAImAE_M5UpM2vFx3tuR2ePYvZ-VmaY",
+    image: "/images/workflow/insaat-custom.png",
     sliderImages: [
-      "https://images.unsplash.com/photo-1541888946425-d81bb19480c5?q=80&w=2000&auto=format&fit=crop",
+      "/images/workflow/insaat-custom.png",
       "https://images.unsplash.com/photo-1504307651254-35680f356dfd?q=80&w=2000&auto=format&fit=crop",
       "https://images.unsplash.com/photo-1503387762-592dee58c460?q=80&w=2000&auto=format&fit=crop",
       "https://images.unsplash.com/photo-1531834685032-c34bf0d84c77?q=80&w=2000&auto=format&fit=crop"
