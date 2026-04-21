@@ -157,9 +157,9 @@ export const materyalKategorileri: MateryalKategori[] = [
     slug: "sanatsal-calismalar",
     title: "Sanatsal Çalışmalar",
     sideLabel: "Creative Soul",
-    image: "https://images.unsplash.com/photo-1513364776144-60967b0f800f?q=80&w=2000&auto=format&fit=crop",
+    image: "/images/workflow/sanatsal-calisma-custom.png",
     sliderImages: [
-      "https://images.unsplash.com/photo-1513364776144-60967b0f800f?q=80&w=2000&auto=format&fit=crop",
+      "/images/workflow/sanatsal-calisma-custom.png",
       "https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?q=80&w=2000&auto=format&fit=crop",
       "https://images.unsplash.com/photo-1541963463532-d68292c34b19?q=80&w=2000&auto=format&fit=crop",
       "https://images.unsplash.com/photo-1549490349-8643362247b5?q=80&w=2000&auto=format&fit=crop"
