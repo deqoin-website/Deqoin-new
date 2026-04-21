@@ -589,7 +589,7 @@ export default function Page() {
                 <div className="about-frame">
                   <div className="about-image-wrap">
                     <img
-                      src="/images/about_interior.png"
+                      src="https://zzawgisa3efgdxnm.public.blob.vercel-storage.com/hakkimizda-home.png"
                       alt="Atmospheric architectural interior DEQOIN philosophy masterpiece"
                     />
                   </div>

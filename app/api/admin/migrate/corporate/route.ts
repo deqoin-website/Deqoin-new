@@ -7,7 +7,7 @@ const initialData = {
   title: "TASARIMDAN ÖTE:\nBÜTÜNSEL BİR DENEYİM",
   subtitle: "BİZ KİMİZ",
   description: "Bizler sadece fiziksel yapılar inşa etmiyor; tüm değerlerinizi ortaya koyan bütünsel bir deneyim kurguluyoruz. Tasarımın sadece estetik bir form değil, yaşam biçimini şekillendiren bir disiplin olduğuna inanıyoruz.",
-  image: "/images/slider/mimari_slide.png",
+  image: "https://zzawgisa3efgdxnm.public.blob.vercel-storage.com/hakkimizda-home.png",
   stats: [
     { label: "DENEYİM", value: "10+ YIL" },
     { label: "TESLİM EDİLEN", value: "+240 PROJE" },

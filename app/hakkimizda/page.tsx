@@ -45,7 +45,7 @@ export default function AboutUs() {
   const title = data?.title || "TASARIMDAN ÖTE: BÜTÜNSEL BİR DENEYİM";
   const subtitle = data?.subtitle || "BİZ KİMİZ";
   const description = data?.description || "Bizler sadece fiziksel yapılar inşa etmiyor; tüm değerlerinizi ortaya koyan bütünsel bir deneyim kurguluyoruz.";
-  const heroImage = data?.image || "/images/slider/mimari_slide.png";
+  const heroImage = "https://zzawgisa3efgdxnm.public.blob.vercel-storage.com/hakkimizda-home.png";
   const stats = data?.stats?.length > 0 ? data.stats : [
     { label: "DENEYİM", value: "10+ YIL" },
     { label: "TESLİM EDİLEN", value: "+240 PROJE" },
