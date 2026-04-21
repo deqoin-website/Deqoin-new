@@ -21,7 +21,7 @@ export const WORKFLOW_STEPS: WorkflowStep[] = [
     id: "03",
     title: "TASARIM",
     description: "Lüks, işlev ve oranı aynı dilde birleştiririz.",
-    image: "/images/workflow/tasarim-v4.svg",
+    image: "/images/workflow/tasarim-v4.png",
     backText:
       "Konsept, malzeme dili ve mekansal kurgu tek bir çizgide birleşir. Projenin karakteri, burada görsel ve işlevsel olarak şekillenir.",
   },
