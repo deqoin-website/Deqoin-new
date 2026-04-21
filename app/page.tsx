@@ -13,6 +13,12 @@ import WorkflowMarquee from "../components/WorkflowMarquee";
 import Footer from "@/components/Footer";
 import { WORKFLOW_STEPS } from "../data/workflows";
 
+const SERVICE_CARD_IMAGE_BY_TYPE: Record<string, string> = {
+  design: "/images/slider/mimari_slide.png",
+  material: "/images/slider/tasarim_slide.png",
+  execution: "/images/slider/uygulama_slide.png",
+};
+
 export default function Page() {
   const [isConsultationOpen, setIsConsultationOpen] = useState(false);
   const [activeTeamFilter, setActiveTeamFilter] = useState<(typeof teamFilters)[number]["key"]>("all");
@@ -107,7 +113,7 @@ export default function Page() {
                 href: card.studioType === 'design' ? '/mimari' : card.studioType === 'material' ? '/materyal-studyo' : '/uygulama',
                 title: card.title,
                 subTitle: card.description,
-                image: card.image || (card.studioType === 'design' ? '/images/slider/mimari_slide.png' : card.studioType === 'material' ? '/images/slider/tasarim_slide.png' : '/images/slider/uygulama_slide.png'),
+                image: SERVICE_CARD_IMAGE_BY_TYPE[card.studioType] || SERVICE_CARD_IMAGE_BY_TYPE.execution,
                 sideLabel: card.studioType === 'design' ? 'Structural Integrity' : card.studioType === 'material' ? 'Aesthetic Soul' : 'Precision Craft',
                 blur: card.blur || 0,
                 overlay: card.overlay ?? 30
