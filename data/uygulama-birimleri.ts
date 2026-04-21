@@ -96,9 +96,9 @@ export const uygulamaBirimleri: UygulamaBirimi[] = [
     slug: "duvar-sanatcilari",
     title: "Duvar",
     sideLabel: "Artistic Walls",
-    image: "https://lh3.googleusercontent.com/aida-public/AB6AXuCVUCHLvB4gqKIu87ZlNcr3oZLDY1XgwMEMQcp-pzAUlFS1Nn-nmjan1oheeXLiJ94VJmZA_oBfMSPF7jZZuVG47cEkP7h1goKj5Y9WgqVshN-x4CHN0Cdm1zFfAK5KszWNO6pl8w1-gfW6Wb3njqQOsjkQ8-pCuF6dDd8ggmvjFL-N9m4Fe4Lj-pi8WbEEAKONv-Sz-Yl9wNOSPvazMnMZ5Gjdm2myTHVi_vIL4aoeENqkME8bn_RKrHn4r6XvpVXXxsRugi5gKPU",
+    image: "/images/workflow/duvar-custom.png",
     sliderImages: [
-      "https://images.unsplash.com/photo-1517430816045-df4b7de11d1d?q=80&w=2000&auto=format&fit=crop",
+      "/images/workflow/duvar-custom.png",
       "https://images.unsplash.com/photo-1518193005634-9343360b37cd?q=80&w=2000&auto=format&fit=crop",
       "https://images.unsplash.com/photo-1533090161767-e6ffed986c88?q=80&w=2000&auto=format&fit=crop"
     ],
