@@ -13,7 +13,7 @@ export const WORKFLOW_STEPS: WorkflowStep[] = [
     id: "02",
     title: "KEŞİF",
     description: "Mekanın potansiyelini, ışığını ve ritmini okuruz.",
-    image: "/images/workflow/kesif-v4.svg",
+    image: "/images/workflow/kesif-v4.png",
     backText:
       "Mekanın ölçüsü, ışık yönü, mevcut durum ve kullanım potansiyeli analiz edilir. Tasarımın teknik zemini burada kurulur.",
   },
