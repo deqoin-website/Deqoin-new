@@ -7,8 +7,8 @@ import { Loader2 } from "lucide-react";
 import SwipeAppointmentButton from "../../components/SwipeAppointmentButton";
 import HeroSlider from "../../components/HeroSlider";
 import WorkflowMarquee from "../../components/WorkflowMarquee";
-import { useWorkflowContent } from "../../components/useWorkflowContent";
 import { materyalKategorileri } from "../../data/materyal-studyo";
+import { WORKFLOW_STEPS } from "../../data/workflows";
 
 const materialCategories = materyalKategorileri;
 
@@ -17,7 +17,6 @@ export default function MateryalStudyo() {
   const [isLoading, setIsLoading] = useState(true);
   const [isConsultationOpen, setIsConsultationOpen] = useState(false);
   const heroRef = useRef<HTMLDivElement>(null);
-  const { workflow } = useWorkflowContent();
 
   useEffect(() => {
     const fetchContent = async () => {
@@ -75,9 +74,7 @@ export default function MateryalStudyo() {
       />
 
       {/* WORKFLOW SECTION */}
-      <WorkflowMarquee steps={workflow.steps} title={workflow.title} />
-
-
+      <WorkflowMarquee steps={WORKFLOW_STEPS} title="İŞ AKIŞI" />
 
       <section className="services-section material-studio-collection" style={{ background: "transparent", paddingTop: "0" }}>
         <div className="material-studio-collection-shell material-studio-collection-inner" style={{ paddingTop: "0" }}>
