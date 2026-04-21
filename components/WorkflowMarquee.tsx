@@ -131,9 +131,9 @@ export default function WorkflowMarquee({
       <div
         style={{
           width: "100%",
-          maxWidth: "2000px",
+          maxWidth: "2200px",
           margin: "0 auto",
-          padding: "0 1rem",
+          padding: "0 1rem 0.5rem",
           boxSizing: "border-box",
           position: "relative",
           zIndex: 1,
@@ -141,25 +141,24 @@ export default function WorkflowMarquee({
         }}
       >
         <div
-          className="flex flex-col gap-12 items-center md:flex-row md:justify-center md:items-stretch md:gap-8 lg:gap-12"
+          className="grid grid-cols-1 gap-10 items-start md:grid-cols-5 md:gap-6 lg:gap-8"
           style={{ overflow: "visible" }}
         >
           {steps.map((step, index) => {
             const staggerClass =
               index % 2 === 1
-                ? "md:translate-y-16 translate-x-4 md:translate-x-0"
-                : "md:-translate-y-4 -translate-x-4 md:translate-x-0";
+                ? "md:translate-y-16 translate-y-0"
+                : "md:-translate-y-4 translate-y-0";
 
             return (
               <Link
                 key={step.id}
                 href={step.href || "/iletisim"}
-                className={`group relative block flex-none w-[85%] md:w-[400px] h-[500px] md:h-[600px] overflow-hidden bg-[#1c1b1b] border border-white/10 shadow-[0_0_60px_rgba(198,198,199,0.05)] transition-transform duration-700 ${staggerClass}`}
+                className={`group relative block w-full h-[28rem] md:h-[42rem] overflow-hidden bg-[#1c1b1b] border border-white/10 shadow-[0_0_60px_rgba(198,198,199,0.05)] transition-transform duration-700 ${staggerClass}`}
                 style={{
                   textDecoration: "none",
                   color: "inherit",
                   minWidth: "0",
-                  flex: "0 0 auto",
                 }}
               >
                 <img
@@ -190,7 +189,7 @@ export default function WorkflowMarquee({
                     left: 0,
                     width: "100%",
                     zIndex: 10,
-                    padding: "2.5rem",
+                    padding: "2rem",
                     boxSizing: "border-box",
                   }}
                 >
@@ -210,7 +209,7 @@ export default function WorkflowMarquee({
                   <h3
                     style={{
                       fontFamily: "var(--font-display), sans-serif",
-                      fontSize: "clamp(1.8rem, 3vw, 2.2rem)",
+                      fontSize: "clamp(1.6rem, 1.8vw, 2rem)",
                       fontWeight: 300,
                       letterSpacing: "0.15em",
                       color: "#ffffff",
@@ -225,11 +224,11 @@ export default function WorkflowMarquee({
                     style={{
                       fontFamily: "var(--font-body), sans-serif",
                       color: "#c6c6c6",
-                      lineHeight: 1.75,
-                      fontSize: "0.9rem",
+                      lineHeight: 1.7,
+                      fontSize: "0.82rem",
                       letterSpacing: "0.02em",
                       margin: 0,
-                      maxWidth: "18ch",
+                      maxWidth: "16ch",
                     }}
                   >
                     {step.description}
