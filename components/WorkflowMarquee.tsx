@@ -71,7 +71,7 @@ export default function WorkflowMarquee({
       className={className}
       style={{
         width: "100%",
-        minHeight: "100vh",
+        minHeight: "100svh",
         backgroundColor: "#0e0e0e",
         color: "#e5e2e1",
         display: "flex",
@@ -80,7 +80,7 @@ export default function WorkflowMarquee({
         overflow: "hidden",
         position: "relative",
         boxSizing: "border-box",
-        padding: "7rem 0 8rem",
+        padding: "0 0 5rem",
       }}
     >
       <div
@@ -89,42 +89,41 @@ export default function WorkflowMarquee({
           position: "absolute",
           inset: 0,
           background:
-            "radial-gradient(ellipse at center, rgba(24,24,27,0.42) 0%, rgba(10,10,10,0.24) 38%, rgba(10,10,10,0) 70%)",
+            "radial-gradient(circle at 50% 50%, rgba(255,255,255,0.045) 0%, rgba(14,14,14,0.18) 28%, rgba(14,14,14,0.88) 72%, rgba(10,10,10,1) 100%)",
           pointerEvents: "none",
         }}
       />
 
       <div
         style={{
-          width: "100%",
-          textAlign: "center",
-          marginBottom: "5rem",
-          padding: "0 1rem",
-          marginTop: "1rem",
           position: "relative",
           zIndex: 1,
+          width: "100%",
+          textAlign: "center",
+          padding: "4.4rem 1.5rem 2.3rem",
         }}
       >
         <h2
           style={{
             fontFamily: "var(--font-display), sans-serif",
-            fontSize: "clamp(2rem, 4vw, 4rem)",
+            fontSize: "clamp(2.4rem, 4.3vw, 4.2rem)",
             fontWeight: 300,
-            letterSpacing: "0.3em",
+            letterSpacing: "0.36em",
             textTransform: "uppercase",
             color: "#ffffff",
             margin: 0,
+            lineHeight: 1,
           }}
         >
           {title}
         </h2>
         <div
           style={{
-            width: "16rem",
+            width: "11rem",
             height: "1px",
-            margin: "1.5rem auto 0",
+            margin: "1.4rem auto 0",
             background:
-              "linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.4) 50%, transparent 100%)",
+              "linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.35) 50%, transparent 100%)",
           }}
         />
       </div>
@@ -132,9 +131,9 @@ export default function WorkflowMarquee({
       <div
         style={{
           width: "100%",
-          maxWidth: "1920px",
+          maxWidth: "1280px",
           margin: "0 auto",
-          padding: "0 2rem 0.5rem",
+          padding: "0 1.25rem",
           boxSizing: "border-box",
           position: "relative",
           zIndex: 1,
@@ -142,31 +141,38 @@ export default function WorkflowMarquee({
         }}
       >
         <div
-          className="flex flex-col gap-10 md:flex-row md:gap-4 lg:gap-6"
+          className="flex flex-col gap-7 md:flex-row md:justify-center md:items-start md:gap-3 lg:gap-4"
           style={{
             overflow: "visible",
             alignItems: "flex-start",
+            justifyContent: "center",
           }}
         >
           {steps.map((step, index) => {
             const offset = index % 2 === 1 ? "md:translate-y-16" : "md:-translate-y-4";
+            const heights = ["28rem", "34rem", "28rem", "33rem", "29rem"];
+            const cardHeight = heights[index] || "30rem";
 
             return (
               <div
                 key={step.id}
-                className={`relative overflow-visible md:flex-1 md:min-w-0 ${offset}`}
+                className={`relative overflow-visible ${offset}`}
                 style={{
                   minWidth: 0,
+                  width: "clamp(7.25rem, 9.5vw, 10.5rem)",
+                  flex: "0 0 clamp(7.25rem, 9.5vw, 10.5rem)",
                 }}
               >
                 <Link
                   href={step.href || "/iletisim"}
-                  className="group relative block w-full overflow-hidden bg-[#1c1b1b] border border-white/10 shadow-[0_0_50px_rgba(198,198,199,0.06)] transition-transform duration-700"
+                  className="group relative block w-full overflow-hidden bg-[#141414] transition-transform duration-700"
                   style={{
                     textDecoration: "none",
                     color: "inherit",
                     minWidth: "0",
-                    height: "32rem",
+                    height: cardHeight,
+                    border: "1px solid rgba(255,255,255,0.04)",
+                    boxShadow: "0 0 28px rgba(0,0,0,0.24)",
                   }}
                 >
                   <img
@@ -187,7 +193,7 @@ export default function WorkflowMarquee({
                     style={{
                       position: "absolute",
                       inset: 0,
-                      background: "linear-gradient(to top, #050505 0%, rgba(5,5,5,0.72) 58%, rgba(5,5,5,0) 100%)",
+                      background: "linear-gradient(to top, rgba(5,5,5,0.98) 0%, rgba(5,5,5,0.74) 30%, rgba(5,5,5,0.16) 66%, rgba(5,5,5,0) 100%)",
                     }}
                   />
                   <div
@@ -197,7 +203,7 @@ export default function WorkflowMarquee({
                       left: 0,
                       width: "100%",
                       zIndex: 10,
-                      padding: "1.5rem",
+                      padding: "1.1rem 1rem 1.25rem",
                       boxSizing: "border-box",
                     }}
                   >
@@ -205,10 +211,10 @@ export default function WorkflowMarquee({
                       style={{
                         display: "block",
                         fontFamily: "var(--font-display), sans-serif",
-                        fontSize: "0.78rem",
+                        fontSize: "0.72rem",
                         color: "rgba(229,226,225,0.5)",
                         letterSpacing: "0.2em",
-                        marginBottom: "0.45rem",
+                        marginBottom: "0.35rem",
                         fontWeight: 300,
                       }}
                     >
@@ -217,13 +223,13 @@ export default function WorkflowMarquee({
                     <h3
                       style={{
                         fontFamily: "var(--font-display), sans-serif",
-                        fontSize: "clamp(1.35rem, 1.2vw, 1.65rem)",
+                        fontSize: "clamp(1.2rem, 1.15vw, 1.5rem)",
                         fontWeight: 300,
-                        letterSpacing: "0.15em",
+                        letterSpacing: "0.16em",
                         color: "#ffffff",
                         textTransform: "uppercase",
                         margin: 0,
-                        marginBottom: "0.65rem",
+                        marginBottom: "0.55rem",
                       }}
                     >
                       {step.title}
@@ -233,10 +239,10 @@ export default function WorkflowMarquee({
                         fontFamily: "var(--font-body), sans-serif",
                         color: "rgba(229,226,225,0.74)",
                         lineHeight: 1.65,
-                        fontSize: "0.78rem",
+                        fontSize: "0.74rem",
                         letterSpacing: "0.02em",
                         margin: 0,
-                        maxWidth: "16ch",
+                        maxWidth: "15ch",
                       }}
                     >
                       {step.description}
