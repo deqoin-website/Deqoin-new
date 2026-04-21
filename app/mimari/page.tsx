@@ -219,42 +219,40 @@ export default function MimariPage() {
           <img src={withVersion(ctaSection.image, contentVersion)} alt="CTA" style={{ filter: `blur(${ctaSection.blur ?? 0}px)` }} />
         </div>
         <div className="mimari-cta-overlay" style={{ background: `rgba(0,0,0,${(ctaSection.overlay ?? 30) / 100})` }} />
-        <div className="mimari-cta-content">
-          <span className="section-small-label" style={{ color: "#cca883" }}>BİR SONRAKI ADIM</span>
-          <h2 className="mimari-cta-title">
-            <span style={{ display: "block" }}>Mimari Vizyonunuzu</span>
-            <span style={{ display: "block", color: "#cca883" }}>Projeye Dönüştürelim</span>
-          </h2>
-          <p className="mimari-cta-sub">
-            Seçtiğiniz mimari fikri birlikte teknik, estetik ve uygulanabilir bir projeye çevirelim.
-          </p>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, minmax(0, 1fr))", gap: "1rem", width: "100%", maxWidth: "760px", marginBottom: "2.25rem" }}>
+        <div className="mimari-cta-content mimari-cta-content-split">
+          <div className="mimari-cta-copy">
+            <span className="section-small-label" style={{ color: "#cca883" }}>BİR SONRAKI ADIM</span>
+            <h2 className="mimari-cta-title">
+              <span style={{ display: "block" }}>Mimari Vizyonunuzu</span>
+              <span style={{ display: "block", color: "#cca883" }}>Projeye Dönüştürelim</span>
+            </h2>
+            <p className="mimari-cta-sub">
+              Seçtiğiniz mimari fikri birlikte teknik, estetik ve uygulanabilir bir projeye çevirelim.
+            </p>
+            <div className="mimari-cta-badges">
+              <span>Konsept analizi</span>
+              <span>Teknik planlama</span>
+              <span>Uygulama hazırlığı</span>
+            </div>
+            <SwipeAppointmentButton onActivate={() => setIsConsultationOpen(true)} />
+          </div>
+
+          <div className="mimari-cta-panel">
+            <span className="section-small-label" style={{ color: "#cca883", marginBottom: "1rem", display: "block" }}>SÜREÇ</span>
             {[
-              { value: "01", label: "Konsept Analizi" },
-              { value: "02", label: "Teknik Planlama" },
-              { value: "03", label: "Uygulama Hazırlığı" },
+              { value: "01", label: "Konsept analizi", desc: "İhtiyaç ve estetik hedefleri netleştiririz." },
+              { value: "02", label: "Teknik planlama", desc: "Ölçü, malzeme ve uygulama senaryosunu kurarız." },
+              { value: "03", label: "Uygulama hazırlığı", desc: "Sahaya inmeden önce tüm kararları sabitleriz." },
             ].map((item) => (
-              <div
-                key={item.value}
-                style={{
-                  border: "1px solid rgba(202, 168, 131, 0.25)",
-                  background: "rgba(10, 10, 10, 0.28)",
-                  backdropFilter: "blur(10px)",
-                  padding: "1rem 1rem 1.1rem",
-                  textAlign: "left",
-                  minHeight: "96px",
-                }}
-              >
-                <div style={{ color: "#cca883", fontSize: "0.75rem", letterSpacing: "0.2em", marginBottom: "0.65rem" }}>
-                  {item.value}
-                </div>
-                <div style={{ color: "#fff", fontSize: "0.95rem", lineHeight: "1.35" }}>
-                  {item.label}
+              <div key={item.value} className="mimari-cta-step">
+                <div className="mimari-cta-step-index">{item.value}</div>
+                <div className="mimari-cta-step-copy">
+                  <h3>{item.label}</h3>
+                  <p>{item.desc}</p>
                 </div>
               </div>
             ))}
           </div>
-          <SwipeAppointmentButton onActivate={() => setIsConsultationOpen(true)} />
         </div>
       </section>
 

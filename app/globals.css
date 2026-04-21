@@ -4687,7 +4687,7 @@ video {
 .mimari-step-desc { font-family: var(--font-body), sans-serif; font-size: 1rem; font-weight: 300; color: var(--text-soft); line-height: 1.8; max-width: 700px; margin: 0; }
 
 /* CTA BANNER */
-.mimari-cta-banner { position: relative; height: 70vh; min-height: 500px; display: flex; align-items: center; overflow: hidden; }
+.mimari-cta-banner { position: relative; min-height: 82vh; display: flex; align-items: center; overflow: hidden; padding: 4rem 0; }
 .mimari-cta-bg { position: absolute; inset: 0; }
 .mimari-cta-bg img { width: 100%; height: 100%; max-width: none; object-fit: cover; object-position: center; transition: transform 8s ease; }
 .mimari-cta-banner:hover .mimari-cta-bg img { transform: scale(1.04); }
@@ -4696,9 +4696,19 @@ video {
 [data-theme='light'] .mimari-cta-overlay {
   background: rgba(255, 255, 255, 0.4);
 }
-.mimari-cta-content { position: relative; z-index: 5; padding: 0 5rem; width: min(100%, 800px); text-align: center; margin-inline: auto; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-.mimari-cta-title { font-family: var(--font-smooch), sans-serif; font-size: clamp(3rem, 7vw, 5rem); font-weight: 100; color: #fff; margin: 1rem 0 1.5rem; line-height: 0.95; letter-spacing: 0.05em; text-align: center; }
-.mimari-cta-sub { font-family: var(--font-body), sans-serif; font-size: 1rem; font-weight: 300; color: rgba(255, 255, 255, 0.7); line-height: 1.7; max-width: 550px; margin-bottom: 3rem; text-align: center; }
+.mimari-cta-content { position: relative; z-index: 5; width: min(100%, 1280px); margin-inline: auto; padding: 0 5rem; display: flex; align-items: center; justify-content: space-between; gap: 3rem; }
+.mimari-cta-content-split { align-items: stretch; }
+.mimari-cta-copy { flex: 1.05; max-width: 620px; display: flex; flex-direction: column; align-items: flex-start; }
+.mimari-cta-panel { flex: 0.95; width: 100%; max-width: 520px; background: rgba(8, 8, 8, 0.42); border: 1px solid rgba(202, 168, 131, 0.16); backdrop-filter: blur(16px); padding: 2rem; display: flex; flex-direction: column; gap: 1rem; }
+.mimari-cta-title { font-family: var(--font-smooch), sans-serif; font-size: clamp(3rem, 7vw, 5rem); font-weight: 100; color: #fff; margin: 1rem 0 1.5rem; line-height: 0.95; letter-spacing: 0.05em; text-align: left; }
+.mimari-cta-sub { font-family: var(--font-body), sans-serif; font-size: 1rem; font-weight: 300; color: rgba(255, 255, 255, 0.78); line-height: 1.7; max-width: 550px; margin-bottom: 1.5rem; text-align: left; }
+.mimari-cta-badges { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 2rem; }
+.mimari-cta-badges span { padding: 0.7rem 1rem; border: 1px solid rgba(202, 168, 131, 0.22); color: rgba(255, 255, 255, 0.82); background: rgba(10, 10, 10, 0.24); letter-spacing: 0.08em; font-size: 0.72rem; text-transform: uppercase; }
+.mimari-cta-step { display: flex; gap: 1rem; padding: 1rem 0; border-top: 1px solid rgba(255, 255, 255, 0.08); }
+.mimari-cta-step:first-of-type { border-top: 0; padding-top: 0.25rem; }
+.mimari-cta-step-index { color: #cca883; font-size: 0.8rem; letter-spacing: 0.2em; min-width: 2.2rem; padding-top: 0.15rem; }
+.mimari-cta-step-copy h3 { margin: 0 0 0.35rem; color: #fff; font-family: var(--font-body), sans-serif; font-size: 1.05rem; font-weight: 300; }
+.mimari-cta-step-copy p { margin: 0; color: rgba(255,255,255,0.68); line-height: 1.55; font-size: 0.95rem; }
 
 /* DİĞER HİZMETLER */
 .mimari-other-services { background: var(--background); padding: 10rem 0; border-top: 1px solid var(--line); }
@@ -4721,6 +4731,8 @@ video {
   .mimari-gallery-grid { grid-template-columns: 1fr; }
   .mimari-gallery-item.featured { grid-row: auto; aspect-ratio: 16 / 9; }
   .mimari-other-grid { grid-template-columns: 1fr; }
+  .mimari-cta-content { flex-direction: column; padding: 0 1.5rem; }
+  .mimari-cta-copy, .mimari-cta-panel { max-width: none; width: 100%; }
 }
 
 @media (max-width: 767px) {
@@ -7067,4 +7079,3 @@ video {
     font-size: 0.875rem;
   }
 }
-
