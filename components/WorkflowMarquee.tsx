@@ -202,25 +202,22 @@ export default function WorkflowMarquee({
         >
           {steps.map((step, index) => {
             const isHovering = hoveredId === step.id;
-            const staggerOffset = index % 2 === 1 ? "translateY(5rem)" : "translateY(-1.5rem)";
+            const staggerOffset =
+              index % 2 === 1
+                ? "translate-x-4 md:translate-x-0 md:translate-y-16"
+                : "-translate-x-4 md:translate-x-0 md:-translate-y-4";
             return (
               <Link
                 key={step.id}
                 href={step.href || "/iletisim"}
                 onMouseEnter={() => setHoveredId(step.id)}
                 onMouseLeave={() => setHoveredId(null)}
+                className={`w-[85%] sm:w-[320px] md:w-[400px] h-[450px] md:h-[500px] mx-auto md:mx-0 shrink-0 relative group transition-all duration-500 ${staggerOffset}`}
                 style={{
-                  position: "relative",
-                  width: "100%",
-                  maxWidth: "400px",
-                  flex: "1 1 320px",
-                  minHeight: "500px",
                   perspective: "1400px",
                   textDecoration: "none",
                   color: "inherit",
                   display: "block",
-                  transform: staggerOffset,
-                  transition: "transform 500ms cubic-bezier(0.16, 1, 0.3, 1)",
                   willChange: "transform",
                 }}
               >
