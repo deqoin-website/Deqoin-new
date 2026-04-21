@@ -149,16 +149,16 @@ export default function WorkflowMarquee({
           className="md:flex-row md:justify-center md:items-stretch md:gap-8 lg:gap-12"
         >
           {steps.map((step, index) => {
-            const isOdd = index % 2 === 1;
-            const offsetClass = isOdd
-              ? "md:translate-y-16 translate-x-4 md:translate-x-0"
-              : "md:-translate-y-4 -translate-x-4 md:translate-x-0";
+            const staggerClass =
+              index % 2 === 1
+                ? "md:translate-y-16 translate-x-4 md:translate-x-0"
+                : "md:-translate-y-4 -translate-x-4 md:translate-x-0";
 
             return (
               <Link
                 key={step.id}
                 href={step.href || "/iletisim"}
-                className={`group relative block w-[85%] md:w-[400px] h-[500px] md:h-[600px] overflow-hidden bg-[#1c1b1b] border border-white/10 shadow-[0_0_60px_rgba(198,198,199,0.05)] transition-transform duration-700 ${offsetClass}`}
+                className={`group relative block w-[85%] md:w-[400px] h-[500px] md:h-[600px] overflow-hidden bg-[#1c1b1b] border border-white/10 shadow-[0_0_60px_rgba(198,198,199,0.05)] transition-transform duration-700 ${staggerClass}`}
                 style={{
                   textDecoration: "none",
                   color: "inherit",
@@ -168,18 +168,38 @@ export default function WorkflowMarquee({
                 <img
                   src={step.image}
                   alt={step.title}
-                  className="absolute inset-0 h-full w-full object-cover transition-transform duration-1000 group-hover:scale-105"
-                  style={{ display: "block" }}
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#050505] via-[#050505]/70 to-transparent" />
-                <div
-                  className="absolute bottom-0 left-0 z-10 flex w-full flex-col p-10"
                   style={{
+                    position: "absolute",
+                    inset: 0,
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "cover",
+                    display: "block",
+                    transition: "transform 1000ms cubic-bezier(0.16, 1, 0.3, 1)",
+                  }}
+                  className="group-hover:scale-105"
+                />
+                <div
+                  style={{
+                    position: "absolute",
+                    inset: 0,
+                    background: "linear-gradient(to top, #050505 0%, rgba(5,5,5,0.7) 55%, rgba(5,5,5,0) 100%)",
+                  }}
+                />
+                <div
+                  style={{
+                    position: "absolute",
+                    bottom: 0,
+                    left: 0,
+                    width: "100%",
+                    zIndex: 10,
+                    padding: "2.5rem",
                     boxSizing: "border-box",
                   }}
                 >
                   <span
                     style={{
+                      display: "block",
                       fontFamily: "var(--font-display), sans-serif",
                       fontSize: "0.78rem",
                       color: "rgba(229,226,225,0.5)",
@@ -193,7 +213,7 @@ export default function WorkflowMarquee({
                   <h3
                     style={{
                       fontFamily: "var(--font-display), sans-serif",
-                      fontSize: "clamp(1.75rem, 3vw, 2rem)",
+                      fontSize: "clamp(1.8rem, 3vw, 2.2rem)",
                       fontWeight: 300,
                       letterSpacing: "0.15em",
                       color: "#ffffff",
