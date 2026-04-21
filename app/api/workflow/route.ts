@@ -70,7 +70,6 @@ function normalizeWorkflowImage(image: unknown, fallback: string) {
   const base = image.split("?")[0];
   if (WORKFLOW_IMAGE_MAP[image]) return WORKFLOW_IMAGE_MAP[image];
   if (WORKFLOW_IMAGE_MAP[base]) return WORKFLOW_IMAGE_MAP[base];
-  if (image.trim()) return image;
   return fallback;
 }
 
@@ -79,7 +78,7 @@ function normalizeStep(step: any, fallbackStep: (typeof DEFAULT_WORKFLOW.steps)[
     id: step?.id || fallbackStep.id,
     title: step?.title || fallbackStep.title,
     description: step?.description || fallbackStep.description,
-    image: normalizeWorkflowImage(step?.image, fallbackStep.image),
+    image: fallbackStep.image,
   };
 }
 
