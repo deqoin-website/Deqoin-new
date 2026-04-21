@@ -185,9 +185,9 @@ export const materyalKategorileri: MateryalKategori[] = [
     slug: "tugla-ve-tas",
     title: "Tuğla ve Taş",
     sideLabel: "Timeless Earth",
-    image: "https://images.unsplash.com/photo-1534723328310-e82dad3ee43f?q=80&w=2000&auto=format&fit=crop",
+    image: "/images/workflow/tugla-ve-tas-custom.png",
     sliderImages: [
-      "https://images.unsplash.com/photo-1534723328310-e82dad3ee43f?q=80&w=2000&auto=format&fit=crop",
+      "/images/workflow/tugla-ve-tas-custom.png",
       "https://images.unsplash.com/photo-1524312015024-aa7f24097402?q=80&w=2000&auto=format&fit=crop",
       "https://images.unsplash.com/photo-1505843513577-22bb7d21e455?q=80&w=2000&auto=format&fit=crop",
       "https://images.unsplash.com/photo-1615529328331-f8917597711f?q=80&w=2000&auto=format&fit=crop"
