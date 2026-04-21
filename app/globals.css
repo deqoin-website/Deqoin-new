@@ -6999,10 +6999,10 @@ video {
 }
 
 .workflow-title {
-  font-family: var(--font-headline), sans-serif;
-  font-size: 2.25rem;
-  font-weight: 300;
-  letter-spacing: 0.3em;
+  font-family: var(--font-smooch), sans-serif;
+  font-size: clamp(2.5rem, 8vw, 5.5rem);
+  font-weight: 100;
+  letter-spacing: 0.15em;
   text-transform: uppercase;
   color: #ffffff;
   margin-bottom: 1.5rem;
@@ -7035,10 +7035,10 @@ video {
 }
 
 .workflow-card-heading {
-  font-family: var(--font-headline), sans-serif;
-  font-size: 1.25rem;
-  font-weight: 300;
-  letter-spacing: 0.15em;
+  font-family: var(--font-smooch), sans-serif;
+  font-size: 1.5rem;
+  font-weight: 100;
+  letter-spacing: 0.1em;
   color: #ffffff;
   text-transform: uppercase;
   margin-bottom: 0.75rem;
