@@ -151,7 +151,7 @@ export default function WorkflowMarquee({
         style={{
           width: "100%",
           textAlign: "center",
-          marginBottom: "3rem",
+          marginBottom: "4rem",
           padding: "0 1rem",
         }}
       >
@@ -169,10 +169,11 @@ export default function WorkflowMarquee({
         </h2>
         <div
           style={{
-            width: "3rem",
+            width: "16rem",
             height: "1px",
-            backgroundColor: "rgba(255,255,255,0.5)",
-            margin: "1rem auto 0",
+            background:
+              "linear-gradient(90deg, transparent 0%, rgba(212,175,55,0.5) 50%, transparent 100%)",
+            margin: "1.5rem auto 0",
           }}
         />
       </div>
