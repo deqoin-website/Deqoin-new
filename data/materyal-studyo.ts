@@ -75,9 +75,9 @@ export const materyalKategorileri: MateryalKategori[] = [
     slug: "italyan-sivalar",
     title: "İtalyan Sıvalar",
     sideLabel: "High-End Texture",
-    image: "https://images.unsplash.com/photo-1517430816045-df4b7de11d1d?q=80&w=2000&auto=format&fit=crop",
+    image: "/images/workflow/italyan-siva-custom.png",
     sliderImages: [
-      "https://images.unsplash.com/photo-1517430816045-df4b7de11d1d?q=80&w=2000&auto=format&fit=crop",
+      "/images/workflow/italyan-siva-custom.png",
       "https://images.unsplash.com/photo-1518193005634-9343360b37cd?q=80&w=2000&auto=format&fit=crop",
       "https://images.unsplash.com/photo-1533090161767-e6ffed986c88?q=80&w=2000&auto=format&fit=crop",
       "https://images.unsplash.com/photo-1581417478175-a9ef18f210c1?q=80&w=2000&auto=format&fit=crop"
