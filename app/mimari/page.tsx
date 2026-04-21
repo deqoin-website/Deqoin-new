@@ -221,10 +221,39 @@ export default function MimariPage() {
         <div className="mimari-cta-overlay" style={{ background: `rgba(0,0,0,${(ctaSection.overlay ?? 30) / 100})` }} />
         <div className="mimari-cta-content">
           <span className="section-small-label" style={{ color: "#cca883" }}>BİR SONRAKI ADIM</span>
-          <h2 className="mimari-cta-title">Mimari Vizyonunuzu Projeye Dönüştürelim</h2>
+          <h2 className="mimari-cta-title">
+            <span style={{ display: "block" }}>Mimari Vizyonunuzu</span>
+            <span style={{ display: "block", color: "#cca883" }}>Projeye Dönüştürelim</span>
+          </h2>
           <p className="mimari-cta-sub">
             Seçtiğiniz mimari fikri birlikte teknik, estetik ve uygulanabilir bir projeye çevirelim.
           </p>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, minmax(0, 1fr))", gap: "1rem", width: "100%", maxWidth: "760px", marginBottom: "2.25rem" }}>
+            {[
+              { value: "01", label: "Konsept Analizi" },
+              { value: "02", label: "Teknik Planlama" },
+              { value: "03", label: "Uygulama Hazırlığı" },
+            ].map((item) => (
+              <div
+                key={item.value}
+                style={{
+                  border: "1px solid rgba(202, 168, 131, 0.25)",
+                  background: "rgba(10, 10, 10, 0.28)",
+                  backdropFilter: "blur(10px)",
+                  padding: "1rem 1rem 1.1rem",
+                  textAlign: "left",
+                  minHeight: "96px",
+                }}
+              >
+                <div style={{ color: "#cca883", fontSize: "0.75rem", letterSpacing: "0.2em", marginBottom: "0.65rem" }}>
+                  {item.value}
+                </div>
+                <div style={{ color: "#fff", fontSize: "0.95rem", lineHeight: "1.35" }}>
+                  {item.label}
+                </div>
+              </div>
+            ))}
+          </div>
           <SwipeAppointmentButton onActivate={() => setIsConsultationOpen(true)} />
         </div>
       </section>
