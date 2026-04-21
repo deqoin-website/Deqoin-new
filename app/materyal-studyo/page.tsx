@@ -11,6 +11,9 @@ import { materyalKategorileri } from "../../data/materyal-studyo";
 import { WORKFLOW_STEPS } from "../../data/workflows";
 
 const materialCategories = materyalKategorileri;
+const materialImageBySlug = Object.fromEntries(
+  materyalKategorileri.map((category) => [category.slug, category.image])
+);
 
 export default function MateryalStudyo() {
   const [content, setContent] = useState<any>(null);
@@ -58,6 +61,13 @@ export default function MateryalStudyo() {
   const ctaSection = content?.sections?.find((s: any) => s.id === "cta");
   const ctaBlur = 2;
   const ctaOverlay = 30;
+  const categoryItems = (content?.sections?.find((s: any) => s.id === "categories")?.items?.length > 0
+    ? content.sections.find((s: any) => s.id === "categories").items
+    : materialCategories
+  ).map((card: any) => ({
+    ...card,
+    image: materialImageBySlug[card.slug] || card.image,
+  }));
 
   return (
     <main className="site-shell project-detail-shell material-studio-page" style={{ background: "#0a0a0a" }}>
@@ -88,7 +98,7 @@ export default function MateryalStudyo() {
           </div>
 
           <div className="services-grid material-studio-grid" style={{ gridAutoRows: "65vh" }}>
-            {materialCategories.map((card) => (
+            {categoryItems.map((card: any) => (
               <Link
                 key={card.slug}
                 href={`/materyal-studyo/${card.slug}`}
