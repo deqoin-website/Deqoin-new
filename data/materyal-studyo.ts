@@ -17,9 +17,9 @@ export const materyalKategorileri: MateryalKategori[] = [
     slug: "mobilya",
     title: "Mobilya",
     sideLabel: "Bespoke Furniture",
-    image: "/images/workflow/mobilya-custom.png",
+    image: "/images/slider/tasarim_slide.png",
     sliderImages: [
-      "/images/workflow/mobilya-custom.png",
+      "/images/slider/tasarim_slide.png",
       "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?q=80&w=2000&auto=format&fit=crop",
       "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?q=80&w=2000&auto=format&fit=crop",
       "https://images.unsplash.com/photo-1524758631624-e2822e304c36?q=80&w=2000&auto=format&fit=crop"
@@ -46,9 +46,9 @@ export const materyalKategorileri: MateryalKategori[] = [
     slug: "aydinlatma",
     title: "Aydınlatma",
     sideLabel: "Light Atmosphere",
-    image: "/images/workflow/aydinlatma-custom.png",
+    image: "/images/slider/mimari_slide.png",
     sliderImages: [
-      "/images/workflow/aydinlatma-custom.png",
+      "/images/slider/mimari_slide.png",
       "https://images.unsplash.com/photo-1517430816045-df4b7de11d1d?q=80&w=2000&auto=format&fit=crop",
       "https://images.unsplash.com/photo-1513506003901-1e6a229e2d15?q=80&w=2000&auto=format&fit=crop",
       "https://images.unsplash.com/photo-1550989460-0adf9ea622e2?q=80&w=2000&auto=format&fit=crop"
@@ -75,9 +75,9 @@ export const materyalKategorileri: MateryalKategori[] = [
     slug: "italyan-sivalar",
     title: "İtalyan Sıvalar",
     sideLabel: "High-End Texture",
-    image: "/images/workflow/italyan-siva-custom.png",
+    image: "/images/projects/gallery_1.png",
     sliderImages: [
-      "/images/workflow/italyan-siva-custom.png",
+      "/images/projects/gallery_1.png",
       "https://images.unsplash.com/photo-1518193005634-9343360b37cd?q=80&w=2000&auto=format&fit=crop",
       "https://images.unsplash.com/photo-1533090161767-e6ffed986c88?q=80&w=2000&auto=format&fit=crop",
       "https://images.unsplash.com/photo-1581417478175-a9ef18f210c1?q=80&w=2000&auto=format&fit=crop"
@@ -103,9 +103,9 @@ export const materyalKategorileri: MateryalKategori[] = [
     slug: "dekoratif-boyalar",
     title: "Dekoratif Boyalar",
     sideLabel: "Paint & Mood",
-    image: "/images/workflow/dekoratif-boya-custom.png",
+    image: "/images/projects/gallery_2.png",
     sliderImages: [
-      "/images/workflow/dekoratif-boya-custom.png",
+      "/images/projects/gallery_2.png",
       "https://images.unsplash.com/photo-1494526585095-c41746248156?q=80&w=2000&auto=format&fit=crop",
       "https://images.unsplash.com/photo-1534655615591-6c7d0c8d1f5c?q=80&w=2000&auto=format&fit=crop",
       "https://images.unsplash.com/photo-1513694203232-719a280e022f?q=80&w=2000&auto=format&fit=crop"
@@ -131,9 +131,9 @@ export const materyalKategorileri: MateryalKategori[] = [
     slug: "mikro-cimento",
     title: "Mikro Çimento",
     sideLabel: "Seamless Surface",
-    image: "/images/workflow/mikro-cimento-custom.png",
+    image: "/images/slider/uygulama_slide.png",
     sliderImages: [
-      "/images/workflow/mikro-cimento-custom.png",
+      "/images/slider/uygulama_slide.png",
       "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=2000&q=80",
       "https://images.unsplash.com/photo-1540932239986-30128078f3c5?q=80&w=2000&auto=format&fit=crop"
     ],
@@ -157,9 +157,9 @@ export const materyalKategorileri: MateryalKategori[] = [
     slug: "sanatsal-calismalar",
     title: "Sanatsal Çalışmalar",
     sideLabel: "Creative Soul",
-    image: "/images/workflow/sanatsal-calisma-custom.png",
+    image: "/images/about_interior.png",
     sliderImages: [
-      "/images/workflow/sanatsal-calisma-custom.png",
+      "/images/about_interior.png",
       "https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?q=80&w=2000&auto=format&fit=crop",
       "https://images.unsplash.com/photo-1541963463532-d68292c34b19?q=80&w=2000&auto=format&fit=crop",
       "https://images.unsplash.com/photo-1549490349-8643362247b5?q=80&w=2000&auto=format&fit=crop"
@@ -185,9 +185,9 @@ export const materyalKategorileri: MateryalKategori[] = [
     slug: "tugla-ve-tas",
     title: "Tuğla ve Taş",
     sideLabel: "Timeless Earth",
-    image: "/images/workflow/tugla-ve-tas-custom.png",
+    image: "/images/projects/gallery_1.png",
     sliderImages: [
-      "/images/workflow/tugla-ve-tas-custom.png",
+      "/images/projects/gallery_1.png",
       "https://images.unsplash.com/photo-1524312015024-aa7f24097402?q=80&w=2000&auto=format&fit=crop",
       "https://images.unsplash.com/photo-1505843513577-22bb7d21e455?q=80&w=2000&auto=format&fit=crop",
       "https://images.unsplash.com/photo-1615529328331-f8917597711f?q=80&w=2000&auto=format&fit=crop"
