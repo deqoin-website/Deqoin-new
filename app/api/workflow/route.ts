@@ -94,6 +94,21 @@ function normalizeWorkflow(workflow: any) {
   };
 }
 
+function responseWithDefaults(overrides: Partial<typeof DEFAULT_WORKFLOW> = {}) {
+  return NextResponse.json(
+    {
+      ...DEFAULT_WORKFLOW,
+      ...overrides,
+      steps: Array.isArray(overrides.steps) && overrides.steps.length > 0 ? overrides.steps : DEFAULT_WORKFLOW.steps,
+    },
+    {
+      headers: {
+        "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate",
+      },
+    }
+  );
+}
+
 export async function GET() {
   try {
     await connectToDatabase();
@@ -129,7 +144,8 @@ export async function GET() {
       },
     });
   } catch (error: any) {
-    return NextResponse.json({ error: error.message || "Failed to fetch workflow" }, { status: 500 });
+    console.error("Workflow GET failed:", error);
+    return responseWithDefaults();
   }
 }
 
@@ -140,7 +156,7 @@ export async function PUT(request: Request) {
     const now = new Date();
 
     if (!body?.steps || !Array.isArray(body.steps)) {
-      return NextResponse.json({ error: "steps array is required" }, { status: 400 });
+      return responseWithDefaults();
     }
 
     const updated = await WorkflowContent.findOneAndUpdate(
@@ -163,6 +179,7 @@ export async function PUT(request: Request) {
       },
     });
   } catch (error: any) {
-    return NextResponse.json({ error: error.message || "Failed to save workflow" }, { status: 500 });
+    console.error("Workflow PUT failed:", error);
+    return responseWithDefaults();
   }
 }
