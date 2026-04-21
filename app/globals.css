@@ -6880,3 +6880,105 @@ video {
   font-size: 1.15rem;
   opacity: 0.7;
 }
+
+/* WORKFLOW SECTION STYLES */
+.workflow-header { display: flex; flex-direction: column; align-items: center; margin-bottom: 3rem; }
+@media (min-width: 768px) { .workflow-header { margin-bottom: 6rem; } }
+@media (min-width: 1024px) { .workflow-header { margin-bottom: 8rem; } }
+
+.workflow-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  width: 100%;
+  max-width: 2000px;
+  justify-content: center;
+  align-items: center;
+  padding: 0 1.5rem;
+}
+@media (min-width: 768px) {
+  .workflow-grid {
+    flex-direction: row;
+    gap: 1.5rem;
+    align-items: stretch;
+    padding: 0 3rem;
+  }
+}
+@media (min-width: 1024px) {
+  .workflow-grid {
+    gap: 2.5rem;
+  }
+}
+
+.workflow-card {
+  display: block;
+  position: relative;
+  width: 100%;
+  max-width: 380px;
+  aspect-ratio: 3/4;
+  overflow: hidden;
+  background-color: #1C1B1B;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: 0 0 50px rgba(0, 0, 0, 0.3);
+  transition: border-color 0.7s ease, transform 0.7s ease;
+}
+.workflow-card:hover {
+  border-color: rgba(255, 255, 255, 0.2);
+}
+.workflow-card img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 1s ease;
+}
+.workflow-card:hover img {
+  transform: scale(1.05);
+}
+
+.workflow-card-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, #050505 0%, rgba(5, 5, 5, 0.6) 50%, transparent 100%);
+  opacity: 0.9;
+}
+
+.workflow-card-content {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  z-index: 10;
+  width: 100%;
+}
+@media (min-width: 1024px) {
+  .workflow-card-content {
+    padding: 2.5rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .workflow-card {
+    width: 18vw;
+    height: auto;
+    aspect-ratio: auto;
+  }
+  .workflow-card.offset-up {
+    transform: translateY(-1rem);
+  }
+  .workflow-card.offset-down {
+    transform: translateY(3rem);
+  }
+}
+@media (min-width: 1024px) {
+  .workflow-card {
+    width: 16vw;
+  }
+  .workflow-card.offset-down {
+    transform: translateY(4rem);
+  }
+}
+

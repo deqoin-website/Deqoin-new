@@ -72,37 +72,36 @@ export default function WorkflowMarquee({
       />
 
       {/* Header */}
-      <header className="relative z-10 flex flex-col items-center mb-12 md:mb-24 lg:mb-32">
+      <header className="relative z-10 workflow-header">
         <h2 className="font-headline text-4xl md:text-5xl font-light tracking-[0.3em] uppercase text-white mb-6">
           {title}
         </h2>
         <div className="h-[1px] w-64 bg-gradient-to-r from-transparent via-white/40 to-transparent"></div>
       </header>
 
-      {/* Grid / Horizontal Scroll Area */}
-      <div className="relative z-10 w-full max-w-[2000px] px-6 md:px-12">
-        <div className="flex flex-col md:flex-row gap-8 md:gap-6 lg:gap-10 justify-center items-center md:items-stretch overflow-visible">
+      {/* Grid Area */}
+      <div className="relative z-10 w-full overflow-visible">
+        <div className="workflow-grid">
           {steps.map((step, index) => {
             // Alternating offsets for cards
-            const offsetClass = index % 2 === 1 ? "md:translate-y-12 lg:translate-y-16" : "md:-translate-y-4";
+            const offsetClass = index % 2 === 1 ? "offset-down" : "offset-up";
             
             return (
               <Link
                 key={step.id}
                 href={step.href || "/iletisim"}
-                className={`group block relative w-full max-w-[380px] md:w-[18vw] lg:w-[16vw] aspect-[3/4] md:h-auto overflow-hidden bg-[#1C1B1B] border border-white/5 shadow-[0_0_50px_rgba(0,0,0,0.3)] transition-all duration-700 hover:border-white/20 ${offsetClass}`}
+                className={`workflow-card group ${offsetClass}`}
               >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={step.image}
                   alt={step.title}
-                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
                 />
                 {/* Gradient Overlay */}
-                <div className="absolute inset-0 bg-gradient-to-t from-[#050505] via-[#050505]/60 to-transparent opacity-90" />
+                <div className="workflow-card-overlay" />
                 
                 {/* Content */}
-                <div className="absolute bottom-0 left-0 p-6 lg:p-10 flex flex-col z-10 w-full">
+                <div className="workflow-card-content">
                   <span className="font-headline text-xs lg:text-sm text-white/40 tracking-[0.2em] mb-2 font-light">
                     {step.id}
                   </span>
