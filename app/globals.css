@@ -6913,9 +6913,8 @@ video {
 .workflow-card {
   display: block;
   position: relative;
-  width: 100%;
-  max-width: 380px;
-  aspect-ratio: 3/4;
+  width: 85%;
+  height: 500px;
   overflow: hidden;
   background-color: #1C1B1B;
   border: 1px solid rgba(255, 255, 255, 0.05);
@@ -6962,20 +6961,19 @@ video {
 
 @media (min-width: 768px) {
   .workflow-card {
-    width: 18vw;
-    height: auto;
-    aspect-ratio: auto;
+    width: 400px;
+    height: 600px;
   }
   .workflow-card.offset-up {
     transform: translateY(-1rem);
   }
   .workflow-card.offset-down {
-    transform: translateY(3rem);
+    transform: translateY(4rem);
   }
 }
 @media (min-width: 1024px) {
   .workflow-card {
-    width: 16vw;
+    width: 400px;
   }
   .workflow-card.offset-down {
     transform: translateY(4rem);
