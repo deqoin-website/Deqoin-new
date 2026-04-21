@@ -224,28 +224,42 @@ export default function WorkflowMarquee({
                       WebkitBackfaceVisibility: "hidden",
                       overflow: "hidden",
                       backgroundColor: "#18181b",
-                      border: "1px solid rgba(255,255,255,0.1)",
+                      border: "none",
+                      borderRadius: "0.375rem",
+                      boxShadow: "0 30px 90px rgba(0,0,0,0.35)",
                     }}
                   >
-                    <img
-                      src={step.image}
-                      alt={step.title}
+                    <div
                       style={{
                         position: "absolute",
                         inset: 0,
-                        width: "100%",
-                        height: "100%",
-                        objectFit: "cover",
-                        display: "block",
+                        overflow: "hidden",
+                        borderRadius: "0.375rem",
                       }}
-                    />
+                    >
+                      <img
+                        src={step.image}
+                        alt={step.title}
+                        style={{
+                          position: "absolute",
+                          inset: 0,
+                          width: "100%",
+                          height: "100%",
+                          objectFit: "cover",
+                          display: "block",
+                          transform: isHovering ? "scale(1.05)" : "scale(1)",
+                          transition: "transform 1000ms cubic-bezier(0.16, 1, 0.3, 1)",
+                          willChange: "transform",
+                        }}
+                      />
+                    </div>
 
                     <div
                       style={{
                         position: "absolute",
                         inset: 0,
                         background:
-                          "linear-gradient(to top, rgba(0,0,0,1), rgba(0,0,0,0.65), rgba(0,0,0,0))",
+                          "linear-gradient(to top, #050505 0%, rgba(5,5,5,0.6) 52%, rgba(5,5,5,0) 100%)",
                       }}
                     />
 
@@ -262,14 +276,14 @@ export default function WorkflowMarquee({
                       <span
                         style={{
                           display: "block",
-                          fontFamily: "var(--font-smooch), sans-serif",
-                          fontSize: "clamp(3rem, 6vw, 4.5rem)",
+                          fontFamily: "var(--font-display), sans-serif",
+                          fontSize: "0.78rem",
                           lineHeight: 1,
-                          fontWeight: 100,
-                          letterSpacing: "0.14em",
+                          fontWeight: 300,
+                          letterSpacing: "0.2em",
                           textTransform: "uppercase",
-                          color: "rgba(255,255,255,0.14)",
-                          marginBottom: "0.5rem",
+                          color: "rgba(255,255,255,0.5)",
+                          marginBottom: "0.35rem",
                         }}
                       >
                         {step.id}
@@ -278,8 +292,8 @@ export default function WorkflowMarquee({
                         style={{
                           fontFamily: "var(--font-smooch), sans-serif",
                           fontSize: "clamp(2rem, 4vw, 3rem)",
-                          fontWeight: 100,
-                          letterSpacing: "0.16em",
+                          fontWeight: 300,
+                          letterSpacing: "0.18em",
                           margin: 0,
                           marginBottom: "0.5rem",
                           textTransform: "uppercase",
@@ -294,9 +308,9 @@ export default function WorkflowMarquee({
                           fontSize: "0.8rem",
                           letterSpacing: "0.1em",
                           textTransform: "uppercase",
-                          color: "rgba(255,255,255,0.72)",
+                          color: "rgba(255,255,255,0.6)",
                           margin: 0,
-                          lineHeight: 1.6,
+                          lineHeight: 1.8,
                           maxWidth: "24ch",
                         }}
                       >
@@ -315,7 +329,8 @@ export default function WorkflowMarquee({
                       overflow: "hidden",
                       background:
                         "linear-gradient(180deg, rgba(18,18,18,0.98) 0%, rgba(8,8,8,0.98) 100%)",
-                      border: "1px solid rgba(255,255,255,0.08)",
+                      border: "none",
+                      borderRadius: "0.375rem",
                       display: "flex",
                       alignItems: "stretch",
                     }}
@@ -323,7 +338,7 @@ export default function WorkflowMarquee({
                     <div
                       style={{
                         width: "100%",
-                        padding: "2rem",
+                        padding: "2.5rem",
                         boxSizing: "border-box",
                         minHeight: "100%",
                         display: "flex",
@@ -336,43 +351,35 @@ export default function WorkflowMarquee({
                         <span
                           style={{
                             display: "block",
-                            fontFamily: "var(--font-smooch), sans-serif",
-                            fontSize: "clamp(2rem, 4vw, 3.2rem)",
+                            fontFamily: "var(--font-display), sans-serif",
+                            fontSize: "0.78rem",
                             lineHeight: 1,
-                            fontWeight: 100,
-                            letterSpacing: "0.14em",
+                            fontWeight: 300,
+                            letterSpacing: "0.2em",
                             textTransform: "uppercase",
-                            color: "rgba(255,255,255,0.94)",
-                            marginBottom: "0.75rem",
-                          }}
-                        >
-                          {step.title}
-                        </span>
-                        <div
-                          style={{
-                            width: "4rem",
-                            height: "1px",
-                            backgroundColor: "rgba(255,255,255,0.24)",
-                          }}
-                        />
-                      </div>
-
-                      <div>
-                        <span
-                          style={{
-                            display: "block",
-                            fontFamily: "var(--font-smooch), sans-serif",
-                            fontSize: "clamp(4.5rem, 9vw, 6.75rem)",
-                            lineHeight: 0.9,
-                            fontWeight: 100,
-                            color: "rgba(255,255,255,0.08)",
-                            marginBottom: "0.75rem",
-                            textTransform: "uppercase",
+                            color: "rgba(255,255,255,0.5)",
+                            marginBottom: "0.35rem",
                           }}
                         >
                           {step.id}
                         </span>
+                        <span
+                          style={{
+                            display: "block",
+                            fontFamily: "var(--font-smooch), sans-serif",
+                            fontSize: "clamp(2rem, 4vw, 3.2rem)",
+                            fontWeight: 300,
+                            letterSpacing: "0.18em",
+                            textTransform: "uppercase",
+                            lineHeight: 1,
+                            color: "rgba(255,255,255,0.94)",
+                          }}
+                        >
+                          {step.title}
+                        </span>
+                      </div>
 
+                      <div>
                         <div
                           style={{
                             display: "inline-flex",
@@ -403,8 +410,8 @@ export default function WorkflowMarquee({
                             fontSize: "0.82rem",
                             letterSpacing: "0.08em",
                             textTransform: "uppercase",
-                            lineHeight: 1.85,
-                            color: "#e7e1d9",
+                            lineHeight: 1.9,
+                            color: "rgba(255,255,255,0.78)",
                             margin: 0,
                             maxWidth: "28ch",
                           }}
