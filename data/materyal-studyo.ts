@@ -103,9 +103,9 @@ export const materyalKategorileri: MateryalKategori[] = [
     slug: "dekoratif-boyalar",
     title: "Dekoratif Boyalar",
     sideLabel: "Paint & Mood",
-    image: "https://images.unsplash.com/photo-1523419409543-0c9a1d7b1b2e?q=80&w=2000&auto=format&fit=crop",
+    image: "/images/workflow/dekoratif-boya-custom.png",
     sliderImages: [
-      "https://images.unsplash.com/photo-1523419409543-0c9a1d7b1b2e?q=80&w=2000&auto=format&fit=crop",
+      "/images/workflow/dekoratif-boya-custom.png",
       "https://images.unsplash.com/photo-1494526585095-c41746248156?q=80&w=2000&auto=format&fit=crop",
       "https://images.unsplash.com/photo-1534655615591-6c7d0c8d1f5c?q=80&w=2000&auto=format&fit=crop",
       "https://images.unsplash.com/photo-1513694203232-719a280e022f?q=80&w=2000&auto=format&fit=crop"
