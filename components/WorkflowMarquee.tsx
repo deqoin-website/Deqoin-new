@@ -212,7 +212,6 @@ export default function WorkflowMarquee({
                 href={step.href || "/iletisim"}
                 onMouseEnter={() => setHoveredId(step.id)}
                 onMouseLeave={() => setHoveredId(null)}
-                className={`w-[85%] sm:w-[320px] md:w-[400px] h-[450px] md:h-[500px] mx-auto md:mx-0 shrink-0 relative group transition-all duration-500 ${staggerOffset}`}
                 style={{
                   perspective: "1400px",
                   textDecoration: "none",
@@ -221,6 +220,9 @@ export default function WorkflowMarquee({
                   willChange: "transform",
                 }}
               >
+                <div
+                  className={`w-[85%] sm:w-[320px] md:w-[400px] h-[450px] md:h-[500px] mx-auto md:mx-0 shrink-0 relative group transition-all duration-500 ${staggerOffset}`}
+                >
                 <div
                   style={{
                     position: "absolute",
@@ -449,6 +451,7 @@ export default function WorkflowMarquee({
                       </div>
                     </div>
                   </div>
+                </div>
                 </div>
               </Link>
             );
