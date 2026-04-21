@@ -37,7 +37,7 @@ export const WORKFLOW_STEPS: WorkflowStep[] = [
     id: "05",
     title: "UYGULAMA",
     description: "Detayı kontrol eder, tasarımı gerçeğe dönüştürürüz.",
-    image: "/images/workflow/uygulama-v4.svg",
+    image: "/images/workflow/uygulama-v4.png",
     backText:
       "Planlama, saha koordinasyonu ve ince işçilik aynı anda yönetilir. Tasarım, kusursuz teslimle gerçek bir deneyime dönüşür.",
   },
