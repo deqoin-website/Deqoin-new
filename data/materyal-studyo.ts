@@ -131,9 +131,9 @@ export const materyalKategorileri: MateryalKategori[] = [
     slug: "mikro-cimento",
     title: "Mikro Çimento",
     sideLabel: "Seamless Surface",
-    image: "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?q=80&w=2000&auto=format&fit=crop",
+    image: "/images/workflow/mikro-cimento-custom.png",
     sliderImages: [
-      "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?q=80&w=2000&auto=format&fit=crop",
+      "/images/workflow/mikro-cimento-custom.png",
       "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=2000&q=80",
       "https://images.unsplash.com/photo-1540932239986-30128078f3c5?q=80&w=2000&auto=format&fit=crop"
     ],
