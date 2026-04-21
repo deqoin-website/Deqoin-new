@@ -80,12 +80,12 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           path: '/admin/studios-uygulama',
           subItems: [
             { name: 'Genel Sayfa Ayarları', path: '/admin/content/services/execution' },
-            { name: 'İnşaat Ekipleri', path: '/admin/studios/insaat-ekipleri' },
-            { name: 'Sıva & Alçı Ekipleri', path: '/admin/studios/siva-ve-alci-ekipleri' },
-            { name: 'Boya Ekipleri', path: '/admin/studios/boya-ekipleri' },
-            { name: 'Duvar Sanatçıları', path: '/admin/studios/duvar-sanatcilari' },
-            { name: 'Ressamlar', path: '/admin/studios/ressamlar' },
-            { name: 'Heykeltıraşlar', path: '/admin/studios/heykeltiraslar' },
+            { name: 'İnşaat', path: '/admin/studios/insaat-ekipleri' },
+            { name: 'Sıva & Alçı', path: '/admin/studios/siva-ve-alci-ekipleri' },
+            { name: 'Boya', path: '/admin/studios/boya-ekipleri' },
+            { name: 'Duvar', path: '/admin/studios/duvar-sanatcilari' },
+            { name: 'Resim', path: '/admin/studios/ressamlar' },
+            { name: 'Heykel', path: '/admin/studios/heykeltiraslar' },
           ]
         },
       ]

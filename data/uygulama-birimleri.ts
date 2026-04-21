@@ -15,7 +15,7 @@ export interface UygulamaBirimi {
 export const uygulamaBirimleri: UygulamaBirimi[] = [
   {
     slug: "insaat-ekipleri",
-    title: "İnşaat Ekipleri",
+    title: "İnşaat",
     sideLabel: "Structural Integrity",
     image: "https://lh3.googleusercontent.com/aida-public/AB6AXuBg-MKl4zF6vfhExOXkEX-PKVlktOgQYI9EevfKIIYXVJ2wtmRpvybiQLaOtQdeYc_lIPrntEOUrCatq_Efo6fw-z-0-6TilLvAsA4tcYK-QcbjqdetFT2T2EreDjugTzsElsUeoEqEM9i_daWDWBBOJXiZvrjMKWtS2z5I5ZuzOLXWozpZ8MroEnEj5yRtFuaubPctxfeO_ZAZ5E5Tawo9b6yB5w0pmG4_axQCW--XoR8nAAImAE_M5UpM2vFx3tuR2ePYvZ-VmaY",
     sliderImages: [
@@ -42,7 +42,7 @@ export const uygulamaBirimleri: UygulamaBirimi[] = [
   },
   {
     slug: "siva-ve-alci-ekipleri",
-    title: "Sıva ve Alçı Ekipleri",
+    title: "Sıva ve Alçı",
     sideLabel: "Surface Structuring",
     image: "https://lh3.googleusercontent.com/aida-public/AB6AXuDQ33Fr_mp_94UQUZyYOcRBRBK4SsC3hdWkie-fw6V2__i_B1h6AdSqBrcIxAAgXdz-v3B0bxiTC-ksADc_Szblsz7rQvFfbm-HT7bZ1XL4bsM_asUURcwntMziJsDYv2IG_IZ29E-x6Q-o8X94qQUEmwhhDhnCvzR73u_lPOfR2qgqCLbkcFE__mn9WB-1VfwW7H_DqV9DkwKYK7M0io-43LvxYatvgMsrwap-p4wEffe-ljtcBwrQlBdN4PP7Q0JGnYBjixX0YQ0",
     sliderImages: [
@@ -68,7 +68,7 @@ export const uygulamaBirimleri: UygulamaBirimi[] = [
   },
   {
     slug: "boya-ekipleri",
-    title: "Boya Ekipleri",
+    title: "Boya",
     sideLabel: "Chromatic Finish",
     image: "https://images.unsplash.com/photo-1562259949-e8e7689d7828?q=80&w=2000&auto=format&fit=crop",
     sliderImages: [
@@ -94,7 +94,7 @@ export const uygulamaBirimleri: UygulamaBirimi[] = [
   },
   {
     slug: "duvar-sanatcilari",
-    title: "Duvar Sanatçıları",
+    title: "Duvar",
     sideLabel: "Artistic Walls",
     image: "https://lh3.googleusercontent.com/aida-public/AB6AXuCVUCHLvB4gqKIu87ZlNcr3oZLDY1XgwMEMQcp-pzAUlFS1Nn-nmjan1oheeXLiJ94VJmZA_oBfMSPF7jZZuVG47cEkP7h1goKj5Y9WgqVshN-x4CHN0Cdm1zFfAK5KszWNO6pl8w1-gfW6Wb3njqQOsjkQ8-pCuF6dDd8ggmvjFL-N9m4Fe4Lj-pi8WbEEAKONv-Sz-Yl9wNOSPvazMnMZ5Gjdm2myTHVi_vIL4aoeENqkME8bn_RKrHn4r6XvpVXXxsRugi5gKPU",
     sliderImages: [
@@ -120,7 +120,7 @@ export const uygulamaBirimleri: UygulamaBirimi[] = [
   },
   {
     slug: "ressamlar",
-    title: "Ressamlar",
+    title: "Resim",
     sideLabel: "Visual Narrative",
     image: "https://lh3.googleusercontent.com/aida-public/AB6AXuA6ch6quj8NI1itL20E5PhIg-48fajZE_vr98u3teQ-X7iSPzBfAvJnkTJ3RuJVxc2gjJk51KmYZk9sWDTwAjNMVHOwiJPfJh3i0VYt8Cfzsf6cPXv8SRUsh66wCIyRnDgQLMJg2_1yHEHCnFIbIJoBzDcFEntZjDdLiFO8q1WvslXUxTqhQNEyc8D_USmsB4iizRnCFmQqpbt_btAIebK4vy_8mB0LYZXdZk9Mtj6xqQ8e91yqi86iYoLhuoh8fXoG0Gcgep-wrSw",
     sliderImages: [
@@ -146,7 +146,7 @@ export const uygulamaBirimleri: UygulamaBirimi[] = [
   },
   {
     slug: "heykeltiraslar",
-    title: "Heykeltıraşlar",
+    title: "Heykel",
     sideLabel: "3D Artistry",
     image: "https://lh3.googleusercontent.com/aida-public/AB6AXuDb8oJUAbKO838Rur4GmMdhoZA52T9apeuU9wT1MD8aED3l4BUvMiWzCyCUvgmQ_hUnxgOfF8IiulBiI2jOUD_rMvhMhY5q4XF5oN3Orkq525thVCe6a7Qn84IkmcCKdp7RVHGwlMXKCQZWlSwoQRYqNQ54bsoQ6pAqtTv5QeYJjApl9fwBFVCYyWIR0fqefLofCqY7cPmi_F1xk7yjOVIZsTO7FKo0OjDyPcryEMVFbFFRsn19bmHoDjlgz-s838-TizdClIfaG6s",
     sliderImages: [

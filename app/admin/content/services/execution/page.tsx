@@ -387,7 +387,7 @@ export default function ExecutionEditor() {
             </div>
             <div className="modal-body">
               <div className="input-group">
-                <label>Birim Adı (Örn: İnşaat Ekipleri)</label>
+                <label>Birim Adı (Örn: İnşaat)</label>
                 <input type="text" value={newService.title} onChange={e => setNewService({...newService, title: e.target.value})} />
               </div>
               <div className="input-group">
