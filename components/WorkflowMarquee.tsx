@@ -218,15 +218,19 @@ export default function WorkflowMarquee({
                     : "-translate-x-4 md:translate-x-0 md:-translate-y-4"
                 }`}
                 style={{
+                  position: "relative",
                   perspective: "1400px",
                   textDecoration: "none",
                   color: "inherit",
+                  display: "block",
                   willChange: "transform",
                 }}
               >
                 <div
-                  className="absolute inset-0"
                   style={{
+                    position: "relative",
+                    width: "100%",
+                    height: "100%",
                     transformStyle: "preserve-3d",
                   }}
                 >
