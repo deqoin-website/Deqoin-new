@@ -87,7 +87,7 @@ export default function UygulamaPage() {
       />
 
       {/* WORKFLOW SECTION */}
-      <WorkflowMarquee steps={workflow.steps} title={workflow.title} />
+      <WorkflowMarquee steps={workflow.steps} title={workflow.title} className="snap-section" />
 
       {/* MANİFESTO */}
 
