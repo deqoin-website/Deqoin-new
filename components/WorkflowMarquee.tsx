@@ -123,20 +123,20 @@ export default function WorkflowMarquee({
   return (
     <section
       className={className}
-      style={{
-        width: "100%",
-        minHeight: "100vh",
-        backgroundColor: "#080808",
-        color: "#ffffff",
+        style={{
+          width: "100%",
+          minHeight: "100vh",
+          backgroundColor: "#080808",
+          color: "#ffffff",
         display: "flex",
-        flexDirection: "column",
-        justifyContent: "center",
-        overflow: "hidden",
-        position: "relative",
-        boxSizing: "border-box",
-        padding: "4rem 0",
-      }}
-    >
+          flexDirection: "column",
+          justifyContent: "center",
+          overflow: "hidden",
+          position: "relative",
+          boxSizing: "border-box",
+          padding: "6rem 0",
+        }}
+      >
       <div
         style={{
           width: "100%",
@@ -184,10 +184,12 @@ export default function WorkflowMarquee({
             alignItems: "stretch",
             width: "100%",
             margin: "0 auto",
+            padding: "6rem 0",
           }}
         >
-          {steps.map((step) => {
+          {steps.map((step, index) => {
             const isHovering = hoveredId === step.id;
+            const staggerOffset = index % 2 === 1 ? "translateY(3rem)" : "translateY(-1.5rem)";
             return (
               <Link
                 key={step.id}
@@ -204,6 +206,9 @@ export default function WorkflowMarquee({
                   textDecoration: "none",
                   color: "inherit",
                   display: "block",
+                  transform: staggerOffset,
+                  transition: "transform 500ms cubic-bezier(0.16, 1, 0.3, 1)",
+                  willChange: "transform",
                 }}
               >
                 <div
