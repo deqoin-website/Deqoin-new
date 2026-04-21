@@ -70,9 +70,9 @@ export const uygulamaBirimleri: UygulamaBirimi[] = [
     slug: "boya-ekipleri",
     title: "Boya",
     sideLabel: "Chromatic Finish",
-    image: "https://images.unsplash.com/photo-1562259949-e8e7689d7828?q=80&w=2000&auto=format&fit=crop",
+    image: "/images/workflow/boya-custom.png",
     sliderImages: [
-      "https://images.unsplash.com/photo-1503387762-592dee58c460?q=80&w=2000&auto=format&fit=crop",
+      "/images/workflow/boya-custom.png",
       "https://images.unsplash.com/photo-1513694203232-719a280e022f?q=80&w=2000&auto=format&fit=crop",
       "https://images.unsplash.com/photo-1497366754035-f200968a6e72?q=80&w=2000&auto=format&fit=crop"
     ],
