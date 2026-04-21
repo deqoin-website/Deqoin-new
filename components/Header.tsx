@@ -140,7 +140,7 @@ export default function Header() {
 
           <div className="search-results-container">
             {searchQuery.trim() !== "" && searchResults.projects.length === 0 && searchResults.team.length === 0 && (
-              <div className="no-results-msg">"{searchQuery}" için sonuç bulunamadı.</div>
+              <div className="no-results-msg">&quot;{searchQuery}&quot; için sonuç bulunamadı.</div>
             )}
 
             {searchResults.projects.length > 0 && (
