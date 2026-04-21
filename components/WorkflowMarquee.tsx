@@ -62,48 +62,61 @@ export default function WorkflowMarquee({
   className = "",
 }: WorkflowMarqueeProps) {
   return (
-    <section className={`flex-grow pt-40 pb-32 px-6 md:px-12 overflow-hidden flex flex-col items-center bg-[#0E0E0E] ${className}`}>
+    <section className={`snap-section w-full min-h-screen md:min-h-svh flex flex-col items-center justify-center bg-[#0E0E0E] relative overflow-hidden ${className}`}>
+      {/* Background Glow similar to design */}
+      <div 
+        className="absolute inset-0 pointer-events-none" 
+        style={{
+          background: "radial-gradient(circle at 50% 50%, rgba(255,255,255,0.03) 0%, rgba(14,14,14,0.1) 40%, rgba(10,10,10,1) 100%)"
+        }}
+      />
+
       {/* Header */}
-      <header className="flex flex-col items-center mb-24 md:mb-32">
-        <h2 className="font-headline text-4xl font-light tracking-[0.3em] uppercase text-white mb-6">
+      <header className="relative z-10 flex flex-col items-center mb-12 md:mb-24 lg:mb-32">
+        <h2 className="font-headline text-4xl md:text-5xl font-light tracking-[0.3em] uppercase text-white mb-6">
           {title}
         </h2>
         <div className="h-[1px] w-64 bg-gradient-to-r from-transparent via-white/40 to-transparent"></div>
       </header>
 
-      {/* Grid */}
-      <div className="flex flex-col md:flex-row gap-12 md:gap-8 lg:gap-12 w-full max-w-[2000px] justify-center items-center md:items-stretch">
-        {steps.map((step, index) => {
-          // Determine offsets exactly like the design
-          const offsetClass = index % 2 === 1 ? "md:translate-y-16 translate-x-4 md:translate-x-0" : "md:-translate-y-4 -translate-x-4 md:-translate-x-0";
-          
-          return (
-            <Link
-              key={step.id}
-              href={step.href || "/iletisim"}
-              className={`group block relative w-[85%] md:w-[400px] h-[500px] md:h-[600px] overflow-hidden bg-[#1C1B1B] border border-[#474747]/10 shadow-[0_0_60px_rgba(198,198,199,0.05)] transition-transform duration-700 hover:border-[#474747]/30 ${offsetClass}`}
-            >
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={step.image}
-                alt={step.title}
-                className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#050505] via-[#050505]/70 to-transparent"></div>
-              <div className="absolute bottom-0 left-0 p-10 flex flex-col z-10 w-full">
-                <span className="font-headline text-sm text-[#c6c6c6]/50 tracking-[0.2em] mb-2 font-light">
-                  {step.id}
-                </span>
-                <h3 className="font-headline text-2xl font-light tracking-[0.15em] text-white uppercase mb-3">
-                  {step.title}
-                </h3>
-                <p className="font-body text-[#c6c6c6] leading-relaxed text-sm tracking-[0.02em]">
-                  {step.description}
-                </p>
-              </div>
-            </Link>
-          );
-        })}
+      {/* Grid / Horizontal Scroll Area */}
+      <div className="relative z-10 w-full max-w-[2000px] px-6 md:px-12">
+        <div className="flex flex-col md:flex-row gap-8 md:gap-6 lg:gap-10 justify-center items-center md:items-stretch overflow-visible">
+          {steps.map((step, index) => {
+            // Alternating offsets for cards
+            const offsetClass = index % 2 === 1 ? "md:translate-y-12 lg:translate-y-16" : "md:-translate-y-4";
+            
+            return (
+              <Link
+                key={step.id}
+                href={step.href || "/iletisim"}
+                className={`group block relative w-full max-w-[380px] md:w-[18vw] lg:w-[16vw] aspect-[3/4] md:h-auto overflow-hidden bg-[#1C1B1B] border border-white/5 shadow-[0_0_50px_rgba(0,0,0,0.3)] transition-all duration-700 hover:border-white/20 ${offsetClass}`}
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={step.image}
+                  alt={step.title}
+                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
+                />
+                {/* Gradient Overlay */}
+                <div className="absolute inset-0 bg-gradient-to-t from-[#050505] via-[#050505]/60 to-transparent opacity-90" />
+                
+                {/* Content */}
+                <div className="absolute bottom-0 left-0 p-6 lg:p-10 flex flex-col z-10 w-full">
+                  <span className="font-headline text-xs lg:text-sm text-white/40 tracking-[0.2em] mb-2 font-light">
+                    {step.id}
+                  </span>
+                  <h3 className="font-headline text-xl lg:text-2xl font-light tracking-[0.15em] text-white uppercase mb-3">
+                    {step.title}
+                  </h3>
+                  <p className="font-body text-white/60 leading-relaxed text-xs lg:text-sm tracking-[0.02em] max-w-[20ch] md:max-w-none">
+                    {step.description}
+                  </p>
+                </div>
+              </Link>
+            );
+          })}
+        </div>
       </div>
     </section>
   );
