@@ -1406,6 +1406,8 @@ video {
   aspect-ratio: 9 / 16;
   min-height: 0;
   width: 100%;
+  height: auto;
+  align-self: start;
 }
 
 .project-detail-shell.mimari-page .service-card img,
@@ -2905,8 +2907,9 @@ video {
   .project-detail-shell.mimari-page .service-card,
   .project-detail-shell.materyal-studyo-page .service-card,
   .project-detail-shell.uygulama-page .service-card {
-    height: auto;
     min-height: 0;
+    height: auto;
+    align-self: start;
   }
 
   .project-detail-shell.mimari-page .service-copy,
@@ -6388,6 +6391,8 @@ video {
     aspect-ratio: 9 / 16;
     min-height: 0;
     width: 100%;
+    height: auto;
+    align-self: start;
   }
 
   .project-detail-shell.mimari-page .service-copy,
