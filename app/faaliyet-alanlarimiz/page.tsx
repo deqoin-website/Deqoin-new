@@ -37,7 +37,7 @@ const serviceCards = [
 
 export default function FaaliyetAlanlarimiz() {
   return (
-    <main className="site-shell project-detail-shell" style={{ paddingTop: "12rem" }}>
+    <main className="site-shell project-detail-shell faaliyet-alanlarimiz-page" style={{ paddingTop: "12rem" }}>
       <section className="services-section" style={{ background: "transparent" }}>
         <div className="section-inner" style={{ paddingBottom: "4rem", textAlign: "center" }}>
           <div style={{ marginBottom: "5rem" }}>

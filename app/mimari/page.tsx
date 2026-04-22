@@ -168,7 +168,7 @@ export default function MimariPage() {
   }, []);
 
   return (
-    <main className="site-shell project-detail-shell mimari-vertical-shell">
+    <main className="site-shell project-detail-shell mimari-vertical-shell mimari-page">
       {/* ── DYNAMIC BLURRED HERO ── */}
       <HeroSlider 
         slides={slides.map(img => ({
@@ -187,13 +187,12 @@ export default function MimariPage() {
 
       <section className="services-section snap-section gallery-snap-point" style={{ background: "transparent", paddingTop: "6rem", minHeight: "100svh" }}>
         
-        <div className="services-grid" style={{ gridAutoRows: "72vh" }}>
+        <div className="services-grid mimari-grid">
           {categories.map((card) => (
           <Link
               key={card.title}
               href={card.href || `/mimari/${card.slug}`}
               className="service-card"
-              style={{ minHeight: "72vh" }}
             >
               <img src={withVersion(resolveCategoryImage(card), contentVersion)} alt={card.title} style={{ filter: `blur(${card.blur || 0}px)` }} />
               <div className="service-overlay" style={{ background: `rgba(0,0,0,${(card.overlay ?? 30) / 100})` }} />

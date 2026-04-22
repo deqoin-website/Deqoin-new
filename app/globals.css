@@ -1374,9 +1374,123 @@ video {
   grid-template-columns: 1fr;
 }
 
+/* Design & Collection page uses vertical 9:16 cards */
+.faaliyet-alanlarimiz-page .services-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.25rem;
+  grid-auto-rows: auto;
+}
+
+.faaliyet-alanlarimiz-page .service-card {
+  aspect-ratio: 9 / 16;
+  min-height: 0;
+  width: 100%;
+}
+
 /* Studio pages (not homepage) — tall portrait rectangle cards like original design */
 .project-detail-shell .services-grid {
   grid-auto-rows: 65vh;
+}
+
+/* Studio collection pages use 9:16 portrait cards */
+.project-detail-shell.mimari-page .services-grid,
+.project-detail-shell.materyal-studyo-page .services-grid,
+.project-detail-shell.uygulama-page .services-grid {
+  grid-auto-rows: auto;
+  gap: 0;
+}
+
+.project-detail-shell.mimari-page .service-card,
+.project-detail-shell.materyal-studyo-page .service-card,
+.project-detail-shell.uygulama-page .service-card {
+  aspect-ratio: 9 / 16;
+  min-height: 0;
+  width: 100%;
+}
+
+.project-detail-shell.mimari-page .service-card img,
+.project-detail-shell.materyal-studyo-page .service-card img,
+.project-detail-shell.uygulama-page .service-card img {
+  object-position: center center;
+}
+
+.project-detail-shell.mimari-page .service-copy,
+.project-detail-shell.materyal-studyo-page .service-copy,
+.project-detail-shell.uygulama-page .service-copy {
+  padding: clamp(1rem, 1.8vw, 1.6rem);
+  align-items: flex-start;
+  flex-direction: column;
+}
+
+.project-detail-shell.mimari-page .service-copy h3,
+.project-detail-shell.materyal-studyo-page .service-copy h3,
+.project-detail-shell.uygulama-page .service-copy h3 {
+  font-size: clamp(1.9rem, 4vw, 3.1rem);
+  max-width: 8ch;
+  line-height: 0.88;
+}
+
+.project-detail-shell.mimari-page .service-copy span,
+.project-detail-shell.materyal-studyo-page .service-copy span,
+.project-detail-shell.uygulama-page .service-copy span {
+  font-size: 0.72rem;
+  letter-spacing: 0.3em;
+}
+
+.project-detail-shell.mimari-page .service-cta,
+.project-detail-shell.materyal-studyo-page .service-cta,
+.project-detail-shell.uygulama-page .service-cta {
+  margin-top: auto;
+  gap: 0.75rem;
+  font-size: 0.62rem;
+  letter-spacing: 0.22em;
+}
+
+.project-detail-shell.mimari-page .service-copy .vertical-text,
+.project-detail-shell.materyal-studyo-page .service-copy .vertical-text,
+.project-detail-shell.uygulama-page .service-copy .vertical-text {
+  align-self: flex-end;
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  letter-spacing: 0.2em;
+  font-size: 0.55rem;
+  opacity: 0.8;
+}
+
+.project-detail-shell.mimari-page .service-card:hover img,
+.project-detail-shell.materyal-studyo-page .service-card:hover img,
+.project-detail-shell.uygulama-page .service-card:hover img {
+  transform: scale(1.06);
+  transition: transform 0.85s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+.project-detail-shell.mimari-page .service-card:hover .service-overlay,
+.project-detail-shell.materyal-studyo-page .service-card:hover .service-overlay,
+.project-detail-shell.uygulama-page .service-card:hover .service-overlay {
+  background: rgba(0, 0, 0, 0.48);
+  backdrop-filter: blur(7px);
+  transition: backdrop-filter 0.85s cubic-bezier(0.165, 0.84, 0.44, 1), background 0.85s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+[data-theme='light'] .project-detail-shell.mimari-page .service-card:hover .service-overlay,
+[data-theme='light'] .project-detail-shell.materyal-studyo-page .service-card:hover .service-overlay,
+[data-theme='light'] .project-detail-shell.uygulama-page .service-card:hover .service-overlay {
+  background: rgba(255, 255, 255, 0.48);
+}
+
+.project-detail-shell.mimari-page .service-card:hover .service-cta,
+.project-detail-shell.materyal-studyo-page .service-card:hover .service-cta,
+.project-detail-shell.uygulama-page .service-card:hover .service-cta {
+  gap: 1.1rem;
+  opacity: 1;
+  transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+.project-detail-shell.mimari-page .service-card:hover .service-cta .material-symbols-outlined,
+.project-detail-shell.materyal-studyo-page .service-card:hover .service-cta .material-symbols-outlined,
+.project-detail-shell.uygulama-page .service-card:hover .service-cta .material-symbols-outlined {
+  transform: translateX(4px);
+  transition: transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
 }
 
 .material-studio-page .services-section.material-studio-collection {
@@ -1400,6 +1514,12 @@ video {
 .material-studio-grid {
   grid-template-columns: 1fr;
   gap: 0;
+}
+
+.project-detail-shell.mimari-page .services-grid,
+.project-detail-shell.materyal-studyo-page .material-studio-grid,
+.project-detail-shell.uygulama-page .material-studio-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
 .material-studio-collection .section-heading {
@@ -2782,6 +2902,34 @@ video {
     border-right: 1px solid var(--line);
   }
 
+  .project-detail-shell.mimari-page .service-card,
+  .project-detail-shell.materyal-studyo-page .service-card,
+  .project-detail-shell.uygulama-page .service-card {
+    height: auto;
+    min-height: 0;
+  }
+
+  .project-detail-shell.mimari-page .service-copy,
+  .project-detail-shell.materyal-studyo-page .service-copy,
+  .project-detail-shell.uygulama-page .service-copy {
+    padding: 1rem;
+    align-items: flex-start;
+  }
+
+  .project-detail-shell.mimari-page .service-copy h3,
+  .project-detail-shell.materyal-studyo-page .service-copy h3,
+  .project-detail-shell.uygulama-page .service-copy h3 {
+    font-size: clamp(1.7rem, 4.6vw, 2.6rem);
+    max-width: 9ch;
+    line-height: 0.92;
+  }
+
+  .faaliyet-alanlarimiz-page .service-card {
+    aspect-ratio: 9 / 16;
+    min-height: 0;
+    width: 100%;
+  }
+
   /* Homepage snap shell — cards fill the container height exactly */
   .homepage-snap-shell .service-card {
     height: 100%;
@@ -2792,6 +2940,12 @@ video {
   .project-detail-shell .service-card {
     height: 100%;
     min-height: 0;
+  }
+
+  .project-detail-shell.mimari-page .services-grid,
+  .project-detail-shell.materyal-studyo-page .material-studio-grid,
+  .project-detail-shell.uygulama-page .material-studio-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .service-card:last-child {
@@ -6204,9 +6358,68 @@ video {
   .material-studio-page .studio-gallery {
     gap: 1.5rem;
   }
+
+  .faaliyet-alanlarimiz-page .services-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 @media (max-width: 767px) {
+  .faaliyet-alanlarimiz-page .services-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .faaliyet-alanlarimiz-page .service-card {
+    aspect-ratio: 9 / 16;
+    min-height: 0;
+    width: 100%;
+  }
+
+  .project-detail-shell.mimari-page .services-grid,
+  .project-detail-shell.materyal-studyo-page .material-studio-grid,
+  .project-detail-shell.uygulama-page .material-studio-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .project-detail-shell.mimari-page .service-card,
+  .project-detail-shell.materyal-studyo-page .service-card,
+  .project-detail-shell.uygulama-page .service-card {
+    aspect-ratio: 9 / 16;
+    min-height: 0;
+    width: 100%;
+  }
+
+  .project-detail-shell.mimari-page .service-copy,
+  .project-detail-shell.materyal-studyo-page .service-copy,
+  .project-detail-shell.uygulama-page .service-copy {
+    padding: 0.9rem;
+    align-items: flex-start;
+  }
+
+  .project-detail-shell.mimari-page .service-copy h3,
+  .project-detail-shell.materyal-studyo-page .service-copy h3,
+  .project-detail-shell.uygulama-page .service-copy h3 {
+    font-size: clamp(1.55rem, 7.5vw, 2.2rem);
+    max-width: 10ch;
+    line-height: 0.92;
+  }
+
+  .project-detail-shell.mimari-page .service-cta,
+  .project-detail-shell.materyal-studyo-page .service-cta,
+  .project-detail-shell.uygulama-page .service-cta {
+    margin-top: auto;
+    gap: 0.6rem;
+    font-size: 0.58rem;
+    letter-spacing: 0.18em;
+  }
+
+  .project-detail-shell.mimari-page .service-copy .vertical-text,
+  .project-detail-shell.materyal-studyo-page .service-copy .vertical-text,
+  .project-detail-shell.uygulama-page .service-copy .vertical-text {
+    display: none;
+  }
+
   .studio-hero {
     min-height: 100svh;
     height: auto;
@@ -6325,7 +6538,7 @@ video {
   }
 
   .material-studio-page .service-card {
-    min-height: 72svh;
+    min-height: 0;
     border-right: 0;
     border-bottom: 1px solid var(--line);
   }

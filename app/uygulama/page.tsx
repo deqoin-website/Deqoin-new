@@ -71,7 +71,7 @@ export default function UygulamaPage() {
   const ctaBlur = 2;
   const ctaOverlay = 30;
   return (
-    <main className="site-shell project-detail-shell material-studio-page" style={{ background: "#0a0a0a" }}>
+    <main className="site-shell project-detail-shell material-studio-page uygulama-page" style={{ background: "#0a0a0a" }}>
 
       {/* HERO */}
       <HeroSlider 
@@ -105,13 +105,12 @@ export default function UygulamaPage() {
             </div>
           </div>
 
-          <div className="services-grid material-studio-grid" style={{ gridAutoRows: "72vh" }}>
+          <div className="services-grid material-studio-grid uygulama-grid">
             {executionCategories.map((card) => (
               <Link
                 key={card.slug}
                 href={`/uygulama/${card.slug}`}
                 className="service-card"
-                style={{ minHeight: "72vh" }}
               >
                 <img src={card.image} alt={card.title} />
                 <div className="service-overlay" />

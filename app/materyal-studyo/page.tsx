@@ -71,7 +71,7 @@ export default function MateryalStudyo() {
   }));
 
   return (
-    <main className="site-shell project-detail-shell material-studio-page" style={{ background: "#0a0a0a" }}>
+    <main className="site-shell project-detail-shell material-studio-page materyal-studyo-page" style={{ background: "#0a0a0a" }}>
       <HeroSlider 
         slides={(heroSection?.slides?.length > 0 ? heroSection.slides : [materialCategories[0]?.image]).map((img: string) => ({
           title: heroSection?.title || "MATERIAL STUDIO",
@@ -98,13 +98,12 @@ export default function MateryalStudyo() {
 
           </div>
 
-          <div className="services-grid material-studio-grid" style={{ gridAutoRows: "65vh" }}>
+          <div className="services-grid material-studio-grid materyal-studyo-grid">
             {categoryItems.map((card: any) => (
               <Link
                 key={card.slug}
                 href={`/materyal-studyo/${card.slug}`}
                 className="service-card"
-                style={{ minHeight: "65vh" }}
               >
                 <img src={card.image} alt={card.title} />
                 <div className="service-overlay" />
