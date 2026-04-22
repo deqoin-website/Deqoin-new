@@ -627,9 +627,6 @@ export default function DepartmentStudio({
         @media (max-width: 1024px) {
           .products-collection-grid { grid-template-columns: 1fr 1fr; gap: 2rem; }
           .studio-product-card { gap: 1rem; }
-          .studio-main { grid-template-columns: 1fr; gap: 2rem; }
-          .studio-sidebar { display: none; }
-          .studio-gallery { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; }
         }
 
         @media (max-width: 767px) {
@@ -639,14 +636,6 @@ export default function DepartmentStudio({
           .product-card-visual { aspect-ratio: 1; }
           .product-card-footer h3 { font-size: 1.5rem; }
           .product-card-overlay { padding: 2rem; }
-          .studio-main { padding: 0 1.25rem 5.5rem; gap: 1.5rem; }
-          .studio-search-container { margin: 0 auto 2rem; padding: 0 1.25rem; }
-          .studio-gallery { grid-template-columns: 1fr; gap: 1.25rem; }
-          .project-card-info { padding: 1.4rem 1.2rem 1.5rem; }
-          .project-meta-row { gap: 0.9rem; flex-wrap: wrap; margin-bottom: 1.25rem; padding-bottom: 1rem; }
-          .meta-item { min-width: calc(50% - 0.5rem); }
-          .project-card-footer { margin-top: 2rem; flex-direction: column; align-items: flex-start; gap: 1rem; }
-          .project-card-badge { top: 0.85rem; right: 0.85rem; padding: 0.4rem 0.75rem; font-size: 0.52rem; letter-spacing: 0.18em; max-width: calc(100% - 1.7rem); overflow-wrap: anywhere; }
         }
       `}</style>
     </div>

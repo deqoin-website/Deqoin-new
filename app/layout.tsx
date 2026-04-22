@@ -31,10 +31,8 @@ export async function generateMetadata(): Promise<Metadata> {
   const settings = await getSettings();
   const defaultTitle = settings?.metaTitle || "Deqoin I Architectural Design Studio";
   const defaultDesc = settings?.metaDescription || "DEQOIN mimari, tasarım ve uygulama odaklı kurumsal vitrin sitesi.";
-  const metadataBase = new URL(process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000");
   
   return {
-    metadataBase,
     title: defaultTitle,
     description: defaultDesc,
     keywords: settings?.keywords || "",
