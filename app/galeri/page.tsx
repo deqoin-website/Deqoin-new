@@ -310,18 +310,67 @@ function GaleriContent() {
 
         @media (max-width: 1024px) {
           .galeri-page .project-grid {
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 1.25rem;
+          }
+
+          .galeri-page .studio-main {
+            gap: 1.75rem;
+          }
+        }
+
+        @media (min-width: 768px) and (max-width: 1024px) {
+          .galeri-page {
+            padding-top: 8rem;
+          }
+
+          .galeri-page .section-inner {
+            padding-left: 1.5rem;
+            padding-right: 1.5rem;
+            padding-top: 4rem;
+          }
+
+          .galeri-page .studio-main {
+            grid-template-columns: 1fr;
+          }
+
+          .galeri-page .studio-sidebar {
+            display: none;
+          }
+
+          .galeri-page .project-grid.project-grid-sensory {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 1rem;
+            width: 100%;
+            margin-left: 0;
+            margin-right: 0;
+            padding: 0;
+          }
+
+          .galeri-page .project-card-gallery-sensory {
+            height: 34rem;
+            min-height: 34rem;
+          }
+
+          .galeri-page .studio-search-container {
+            position: sticky !important;
+            top: 5.5rem !important;
+            z-index: 110;
+          }
+
+          .galeri-page .project-detail-sheet {
+            max-width: min(34rem, calc(100vw - 2rem));
           }
         }
 
         @media (max-width: 767px) {
           .galeri-page {
             overflow-x: hidden;
-            padding-top: 9rem;
+            padding-top: 8.25rem;
           }
 
           .galeri-page .section-inner {
-            padding-top: 3.5rem;
+            padding-top: 2.75rem;
             padding-left: 1rem;
             padding-right: 1rem;
           }
@@ -343,8 +392,8 @@ function GaleriContent() {
 
           .galeri-page .studio-search-container {
             position: sticky !important;
-            top: 6rem !important;
-            margin-bottom: 2rem;
+            top: 4.75rem !important;
+            margin-bottom: 1.5rem;
             padding-left: 0;
             padding-right: 0;
             z-index: 110;
@@ -383,8 +432,8 @@ function GaleriContent() {
           }
 
           .galeri-page .project-card-gallery-sensory {
-            height: 72svh;
-            min-height: 72svh;
+            height: 66svh;
+            min-height: 66svh;
             border-radius: 1.1rem !important;
           }
 
@@ -410,7 +459,7 @@ function GaleriContent() {
           }
 
           .galeri-page .studio-mobile-drawer {
-            width: min(88vw, 340px);
+            width: min(92vw, 340px);
             z-index: 2200;
           }
 
@@ -419,7 +468,7 @@ function GaleriContent() {
           }
 
           .galeri-page .galeri-drawer-header {
-            padding: 6.5rem 1.25rem 1.5rem;
+            padding: 5.75rem 1.1rem 1.25rem;
           }
 
           .galeri-page .galeri-drawer-close {

@@ -116,7 +116,7 @@ export default function OurTeam() {
 
   return (
     <main className="site-shell project-detail-shell" style={{ paddingTop: "12rem" }}>
-      <div className="section-inner" style={{ paddingBottom: "6rem" }}>
+      <div className="section-inner team-page-inner" style={{ paddingBottom: "6rem" }}>
         
         <div style={{ marginBottom: "5rem", textAlign: "center" }}>
           <h1 style={{ fontFamily: "var(--font-smooch), sans-serif", fontSize: "clamp(4rem, 10vw, 8rem)", fontWeight: 100, color: "#fff", letterSpacing: "0.2em", textTransform: "uppercase", margin: 0 }}>DEPARTMAN EKİPLERİ</h1>
@@ -272,6 +272,118 @@ export default function OurTeam() {
         .team-card-gallery:hover .team-bio-mini { color: #fff; opacity: 1; }
         
         .team-mobile-card .team-bio-mini { -webkit-line-clamp: 3; }
+
+        @media (min-width: 1025px) {
+          .team-page-inner {
+            max-width: 92rem;
+            margin: 0 auto;
+          }
+
+          .team-grid-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr));
+            gap: 1.5rem;
+          }
+
+          .team-grid-gallery .team-member {
+            min-height: 26rem;
+          }
+
+          .team-grid-gallery .team-card-img {
+            aspect-ratio: 16 / 10;
+          }
+
+          .team-grid-gallery .team-card-copy h3 {
+            font-size: clamp(1.9rem, 2.8vw, 3rem);
+          }
+        }
+
+        @media (min-width: 768px) and (max-width: 1024px) {
+          .team-page-inner {
+            max-width: 100%;
+            padding-left: 1.5rem;
+            padding-right: 1.5rem;
+          }
+
+          .team-grid-gallery {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 1rem;
+          }
+
+          .team-grid-gallery .team-member {
+            min-height: 24rem;
+          }
+
+          .team-grid-gallery .team-card-img {
+            aspect-ratio: 4 / 5;
+          }
+
+          .team-grid-gallery .team-card-copy h3 {
+            font-size: clamp(1.7rem, 4vw, 2.5rem);
+          }
+
+          .team-mobile-slider {
+            max-width: 100%;
+          }
+        }
+
+        @media (max-width: 767px) {
+          .team-page-inner {
+            padding-left: 1rem;
+            padding-right: 1rem;
+            padding-bottom: 4rem !important;
+          }
+
+          .team-grid-gallery {
+            grid-template-columns: 1fr;
+            gap: 1rem;
+          }
+
+          .team-grid-gallery .team-member {
+            min-height: 0;
+          }
+
+          .team-mobile-slider {
+            gap: 0.75rem;
+            margin-top: 1.5rem;
+          }
+
+          .team-mobile-slider-top {
+            gap: 0.75rem;
+          }
+
+          .team-mobile-progress {
+            height: 2px;
+          }
+
+          .team-mobile-slide,
+          .team-mobile-card,
+          .team-mobile-card .team-card-gallery {
+            width: 100%;
+          }
+
+          .team-mobile-card .team-card-gallery,
+          .team-mobile-card .team-card-img {
+            min-height: 24rem;
+          }
+
+          .team-mobile-card .team-card-img {
+            aspect-ratio: 4 / 5;
+          }
+
+          .team-mobile-card .team-card-info {
+            padding: 1rem 1rem 1.1rem;
+          }
+
+          .team-mobile-card .team-card-copy h3 {
+            font-size: clamp(2rem, 8vw, 2.8rem);
+          }
+
+          .team-mobile-card .team-bio-mini {
+            -webkit-line-clamp: 2;
+          }
+        }
       `}</style>
     </main>
   );

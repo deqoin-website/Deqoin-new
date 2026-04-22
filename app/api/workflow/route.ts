@@ -78,7 +78,8 @@ function normalizeStep(step: any, fallbackStep: (typeof DEFAULT_WORKFLOW.steps)[
     id: step?.id || fallbackStep.id,
     title: step?.title || fallbackStep.title,
     description: step?.description || fallbackStep.description,
-    image: fallbackStep.image,
+    image: normalizeWorkflowImage(step?.image, fallbackStep.image),
+    backText: step?.backText || fallbackStep.backText,
   };
 }
 
