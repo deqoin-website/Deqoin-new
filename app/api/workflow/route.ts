@@ -12,73 +12,36 @@ const DEFAULT_WORKFLOW = {
     {
       id: "01",
       title: "RANDEVU",
-      description: "Kusursuz sürecin ilk adımı.",
-      image: "/images/workflow/randevu-v4.svg",
+      description: "İhtiyaçları netleştiririz.",
     },
     {
       id: "02",
       title: "KEŞİF",
-      description: "İhtiyaçları ve potansiyeli yerinde okuruz.",
-      image: "/images/workflow/kesif-v4.svg",
+      description: "Mekanı yerinde analiz ederiz.",
     },
     {
       id: "03",
       title: "TASARIM",
-      description: "Vizyonu mimari bir dile dönüştürürüz.",
-      image: "/images/workflow/tasarim-v4.svg",
+      description: "Konsept ve çözüm dili oluştururuz.",
     },
     {
       id: "04",
       title: "MALZEME",
-      description: "Doku, kalite ve karakteri seçeriz.",
-      image: "/images/workflow/malzeme-v4.svg",
+      description: "Doğru yüzey ve materyali seçeriz.",
     },
     {
       id: "05",
       title: "UYGULAMA",
-      description: "Tasarıyı sahada gerçeğe dönüştürürüz.",
-      image: "/images/workflow/uygulama-v4.svg",
+      description: "Sahada kontrollü biçimde uygularız.",
     },
   ],
 };
-
-const WORKFLOW_IMAGE_MAP: Record<string, string> = {
-  "/images/workflow/randevu.svg": "/images/workflow/randevu-v4.svg",
-  "/images/workflow/kesif.svg": "/images/workflow/kesif-v4.svg",
-  "/images/workflow/tasarim.svg": "/images/workflow/tasarim-v4.svg",
-  "/images/workflow/malzeme.svg": "/images/workflow/malzeme-v4.svg",
-  "/images/workflow/uygulama.svg": "/images/workflow/uygulama-v4.svg",
-  "/images/workflow/randevu.svg?v=3": "/images/workflow/randevu-v4.svg",
-  "/images/workflow/kesif.svg?v=3": "/images/workflow/kesif-v4.svg",
-  "/images/workflow/tasarim.svg?v=3": "/images/workflow/tasarim-v4.svg",
-  "/images/workflow/malzeme.svg?v=3": "/images/workflow/malzeme-v4.svg",
-  "/images/workflow/uygulama.svg?v=3": "/images/workflow/uygulama-v4.svg",
-  "/images/workflow/randevu-v3.svg": "/images/workflow/randevu-v4.svg",
-  "/images/workflow/kesif-v3.svg": "/images/workflow/kesif-v4.svg",
-  "/images/workflow/tasarim-v3.svg": "/images/workflow/tasarim-v4.svg",
-  "/images/workflow/malzeme-v3.svg": "/images/workflow/malzeme-v4.svg",
-  "/images/workflow/uygulama-v3.svg": "/images/workflow/uygulama-v4.svg",
-  "/images/workflow/randevu-v4.svg": "/images/workflow/randevu-v4.svg",
-  "/images/workflow/kesif-v4.svg": "/images/workflow/kesif-v4.svg",
-  "/images/workflow/tasarim-v4.svg": "/images/workflow/tasarim-v4.svg",
-  "/images/workflow/malzeme-v4.svg": "/images/workflow/malzeme-v4.svg",
-  "/images/workflow/uygulama-v4.svg": "/images/workflow/uygulama-v4.svg",
-};
-
-function normalizeWorkflowImage(image: unknown, fallback: string) {
-  if (typeof image !== "string") return fallback;
-  const base = image.split("?")[0];
-  if (WORKFLOW_IMAGE_MAP[image]) return WORKFLOW_IMAGE_MAP[image];
-  if (WORKFLOW_IMAGE_MAP[base]) return WORKFLOW_IMAGE_MAP[base];
-  return fallback;
-}
 
 function normalizeStep(step: any, fallbackStep: (typeof DEFAULT_WORKFLOW.steps)[number]) {
   return {
     id: step?.id || fallbackStep.id,
     title: step?.title || fallbackStep.title,
     description: step?.description || fallbackStep.description,
-    image: fallbackStep.image,
   };
 }
 
