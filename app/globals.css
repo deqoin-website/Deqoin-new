@@ -1401,7 +1401,7 @@ video {
 .project-detail-shell.mimari-page .services-grid,
 .project-detail-shell.materyal-studyo-page .services-grid,
 .project-detail-shell.uygulama-page .services-grid {
-  grid-auto-rows: auto !important;
+  grid-auto-rows: auto;
   gap: 0;
 }
 
@@ -1411,7 +1411,7 @@ video {
   aspect-ratio: 9 / 16;
   min-height: 0;
   width: 100%;
-  height: auto !important;
+  height: auto;
   align-self: start;
 }
 
@@ -2913,7 +2913,7 @@ video {
   .project-detail-shell.materyal-studyo-page .service-card,
   .project-detail-shell.uygulama-page .service-card {
     min-height: 0;
-    height: auto !important;
+    height: auto;
     align-self: start;
   }
 
@@ -2946,25 +2946,14 @@ video {
 
   /* Studio pages — portrait card height fills the grid row (65vh per row) */
   .project-detail-shell .service-card {
-    height: 100%;
+    height: auto;
     min-height: 0;
   }
 
   .project-detail-shell.mimari-page .services-grid,
   .project-detail-shell.materyal-studyo-page .material-studio-grid,
   .project-detail-shell.uygulama-page .material-studio-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .homepage-snap-shell .homepage-services-section .services-grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-
-  .homepage-snap-shell .homepage-services-section .service-card {
-    height: auto;
-    min-height: 0;
-    aspect-ratio: 9 / 16;
-    align-self: start;
   }
 
   .service-card:last-child {
@@ -3399,7 +3388,7 @@ video {
   }
 
   .homepage-snap-shell .homepage-services-section .service-card {
-    height: 100%;
+    height: auto;
     min-height: 0;
   }
 
