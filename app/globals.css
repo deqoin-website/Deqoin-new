@@ -428,7 +428,7 @@ video {
   min-height: 0;
   aspect-ratio: 9 / 16;
   align-self: start;
-  width: min(100%, clamp(15rem, 21vw, 20rem));
+  width: min(100%, clamp(11rem, 16vw, 16rem));
 }
 
 .homepage-snap-shell .homepage-projects-section .project-slider-window {
@@ -3423,7 +3423,7 @@ video {
     min-height: 0;
     aspect-ratio: 9 / 16;
     align-self: start;
-    width: min(100%, clamp(12rem, 26vw, 18rem));
+    width: min(100%, clamp(10rem, 20vw, 14rem));
   }
 
   .homepage-snap-shell .homepage-services-section .services-grid {
