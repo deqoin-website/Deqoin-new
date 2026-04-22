@@ -248,6 +248,7 @@ video {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 0;
+  justify-items: center;
 }
 
 .homepage-snap-shell .services-section {
@@ -427,6 +428,7 @@ video {
   min-height: 0;
   aspect-ratio: 9 / 16;
   align-self: start;
+  width: min(100%, clamp(15rem, 21vw, 20rem));
 }
 
 .homepage-snap-shell .homepage-projects-section .project-slider-window {
@@ -3421,6 +3423,11 @@ video {
     min-height: 0;
     aspect-ratio: 9 / 16;
     align-self: start;
+    width: min(100%, clamp(12rem, 26vw, 18rem));
+  }
+
+  .homepage-snap-shell .homepage-services-section .services-grid {
+    justify-items: center;
   }
 }
 
