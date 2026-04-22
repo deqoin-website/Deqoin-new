@@ -63,61 +63,52 @@ export default function WorkflowMarquee({
 }: WorkflowMarqueeProps) {
   return (
     <section className={`snap-section workflow-wrapper ${className}`}>
-      {/* Background Glow similar to design */}
-      <div 
-        className="absolute inset-0 pointer-events-none" 
-        style={{
-          background: "radial-gradient(circle at 50% 50%, rgba(255,255,255,0.03) 0%, rgba(14,14,14,0.1) 40%, rgba(10,10,10,1) 100%)",
-          position: "absolute",
-          inset: 0,
-          pointerEvents: "none"
-        }}
+      <div
+        className="workflow-backdrop pointer-events-none"
+        aria-hidden="true"
       />
 
-      {/* Header */}
-      <header className="relative z-10 workflow-header" style={{ position: 'relative', zIndex: 10 }}>
-        <h2 className="workflow-title">
-          {title}
-        </h2>
-        <div className="workflow-title-line"></div>
+      <header className="workflow-header">
+        <span className="section-small-label workflow-kicker">PROFESYONEL İŞ AKIŞI</span>
+        <h2 className="workflow-title">{title}</h2>
+        <div className="workflow-title-line" />
       </header>
 
-      {/* Grid Area */}
-      <div className="relative z-10 w-full overflow-visible" style={{ position: 'relative', zIndex: 10, width: '100%', overflow: 'visible' }}>
-        <div className="workflow-grid">
-          {steps.map((step, index) => {
-            // Alternating offsets for cards
-            const offsetClass = index % 2 === 1 ? "offset-down" : "offset-up";
-            
-            return (
+      <div className="workflow-layout">
+        <div className="workflow-hero-panel">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={steps[0]?.image || workflowSteps[0].image} alt={steps[0]?.title || workflowSteps[0].title} />
+          <div className="workflow-hero-overlay" />
+          <div className="workflow-hero-copy">
+            <span className="workflow-hero-label">{steps[0]?.id || "01"}</span>
+            <h3>{steps[0]?.title || workflowSteps[0].title}</h3>
+            <p>{steps[0]?.description || workflowSteps[0].description}</p>
+          </div>
+        </div>
+
+        <div className="workflow-strip-shell">
+          <div className="workflow-strip">
+            {steps.map((step, index) => (
               <Link
                 key={step.id}
                 href={step.href || "/iletisim"}
-                className={`workflow-card group ${offsetClass}`}
+                className={`workflow-card ${index % 2 === 1 ? "offset-down" : "offset-up"}`}
               >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={step.image}
-                  alt={step.title}
-                />
-                {/* Gradient Overlay */}
-                <div className="workflow-card-overlay" />
-                
-                {/* Content */}
-                <div className="workflow-card-content">
-                  <span className="workflow-step-num">
-                    {step.id}
+                <div className="workflow-card-top">
+                  <span className="workflow-step-num">{step.id}</span>
+                  <span className="workflow-card-icon-wrap">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={step.image} alt="" aria-hidden="true" />
                   </span>
-                  <h3 className="workflow-card-heading">
-                    {step.title}
-                  </h3>
-                  <p className="workflow-card-desc">
-                    {step.description}
-                  </p>
+                </div>
+                <div className="workflow-card-content">
+                  <h3 className="workflow-card-heading">{step.title}</h3>
+                  <p className="workflow-card-desc">{step.description}</p>
+                  {step.backText ? <p className="workflow-card-backtext">{step.backText}</p> : null}
                 </div>
               </Link>
-            );
-          })}
+            ))}
+          </div>
         </div>
       </div>
     </section>

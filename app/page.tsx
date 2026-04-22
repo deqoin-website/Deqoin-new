@@ -336,7 +336,7 @@ export default function Page() {
         onAppointmentClick={() => setIsConsultationOpen(true)} 
       />
 
-        <WorkflowMarquee steps={workflowSteps} className="snap-section" />
+        <WorkflowMarquee steps={workflowSteps} className="snap-section homepage-workflow-section" />
 
         <section className="services-section snap-section homepage-section-v2">
           <div className="section-header-area">
