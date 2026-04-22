@@ -245,7 +245,9 @@ video {
   width: 100%;
   flex: 1;
   min-height: 0;
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0;
 }
 
 .homepage-snap-shell .services-section {
@@ -421,7 +423,10 @@ video {
 }
 
 .homepage-snap-shell .homepage-services-section .service-card {
-  height: 100%;
+  height: auto;
+  min-height: 0;
+  aspect-ratio: 9 / 16;
+  align-self: start;
 }
 
 .homepage-snap-shell .homepage-projects-section .project-slider-window {
@@ -2951,6 +2956,17 @@ video {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
+  .homepage-snap-shell .homepage-services-section .services-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .homepage-snap-shell .homepage-services-section .service-card {
+    height: auto;
+    min-height: 0;
+    aspect-ratio: 9 / 16;
+    align-self: start;
+  }
+
   .service-card:last-child {
     border-right: 0;
   }
@@ -3405,6 +3421,17 @@ video {
 
   .homepage-snap-shell .homepage-section-cta {
     margin-top: 0.9rem;
+  }
+
+  .homepage-snap-shell .homepage-services-section .services-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .homepage-snap-shell .homepage-services-section .service-card {
+    height: auto;
+    min-height: 0;
+    aspect-ratio: 9 / 16;
+    align-self: start;
   }
 }
 
@@ -6363,6 +6390,10 @@ video {
   }
 
   .faaliyet-alanlarimiz-page .services-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .homepage-snap-shell .homepage-services-section .services-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
