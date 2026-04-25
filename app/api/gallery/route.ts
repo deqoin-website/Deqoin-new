@@ -10,6 +10,8 @@ type SliderAsset = {
   src: string;
   alt: string;
   caption?: string;
+  title?: string;
+  description?: string;
 };
 
 type SliderPayload = {
@@ -48,6 +50,8 @@ function normalizeAssets(input: SliderPayload["slides"] = []): SliderAsset[] {
           src,
           alt: `${DEFAULT_SLIDER.title} görseli ${index + 1}`,
           caption: String(index + 1).padStart(2, "0"),
+          title: `${DEFAULT_SLIDER.title} ${index + 1}`,
+          description: "",
         };
       }
 
@@ -59,6 +63,8 @@ function normalizeAssets(input: SliderPayload["slides"] = []): SliderAsset[] {
           src,
           alt: toText(asset.alt ?? asset.imageAlt, `${DEFAULT_SLIDER.title} görseli ${index + 1}`),
           caption: toText(asset.caption, String(index + 1).padStart(2, "0")),
+          title: toText(asset.title ?? asset.projectTitle, `${DEFAULT_SLIDER.title} ${index + 1}`),
+          description: toText(asset.description ?? asset.subtitle, ""),
         };
       }
 

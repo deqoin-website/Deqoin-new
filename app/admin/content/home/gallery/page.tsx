@@ -24,6 +24,8 @@ type SliderImage = {
   src: string;
   alt: string;
   caption?: string;
+  title?: string;
+  description?: string;
 };
 
 type SliderForm = {
@@ -76,6 +78,8 @@ function normalizeSlides(input: any, title = DEFAULT_FORM.title): SliderImage[] 
           src,
           alt: `${title} görseli ${index + 1}`,
           caption: String(index + 1).padStart(2, '0'),
+          title: `${title} ${index + 1}`,
+          description: '',
         };
       }
 
@@ -86,6 +90,8 @@ function normalizeSlides(input: any, title = DEFAULT_FORM.title): SliderImage[] 
           src,
           alt: textOrFallback(item.alt ?? item.imageAlt, `${title} görseli ${index + 1}`),
           caption: textOrFallback(item.caption, String(index + 1).padStart(2, '0')),
+          title: textOrFallback(item.title ?? item.projectTitle, `${title} ${index + 1}`),
+          description: textOrFallback(item.description ?? item.subtitle, ''),
         };
       }
 
@@ -220,13 +226,15 @@ export default function HomeGalleryAdminPage() {
         title: form.title.trim() || DEFAULT_FORM.title,
         buttonText: form.buttonText.trim() || DEFAULT_FORM.buttonText,
         buttonHref: form.buttonHref.trim() || DEFAULT_FORM.buttonHref,
-        slides: form.slides
-          .map((item) => ({
-            src: item.src.trim(),
-            alt: item.alt.trim() || item.src.trim() || form.title,
-            caption: item.caption?.trim() || '',
-          }))
-          .filter((item) => Boolean(item.src)),
+      slides: form.slides
+        .map((item) => ({
+          src: item.src.trim(),
+          alt: item.alt.trim() || item.src.trim() || form.title,
+          caption: item.caption?.trim() || '',
+          title: item.title?.trim() || form.title,
+          description: item.description?.trim() || '',
+        }))
+        .filter((item) => Boolean(item.src)),
       };
 
       const res = await fetch('/api/gallery', {
@@ -434,6 +442,19 @@ export default function HomeGalleryAdminPage() {
                           value={slide.alt}
                           onChange={(e) => updateSlide(index, 'alt', e.target.value)}
                           placeholder="Alt metni"
+                          className="w-full rounded-2xl border border-white/10 bg-zinc-950/70 px-4 py-3 text-sm text-white outline-none transition focus:border-white/25"
+                        />
+                        <input
+                          value={slide.title ?? ''}
+                          onChange={(e) => updateSlide(index, 'title', e.target.value)}
+                          placeholder="Proje İsmi"
+                          className="w-full rounded-2xl border border-white/10 bg-zinc-950/70 px-4 py-3 text-sm text-white outline-none transition focus:border-white/25"
+                        />
+                        <textarea
+                          value={slide.description ?? ''}
+                          onChange={(e) => updateSlide(index, 'description', e.target.value)}
+                          placeholder="Kısa açıklama"
+                          rows={3}
                           className="w-full rounded-2xl border border-white/10 bg-zinc-950/70 px-4 py-3 text-sm text-white outline-none transition focus:border-white/25"
                         />
 

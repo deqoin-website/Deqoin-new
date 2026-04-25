@@ -6,7 +6,6 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { motion } from "framer-motion";
 import type { UseEmblaCarouselType } from "embla-carousel-react";
 
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel";
@@ -16,6 +15,8 @@ type HeroImage = {
   src: string;
   alt: string;
   caption?: string;
+  title?: string;
+  description?: string;
 };
 
 type HeroContent = {
@@ -62,6 +63,8 @@ function normalizeHeroContent(payload: any): HeroContent {
           src,
           alt: `${candidate?.title ?? FALLBACK_HERO.title} görseli ${index + 1}`,
           caption: String(index + 1).padStart(2, "0"),
+          title: `${candidate?.title ?? FALLBACK_HERO.title} ${index + 1}`,
+          description: "",
         };
       }
 
@@ -73,6 +76,8 @@ function normalizeHeroContent(payload: any): HeroContent {
           src,
           alt: toText(item.alt ?? item.imageAlt, `${candidate?.title ?? FALLBACK_HERO.title} görseli ${index + 1}`),
           caption: toText(item.caption, String(index + 1).padStart(2, "0")),
+          title: toText(item.title ?? item.projectTitle, `${candidate?.title ?? FALLBACK_HERO.title} ${index + 1}`),
+          description: toText(item.description ?? item.subtitle, ""),
         };
       }
 
@@ -94,6 +99,8 @@ function HeroSlide({
   activeIndex,
   totalCount,
   title,
+  projectTitle,
+  projectDescription,
   buttonText,
   buttonHref,
   onPrev,
@@ -104,6 +111,8 @@ function HeroSlide({
   activeIndex: number;
   totalCount: number;
   title: string;
+  projectTitle: string;
+  projectDescription: string;
   buttonText: string;
   buttonHref: string;
   onPrev: () => void;
@@ -136,9 +145,6 @@ function HeroSlide({
             transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
             className="max-w-3xl"
           >
-            <Badge variant="outline" className="border-white/10 bg-white/5 text-white/75 backdrop-blur-md">
-              PORTFOLYO
-            </Badge>
             <h2 className="mt-4 font-[family-name:var(--font-smooch)] text-[clamp(3rem,11vw,7rem)] font-normal leading-[0.84] tracking-[0.08em] text-white drop-shadow-[0_12px_30px_rgba(0,0,0,0.5)]">
               {title}
             </h2>
@@ -151,8 +157,19 @@ function HeroSlide({
             className="w-full"
           >
             <Card className="border-white/10 bg-black/28 backdrop-blur-xl">
-              <CardContent className="flex flex-col gap-5 p-4 sm:p-5 lg:flex-row lg:items-center lg:justify-between lg:gap-6 lg:p-6">
-                <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:gap-6">
+              <CardContent className="flex flex-col gap-5 p-4 sm:p-5 lg:gap-6 lg:p-6">
+                <div className="flex flex-col gap-3">
+                  <span className="max-w-[18rem] font-[family-name:var(--font-smooch)] text-[clamp(1.75rem,4vw,3rem)] font-normal leading-[0.9] tracking-[0.08em] text-white">
+                    {projectTitle || image.title || `PROJE ${String(activeIndex + 1).padStart(2, "0")}`}
+                  </span>
+                  <p className="max-w-[22rem] font-[family-name:var(--font-smooch)] text-[0.88rem] leading-[1.3] tracking-[0.06em] text-white/72">
+                    {projectDescription || image.description || "Çok kısa bir açıklama"}
+                  </p>
+                </div>
+
+                <Separator className="bg-white/10" />
+
+                <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
                   <div className="flex items-center gap-3">
                     <span className="font-[family-name:var(--font-smooch)] text-[0.78rem] uppercase tracking-[0.4em] text-white/60">
                       {String(activeIndex + 1).padStart(2, "0")} / {String(totalCount).padStart(2, "0")}
@@ -182,14 +199,9 @@ function HeroSlide({
                       <ChevronRight className="h-4 w-4" />
                     </Button>
                   </div>
-                </div>
 
-                <div className="flex flex-col gap-3 lg:items-end">
-                  <span className="font-[family-name:var(--font-smooch)] text-[0.72rem] uppercase tracking-[0.36em] text-white/45">
-                    {image.caption || `SLIDE ${String(activeIndex + 1).padStart(2, "0")}`}
-                  </span>
                   <Button asChild variant="outline" className="border-white/12 bg-white text-zinc-950 hover:bg-zinc-100">
-                    <Link href={buttonHref} className="font-[family-name:var(--font-smooch)] text-[0.76rem] tracking-[0.3em]">
+                    <Link href={buttonHref} className="font-[family-name:var(--font-smooch)] text-[0.76rem] tracking-[0.3em] text-black">
                       {buttonText}
                     </Link>
                   </Button>
@@ -274,6 +286,8 @@ export default function GallerySection({
               activeIndex={activeIndex}
               totalCount={slideCount}
               title={content.title}
+              projectTitle={image.title ?? content.title}
+              projectDescription={image.description ?? ""}
               buttonText={content.buttonText}
               buttonHref={content.buttonHref}
               onPrev={goPrev}
