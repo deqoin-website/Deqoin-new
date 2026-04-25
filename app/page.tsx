@@ -3,13 +3,12 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
-import { projectsData } from "../data/projects";
 import { teamFilters, teamMembers } from "../data/team";
 import ConsultationModal from "../components/ConsultationModal";
-import ProjectInsightPanel from "../components/ProjectInsightPanel";
 import SwipeAppointmentButton from "../components/SwipeAppointmentButton";
 import HeroSlider from "../components/HeroSlider";
 import WorkflowSection from "../components/WorkflowSection";
+import GallerySection from "../components/GallerySection";
 import Footer from "@/components/Footer";
 
 const SERVICE_CARD_IMAGE_BY_TYPE: Record<string, string> = {
@@ -22,20 +21,10 @@ export default function Page() {
   const [isConsultationOpen, setIsConsultationOpen] = useState(false);
   const [activeTeamFilter, setActiveTeamFilter] = useState<(typeof teamFilters)[number]["key"]>("all");
   const [slides, setSlides] = useState<any[]>([]);
-  const [projectIndex, setProjectIndex] = useState(0);
-  const [projectDirection, setProjectDirection] = useState(1);
-  const [projectProgressKey, setProjectProgressKey] = useState(0);
-  const [activeProjectPanelSlug, setActiveProjectPanelSlug] = useState<string | null>(null);
   const [teamSlideIndex, setTeamSlideIndex] = useState(0);
   const [teamSlideDirection, setTeamSlideDirection] = useState(1);
-  const projectTouchStartX = useRef<number | null>(null);
-  const projectTouchStartY = useRef<number | null>(null);
-  const projectIndexRef = useRef(0);
-  const homepageSnapLockRef = useRef(false);
-  const homepageTouchStartYRef = useRef<number | null>(null);
   const teamTouchStartX = useRef<number | null>(null);
   const teamTouchStartY = useRef<number | null>(null);
-  const projectWheelLockRef = useRef(false);
   const teamWheelLockRef = useRef(false);
   const flipAudioRef = useRef<HTMLAudioElement | null>(null);
 
@@ -127,62 +116,11 @@ export default function Page() {
     fetchServiceCards();
   }, []);
 
-  const filteredProjects = useMemo(() => projectsData, []);
-  useEffect(() => {
-    projectIndexRef.current = projectIndex;
-  }, [projectIndex]);
-
-  const selectedProject = useMemo(
-    () => filteredProjects.find((project) => project.slug === activeProjectPanelSlug) ?? null,
-    [activeProjectPanelSlug, filteredProjects],
-  );
-
   const filteredTeam = useMemo(() => {
     if (activeTeamFilter === "all") return teamMembers;
     return teamMembers.filter((item) => item.category === activeTeamFilter);
   }, [activeTeamFilter]);
-
-  const currentProject = filteredProjects[projectIndex];
   const currentTeamMember = filteredTeam[teamSlideIndex];
-
-  useEffect(() => {
-    if (filteredProjects.length === 0) return;
-    const preloadIndexes = [projectIndex, projectIndex + 1, projectIndex - 1, projectIndex + 2];
-    preloadIndexes.forEach((projectIdx) => {
-      const safeIndex = (projectIdx + filteredProjects.length) % filteredProjects.length;
-      const project = filteredProjects[safeIndex];
-      if (!project?.coverImage) return;
-      const img = new Image();
-      img.src = project.coverImage;
-    });
-  }, [projectIndex, filteredProjects]);
-
-  useEffect(() => {
-    projectIndexRef.current = projectIndex;
-  }, [projectIndex]);
-
-  useEffect(() => {
-    if (filteredProjects.length === 0 || activeProjectPanelSlug) return;
-
-    const interval = window.setInterval(() => {
-      setProjectDirection(1);
-      setProjectIndex((current) => (current + 1) % filteredProjects.length);
-      setProjectProgressKey((current) => current + 1);
-    }, 7000);
-
-    return () => window.clearInterval(interval);
-  }, [activeProjectPanelSlug, filteredProjects.length]);
-
-  useEffect(() => {
-    if (!activeProjectPanelSlug) return;
-
-    const previousOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-
-    return () => {
-      document.body.style.overflow = previousOverflow;
-    };
-  }, [activeProjectPanelSlug]);
 
   useEffect(() => {
     if (filteredTeam.length === 0) return;
@@ -199,52 +137,6 @@ export default function Page() {
 
     return () => window.clearInterval(interval);
   }, [filteredTeam.length]);
-
-  const navigateProject = (direction: number) => {
-    if (filteredProjects.length === 0) return;
-    const nextIndex =
-      (projectIndexRef.current + direction + filteredProjects.length) % filteredProjects.length;
-
-    setProjectDirection(direction);
-    setProjectProgressKey((current) => current + 1);
-    setProjectIndex(nextIndex);
-  };
-
-  const jumpToProject = (nextIndex: number) => {
-    if (filteredProjects.length === 0) return;
-    if (nextIndex === projectIndexRef.current) return;
-
-    setProjectDirection(nextIndex > projectIndexRef.current ? 1 : -1);
-    setProjectProgressKey((current) => current + 1);
-    setProjectIndex(nextIndex);
-  };
-
-  const openProjectPanel = (slug: string) => {
-    setActiveProjectPanelSlug(slug);
-  };
-
-  const handleProjectTouchStart = (event: React.TouchEvent<HTMLElement>) => {
-    const touch = event.touches[0];
-    projectTouchStartX.current = touch.clientX;
-    projectTouchStartY.current = touch.clientY;
-  };
-
-  const handleProjectTouchEnd = (event: React.TouchEvent<HTMLElement>) => {
-    const startX = projectTouchStartX.current;
-    const startY = projectTouchStartY.current;
-
-    projectTouchStartX.current = null;
-    projectTouchStartY.current = null;
-
-    if (startX == null || startY == null) return;
-
-    const touch = event.changedTouches[0];
-    const deltaX = touch.clientX - startX;
-    const deltaY = touch.clientY - startY;
-
-    if (Math.abs(deltaX) < 50 || Math.abs(deltaX) < Math.abs(deltaY)) return;
-    navigateProject(deltaX < 0 ? 1 : -1);
-  };
 
   const navigateTeamSlide = (direction: number) => {
     if (filteredTeam.length === 0) return;
@@ -286,32 +178,9 @@ export default function Page() {
     }, 850);
   };
 
-  const handleProjectWheel = (event: React.WheelEvent<HTMLElement>) => {
-    if (projectWheelLockRef.current || filteredProjects.length === 0) return;
-    if (Math.abs(event.deltaY) < 20 && Math.abs(event.deltaX) < 20) return;
-
-    event.preventDefault();
-
-    const direction = Math.abs(event.deltaY) > Math.abs(event.deltaX)
-      ? Math.sign(event.deltaY)
-      : Math.sign(event.deltaX);
-
-    if (direction === 0) return;
-
-    projectWheelLockRef.current = true;
-    navigateProject(direction > 0 ? 1 : -1);
-
-    window.setTimeout(() => {
-      projectWheelLockRef.current = false;
-    }, 900);
-  };
-
-
   return (
     <main
-      className={`homepage-snap-shell ${
-        activeProjectPanelSlug ? "project-panel-open" : ""
-      }`}
+      className="homepage-snap-shell"
     >
       <HeroSlider 
         slides={slides} 
@@ -319,6 +188,8 @@ export default function Page() {
       />
 
         <WorkflowSection className="snap-section homepage-workflow-section" />
+
+        <GallerySection className="snap-section homepage-section-v2" />
 
         <section className="services-section snap-section homepage-section-v2">
           <div className="section-header-area">
@@ -375,160 +246,6 @@ export default function Page() {
           </div>
         </section>
 
-
-        <section className="projects-section snap-section homepage-section-v2" id="galeri">
-          <div className="section-header-area">
-            <div className="section-heading projects-heading-v2" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', width: '100%' }}>
-              <div>
-                <h2 style={{ 
-                  fontFamily: "var(--font-smooch), sans-serif", 
-                  fontSize: "clamp(2.5rem, 8vw, 5.5rem)", 
-                  fontWeight: 100, 
-                  letterSpacing: "0.15em",
-                  color: "#fff",
-                  lineHeight: "1"
-                }}>Galeri</h2>
-                <div className="section-line" />
-              </div>
-              <div className="project-slider-controls">
-                <div className="project-slider-counter">
-                  <span>{String(projectIndex + 1).padStart(2, "0")}</span>
-                  <small>{String(filteredProjects.length).padStart(2, "0")}</small>
-                </div>
-                <div className="project-slider-dots" aria-label="Proje slider göstergeleri">
-                  {filteredProjects.map((project, idx) => (
-                    <button
-                      key={project.slug}
-                      type="button"
-                      className={`project-slider-dot ${idx === projectIndex ? "active" : ""}`}
-                      onClick={() => jumpToProject(idx)}
-                      aria-label={`${project.title} projesine git`}
-                    />
-                  ))}
-                </div>
-                <div className="carousel-buttons project-slider-arrows">
-                  <button type="button" onClick={() => navigateProject(-1)} aria-label="Önceki proje">
-                    <span className="material-symbols-outlined">arrow_back</span>
-                  </button>
-                  <button type="button" onClick={() => navigateProject(1)} aria-label="Sonraki proje">
-                    <span className="material-symbols-outlined">arrow_forward</span>
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="section-content-area" style={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <div
-              className="project-slider-window"
-              onTouchStart={handleProjectTouchStart}
-              onTouchEnd={handleProjectTouchEnd}
-              style={{ width: '100%', height: '100%', borderRadius: '4px' }}
-            >
-              <div className="project-slider-progress" aria-hidden="true">
-                <motion.span
-                  key={projectProgressKey}
-                  className="project-slider-progress-fill"
-                  initial={{ scaleX: 0 }}
-                  animate={{ scaleX: 1 }}
-                  transition={{ duration: 4.8, ease: "linear" }}
-                />
-              </div>
-              <AnimatePresence mode="wait" initial={false}>
-                <motion.div
-                  key={filteredProjects[projectIndex]?.slug}
-                  className="project-slide"
-                  drag="x"
-                  dragConstraints={{ left: 0, right: 0 }}
-                  dragElastic={0.12}
-                  onDragEnd={(_, info) => {
-                    const threshold = 60;
-                    if (info.offset.x < -threshold) navigateProject(1);
-                    if (info.offset.x > threshold) navigateProject(-1);
-                  }}
-                  initial={{
-                    opacity: 0,
-                    x: projectDirection >= 0 ? 120 : -120,
-                    scale: 1.08,
-                    filter: "blur(16px) saturate(0.8)",
-                  }}
-                  animate={{
-                    opacity: 1,
-                    x: 0,
-                    scale: 1,
-                    filter: "blur(0px) saturate(1)",
-                  }}
-                  exit={{
-                    opacity: 0,
-                    x: projectDirection >= 0 ? -120 : 120,
-                    scale: 0.98,
-                    filter: "blur(10px) saturate(0.85)",
-                  }}
-                  transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
-                >
-                  <button
-                    type="button"
-                    className="project-card project-card-full project-card-trigger"
-                    onClick={() => currentProject && openProjectPanel(currentProject.slug)}
-                    aria-label={`${currentProject?.title ?? "Proje"} bilgilerini aç`}
-                  >
-                    <motion.div
-                      className="project-slide-parallax"
-                      style={currentProject?.coverImage ? { backgroundImage: `url(${currentProject.coverImage})` } : undefined}
-                      initial={{ scale: 1.04, x: projectDirection >= 0 ? -20 : 20 }}
-                      animate={{ scale: 1.08, x: 0 }}
-                      exit={{ scale: 1.04, x: projectDirection >= 0 ? 20 : -20 }}
-                      transition={{ duration: 0.75, ease: [0.16, 1, 0.3, 1] }}
-                    />
-                    {currentProject?.coverImage ? (
-                      <img
-                        src={currentProject.coverImage}
-                        alt={currentProject.title}
-                        loading="eager"
-                        fetchPriority="high"
-                        decoding="async"
-                      />
-                    ) : null}
-                    <div className="project-overlay" />
-                    <div className="project-slide-glow" />
-                    <div className="project-slide-copy">
-                      <div>
-                        <span className="project-category-label" style={{ 
-                          display: 'block', 
-                          color: '#cca883', 
-                          fontSize: '0.9rem', 
-                          letterSpacing: '0.3em', 
-                          marginBottom: '0.8rem',
-                          textTransform: 'uppercase'
-                        }}>{currentProject?.label}</span>
-                        <h4 style={{
-                          fontFamily: "var(--font-smooch), sans-serif",
-                          fontWeight: 100,
-                          fontSize: "clamp(2rem, 5vw, 4.5rem)",
-                          letterSpacing: "0.1em",
-                          lineHeight: "1.1",
-                          color: "#fff"
-                        }}>{currentProject?.title}</h4>
-                        <span className="project-slide-cta">
-                          <span className="project-slide-cta-line" aria-hidden="true" />
-                          <span>PROJE BİLGİSİ</span>
-                          <span className="material-symbols-outlined project-slide-cta-icon" aria-hidden="true">arrow_forward</span>
-                        </span>
-                      </div>
-                    </div>
-                  </button>
-                </motion.div>
-              </AnimatePresence>
-            </div>
-          </div>
-          
-          <div style={{ position: 'absolute', bottom: '4rem', left: '0', right: '0', display: 'flex', justifyContent: 'center', pointerEvents: 'none', zIndex: 10 }}>
-            <Link href="/galeri" className="premium-all-btn" style={{ pointerEvents: 'auto' }}>
-              <span className="premium-btn-text">TÜM GALERİYİ GÖR</span>
-              <span className="material-symbols-outlined premium-btn-icon">east</span>
-            </Link>
-          </div>
-        </section>
 
         <section className="about-section snap-section homepage-section-v2" id="about-us">
           <div className="section-header-area">
@@ -686,8 +403,7 @@ export default function Page() {
           </div>
         </section>
 
-        <Footer />
-      <ProjectInsightPanel project={selectedProject} onClose={() => setActiveProjectPanelSlug(null)} />
+      <Footer />
 
       <ConsultationModal 
         isOpen={isConsultationOpen} 
