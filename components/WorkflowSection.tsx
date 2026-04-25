@@ -78,16 +78,40 @@ function WorkflowStepCard({ step }: { step: WorkflowStep }) {
   );
 }
 
-function WorkflowMobileStep({ step }: { step: WorkflowStep }) {
+function WorkflowMobileStep({
+  step,
+  align,
+}: {
+  step: WorkflowStep;
+  align: "left" | "right";
+}) {
+  const isLeft = align === "left";
+
   return (
-    <div className="grid grid-cols-[1.5rem_minmax(0,1fr)] gap-4">
-      <div className="relative flex justify-center">
-        <div className="relative z-10 mt-7 flex h-4 w-4 items-center justify-center rounded-full border border-zinc-600 bg-zinc-950">
+    <div className="grid grid-cols-[minmax(0,1fr)_2.75rem_minmax(0,1fr)] items-center">
+      <div
+        className={`relative ${
+          isLeft ? "justify-self-end pr-4" : "opacity-0"
+        }`}
+      >
+        <div className="absolute right-0 top-1/2 h-px w-4 translate-x-full -translate-y-1/2 bg-zinc-500" />
+        {isLeft ? <WorkflowStepCard step={step} /> : null}
+      </div>
+
+      <div className="relative flex items-center justify-center">
+        <div className="relative z-10 flex h-4 w-4 items-center justify-center rounded-full border border-zinc-600 bg-zinc-950">
           <div className="h-1.5 w-1.5 rounded-full bg-zinc-200" />
         </div>
       </div>
 
-      <WorkflowStepCard step={step} />
+      <div
+        className={`relative ${
+          isLeft ? "opacity-0" : "justify-self-start pl-4"
+        }`}
+      >
+        <div className="absolute left-0 top-1/2 h-px w-4 -translate-x-full -translate-y-1/2 bg-zinc-500" />
+        {!isLeft ? <WorkflowStepCard step={step} /> : null}
+      </div>
     </div>
   );
 }
@@ -160,13 +184,17 @@ export default function WorkflowSection({
             <Separator className="mt-3 bg-zinc-700" />
           </CardHeader>
 
-          <CardContent className="relative mt-16 flex flex-1 flex-col px-4 pb-4 pt-2 md:mt-20 md:px-5 md:pb-5 md:pt-3 lg:mt-24">
+          <CardContent className="relative mt-24 flex flex-1 flex-col px-4 pb-4 pt-2 md:mt-24 md:px-5 md:pb-5 md:pt-3 lg:mt-24">
             <div className="lg:hidden">
-              <div className="relative pl-8">
-                <div className="absolute left-4 top-1 bottom-1 w-px bg-zinc-600" />
+              <div className="relative mx-auto max-w-6xl px-0 sm:px-2">
+                <div className="absolute left-1/2 top-0 bottom-0 w-px -translate-x-1/2 bg-zinc-600" />
                 <div className="space-y-5">
-                  {WORKFLOW_STEPS.map((step) => (
-                    <WorkflowMobileStep key={step.id} step={step} />
+                  {WORKFLOW_STEPS.map((step, index) => (
+                    <WorkflowMobileStep
+                      key={step.id}
+                      step={step}
+                      align={index % 2 === 0 ? "left" : "right"}
+                    />
                   ))}
                 </div>
               </div>
