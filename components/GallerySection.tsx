@@ -2,7 +2,6 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import Lenis from "lenis";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { motion } from "framer-motion";
 import type { UseEmblaCarouselType } from "embla-carousel-react";
@@ -212,26 +211,6 @@ export default function GallerySection({
   const [content, setContent] = useState<HeroContent>(FALLBACK_HERO);
   const [carouselApi, setCarouselApi] = useState<UseEmblaCarouselType[1] | null>(null);
   const [activeIndex, setActiveIndex] = useState(0);
-
-  useEffect(() => {
-    const lenis = new Lenis({
-      lerp: 0.08,
-      smoothWheel: true,
-    });
-
-    let frame = 0;
-    const raf = (time: number) => {
-      lenis.raf(time);
-      frame = window.requestAnimationFrame(raf);
-    };
-
-    frame = window.requestAnimationFrame(raf);
-
-    return () => {
-      window.cancelAnimationFrame(frame);
-      lenis.destroy();
-    };
-  }, []);
 
   useEffect(() => {
     const loadHero = async () => {
