@@ -1,14 +1,12 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
-import { AnimatePresence, motion } from "framer-motion";
-import { teamFilters, teamMembers } from "../data/team";
 import ConsultationModal from "../components/ConsultationModal";
-import SwipeAppointmentButton from "../components/SwipeAppointmentButton";
 import HeroSlider from "../components/HeroSlider";
 import WorkflowSection from "../components/WorkflowSection";
 import GallerySection from "../components/GallerySection";
+import HomeDepartmentTeamsSection from "../components/HomeDepartmentTeamsSection";
 import Footer from "@/components/Footer";
 
 const SERVICE_CARD_IMAGE_BY_TYPE: Record<string, string> = {
@@ -19,27 +17,7 @@ const SERVICE_CARD_IMAGE_BY_TYPE: Record<string, string> = {
 
 export default function Page() {
   const [isConsultationOpen, setIsConsultationOpen] = useState(false);
-  const [activeTeamFilter, setActiveTeamFilter] = useState<(typeof teamFilters)[number]["key"]>("all");
   const [slides, setSlides] = useState<any[]>([]);
-  const [teamSlideIndex, setTeamSlideIndex] = useState(0);
-  const [teamSlideDirection, setTeamSlideDirection] = useState(1);
-  const teamTouchStartX = useRef<number | null>(null);
-  const teamTouchStartY = useRef<number | null>(null);
-  const teamWheelLockRef = useRef(false);
-  const flipAudioRef = useRef<HTMLAudioElement | null>(null);
-
-  useEffect(() => {
-    flipAudioRef.current = new Audio("/sounds/page-flip.mp3");
-    flipAudioRef.current.volume = 0.25;
-    flipAudioRef.current.load();
-  }, []);
-
-  const playFlipSound = () => {
-    if (!flipAudioRef.current) return;
-    const sound = flipAudioRef.current.cloneNode() as HTMLAudioElement;
-    sound.volume = 0.25;
-    sound.play().catch(() => {});
-  };
 
   const [serviceCards, setServiceCards] = useState<any[]>([
     {
@@ -115,68 +93,6 @@ export default function Page() {
     fetchSlides();
     fetchServiceCards();
   }, []);
-
-  const filteredTeam = useMemo(() => {
-    if (activeTeamFilter === "all") return teamMembers;
-    return teamMembers.filter((item) => item.category === activeTeamFilter);
-  }, [activeTeamFilter]);
-  const currentTeamMember = filteredTeam[teamSlideIndex];
-
-  useEffect(() => {
-    if (filteredTeam.length === 0) return;
-    setTeamSlideIndex(0);
-  }, [activeTeamFilter, filteredTeam.length]);
-
-  useEffect(() => {
-    if (filteredTeam.length === 0) return;
-
-    const interval = window.setInterval(() => {
-      setTeamSlideDirection(1);
-      setTeamSlideIndex((current) => (current + 1) % filteredTeam.length);
-    }, 5000);
-
-    return () => window.clearInterval(interval);
-  }, [filteredTeam.length]);
-
-  const navigateTeamSlide = (direction: number) => {
-    if (filteredTeam.length === 0) return;
-    playFlipSound();
-    setTeamSlideDirection(direction);
-    setTeamSlideIndex((current) => (current + direction + filteredTeam.length) % filteredTeam.length);
-  };
-
-  const handleTeamTouchStart = (event: React.TouchEvent<HTMLElement>) => {
-    const touch = event.touches[0];
-    teamTouchStartX.current = touch.clientX;
-    teamTouchStartY.current = touch.clientY;
-  };
-
-  const handleTeamTouchEnd = (event: React.TouchEvent<HTMLElement>) => {
-    const startX = teamTouchStartX.current;
-    const startY = teamTouchStartY.current;
-    teamTouchStartX.current = null;
-    teamTouchStartY.current = null;
-    if (startX == null || startY == null) return;
-    const touch = event.changedTouches[0];
-    const deltaX = touch.clientX - startX;
-    const deltaY = touch.clientY - startY;
-    if (Math.abs(deltaX) < 50 || Math.abs(deltaX) < Math.abs(deltaY)) return;
-    navigateTeamSlide(deltaX < 0 ? 1 : -1);
-  };
-
-  const handleTeamWheel = (event: React.WheelEvent<HTMLElement>) => {
-    if (teamWheelLockRef.current || filteredTeam.length === 0) return;
-    if (Math.abs(event.deltaY) < 20 && Math.abs(event.deltaX) < 20) return;
-    const direction = Math.abs(event.deltaY) > Math.abs(event.deltaX)
-      ? Math.sign(event.deltaY)
-      : Math.sign(event.deltaX);
-    if (direction === 0) return;
-    teamWheelLockRef.current = true;
-    navigateTeamSlide(direction > 0 ? 1 : -1);
-    window.setTimeout(() => {
-      teamWheelLockRef.current = false;
-    }, 850);
-  };
 
   return (
     <main
@@ -298,110 +214,7 @@ export default function Page() {
           </div>
         </section>
 
-        <section className="team-section snap-section homepage-section-v2" id="departman-ekipleri">
-          <div className="section-header-area">
-            <div className="section-heading-v2">
-              <h2 style={{ 
-                fontFamily: "var(--font-smooch), sans-serif", 
-                fontSize: "clamp(2.5rem, 8vw, 5.5rem)", 
-                fontWeight: 100, 
-                letterSpacing: "0.15em",
-                color: "#fff",
-                lineHeight: "1"
-              }}>Departman Ekipleri</h2>
-              <div className="section-line" />
-            </div>
-          </div>
-          
-          <div className="section-content-area" style={{ padding: '0' }}>
-            <div className="team-mobile-slider team-home-mobile-slider desktop-only-team-slider" onTouchStart={handleTeamTouchStart} onTouchEnd={handleTeamTouchEnd} style={{ width: '100%', height: '100%' }}>
-              <button type="button" className="team-slider-arrow team-slider-arrow-left" onClick={() => navigateTeamSlide(-1)} aria-label="Önceki ekip">
-                <span className="material-symbols-outlined">arrow_back</span>
-              </button>
-              <button type="button" className="team-slider-arrow team-slider-arrow-right" onClick={() => navigateTeamSlide(1)} aria-label="Sonraki ekip">
-                <span className="material-symbols-outlined">arrow_forward</span>
-              </button>
-              <AnimatePresence mode="wait" initial={false}>
-                <motion.div
-                  key={filteredTeam[teamSlideIndex]?.id}
-                  className="team-mobile-slide"
-                  drag="x"
-                  dragConstraints={{ left: 0, right: 0 }}
-                  dragElastic={0.12}
-                  onDragEnd={(_, info) => {
-                    const threshold = 60;
-                    if (info.offset.x < -threshold) navigateTeamSlide(1);
-                    if (info.offset.x > threshold) navigateTeamSlide(-1);
-                  }}
-                  initial={{
-                    opacity: 0,
-                    x: teamSlideDirection >= 0 ? 100 : -100,
-                    scale: 1.05,
-                    filter: "blur(10px) saturate(0.9)",
-                  }}
-                  animate={{
-                    opacity: 1,
-                    x: 0,
-                    scale: 1,
-                    filter: "blur(0px) saturate(1)",
-                  }}
-                  exit={{
-                    opacity: 0,
-                    x: teamSlideDirection >= 0 ? -100 : 100,
-                    scale: 0.98,
-                    filter: "blur(8px) saturate(0.9)",
-                  }}
-                  transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
-                >
-                  <Link href={currentTeamMember ? "/departman-ekipleri" : "#"} className="team-card-gallery team-mobile-card">
-                    <div className="team-card-img">
-                      {currentTeamMember?.image ? (
-                        <img src={currentTeamMember.image} alt={currentTeamMember.name} />
-                      ) : null}
-                      <div className="team-overlay" />
-                      <div className="team-card-content">
-                        <span className="team-card-role-vertical">{currentTeamMember?.role}</span>
-                        <div className="team-card-copy">
-                          <h3>{currentTeamMember?.name}</h3>
-                        </div>
-                        <div className="team-card-footer">
-                          <span className="team-card-index">{String(teamSlideIndex + 1).padStart(2, "0")}</span>
-                          <span className="material-symbols-outlined">arrow_outward</span>
-                        </div>
-                      </div>
-                    </div>
-                  </Link>
-                </motion.div>
-              </AnimatePresence>
-            </div>
-
-            <div className="mobile-only-team-slider">
-              {filteredTeam.map((member, idx) => (
-                <Link key={member.id} href="/departman-ekipleri" className="team-native-card">
-                  <div className="team-native-img">
-                    {member.image ? <img src={member.image} alt={member.name} /> : null}
-                  </div>
-                  <div className="team-native-overlay" />
-                  <div className="team-native-content">
-                    <span className="team-native-role">{member.role}</span>
-                    <h3>{member.name}</h3>
-                    <div className="team-native-footer">
-                      <span className="team-native-idx">{String(idx + 1).padStart(2, "0")}</span>
-                      <span className="material-symbols-outlined">arrow_outward</span>
-                    </div>
-                  </div>
-                </Link>
-              ))}
-            </div>
-          </div>
-          
-          <div style={{ position: 'absolute', bottom: '4rem', left: '0', right: '0', display: 'flex', justifyContent: 'center', pointerEvents: 'none', zIndex: 10 }}>
-            <Link href="/departman-ekipleri" className="premium-all-btn" style={{ pointerEvents: 'auto' }}>
-              <span className="premium-btn-text">TÜM EKİPLERİ GÖR</span>
-              <span className="material-symbols-outlined premium-btn-icon">east</span>
-            </Link>
-          </div>
-        </section>
+        <HomeDepartmentTeamsSection className="homepage-team-section" />
 
       <Footer />
 
