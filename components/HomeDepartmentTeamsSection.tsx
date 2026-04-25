@@ -3,7 +3,6 @@
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import Lenis from "lenis";
 import Autoplay from "embla-carousel-autoplay";
 
 import { teamFilters, teamMembers as fallbackTeamMembers } from "@/data/team";
@@ -39,36 +38,6 @@ export default function HomeDepartmentTeamsSection({ className }: { className?: 
   const [members, setMembers] = useState<TeamMember[]>(fallbackTeamMembers);
   const [activeIndex, setActiveIndex] = useState(0);
   const [carouselApi, setCarouselApi] = useState<any>(null);
-
-  useEffect(() => {
-    const activeWindow = window as Window & { __deqoinHomeLenis?: Lenis };
-
-    if (activeWindow.__deqoinHomeLenis) return;
-
-    const lenis = new Lenis({
-      lerp: 0.08,
-      smoothWheel: true,
-      syncTouch: true,
-    });
-
-    activeWindow.__deqoinHomeLenis = lenis;
-
-    let frame = 0;
-    const raf = (time: number) => {
-      lenis.raf(time);
-      frame = window.requestAnimationFrame(raf);
-    };
-
-    frame = window.requestAnimationFrame(raf);
-
-    return () => {
-      window.cancelAnimationFrame(frame);
-      lenis.destroy();
-      if (activeWindow.__deqoinHomeLenis === lenis) {
-        delete activeWindow.__deqoinHomeLenis;
-      }
-    };
-  }, []);
 
   useEffect(() => {
     let cancelled = false;
