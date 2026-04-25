@@ -30,7 +30,6 @@ export default function OurTeam() {
   const [activeTeamFilter, setActiveTeamFilter] = useState<(typeof teamFilters)[number]["key"]>("all");
   const [carouselApi, setCarouselApi] = useState<any>(null);
   const [activeIndex, setActiveIndex] = useState(0);
-  const [secondsLeft, setSecondsLeft] = useState(6);
 
   useEffect(() => {
     const lenis = new Lenis({ lerp: 0.08, smoothWheel: true });
