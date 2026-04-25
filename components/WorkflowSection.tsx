@@ -176,7 +176,7 @@ export default function WorkflowSection({
 
           <CardHeader className="relative flex-none p-4 pb-3 md:p-5 md:pb-4">
             <div className="max-w-4xl">
-              <CardTitle className="mt-2.5 font-[family-name:var(--font-smooch)] text-[clamp(1.7rem,3.6vw,3rem)] font-normal leading-[0.92] tracking-[0.1em] text-white">
+              <CardTitle className="mt-2.5 font-[family-name:var(--font-smooch)] text-[clamp(2.1rem,8vw,3rem)] font-normal leading-[0.92] tracking-[0.1em] text-white md:text-[clamp(1.7rem,3.6vw,3rem)]">
                 İŞ AKIŞI
               </CardTitle>
             </div>
