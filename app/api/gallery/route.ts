@@ -28,11 +28,11 @@ const DEFAULT_SLIDER = {
   buttonText: "TÜM GALERİYİ GÖR",
   buttonHref: "/galeri",
   slides: [
-    { src: "/images/projects/gallery_1.png", alt: "DEQOIN galeri görseli 1", caption: "01" },
-    { src: "/images/projects/gallery_2.png", alt: "DEQOIN galeri görseli 2", caption: "02" },
-    { src: "/images/slider/mimari_slide.png", alt: "DEQOIN galeri görseli 3", caption: "03" },
-    { src: "/images/slider/tasarim_slide.png", alt: "DEQOIN galeri görseli 4", caption: "04" },
-    { src: "/images/slider/uygulama_slide.png", alt: "DEQOIN galeri görseli 5", caption: "05" },
+    { src: "/images/projects/gallery_1.png", alt: "DEQOIN galeri görseli 1", caption: "01", title: "Residence Lobby", description: "Minimal yüzeyler, dengeli ışık ve sakin bir giriş atmosferi." },
+    { src: "/images/projects/gallery_2.png", alt: "DEQOIN galeri görseli 2", caption: "02", title: "Material Study", description: "Doğal dokular, net detaylar ve kontrollü kontrast." },
+    { src: "/images/slider/mimari_slide.png", alt: "DEQOIN galeri görseli 3", caption: "03", title: "Architectural Frame", description: "Mekanı tanımlayan sade çizgiler ve güçlü oranlar." },
+    { src: "/images/slider/tasarim_slide.png", alt: "DEQOIN galeri görseli 4", caption: "04", title: "Design Detail", description: "Yüzey geçişleri ve dingin bir kompozisyon dili." },
+    { src: "/images/slider/uygulama_slide.png", alt: "DEQOIN galeri görseli 5", caption: "05", title: "Execution Layer", description: "Uygulama kalitesi, temiz bitişler ve net sonuçlar." },
   ] satisfies SliderAsset[],
 };
 
@@ -51,7 +51,7 @@ function normalizeAssets(input: SliderPayload["slides"] = []): SliderAsset[] {
           alt: `${DEFAULT_SLIDER.title} görseli ${index + 1}`,
           caption: String(index + 1).padStart(2, "0"),
           title: `${DEFAULT_SLIDER.title} ${index + 1}`,
-          description: "",
+          description: `Otomatik oluşturulan proje özeti ${String(index + 1).padStart(2, "0")}.`,
         };
       }
 
@@ -64,7 +64,10 @@ function normalizeAssets(input: SliderPayload["slides"] = []): SliderAsset[] {
           alt: toText(asset.alt ?? asset.imageAlt, `${DEFAULT_SLIDER.title} görseli ${index + 1}`),
           caption: toText(asset.caption, String(index + 1).padStart(2, "0")),
           title: toText(asset.title ?? asset.projectTitle, `${DEFAULT_SLIDER.title} ${index + 1}`),
-          description: toText(asset.description ?? asset.subtitle, ""),
+          description: toText(
+            asset.description ?? asset.subtitle,
+            `Otomatik oluşturulan proje özeti ${String(index + 1).padStart(2, "0")}.`,
+          ),
         };
       }
 

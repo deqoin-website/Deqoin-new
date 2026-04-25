@@ -31,11 +31,41 @@ const FALLBACK_HERO: HeroContent = {
   buttonText: "TÜM GALERİYİ GÖR",
   buttonHref: "/galeri",
   images: [
-    { src: "/images/projects/gallery_1.png", alt: "DEQOIN galeri görseli 1", caption: "01" },
-    { src: "/images/projects/gallery_2.png", alt: "DEQOIN galeri görseli 2", caption: "02" },
-    { src: "/images/slider/mimari_slide.png", alt: "DEQOIN galeri görseli 3", caption: "03" },
-    { src: "/images/slider/tasarim_slide.png", alt: "DEQOIN galeri görseli 4", caption: "04" },
-    { src: "/images/slider/uygulama_slide.png", alt: "DEQOIN galeri görseli 5", caption: "05" },
+    {
+      src: "/images/projects/gallery_1.png",
+      alt: "DEQOIN galeri görseli 1",
+      caption: "01",
+      title: "Residence Lobby",
+      description: "Minimal yüzeyler, dengeli ışık ve sakin bir giriş atmosferi.",
+    },
+    {
+      src: "/images/projects/gallery_2.png",
+      alt: "DEQOIN galeri görseli 2",
+      caption: "02",
+      title: "Material Study",
+      description: "Doğal dokular, net detaylar ve kontrollü kontrast.",
+    },
+    {
+      src: "/images/slider/mimari_slide.png",
+      alt: "DEQOIN galeri görseli 3",
+      caption: "03",
+      title: "Architectural Frame",
+      description: "Mekanı tanımlayan sade çizgiler ve güçlü oranlar.",
+    },
+    {
+      src: "/images/slider/tasarim_slide.png",
+      alt: "DEQOIN galeri görseli 4",
+      caption: "04",
+      title: "Design Detail",
+      description: "Yüzey geçişleri ve dingin bir kompozisyon dili.",
+    },
+    {
+      src: "/images/slider/uygulama_slide.png",
+      alt: "DEQOIN galeri görseli 5",
+      caption: "05",
+      title: "Execution Layer",
+      description: "Uygulama kalitesi, temiz bitişler ve net sonuçlar.",
+    },
   ],
 };
 
@@ -59,12 +89,13 @@ function normalizeHeroContent(payload: any): HeroContent {
       if (typeof item === "string") {
         const src = item.trim();
         if (!src) return null;
+        const label = `${candidate?.title ?? FALLBACK_HERO.title} ${String(index + 1).padStart(2, "0")}`;
         return {
           src,
           alt: `${candidate?.title ?? FALLBACK_HERO.title} görseli ${index + 1}`,
           caption: String(index + 1).padStart(2, "0"),
-          title: `${candidate?.title ?? FALLBACK_HERO.title} ${index + 1}`,
-          description: "",
+          title: label,
+          description: `Otomatik oluşturulan proje özeti ${String(index + 1).padStart(2, "0")}.`,
         };
       }
 
@@ -77,7 +108,10 @@ function normalizeHeroContent(payload: any): HeroContent {
           alt: toText(item.alt ?? item.imageAlt, `${candidate?.title ?? FALLBACK_HERO.title} görseli ${index + 1}`),
           caption: toText(item.caption, String(index + 1).padStart(2, "0")),
           title: toText(item.title ?? item.projectTitle, `${candidate?.title ?? FALLBACK_HERO.title} ${index + 1}`),
-          description: toText(item.description ?? item.subtitle, ""),
+          description: toText(
+            item.description ?? item.subtitle,
+            `Otomatik oluşturulan proje özeti ${String(index + 1).padStart(2, "0")}.`,
+          ),
         };
       }
 
@@ -200,7 +234,7 @@ function HeroSlide({
                     </Button>
                   </div>
 
-                  <Button asChild variant="outline" className="border-white/12 bg-white text-zinc-950 hover:bg-zinc-100">
+                  <Button asChild variant="outline" className="border-white/12 bg-white text-black hover:bg-zinc-100">
                     <Link href={buttonHref} className="font-[family-name:var(--font-smooch)] text-[0.76rem] tracking-[0.3em] text-black">
                       {buttonText}
                     </Link>

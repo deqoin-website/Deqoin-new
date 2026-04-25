@@ -43,11 +43,11 @@ const DEFAULT_FORM: SliderForm = {
 };
 
 const FALLBACK_SLIDES: SliderImage[] = [
-  { src: '/images/projects/gallery_1.png', alt: 'DEQOIN slider görseli 1', caption: '01' },
-  { src: '/images/projects/gallery_2.png', alt: 'DEQOIN slider görseli 2', caption: '02' },
-  { src: '/images/slider/mimari_slide.png', alt: 'DEQOIN slider görseli 3', caption: '03' },
-  { src: '/images/slider/tasarim_slide.png', alt: 'DEQOIN slider görseli 4', caption: '04' },
-  { src: '/images/slider/uygulama_slide.png', alt: 'DEQOIN slider görseli 5', caption: '05' },
+  { src: '/images/projects/gallery_1.png', alt: 'DEQOIN slider görseli 1', caption: '01', title: 'Residence Lobby', description: 'Minimal yüzeyler, dengeli ışık ve sakin bir giriş atmosferi.' },
+  { src: '/images/projects/gallery_2.png', alt: 'DEQOIN slider görseli 2', caption: '02', title: 'Material Study', description: 'Doğal dokular, net detaylar ve kontrollü kontrast.' },
+  { src: '/images/slider/mimari_slide.png', alt: 'DEQOIN slider görseli 3', caption: '03', title: 'Architectural Frame', description: 'Mekanı tanımlayan sade çizgiler ve güçlü oranlar.' },
+  { src: '/images/slider/tasarim_slide.png', alt: 'DEQOIN slider görseli 4', caption: '04', title: 'Design Detail', description: 'Yüzey geçişleri ve dingin bir kompozisyon dili.' },
+  { src: '/images/slider/uygulama_slide.png', alt: 'DEQOIN slider görseli 5', caption: '05', title: 'Execution Layer', description: 'Uygulama kalitesi, temiz bitişler ve net sonuçlar.' },
 ];
 
 function clone<T>(value: T): T {
@@ -79,7 +79,7 @@ function normalizeSlides(input: any, title = DEFAULT_FORM.title): SliderImage[] 
           alt: `${title} görseli ${index + 1}`,
           caption: String(index + 1).padStart(2, '0'),
           title: `${title} ${index + 1}`,
-          description: '',
+          description: `Otomatik oluşturulan proje özeti ${String(index + 1).padStart(2, '0')}.`,
         };
       }
 
@@ -91,7 +91,10 @@ function normalizeSlides(input: any, title = DEFAULT_FORM.title): SliderImage[] 
           alt: textOrFallback(item.alt ?? item.imageAlt, `${title} görseli ${index + 1}`),
           caption: textOrFallback(item.caption, String(index + 1).padStart(2, '0')),
           title: textOrFallback(item.title ?? item.projectTitle, `${title} ${index + 1}`),
-          description: textOrFallback(item.description ?? item.subtitle, ''),
+          description: textOrFallback(
+            item.description ?? item.subtitle,
+            `Otomatik oluşturulan proje özeti ${String(index + 1).padStart(2, '0')}.`,
+          ),
         };
       }
 
@@ -152,7 +155,16 @@ export default function HomeGalleryAdminPage() {
   const addSlide = () => {
     setForm((prev) => ({
       ...prev,
-      slides: [...prev.slides, { src: '', alt: '', caption: String(prev.slides.length + 1).padStart(2, '0') }],
+      slides: [
+        ...prev.slides,
+        {
+          src: '',
+          alt: '',
+          caption: String(prev.slides.length + 1).padStart(2, '0'),
+          title: `${prev.title} ${String(prev.slides.length + 1).padStart(2, '0')}`,
+          description: `Otomatik oluşturulan proje özeti ${String(prev.slides.length + 1).padStart(2, '0')}.`,
+        },
+      ],
     }));
     markDirty();
   };
@@ -226,15 +238,17 @@ export default function HomeGalleryAdminPage() {
         title: form.title.trim() || DEFAULT_FORM.title,
         buttonText: form.buttonText.trim() || DEFAULT_FORM.buttonText,
         buttonHref: form.buttonHref.trim() || DEFAULT_FORM.buttonHref,
-      slides: form.slides
-        .map((item) => ({
-          src: item.src.trim(),
-          alt: item.alt.trim() || item.src.trim() || form.title,
-          caption: item.caption?.trim() || '',
-          title: item.title?.trim() || form.title,
-          description: item.description?.trim() || '',
-        }))
-        .filter((item) => Boolean(item.src)),
+        slides: form.slides
+          .map((item, index) => ({
+            src: item.src.trim(),
+            alt: item.alt.trim() || item.src.trim() || form.title,
+            caption: item.caption?.trim() || '',
+            title: item.title?.trim() || `${form.title} ${String(index + 1).padStart(2, '0')}`,
+            description:
+              item.description?.trim() ||
+              `Otomatik oluşturulan proje özeti ${String(index + 1).padStart(2, '0')}.`,
+          }))
+          .filter((item) => Boolean(item.src)),
       };
 
       const res = await fetch('/api/gallery', {
