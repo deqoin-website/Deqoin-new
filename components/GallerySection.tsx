@@ -241,8 +241,8 @@ function HeroSlide({
                     </Button>
                   </div>
 
-                  <Button asChild variant="outline" className="border-white/12 bg-white text-black hover:bg-zinc-100">
-                    <Link href={buttonHref} className="font-[family-name:var(--font-smooch)] text-[0.76rem] tracking-[0.3em] text-black">
+                  <Button asChild variant="outline" className="border-white/12 bg-white !text-black hover:bg-zinc-100">
+                    <Link href={buttonHref} className="font-[family-name:var(--font-smooch)] text-[0.76rem] tracking-[0.3em] !text-black">
                       {buttonText}
                     </Link>
                   </Button>
