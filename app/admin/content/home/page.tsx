@@ -15,6 +15,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 export default function HomeEditor() {
   const [slides, setSlides] = useState<any[]>([]);
+  const [pageContent, setPageContent] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
 
@@ -22,11 +23,48 @@ export default function HomeEditor() {
     fetchContent();
   }, []);
 
+  const createDefaultHomeContent = () => ({
+    page: 'home',
+    sections: [
+      {
+        id: 'hero',
+        type: 'hero',
+        title: 'Ana Sayfa Slider',
+        content: {
+          slides: [
+            {
+              image: "/images/slider/mimari_slide.png",
+              title: "DESIGN STUDIO",
+              motto: "Estetik ve Fonksiyonun Mimari Uyumu",
+              buttonText: "DESIGN STUDIO İÇİN RANDEVU TALEP EDİNİZ",
+              caption: "Design Studio"
+            },
+            {
+              image: "/images/slider/tasarim_slide.png",
+              title: "MATERIAL STUDIO",
+              motto: "Dokunulabilir Lüks, Zamansız Detaylar",
+              buttonText: "MATERIAL STUDIO İÇİN RANDEVU TALEP EDİNİZ",
+              caption: "Material Studio"
+            },
+            {
+              image: "/images/slider/uygulama_slide.png",
+              title: "EXECUTION STUDIO",
+              motto: "Hayallerin Kusursuz İnşası",
+              buttonText: "EXECUTION STUDIO İÇİN RANDEVU TALEP EDİNİZ",
+              caption: "Execution Studio"
+            }
+          ]
+        }
+      }
+    ]
+  });
+
   const fetchContent = async () => {
     try {
       const res = await fetch('/api/content?page=home');
       const data = await res.json();
       if (data.sections) {
+        setPageContent(data);
         const heroSection = data.sections.find((s: any) => s.id === 'hero');
         if (heroSection?.content?.slides?.length > 0) {
           setSlides(heroSection.content.slides);
@@ -46,29 +84,9 @@ export default function HomeEditor() {
   };
 
   const loadDefaults = () => {
-    setSlides([
-      {
-        image: "/images/slider/mimari_slide.png",
-        title: "DESIGN STUDIO",
-        motto: "Estetik ve Fonksiyonun Mimari Uyumu",
-        buttonText: "DESIGN STUDIO İÇİN RANDEVU TALEP EDİNİZ",
-        caption: "Design Studio"
-      },
-      {
-        image: "/images/slider/tasarim_slide.png",
-        title: "MATERIAL STUDIO",
-        motto: "Dokunulabilir Lüks, Zamansız Detaylar",
-        buttonText: "MATERIAL STUDIO İÇİN RANDEVU TALEP EDİNİZ",
-        caption: "Material Studio"
-      },
-      {
-        image: "/images/slider/uygulama_slide.png",
-        title: "EXECUTION STUDIO",
-        motto: "Hayallerin Kusursuz İnşası",
-        buttonText: "EXECUTION STUDIO İÇİN RANDEVU TALEP EDİNİZ",
-        caption: "Execution Studio"
-      }
-    ]);
+    const defaultContent = createDefaultHomeContent();
+    setPageContent(defaultContent);
+    setSlides(defaultContent.sections[0].content.slides);
   };
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
@@ -121,21 +139,46 @@ export default function HomeEditor() {
   const saveContent = async () => {
     setIsSaving(true);
     try {
+      let latestContent: any = null;
+      try {
+        const latestRes = await fetch('/api/content?page=home', { cache: 'no-store' });
+        latestContent = await latestRes.json();
+      } catch (error) {
+        latestContent = null;
+      }
+
+      const nextContent = JSON.parse(JSON.stringify(latestContent?.sections ? latestContent : (pageContent || createDefaultHomeContent())));
+      if (!Array.isArray(nextContent.sections)) {
+        nextContent.sections = [];
+      }
+
+      const heroIndex = nextContent.sections.findIndex((s: any) => s.id === 'hero');
+      const heroSection = {
+        id: 'hero',
+        type: 'hero',
+        title: 'Ana Sayfa Slider',
+        content: { slides }
+      };
+
+      if (heroIndex >= 0) {
+        nextContent.sections[heroIndex] = {
+          ...nextContent.sections[heroIndex],
+          ...heroSection,
+          content: {
+            ...(nextContent.sections[heroIndex]?.content || {}),
+            slides
+          }
+        };
+      } else {
+        nextContent.sections.unshift(heroSection);
+      }
+
       await fetch('/api/content', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          page: 'home',
-          sections: [
-            {
-              id: 'hero',
-              type: 'hero',
-              title: 'Ana Sayfa Slider',
-              content: { slides }
-            }
-          ]
-        })
+        body: JSON.stringify(nextContent)
       });
+      setPageContent(nextContent);
       alert('Ana sayfa içeriği başarıyla güncellendi!');
     } catch (err) {
       alert('Kaydedilirken bir hata oluştu.');
