@@ -105,7 +105,7 @@ export default function WorkflowSection({
         <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(17,17,17,0.03)_1px,transparent_1px),linear-gradient(to_bottom,rgba(17,17,17,0.03)_1px,transparent_1px)] bg-[size:4rem_4rem] opacity-35" />
       </div>
 
-      <div className="relative mx-auto flex h-full w-full max-w-[90rem] flex-col px-4 py-2.5 md:px-7 md:py-4 lg:px-9 lg:py-6">
+      <div className="relative mx-auto flex h-full w-full max-w-[90rem] flex-col px-4 py-[8.5px] md:px-7 md:py-4 lg:px-9 lg:py-6">
         <Card className="relative flex h-full flex-col overflow-hidden !rounded-[1.65rem] !border-white/70 !bg-[#fbf8f2] !shadow-[0_16px_44px_rgba(34,24,14,0.07)]">
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(198,159,95,0.12),transparent_28%),radial-gradient(circle_at_bottom_right,rgba(17,17,17,0.04),transparent_30%)]" />
           <CardHeader className="relative flex-none p-4 pb-2.5 md:p-5 md:pb-3">
