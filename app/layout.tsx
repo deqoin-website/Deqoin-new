@@ -24,7 +24,17 @@ export async function generateMetadata(): Promise<Metadata> {
   const settings = await getSettings();
   const defaultTitle = settings?.metaTitle || "Deqoin I Architectural Design Studio";
   const defaultDesc = settings?.metaDescription || "DEQOIN mimari, tasarım ve uygulama odaklı kurumsal vitrin sitesi.";
-  const metadataBase = new URL(process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000");
+  const resolveSiteUrl = () => {
+    const explicitUrl = process.env.NEXT_PUBLIC_SITE_URL?.trim();
+    if (explicitUrl) return explicitUrl;
+
+    const vercelUrl = process.env.VERCEL_PROJECT_PRODUCTION_URL?.trim() || process.env.VERCEL_URL?.trim();
+    if (vercelUrl) return vercelUrl.startsWith("http") ? vercelUrl : `https://${vercelUrl}`;
+
+    return "http://localhost:3000";
+  };
+
+  const metadataBase = new URL(resolveSiteUrl());
   const iconUrl = new URL(settings?.faviconUrl || "/favicon.png", metadataBase).toString();
   const logoUrl = new URL(settings?.logoUrl || "/images/logo-new.jpeg", metadataBase).toString();
   
