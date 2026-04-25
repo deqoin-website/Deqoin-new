@@ -1,100 +1,86 @@
 "use client";
 
-import type { ComponentType } from "react";
+import Image from "next/image";
+import type { LucideIcon } from "lucide-react";
+import { ArrowUpRight, Compass, Sparkles, Target } from "lucide-react";
+
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
 import { Separator } from "@/components/ui/separator";
-import { ArrowUpRight, Compass, Layers3, Sparkles, SquareStack, Target } from "lucide-react";
 
 type WorkflowStep = {
   id: string;
   title: string;
   description: string;
   note: string;
-  icon: ComponentType<{ className?: string }>;
+  icon: LucideIcon;
 };
 
 const WORKFLOW_STEPS: WorkflowStep[] = [
   {
     id: "01",
     title: "Brief Alignment",
-    description: "Kapsam, öncelik ve estetik yön tek cümlede sabitlenir.",
-    note: "İlk temas noktası burada netleşir; gereksiz dallanmalar daha başlamadan elenir.",
+    description: "Kapsam, ritim ve estetik yön tek satırda sabitlenir.",
+    note: "Materyal Studio altındaki sakin kurgu burada daha okunaklı bir iş akışına dönüştürülür.",
     icon: Target,
   },
   {
     id: "02",
     title: "Flow Mapping",
-    description: "Kullanıcı akışı, bilgi hiyerarşisi ve geçiş mantığı tasarlanır.",
-    note: "İnce çizgilerle bağlanan zaman çizelgesi, bölümün ritmini görsel olarak taşır.",
+    description: "Bilgi hiyerarşisi, dolaşım ve geçiş mantığı net bir sistem kurar.",
+    note: "İnce ayarlı çizgiler ve boşluklar, referanstaki dengeli kompozisyonu korur.",
     icon: Compass,
   },
   {
     id: "03",
-    title: "Visual Refinement",
-    description: "Tipografi, boşluk, ikon ve altın vurgular tek bir premium sistemde birleşir.",
-    note: "Smooch Sans hiyerarşisi ve düşük kontrastlı yüzeyler lüks hissi güçlendirir.",
+    title: "Detail Refinement",
+    description: "Tipografi, boşluk ve gold vurgu aynı düzen içinde rafine edilir.",
+    note: "Son dokunuş, section'ı gösterişli değil; ölçülü ve premium hale getirir.",
     icon: Sparkles,
-  },
-  {
-    id: "04",
-    title: "Launch Ready",
-    description: "Son doğrulama tamamlanır, bölüm yayın ritmine hazır hale gelir.",
-    note: "Bu aşama, yalnızca temiz bir sonuç değil, sürdürülebilir bir yapı bırakır.",
-    icon: SquareStack,
   },
 ];
 
-function WorkflowStepCard({ step, index }: { step: WorkflowStep; index: number }) {
+function WorkflowStepCard({ step }: { step: WorkflowStep }) {
   const Icon = step.icon;
 
   return (
     <HoverCard>
       <HoverCardTrigger asChild>
-        <Card className="group relative overflow-hidden border-white/10 bg-white/[0.04] transition-all duration-500 ease-out hover:-translate-y-1 hover:border-amber-400/35 hover:bg-white/[0.06] hover:shadow-[0_30px_90px_rgba(0,0,0,0.48)]">
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(198,159,95,0.14),transparent_42%),linear-gradient(180deg,rgba(255,255,255,0.04),rgba(255,255,255,0.015))]" />
-          <CardContent className="relative flex gap-5 p-5 md:p-6">
-            <div className="flex w-20 shrink-0 flex-col items-start gap-3">
-              <Badge className="border-amber-400/25 bg-amber-400/10 text-amber-200">
+        <Card className="group h-full !overflow-hidden !rounded-[1.35rem] !border-black/10 !bg-white/85 !shadow-[0_20px_50px_rgba(34,24,14,0.06)] !backdrop-blur-none transition-all duration-500 ease-out hover:-translate-y-1 hover:!border-amber-400/35 hover:!shadow-[0_26px_60px_rgba(34,24,14,0.1)]">
+          <CardHeader className="flex h-full flex-col gap-4 p-6 md:p-6">
+            <div className="flex items-center justify-between gap-4">
+              <Badge
+                variant="outline"
+                className="!border-amber-400/30 !bg-white !text-[0.68rem] !font-medium !tracking-[0.26em] !text-amber-700"
+              >
                 {step.id}
               </Badge>
-              <div className="flex h-12 w-12 items-center justify-center rounded-full border border-white/10 bg-zinc-950/70 text-amber-200 transition-all duration-500 group-hover:border-amber-400/35 group-hover:text-amber-100">
-                <Icon className="h-5 w-5" />
-              </div>
+              <Icon className="h-5 w-5 text-amber-600 transition-transform duration-500 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-amber-500" />
             </div>
 
-            <div className="min-w-0 flex-1">
-              <div className="flex items-start justify-between gap-4">
-                <div>
-                  <CardTitle className="font-[family-name:var(--font-smooch)] text-[1.35rem] font-semibold tracking-[0.16em] text-zinc-50 md:text-[1.7rem]">
-                    {step.title}
-                  </CardTitle>
-                  <CardDescription className="mt-2 max-w-xl font-[family-name:var(--font-smooch)] text-[0.98rem] font-light tracking-[0.05em] text-zinc-400 md:text-[1.08rem]">
-                    {step.description}
-                  </CardDescription>
-                </div>
+            <CardTitle className="font-[family-name:var(--font-smooch)] text-[1.55rem] font-light leading-[0.95] tracking-[0.12em] text-zinc-950 md:text-[1.75rem]">
+              {step.title}
+            </CardTitle>
 
-                <span className="font-[family-name:var(--font-smooch)] text-sm font-light tracking-[0.28em] text-amber-200/70">
-                  0{index + 1}
-                </span>
-              </div>
+            <Separator className="bg-gradient-to-r from-transparent via-black/10 to-transparent" />
 
-              <Separator className="my-4 bg-gradient-to-r from-transparent via-white/10 to-transparent" />
+            <CardDescription className="max-w-[22rem] font-[family-name:var(--font-smooch)] text-[1rem] font-light leading-8 tracking-[0.04em] text-zinc-600">
+              {step.description}
+            </CardDescription>
 
-              <div className="flex items-center justify-between gap-3">
-                <span className="font-[family-name:var(--font-smooch)] text-[0.72rem] font-medium uppercase tracking-[0.28em] text-zinc-500">
-                  Premium Path
-                </span>
-                <ArrowUpRight className="h-4 w-4 text-amber-200/60 transition-all duration-500 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-amber-100" />
-              </div>
+            <div className="mt-auto flex items-center justify-between pt-2">
+              <span className="font-[family-name:var(--font-smooch)] text-[0.68rem] uppercase tracking-[0.28em] text-zinc-400">
+                View detail
+              </span>
+              <ArrowUpRight className="h-4 w-4 text-amber-600 transition-all duration-500 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
             </div>
-          </CardContent>
+          </CardHeader>
         </Card>
       </HoverCardTrigger>
 
-      <HoverCardContent className="border-amber-400/20 bg-zinc-950/97">
-        <p className="font-[family-name:var(--font-smooch)] text-[0.95rem] font-light tracking-[0.04em] text-zinc-200">
+      <HoverCardContent className="border-amber-400/20 bg-zinc-950/98 text-zinc-200">
+        <p className="font-[family-name:var(--font-smooch)] text-[0.95rem] font-light leading-7 tracking-[0.04em]">
           {step.note}
         </p>
       </HoverCardContent>
@@ -111,100 +97,119 @@ export default function WorkflowSection({
 }: WorkflowSectionProps) {
   return (
     <section
-      className={`relative flex h-full w-full items-center overflow-hidden bg-[#09090b] text-zinc-100 ${className}`.trim()}
+      className={`relative flex h-full w-full items-center overflow-hidden bg-[#f4ede4] text-zinc-950 ${className}`.trim()}
       aria-label="İş Akış Süreci"
       style={{ fontFamily: "var(--font-smooch)" }}
     >
       <div className="pointer-events-none absolute inset-0">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(198,159,95,0.16),transparent_25%),radial-gradient(circle_at_bottom_right,rgba(255,255,255,0.08),transparent_24%)]" />
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:4.5rem_4.5rem] opacity-20" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(198,159,95,0.18),transparent_24%),radial-gradient(circle_at_bottom_right,rgba(17,17,17,0.06),transparent_22%)]" />
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(17,17,17,0.03)_1px,transparent_1px),linear-gradient(to_bottom,rgba(17,17,17,0.03)_1px,transparent_1px)] bg-[size:4rem_4rem] opacity-35" />
       </div>
 
-      <div className="relative mx-auto grid h-full w-full max-w-7xl grid-cols-1 gap-6 px-4 py-8 md:px-8 lg:grid-cols-[0.86fr_1.14fr] lg:gap-10 lg:px-10 lg:py-10">
-        <div className="flex h-full flex-col justify-between gap-6">
-          <Card className="relative h-full overflow-hidden border-white/10 bg-white/[0.04]">
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(198,159,95,0.16),transparent_36%),linear-gradient(180deg,rgba(255,255,255,0.04),rgba(255,255,255,0.01))]" />
-            <CardHeader className="relative p-6 md:p-8">
-              <Badge className="w-fit border-amber-400/25 bg-amber-400/10 text-amber-200">
+      <div className="relative mx-auto grid h-full w-full max-w-7xl grid-cols-1 gap-4 px-4 py-4 md:px-8 md:py-6 lg:grid-cols-[0.9fr_1.1fr] lg:gap-5 lg:px-10 lg:py-10">
+        <Card className="relative min-h-[18rem] overflow-hidden !rounded-[2rem] !border-white/60 !bg-[#e7dccf] !shadow-[0_24px_60px_rgba(34,24,14,0.08)] lg:min-h-0">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.24),transparent_40%),linear-gradient(180deg,rgba(255,255,255,0.1),rgba(0,0,0,0.08))]" />
+          <Image
+            src="/images/about_interior.png"
+            alt="Workflow reference interior"
+            fill
+            priority
+            className="object-cover object-center mix-blend-multiply opacity-85"
+          />
+          <div className="absolute inset-0 border border-white/40" />
+
+          <CardContent className="relative flex h-full flex-col justify-between p-6 md:p-8">
+            <div className="flex items-start justify-between gap-4">
+              <Badge className="border-amber-400/25 bg-amber-400/12 text-amber-900">
                 İş Akış Süreci
               </Badge>
-              <CardTitle className="mt-4 max-w-xl font-[family-name:var(--font-smooch)] text-[2.3rem] font-light leading-[0.9] tracking-[0.16em] text-zinc-50 md:text-[3.5rem] lg:text-[4.25rem]">
-                Sıfırdan kurulan, sessiz ama güçlü bir workflow alanı.
-              </CardTitle>
-              <CardDescription className="mt-5 max-w-[32rem] font-[family-name:var(--font-smooch)] text-[1rem] font-light leading-8 tracking-[0.04em] text-zinc-400 md:text-[1.08rem]">
-                Minimal yüzeyler, altın detaylar ve net tipografik hiyerarşi ile tasarlanmış,
-                gelecekteki yeni mantık için tamamen boş ama kimliği olan bir iskelet.
-              </CardDescription>
-            </CardHeader>
+              <span className="font-[family-name:var(--font-smooch)] text-xs uppercase tracking-[0.32em] text-zinc-700/70">
+                Material inspired
+              </span>
+            </div>
 
-            <CardContent className="relative flex flex-col gap-5 p-6 pt-0 md:p-8 md:pt-0">
-              <Separator />
+            <div className="max-w-xl">
+              <h2 className="mt-8 font-[family-name:var(--font-smooch)] text-[clamp(2.5rem,5.4vw,4.8rem)] font-light leading-[0.88] tracking-[0.15em] text-zinc-950">
+                Sessiz ama net bir akış.
+              </h2>
+              <p className="mt-5 max-w-lg font-[family-name:var(--font-smooch)] text-[1rem] font-light leading-8 tracking-[0.04em] text-zinc-700">
+                Materyal Studio altındaki split layout hissini koruyan, ancak home
+                sayfada daha kontrollü ve kurumsal duran bir workflow kurgusu.
+              </p>
+            </div>
 
-              <div className="grid grid-cols-2 gap-4">
-                <div className="rounded-[1.25rem] border border-white/10 bg-zinc-950/60 p-4">
-                  <p className="text-[0.68rem] uppercase tracking-[0.28em] text-zinc-500">
-                    Layout
+            <div className="mt-8 grid grid-cols-3 gap-3 border-t border-white/45 pt-5">
+              {[
+                { label: "LAYOUT", value: "100vh" },
+                { label: "UI KIT", value: "shadcn" },
+                { label: "ACCENT", value: "Gold" },
+              ].map((item) => (
+                <div key={item.label} className="rounded-[1.15rem] border border-white/35 bg-white/45 px-4 py-4 backdrop-blur-sm">
+                  <p className="text-[0.62rem] uppercase tracking-[0.3em] text-zinc-500">
+                    {item.label}
                   </p>
-                  <p className="mt-2 text-lg font-medium tracking-[0.12em] text-zinc-100">
-                    100vh Snap
+                  <p className="mt-2 font-[family-name:var(--font-smooch)] text-[1.05rem] font-light tracking-[0.1em] text-zinc-950">
+                    {item.value}
                   </p>
                 </div>
-                <div className="rounded-[1.25rem] border border-amber-400/15 bg-amber-400/8 p-4">
-                  <p className="text-[0.68rem] uppercase tracking-[0.28em] text-amber-200/70">
-                    Accent
-                  </p>
-                  <p className="mt-2 text-lg font-medium tracking-[0.12em] text-amber-100">
-                    Gold Detail
-                  </p>
-                </div>
-              </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
 
-              <div className="rounded-[1.5rem] border border-white/10 bg-black/25 p-4">
-                <div className="flex items-center gap-3">
-                  <Layers3 className="h-4 w-4 text-amber-200/70" />
-                  <span className="text-[0.68rem] uppercase tracking-[0.3em] text-zinc-500">
-                    Intent
-                  </span>
-                </div>
-                <p className="mt-3 max-w-[28rem] text-[0.96rem] font-light leading-7 tracking-[0.04em] text-zinc-300">
-                  Klasik süsleme olmadan kurumsal, sofistike ve rafine bir anlatı.
-                </p>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
+        <Card className="relative overflow-hidden !rounded-[2rem] !border-white/70 !bg-[#fbf8f2] !shadow-[0_24px_70px_rgba(34,24,14,0.08)]">
+          <div className="absolute inset-x-8 top-28 hidden h-px bg-gradient-to-r from-transparent via-amber-400/35 to-transparent md:block" />
+          <div className="absolute left-[calc(33.333%-0.35rem)] top-[6.95rem] hidden h-3.5 w-3.5 rounded-full border border-amber-500/40 bg-[#fbf8f2] md:block" />
+          <div className="absolute left-[calc(66.666%-0.35rem)] top-[6.95rem] hidden h-3.5 w-3.5 rounded-full border border-amber-500/40 bg-[#fbf8f2] md:block" />
 
-        <div className="relative flex h-full min-h-0 flex-col justify-center">
-          <div className="relative h-full rounded-[2rem] border border-white/8 bg-white/[0.03] p-4 md:p-6">
-            <div className="absolute left-8 top-8 bottom-8 hidden w-px bg-gradient-to-b from-transparent via-amber-400/35 to-transparent lg:block" />
-            <div className="absolute left-8 top-8 hidden h-4 w-4 rounded-full border border-amber-300/60 bg-zinc-900 lg:block" />
-            <div className="absolute left-8 bottom-8 hidden h-4 w-4 rounded-full border border-amber-300/60 bg-zinc-900 lg:block" />
-
-            <div className="flex h-full flex-col gap-4 lg:pl-12">
-              <div className="flex items-center justify-between gap-4 px-1">
+          <CardHeader className="relative p-6 md:p-8">
+            <div className="flex flex-col gap-5">
+              <div className="flex items-start justify-between gap-4">
                 <div>
-                  <Badge className="border-white/10 bg-white/[0.04] text-zinc-200">
+                  <Badge
+                    variant="outline"
+                    className="!border-black/10 !bg-white !text-[0.66rem] !font-medium !tracking-[0.28em] !text-zinc-500"
+                  >
                     Timeline
                   </Badge>
-                  <h2 className="mt-4 font-[family-name:var(--font-smooch)] text-[1.9rem] font-light tracking-[0.18em] text-zinc-50 md:text-[2.6rem]">
+                  <CardTitle className="mt-4 max-w-3xl font-[family-name:var(--font-smooch)] text-[clamp(2rem,4vw,3.8rem)] font-light leading-[0.9] tracking-[0.14em] text-zinc-950">
                     Fikirden teslimata uzanan akış
-                  </h2>
+                  </CardTitle>
+                  <CardDescription className="mt-4 max-w-2xl font-[family-name:var(--font-smooch)] text-[1rem] font-light leading-8 tracking-[0.04em] text-zinc-600">
+                    Referanstaki ölçülü düzeni alıp, home workflow için daha açık bir
+                    anlatı ve daha net bir adım yapısına dönüştürüyorum.
+                  </CardDescription>
                 </div>
-                <span className="hidden font-[family-name:var(--font-smooch)] text-xs uppercase tracking-[0.34em] text-zinc-500 md:block">
+
+                <span className="hidden font-[family-name:var(--font-smooch)] text-xs uppercase tracking-[0.34em] text-zinc-400 md:block">
                   Workflow
                 </span>
               </div>
 
-              <Separator className="bg-gradient-to-r from-transparent via-amber-400/20 to-transparent" />
-
-              <div className="grid flex-1 grid-cols-1 gap-4 lg:grid-cols-2">
-                {WORKFLOW_STEPS.map((step, index) => (
-                  <WorkflowStepCard key={step.id} step={step} index={index} />
-                ))}
-              </div>
+              <Separator className="bg-gradient-to-r from-transparent via-black/10 to-transparent" />
             </div>
-          </div>
-        </div>
+          </CardHeader>
+
+          <CardContent className="relative flex flex-1 flex-col p-6 pt-0 md:p-8 md:pt-0">
+            <div className="grid flex-1 grid-cols-1 gap-4 md:grid-cols-3 md:gap-0">
+              {WORKFLOW_STEPS.map((step, index) => (
+                <div
+                  key={step.id}
+                  className={`relative ${index < WORKFLOW_STEPS.length - 1 ? "md:border-r md:border-r-black/10" : ""} border-b border-black/10 md:border-b-0 md:px-5 md:py-2 md:first:pl-0 md:last:pr-0`}
+                >
+                  <WorkflowStepCard step={step} />
+                </div>
+              ))}
+            </div>
+
+            <div className="mt-5 flex items-center justify-between gap-4 border-t border-black/10 pt-5">
+              <span className="font-[family-name:var(--font-smooch)] text-[0.68rem] uppercase tracking-[0.3em] text-zinc-500">
+                Quiet luxury workflow
+              </span>
+              <ArrowUpRight className="h-4 w-4 text-amber-600" />
+            </div>
+          </CardContent>
+        </Card>
       </div>
     </section>
   );
