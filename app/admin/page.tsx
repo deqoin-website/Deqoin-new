@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { 
   MessageSquare, 
   FolderKanban, 
@@ -196,19 +196,10 @@ export default function AdminDashboard() {
             </div>
           </motion.section>
 
-          {/* QUICK DRAFT / STATUS AREA */}
-          <motion.section variants={itemVariants} className="dashboard-section workflow-mini glass">
-             <div className="workflow-content">
-               <div className="workflow-badge">CMS WORKFLOW</div>
-               <h3>İş Akışınızı Güncelleyin</h3>
-               <p>Müşterilerinize sunduğunuz kurumsal adımları ve çalışma prensiplerinizi tek tıkla yenileyebilirsiniz.</p>
-               <Link href="/admin/content/workflow" className="action-button-premium">
-                 DÜZENLEMEYE BAŞLA <ArrowUpRight size={18} />
-               </Link>
-             </div>
-             <div className="workflow-visual">
-               <Zap size={100} strokeWidth={0.5} />
-             </div>
+          <motion.section variants={itemVariants} className="dashboard-section reset-mini glass">
+            <div className="reset-mini-badge">İŞ AKIŞ SÜRECİ</div>
+            <h3>Alan sıfırlandı</h3>
+            <p>Eski içerik, görsel ve yönetim katmanı kaldırıldı. Yeni kurgu için boş bırakıldı.</p>
           </motion.section>
         </div>
 

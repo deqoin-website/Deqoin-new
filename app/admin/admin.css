@@ -435,14 +435,10 @@
 .preview-status { font-size: 0.6rem; font-weight: 800; background: rgba(34, 197, 94, 0.15); color: #22c55e; padding: 4px 8px; border-radius: 4px; }
 .edit-mini-btn { width: 32px; height: 32px; border-radius: 50%; background: var(--surface-muted); display: flex; align-items: center; justify-content: center; color: var(--text-muted); text-decoration: none; }
 
-.workflow-mini { display: flex; justify-content: space-between; align-items: center; background: linear-gradient(135deg, rgba(166, 137, 102, 0.1) 0%, transparent 100%); position: relative; overflow: hidden; }
-.workflow-content { position: relative; z-index: 2; max-width: 60%; }
-.workflow-badge { font-size: 0.55rem; font-weight: 900; color: var(--accent); background: rgba(166, 137, 102, 0.1); padding: 4px 8px; border-radius: 4px; width: fit-content; margin-bottom: 1rem; }
-.workflow-content h3 { font-family: var(--font-display), sans-serif; font-size: 1.5rem; margin: 0 0 1rem 0; color: var(--text); }
-.workflow-content p { font-size: 0.85rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 2rem; }
-.action-button-premium { background: var(--accent); color: var(--text-inverse); padding: 1rem 1.75rem; font-size: 0.75rem; font-weight: 800; display: inline-flex; align-items: center; gap: 8px; border-radius: 4px; text-decoration: none; transition: transform 0.3s; }
-.action-button-premium:hover { transform: scale(1.02); }
-.workflow-visual { position: absolute; right: -20px; top: 50%; transform: translateY(-50%) rotate(15deg); color: var(--accent); opacity: 0.1; }
+.reset-mini { display: flex; flex-direction: column; justify-content: center; gap: 1rem; min-height: 240px; background: linear-gradient(135deg, rgba(166, 137, 102, 0.08) 0%, rgba(255, 255, 255, 0.01) 100%); }
+.reset-mini-badge { font-size: 0.55rem; font-weight: 900; color: var(--accent); background: rgba(166, 137, 102, 0.1); padding: 4px 8px; border-radius: 4px; width: fit-content; letter-spacing: 0.16em; }
+.reset-mini h3 { font-family: var(--font-display), sans-serif; font-size: 1.5rem; margin: 0; color: var(--text); }
+.reset-mini p { max-width: 34rem; margin: 0; font-size: 0.85rem; color: var(--text-muted); line-height: 1.7; }
 
 .quick-action-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
 .q-btn { background: var(--surface-muted); border: 1px solid var(--line); padding: 1.5rem 1rem; border-radius: 12px; display: flex; flex-direction: column; align-items: center; gap: 0.75rem; text-align: center; transition: all 0.3s; text-decoration: none; color: var(--text); }

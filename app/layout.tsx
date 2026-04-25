@@ -1,5 +1,4 @@
 import type { Metadata, ResolvingMetadata } from "next";
-import { Manrope, Noto_Serif, Outfit, Playfair_Display, Smooch_Sans } from "next/font/google";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import InteractiveBackground from "@/components/InteractiveBackground";
@@ -10,12 +9,6 @@ import Settings from "@/models/Settings";
 import Script from "next/script";
 import { headers } from "next/headers";
 import "./globals.css";
-
-const manrope = Manrope({ subsets: ["latin"], variable: "--font-body" });
-const notoSerif = Noto_Serif({ subsets: ["latin"], variable: "--font-headline" });
-const outfit = Outfit({ subsets: ["latin"], variable: "--font-display" });
-const playfair = Playfair_Display({ subsets: ["latin"], variable: "--font-serif-alt" });
-const smooch = Smooch_Sans({ weight: ["100", "200", "300", "400"], subsets: ["latin"], variable: "--font-smooch" });
 
 async function getSettings() {
   try {
@@ -31,18 +24,28 @@ export async function generateMetadata(): Promise<Metadata> {
   const settings = await getSettings();
   const defaultTitle = settings?.metaTitle || "Deqoin I Architectural Design Studio";
   const defaultDesc = settings?.metaDescription || "DEQOIN mimari, tasarım ve uygulama odaklı kurumsal vitrin sitesi.";
+  const metadataBase = new URL(process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000");
+  const iconUrl = new URL(settings?.faviconUrl || "/favicon.png", metadataBase).toString();
+  const logoUrl = new URL(settings?.logoUrl || "/images/logo-new.jpeg", metadataBase).toString();
   
   return {
+    metadataBase,
     title: defaultTitle,
     description: defaultDesc,
     keywords: settings?.keywords || "",
     icons: {
-      icon: settings?.faviconUrl || "/favicon.png",
+      icon: iconUrl,
     },
     openGraph: {
       title: defaultTitle,
       description: defaultDesc,
-      images: [settings?.logoUrl || "/images/logo-new.jpeg"],
+      images: [logoUrl],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: defaultTitle,
+      description: defaultDesc,
+      images: [logoUrl],
     },
   };
 }
@@ -108,7 +111,6 @@ export default async function RootLayout({
         )}
       </head>
       <body
-        className={`${manrope.variable} ${notoSerif.variable} ${outfit.variable} ${playfair.variable} ${smooch.variable}`}
         suppressHydrationWarning
       >
         <InteractiveBackground />

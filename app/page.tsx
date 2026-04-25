@@ -9,9 +9,8 @@ import ConsultationModal from "../components/ConsultationModal";
 import ProjectInsightPanel from "../components/ProjectInsightPanel";
 import SwipeAppointmentButton from "../components/SwipeAppointmentButton";
 import HeroSlider from "../components/HeroSlider";
-import WorkflowMarquee from "../components/WorkflowMarquee";
+import WorkflowSection from "../components/WorkflowSection";
 import Footer from "@/components/Footer";
-import { WORKFLOW_STEPS } from "../data/workflows";
 
 const SERVICE_CARD_IMAGE_BY_TYPE: Record<string, string> = {
   design: "https://zzawgisa3efgdxnm.public.blob.vercel-storage.com/design-studio-home.png",
@@ -76,8 +75,6 @@ export default function Page() {
       image: SERVICE_CARD_IMAGE_BY_TYPE.execution,
     },
   ]);
-  const [workflowSteps, setWorkflowSteps] = useState(WORKFLOW_STEPS);
-
   useEffect(() => {
     const fetchSlides = async () => {
       try {
@@ -126,23 +123,8 @@ export default function Page() {
       }
     };
 
-    const fetchWorkflow = async () => {
-      try {
-        const res = await fetch('/api/workflow', { cache: 'no-store' });
-        if (res.ok) {
-          const json = await res.json();
-          if (Array.isArray(json.steps) && json.steps.length > 0) {
-            setWorkflowSteps(json.steps);
-          }
-        }
-      } catch (err) {
-        console.error("Failed to fetch workflow content:", err);
-      }
-    };
-
     fetchSlides();
     fetchServiceCards();
-    fetchWorkflow();
   }, []);
 
   const filteredProjects = useMemo(() => projectsData, []);
@@ -336,7 +318,7 @@ export default function Page() {
         onAppointmentClick={() => setIsConsultationOpen(true)} 
       />
 
-        <WorkflowMarquee steps={workflowSteps} className="snap-section homepage-workflow-section" />
+        <WorkflowSection className="snap-section homepage-workflow-section" />
 
         <section className="services-section snap-section homepage-section-v2">
           <div className="section-header-area">
