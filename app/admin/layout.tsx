@@ -94,7 +94,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         group: 'SAYFA YÖNETİMİ',
         items: [
           { name: 'Sinematik Medya & Slider', icon: ImageIcon, path: '/admin/content/slider' },
-          { name: 'Ana Sayfa Galeri', icon: ImageIcon, path: '/admin/content/home/gallery' },
+          { name: 'Ana Sayfa Slider Hero', icon: ImageIcon, path: '/admin/content/home/gallery' },
           { name: 'Hizmet Kartları (Ana Sayfa)', icon: Aperture, path: '/admin/content/home/services' },
           { name: 'Kurumsal Felsefe', icon: Briefcase, path: '/admin/content/corporate' },
           { name: 'Ekip Üyeleri', icon: Users, path: '/admin/team' },

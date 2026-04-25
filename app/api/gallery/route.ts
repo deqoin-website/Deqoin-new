@@ -6,66 +6,87 @@ import PageContent from "@/models/PageContent";
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
-type GalleryItem = {
+type SliderAsset = {
   src: string;
   alt: string;
   caption?: string;
 };
 
-type GalleryPayload = {
+type SliderPayload = {
   title?: string;
   buttonText?: string;
   buttonHref?: string;
-  images?: Array<string | GalleryItem>;
-  gallery?: Array<string | GalleryItem>;
+  slides?: Array<string | SliderAsset>;
+  images?: Array<string | SliderAsset>;
+  gallery?: Array<string | SliderAsset>;
 };
 
-const DEFAULT_GALLERY = {
+const DEFAULT_SLIDER = {
   title: "GALERİ",
   buttonText: "TÜM GALERİYİ GÖR",
   buttonHref: "/galeri",
-  images: [
+  slides: [
     { src: "/images/projects/gallery_1.png", alt: "DEQOIN galeri görseli 1", caption: "01" },
     { src: "/images/projects/gallery_2.png", alt: "DEQOIN galeri görseli 2", caption: "02" },
     { src: "/images/slider/mimari_slide.png", alt: "DEQOIN galeri görseli 3", caption: "03" },
     { src: "/images/slider/tasarim_slide.png", alt: "DEQOIN galeri görseli 4", caption: "04" },
     { src: "/images/slider/uygulama_slide.png", alt: "DEQOIN galeri görseli 5", caption: "05" },
-  ] satisfies GalleryItem[],
+  ] satisfies SliderAsset[],
 };
-
-function normalizeImages(input: GalleryPayload["images"] = []): string[] {
-  return (input ?? [])
-    .map((item) => {
-      if (typeof item === "string") return item.trim();
-      if (item && typeof item === "object") return String(item.src ?? "").trim();
-      return "";
-    })
-    .filter(Boolean);
-}
 
 function toText(value: unknown, fallback: string) {
   return typeof value === "string" && value.trim() ? value.trim() : fallback;
 }
 
-function readGallerySection(pageDoc: any) {
+function normalizeAssets(input: SliderPayload["slides"] = []): SliderAsset[] {
+  return (input ?? [])
+    .map((item, index) => {
+      if (typeof item === "string") {
+        const src = item.trim();
+        if (!src) return null;
+        return {
+          src,
+          alt: `${DEFAULT_SLIDER.title} görseli ${index + 1}`,
+          caption: String(index + 1).padStart(2, "0"),
+        };
+      }
+
+      if (item && typeof item === "object") {
+        const asset = item as any;
+        const src = String(asset.src ?? asset.url ?? asset.image ?? "").trim();
+        if (!src) return null;
+        return {
+          src,
+          alt: toText(asset.alt ?? asset.imageAlt, `${DEFAULT_SLIDER.title} görseli ${index + 1}`),
+          caption: toText(asset.caption, String(index + 1).padStart(2, "0")),
+        };
+      }
+
+      return null;
+    })
+    .filter(Boolean) as SliderAsset[];
+}
+
+function readSliderHero(pageDoc: any) {
   const existing = Array.isArray(pageDoc?.sections)
-    ? pageDoc.sections.find((section: any) => section.id === "gallery")
+    ? pageDoc.sections.find((section: any) => section.id === "sliderHero" || section.id === "gallery")
     : null;
 
-  const gallery = Array.isArray(existing?.gallery) ? existing.gallery.filter(Boolean) : [];
+  const rawSlides = Array.isArray(existing?.slides)
+    ? existing.slides
+    : Array.isArray(existing?.images)
+      ? existing.images
+      : Array.isArray(existing?.gallery)
+        ? existing.gallery
+        : [];
+
+  const slides = normalizeAssets(rawSlides);
 
   return {
-    title: toText(existing?.title, DEFAULT_GALLERY.title),
-    buttonText: toText(existing?.buttonText, DEFAULT_GALLERY.buttonText),
-    buttonHref: toText(existing?.buttonHref, DEFAULT_GALLERY.buttonHref),
-    images:
-      gallery.length > 0
-        ? gallery.map((src: string, index: number) => ({
-            src,
-            alt: existing?.title ? `${existing.title} görseli ${index + 1}` : `GALERİ görseli ${index + 1}`,
-            caption: String(index + 1).padStart(2, "0"),
-          }))
-        : DEFAULT_GALLERY.images,
+    title: toText(existing?.title, DEFAULT_SLIDER.title),
+    buttonText: toText(existing?.buttonText, DEFAULT_SLIDER.buttonText),
+    buttonHref: toText(existing?.buttonHref, DEFAULT_SLIDER.buttonHref),
+    slides: slides.length > 0 ? slides : DEFAULT_SLIDER.slides,
   };
 }
 
@@ -77,12 +98,12 @@ async function ensureHomePage() {
     page: "home",
     sections: [
       {
-        id: "gallery",
-        type: "gallery",
-        title: DEFAULT_GALLERY.title,
-        buttonText: DEFAULT_GALLERY.buttonText,
-        buttonHref: DEFAULT_GALLERY.buttonHref,
-        gallery: DEFAULT_GALLERY.images.map((item) => item.src),
+        id: "sliderHero",
+        type: "sliderHero",
+        title: DEFAULT_SLIDER.title,
+        buttonText: DEFAULT_SLIDER.buttonText,
+        buttonHref: DEFAULT_SLIDER.buttonHref,
+        slides: DEFAULT_SLIDER.slides,
       },
     ],
     metadata: { updatedAt: new Date() },
@@ -93,41 +114,44 @@ export async function GET() {
   try {
     await connectToDatabase();
     const pageDoc = await ensureHomePage();
-    return NextResponse.json({ gallery: readGallerySection(pageDoc) }, {
-      headers: {
-        "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate",
-        Pragma: "no-cache",
-        Expires: "0",
+    return NextResponse.json(
+      { sliderHero: readSliderHero(pageDoc) },
+      {
+        headers: {
+          "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate",
+          Pragma: "no-cache",
+          Expires: "0",
+        },
       },
-    });
+    );
   } catch (error) {
-    console.error("Gallery fetch error:", error);
-    return NextResponse.json({ gallery: DEFAULT_GALLERY }, { status: 200 });
+    console.error("Slider hero fetch error:", error);
+    return NextResponse.json({ sliderHero: DEFAULT_SLIDER }, { status: 200 });
   }
 }
 
 export async function POST(request: Request) {
   try {
     await connectToDatabase();
-    const body = (await request.json()) as GalleryPayload;
+    const body = (await request.json()) as SliderPayload;
 
-    const title = toText(body.title, DEFAULT_GALLERY.title);
-    const buttonText = toText(body.buttonText, DEFAULT_GALLERY.buttonText);
-    const buttonHref = toText(body.buttonHref, DEFAULT_GALLERY.buttonHref);
-    const images = normalizeImages(body.images ?? body.gallery);
+    const title = toText(body.title, DEFAULT_SLIDER.title);
+    const buttonText = toText(body.buttonText, DEFAULT_SLIDER.buttonText);
+    const buttonHref = toText(body.buttonHref, DEFAULT_SLIDER.buttonHref);
+    const slides = normalizeAssets(body.slides ?? body.images ?? body.gallery);
 
     const pageDoc = await ensureHomePage();
     const sections = Array.isArray(pageDoc.sections) ? [...pageDoc.sections] : [];
     const nextSection = {
-      id: "gallery",
-      type: "gallery",
+      id: "sliderHero",
+      type: "sliderHero",
       title,
       buttonText,
       buttonHref,
-      gallery: images,
+      slides,
     };
 
-    const index = sections.findIndex((section: any) => section.id === "gallery");
+    const index = sections.findIndex((section: any) => section.id === "sliderHero" || section.id === "gallery");
     if (index >= 0) {
       sections[index] = { ...sections[index], ...nextSection };
     } else {
@@ -141,13 +165,16 @@ export async function POST(request: Request) {
     };
     await pageDoc.save();
 
-    return NextResponse.json({ gallery: readGallerySection(pageDoc) }, {
-      headers: {
-        "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate",
+    return NextResponse.json(
+      { sliderHero: readSliderHero(pageDoc) },
+      {
+        headers: {
+          "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate",
+        },
       },
-    });
+    );
   } catch (error: any) {
-    console.error("Gallery save error:", error);
-    return NextResponse.json({ error: "Failed to save gallery" }, { status: 500 });
+    console.error("Slider hero save error:", error);
+    return NextResponse.json({ error: "Failed to save slider hero" }, { status: 500 });
   }
 }
