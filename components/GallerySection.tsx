@@ -69,6 +69,8 @@ const FALLBACK_HERO: HeroContent = {
   ],
 };
 
+const AUTOPLAY_SECONDS = 6;
+
 function toText(value: unknown, fallback: string) {
   return typeof value === "string" && value.trim() ? value.trim() : fallback;
 }
@@ -135,6 +137,7 @@ function HeroSlide({
   title,
   projectTitle,
   projectDescription,
+  secondsLeft,
   buttonText,
   buttonHref,
   onPrev,
@@ -147,6 +150,7 @@ function HeroSlide({
   title: string;
   projectTitle: string;
   projectDescription: string;
+  secondsLeft: number;
   buttonText: string;
   buttonHref: string;
   onPrev: () => void;
@@ -209,6 +213,9 @@ function HeroSlide({
                       {String(activeIndex + 1).padStart(2, "0")} / {String(totalCount).padStart(2, "0")}
                     </span>
                     <Separator orientation="vertical" className="hidden h-8 bg-white/10 lg:block" />
+                    <span className="hidden font-[family-name:var(--font-smooch)] text-[0.7rem] uppercase tracking-[0.32em] text-white/45 lg:inline-flex">
+                      Otomatik {String(secondsLeft).padStart(2, "0")} sn
+                    </span>
                   </div>
 
                   <div className="flex items-center gap-2">
@@ -257,6 +264,7 @@ export default function GallerySection({
   const [content, setContent] = useState<HeroContent>(FALLBACK_HERO);
   const [carouselApi, setCarouselApi] = useState<UseEmblaCarouselType[1] | null>(null);
   const [activeIndex, setActiveIndex] = useState(0);
+  const [secondsLeft, setSecondsLeft] = useState(AUTOPLAY_SECONDS);
 
   useEffect(() => {
     const loadHero = async () => {
@@ -288,6 +296,25 @@ export default function GallerySection({
       carouselApi.off("reInit", handleSelect);
     };
   }, [carouselApi]);
+
+  useEffect(() => {
+    if (!carouselApi || content.images.length <= 1) return;
+
+    setSecondsLeft(AUTOPLAY_SECONDS);
+
+    const interval = window.setInterval(() => {
+      setSecondsLeft((current) => {
+        if (current <= 1) {
+          carouselApi.scrollNext();
+          return AUTOPLAY_SECONDS;
+        }
+
+        return current - 1;
+      });
+    }, 1000);
+
+    return () => window.clearInterval(interval);
+  }, [carouselApi, content.images.length, activeIndex]);
 
   const slideCount = useMemo(() => content.images.length, [content.images.length]);
 
@@ -322,6 +349,7 @@ export default function GallerySection({
               title={content.title}
               projectTitle={image.title ?? content.title}
               projectDescription={image.description ?? ""}
+              secondsLeft={secondsLeft}
               buttonText={content.buttonText}
               buttonHref={content.buttonHref}
               onPrev={goPrev}
