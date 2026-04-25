@@ -153,17 +153,14 @@ export default function WorkflowSection({
           <CardHeader className="relative flex-none p-4 pb-3 md:p-5 md:pb-4">
             <div className="max-w-4xl">
               <CardTitle className="mt-2.5 font-[family-name:var(--font-smooch)] text-[clamp(1.7rem,3.6vw,3rem)] font-normal leading-[0.92] tracking-[0.1em] text-white">
-                DEQOIN İŞ AKIŞI
+                İŞ AKIŞI
               </CardTitle>
-              <CardDescription className="mt-2.5 max-w-3xl font-[family-name:var(--font-smooch)] text-[0.92rem] font-light leading-[1.6] tracking-[0.04em] text-zinc-300">
-                Orijinal 5 adımlı yapıyı koruyan, desktop'ta yatay zigzag ve mobilde dikey timeline ile kurgulanan iş akış sistemi.
-              </CardDescription>
             </div>
 
             <Separator className="mt-3 bg-zinc-700" />
           </CardHeader>
 
-          <CardContent className="relative flex flex-1 flex-col px-4 pb-4 pt-2 md:px-5 md:pb-5 md:pt-3">
+          <CardContent className="relative mt-16 flex flex-1 flex-col px-4 pb-4 pt-2 md:mt-20 md:px-5 md:pb-5 md:pt-3 lg:mt-24">
             <div className="lg:hidden">
               <div className="relative pl-8">
                 <div className="absolute left-4 top-1 bottom-1 w-px bg-zinc-600" />
