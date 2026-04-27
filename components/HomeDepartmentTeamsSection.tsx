@@ -110,7 +110,7 @@ export default function HomeDepartmentTeamsSection({ className }: { className?: 
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 px-6 md:px-16 mb-12 md:mb-16 max-w-[1600px] mx-auto w-full">
         <div className="flex flex-col gap-2">
           <p
-            className="text-4xl md:text-5xl lg:text-6xl font-thin text-white uppercase tracking-[0.2em]"
+            className="text-4xl md:text-5xl lg:text-6xl font-thin text-black uppercase tracking-[0.2em]"
             style={{ fontFamily: "Smooch Sans, sans-serif" }}
           >
             DEPARTMAN EKİPLERİ
