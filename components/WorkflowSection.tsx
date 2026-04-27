@@ -138,7 +138,7 @@ export default function WorkflowSection({
 }: WorkflowSectionProps) {
   return (
     <section
-      className={`relative flex h-full w-full items-center overflow-hidden bg-zinc-950 text-white ${className}`.trim()}
+      className={`w-full min-h-screen bg-zinc-950 flex flex-col justify-center items-center py-24 md:py-32 overflow-hidden ${className}`.trim()}
       aria-label="İş Akış Süreci"
       style={{ fontFamily: "var(--font-smooch)" }}
     >
@@ -147,7 +147,7 @@ export default function WorkflowSection({
         <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.028)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.028)_1px,transparent_1px)] bg-[size:4rem_4rem] opacity-20" />
       </div>
 
-      <div className="relative mx-auto flex h-full w-full max-w-[90rem] flex-col px-4 py-[8px] md:px-7 md:py-4 lg:px-9 lg:py-6">
+      <div className="w-full max-w-[1600px] xl:max-w-[1800px] mx-auto bg-zinc-900/30 rounded-3xl p-8 md:p-16 lg:p-24 relative border border-zinc-800/50 shadow-2xl">
         <Card className="relative flex h-full flex-col overflow-hidden rounded-[1.6rem] border border-zinc-900 bg-black shadow-[0_24px_70px_rgba(0,0,0,0.5)]">
           <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.02),transparent_42%)]" />
 
