@@ -5969,13 +5969,28 @@ video {
 @media (max-width: 767px) {
   .faaliyet-alanlarimiz-page .services-grid {
     grid-template-columns: 1fr;
-    gap: 1rem;
+    gap: 0.85rem;
   }
 
   .faaliyet-alanlarimiz-page .service-card {
     aspect-ratio: 9 / 16;
     min-height: 0;
     width: 100%;
+  }
+
+  .faaliyet-alanlarimiz-page .service-copy {
+    padding: 1.1rem 1.1rem 1.2rem;
+    align-items: flex-start;
+  }
+
+  .faaliyet-alanlarimiz-page .service-copy h3 {
+    font-size: clamp(1.9rem, 11vw, 2.7rem);
+    line-height: 0.9;
+    max-width: 8ch;
+  }
+
+  .faaliyet-alanlarimiz-page .service-copy p {
+    letter-spacing: 0.18em;
   }
 
   .project-detail-shell.mimari-page .services-grid,

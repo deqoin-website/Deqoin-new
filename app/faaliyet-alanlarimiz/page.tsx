@@ -54,7 +54,7 @@ export default function FaaliyetAlanlarimiz() {
         </div>
         <div className="services-grid">
           {serviceCards.map((card) => (
-            <Link key={card.title} href={card.href} className="service-card relative w-full h-[45vh] md:h-[50vh] lg:h-[55vh] rounded-2xl overflow-hidden group cursor-pointer">
+            <Link key={card.title} href={card.href} className="service-card relative w-full aspect-[3/4] rounded-2xl overflow-hidden group cursor-pointer">
               <img
                 src={card.image}
                 alt={card.title}
