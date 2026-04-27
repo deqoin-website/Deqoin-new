@@ -19,7 +19,7 @@ export default function Header() {
   const pathname = usePathname();
   const searchInputRef = useRef<HTMLInputElement>(null);
   const navLinkClassName =
-    "text-xl md:text-2xl font-light uppercase tracking-[0.2em] text-white/90 hover:text-white transition-colors";
+    "text-base md:text-lg lg:text-xl font-light uppercase tracking-[0.15em] text-white/80 hover:text-white transition-colors";
 
   useEffect(() => {
     if (isMenuOpen || isSearchOpen) {
