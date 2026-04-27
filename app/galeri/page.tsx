@@ -31,6 +31,7 @@ type CategoryKey = (typeof categories)[number]["key"];
 export default function GaleriPage() {
   const [activeFilter, setActiveFilter] = useState<CategoryKey>("all");
   const [searchTerm, setSearchTerm] = useState("");
+  const [isMobileCategoriesOpen, setIsMobileCategoriesOpen] = useState(false);
 
   const visibleProjects = useMemo(() => {
     const query = searchTerm.trim().toLowerCase();
@@ -65,7 +66,7 @@ export default function GaleriPage() {
         </header>
 
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-12 max-w-[1600px] mx-auto px-0 mt-12">
-          <aside className="lg:col-span-1 sticky top-32 h-fit flex flex-col gap-2">
+          <aside className="hidden lg:flex lg:col-span-1 sticky top-32 h-fit flex-col gap-2">
             {categories.map((category) => {
               const isActive = activeFilter === category.key;
 
@@ -90,14 +91,59 @@ export default function GaleriPage() {
           </aside>
 
           <div className="lg:col-span-4">
-            <Input
-              type="search"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              placeholder="ARAMA"
-              className="bg-transparent border-x-0 border-t-0 border-b border-zinc-800 px-0 text-base tracking-[0.3em] uppercase placeholder:text-zinc-600 focus-visible:ring-0"
-              style={{ fontFamily: "Smooch Sans, sans-serif" }}
-            />
+            <div className="rounded-xl border border-zinc-800/70 bg-zinc-950/30 px-4 md:px-5">
+              <Input
+                type="search"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                placeholder="ARAMA"
+                className="border-0 bg-transparent px-0 text-base tracking-[0.3em] uppercase placeholder:text-zinc-600 focus-visible:ring-0"
+                style={{ fontFamily: "Smooch Sans, sans-serif" }}
+              />
+            </div>
+
+            <div className="mt-6 lg:hidden">
+              <Button
+                type="button"
+                variant="ghost"
+                onClick={() => setIsMobileCategoriesOpen((current) => !current)}
+                className={cn(
+                  "w-full justify-between rounded-none border border-zinc-800/70 bg-transparent px-0 py-3 text-left text-lg font-thin uppercase tracking-[0.25em] text-white hover:bg-transparent",
+                )}
+                style={{ fontFamily: "Smooch Sans, sans-serif" }}
+              >
+                <span>Kategoriler</span>
+                <span className="text-zinc-500" aria-hidden="true">
+                  {isMobileCategoriesOpen ? "−" : "+"}
+                </span>
+              </Button>
+
+              {isMobileCategoriesOpen && (
+                <div className="mt-3 flex flex-col gap-2">
+                  {categories.map((category) => {
+                    const isActive = activeFilter === category.key;
+
+                    return (
+                      <Button
+                        key={category.key}
+                        type="button"
+                        variant="ghost"
+                        onClick={() => setActiveFilter(category.key)}
+                        className={cn(
+                          "w-full justify-start rounded-none px-0 py-2 text-left text-lg font-thin uppercase tracking-[0.25em] transition-colors hover:bg-transparent",
+                          isActive
+                            ? "bg-zinc-900/50 text-white hover:bg-zinc-900/50 hover:text-white"
+                            : "text-zinc-500 hover:text-white",
+                        )}
+                        style={{ fontFamily: "Smooch Sans, sans-serif" }}
+                      >
+                        {category.title}
+                      </Button>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
 
             {visibleProjects.length > 0 ? (
               <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 mt-12">
