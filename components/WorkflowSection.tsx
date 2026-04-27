@@ -103,25 +103,25 @@ function WorkflowDesktopStep({
   const isTop = align === "top";
 
   return (
-    <div className="relative h-full">
+    <div className="relative w-full sm:w-[80%] md:w-[70%] lg:w-[18rem] mx-auto h-full">
       <div
-        className={`absolute left-1/2 top-1/2 z-20 flex h-4 w-4 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border border-zinc-500 bg-zinc-950`}
+        className={`absolute left-1/2 z-20 flex h-4 w-4 -translate-x-1/2 items-center justify-center rounded-full border border-zinc-500 bg-zinc-950 lg:top-1/2 lg:-translate-y-1/2`}
       >
         <div className="h-1.5 w-1.5 rounded-full bg-zinc-200" />
       </div>
 
       <div
-        className={`absolute left-1/2 top-1/2 h-8 w-px -translate-x-1/2 ${
-          isTop ? "-translate-y-full" : ""
-        } bg-zinc-500`}
+        className={`absolute left-1/2 h-8 w-px -translate-x-1/2 bg-zinc-500 lg:top-1/2 ${
+          isTop ? "lg:-translate-y-full" : "lg:translate-y-0"
+        }`}
       />
 
       <div
         className={`absolute left-0 right-0 ${
-          isTop ? "bottom-[calc(50%+2rem)]" : "top-[calc(50%+2rem)]"
+          isTop ? "lg:bottom-[calc(50%+2rem)]" : "lg:top-[calc(50%+2rem)]"
         }`}
       >
-        <div className="mx-auto max-w-[18rem]">
+        <div className="w-full mx-auto">
           <WorkflowStepCard step={step} />
         </div>
       </div>
@@ -161,7 +161,7 @@ export default function WorkflowSection({
             <Separator className="mt-3 bg-zinc-700" />
           </CardHeader>
 
-          <CardContent className="relative mt-24 flex flex-1 flex-col px-4 pb-4 pt-2 md:mt-24 md:px-5 md:pb-5 md:pt-3 lg:mt-24">
+          <CardContent className="relative mt-0 flex flex-1 flex-col px-4 pb-4 pt-2 md:mt-0 md:px-5 md:pb-5 md:pt-3 lg:mt-24">
             <div className="lg:hidden">
               <div className="relative mx-auto max-w-6xl px-0 sm:px-2">
                 <div className="space-y-5">
@@ -172,10 +172,10 @@ export default function WorkflowSection({
               </div>
             </div>
 
-            <div className="relative hidden lg:block lg:h-[30rem]">
-              <div className="absolute left-0 right-0 top-1/2 h-px -translate-y-1/2 bg-zinc-500/80" />
+            <div className="relative hidden lg:flex lg:h-[30rem]">
+              <div className="absolute left-0 right-0 top-1/2 hidden h-px -translate-y-1/2 bg-zinc-500/80 lg:block" />
 
-              <div className="grid h-full grid-cols-5 gap-6">
+              <div className="flex flex-col lg:flex-row items-center justify-center gap-6 md:gap-10 lg:gap-4 relative w-full">
                 {WORKFLOW_STEPS.map((step, index) => {
                   const isOdd = index % 2 === 0;
 
