@@ -145,11 +145,11 @@ export default function HomeDepartmentTeamsSection({ className }: { className?: 
               return (
                 <CarouselItem
                   key={member._id ?? member.id ?? `${member.name}-${index}`}
-                  className="basis-[85%] md:basis-1/2 lg:basis-1/3 xl:basis-1/4 pl-4 md:pl-6"
+                  className="pl-4 md:basis-1/2 lg:basis-1/3"
                 >
                   <div
                     className={[
-                      "relative w-full aspect-[3/4] md:h-[70vh] rounded-2xl overflow-hidden group ml-0 md:ml-0 transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]",
+                      "relative w-full h-[50vh] md:h-[60vh] lg:h-[65vh] rounded-2xl overflow-hidden group ml-0 md:ml-0 transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]",
                       isActive
                         ? "scale-100 opacity-100 shadow-2xl blur-0"
                         : isAdjacent
