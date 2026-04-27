@@ -84,7 +84,7 @@ export default function OurTeam() {
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8 md:gap-12">
                 {visibleMembers.map((member, index) => (
                   <motion.article
                     key={member.id}
@@ -93,7 +93,7 @@ export default function OurTeam() {
                     transition={{ duration: 0.65, delay: index * 0.06, ease: [0.16, 1, 0.3, 1] }}
                     className="group"
                   >
-                    <div className="relative aspect-[3/4] overflow-hidden rounded-3xl bg-zinc-900">
+                    <div className="relative w-full aspect-[3/4] min-h-[500px] lg:min-h-[600px] rounded-2xl overflow-hidden group cursor-pointer">
                       <img
                         src={member.image}
                         alt={member.name}
