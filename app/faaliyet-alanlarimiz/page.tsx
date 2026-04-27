@@ -43,20 +43,20 @@ export default function FaaliyetAlanlarimiz() {
         </div>
         <div className="services-grid">
           {serviceCards.map((card) => (
-            <Link key={card.title} href={card.href} className="service-card relative w-full h-[65vh] md:h-[75vh] lg:h-[80vh] rounded-2xl overflow-hidden group cursor-pointer">
+            <Link key={card.title} href={card.href} className="service-card relative w-full h-[85vh] md:h-[92vh] lg:h-[96vh] overflow-hidden group cursor-pointer">
               <img
                 src={card.image}
                 alt={card.title}
-                className="w-full h-full object-cover object-center transition-transform duration-700 group-hover:scale-105"
+                className="w-full h-full object-cover object-center transition-transform duration-700 group-hover:scale-105 blur-[1px] group-hover:blur-0"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/50 to-transparent pointer-events-none" />
               <div className="absolute bottom-0 left-0 w-full p-6 md:p-8 flex flex-col gap-2 z-10">
-                <h3 className="text-3xl md:text-4xl lg:text-5xl font-thin text-white uppercase tracking-widest">
+                <h3 className="text-3xl md:text-4xl lg:text-5xl font-thin text-white uppercase tracking-widest" style={{ fontFamily: "Smooch Sans, sans-serif" }}>
                   {card.title}
                 </h3>
                 <div className="flex items-center gap-4 mt-2">
                   <div className="w-8 h-[1px] bg-red-600" />
-                  <p className="text-xs md:text-sm tracking-[0.2em] text-zinc-300 font-light uppercase">
+                  <p className="text-xs md:text-sm tracking-[0.2em] text-zinc-300 font-light uppercase" style={{ fontFamily: "Smooch Sans, sans-serif" }}>
                     {card.subTitle}
                   </p>
                 </div>
