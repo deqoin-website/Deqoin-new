@@ -42,14 +42,14 @@ export default function FaaliyetAlanlarimiz() {
 
       <div className="w-full max-w-[1800px] mx-auto pl-6 md:pl-16 flex-1 flex items-center z-10">
         <Carousel opts={{ align: "start", dragFree: true }} className="w-full">
-          <CarouselContent className="-ml-4 md:-ml-6">
+          <CarouselContent className="ml-0">
             {serviceCards.map((item) => (
               <CarouselItem
                 key={item.title}
-                className="pl-4 md:pl-6 basis-[85%] sm:basis-[70%] md:basis-1/2 lg:basis-1/3"
+                className="pl-0 basis-[85%] sm:basis-[70%] md:basis-1/2 lg:basis-1/3"
               >
                 <Link href={item.href} className="block">
-                  <div className="relative w-full h-[60vh] md:h-[70vh] lg:h-[75vh] max-h-[800px] rounded-2xl overflow-hidden group cursor-pointer">
+                  <div className="relative w-full h-[68vh] md:h-[78vh] lg:h-[85vh] max-h-[920px] rounded-none overflow-hidden group cursor-pointer border-r border-zinc-900/50">
                     <img
                       src={item.image}
                       className="w-full h-full object-cover object-center transition-transform duration-1000 group-hover:scale-105"
