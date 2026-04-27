@@ -32,7 +32,7 @@ const serviceCards = [
 export default function FaaliyetAlanlarimiz() {
   return (
     <main className="h-screen w-full overflow-y-auto overflow-x-hidden snap-y snap-mandatory scroll-smooth bg-zinc-950 flex flex-col project-detail-shell">
-      <section className="snap-start w-full min-h-screen bg-zinc-950 py-24 md:py-32 flex flex-col justify-center overflow-hidden">
+      <section className="snap-start w-full min-h-screen bg-zinc-950 pt-32 pb-24 flex flex-col justify-center">
         <div className="section-inner" style={{ paddingBottom: "4rem", textAlign: "center" }}>
           <div style={{ marginBottom: "5rem" }}>
             <h1 style={{ fontFamily: "var(--font-smooch), sans-serif", fontSize: "clamp(4rem, 10vw, 8rem)", fontWeight: 100, color: "#fff", letterSpacing: "0.2em", textTransform: "uppercase", margin: 0 }}>DESIGN & COLLECTION</h1>
@@ -54,7 +54,7 @@ export default function FaaliyetAlanlarimiz() {
         </div>
         <div className="services-grid">
           {serviceCards.map((card) => (
-            <Link key={card.title} href={card.href} className="service-card relative w-full aspect-[3/4] overflow-hidden group cursor-pointer">
+            <Link key={card.title} href={card.href} className="service-card relative w-full h-[45vh] md:h-[50vh] lg:h-[55vh] rounded-2xl overflow-hidden group cursor-pointer">
               <img
                 src={card.image}
                 alt={card.title}
