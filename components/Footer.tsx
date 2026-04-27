@@ -74,9 +74,9 @@ export default function Footer() {
       <div className="footer-top">
         <div className="footer-top-inner">
           <div className="footer-cta-block">
-            <span className="footer-cta-label">Bir Projeniz mi Var?</span>
+            <span className="footer-cta-label">BİR PROJENİZ Mİ VAR?</span>
             <h2 className="footer-cta-title">
-              Şimdi<br />tasarlayalım.
+              Gerçeğe dönüştürelim.
             </h2>
             <button
               type="button"
