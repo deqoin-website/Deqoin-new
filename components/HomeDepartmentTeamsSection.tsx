@@ -107,92 +107,96 @@ export default function HomeDepartmentTeamsSection({ className }: { className?: 
       id="departman-ekipleri"
       className={cn("team-section snap-section relative overflow-hidden bg-zinc-950 text-white", className)}
     >
-      <Carousel
-        className="w-full md:max-w-7xl md:mx-auto md:h-[80vh] md:rounded-3xl md:overflow-hidden md:shadow-2xl h-[100dvh] md:bg-zinc-950"
-        opts={{ align: "start", loop: true }}
-        plugins={[autoplay]}
-        setApi={setCarouselApi}
-      >
-        <CarouselContent className="h-[100dvh] md:h-[80vh]">
-          {members.map((member, index) => {
-            const slideImage =
-              member.image || fallbackTeamMembers[index % fallbackTeamMembers.length]?.image || "";
-            const categoryTitle = categoryTitleMap[member.category] ?? member.category;
-            const isActive = index === activeIndex;
+      <div className="mx-auto flex w-full max-w-7xl flex-col gap-10 px-6 py-12 md:px-10 md:py-14">
+        <div className="flex items-end justify-between gap-6">
+          <div className="flex flex-col gap-2">
+            <p
+              className="text-xs tracking-[0.35em] text-zinc-400 uppercase"
+              style={{ fontFamily: "Smooch Sans, sans-serif" }}
+            >
+              DEPARTMAN EKİPLERİ
+            </p>
+          </div>
 
-            return (
-              <CarouselItem
-                key={member._id ?? member.id ?? `${member.name}-${index}`}
-                className="basis-full h-[100dvh] md:h-[80vh]"
-              >
-                <div className="relative w-full h-[100dvh] md:h-[80vh] md:max-w-7xl mx-auto md:rounded-3xl overflow-hidden bg-zinc-950">
-                  {slideImage ? (
-                    <img
-                      src={slideImage}
-                      alt={member.name}
-                      loading={index === 0 ? "eager" : "lazy"}
-                      className="w-full h-full object-cover object-top"
-                    />
-                  ) : null}
+          <Button className="bg-white text-black hover:bg-zinc-200 rounded-full px-8 py-6 text-sm md:text-base tracking-widest uppercase transition-all duration-300 shadow-lg">
+            TÜM EKİPLERİ GÖR
+          </Button>
+        </div>
 
-                  <div className="absolute inset-0 flex flex-col justify-end">
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent pointer-events-none" />
+        <Carousel
+          className="w-full overflow-visible"
+          opts={{ align: "start", loop: true }}
+          plugins={[autoplay]}
+          setApi={setCarouselApi}
+        >
+          <CarouselContent className="-ml-4">
+            {members.map((member, index) => {
+              const slideImage =
+                member.image || fallbackTeamMembers[index % fallbackTeamMembers.length]?.image || "";
+              const categoryTitle = categoryTitleMap[member.category] ?? member.category;
+              const isActive = index === activeIndex;
 
-                    <div className="relative z-10 w-full px-6 md:px-16 pb-12 md:pb-16 flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
-                      <motion.div
-                        initial={false}
-                        animate={isActive ? { opacity: 1, y: 0 } : { opacity: 0.72, y: 24 }}
-                        transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-                        className="flex flex-col gap-2"
+              return (
+                <CarouselItem
+                  key={member._id ?? member.id ?? `${member.name}-${index}`}
+                  className="basis-full md:basis-1/2 lg:basis-1/3 xl:basis-1/4 pl-4"
+                >
+                  <div className="relative w-full aspect-[3/4] md:h-[70vh] rounded-2xl overflow-hidden group ml-0 md:ml-0">
+                    {slideImage ? (
+                      <img
+                        src={slideImage}
+                        alt={member.name}
+                        loading={index === 0 ? "eager" : "lazy"}
+                        className="w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-105"
+                      />
+                    ) : null}
+
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent pointer-events-none" />
+
+                    <div className="absolute bottom-0 left-0 w-full p-6 md:p-8 flex flex-col gap-2 z-10">
+                      <p
+                        className="text-[10px] md:text-xs tracking-[0.3em] text-zinc-400 uppercase"
+                        style={{ fontFamily: "Smooch Sans, sans-serif" }}
                       >
-                        <p className="text-xs tracking-[0.3em] text-zinc-400 uppercase">
-                          {categoryTitle}
-                        </p>
-                        <h2
-                          className="text-5xl md:text-7xl font-thin text-white uppercase tracking-widest"
+                        {categoryTitle}
+                      </p>
+
+                      <h3
+                        className="text-5xl md:text-6xl font-thin text-white uppercase tracking-widest leading-none"
+                        style={{ fontFamily: "Smooch Sans, sans-serif" }}
+                      >
+                        {member.name}
+                      </h3>
+
+                      <p
+                        className="text-xs md:text-sm text-zinc-300 font-light tracking-[0.2em] uppercase mt-2"
+                        style={{ fontFamily: "Smooch Sans, sans-serif" }}
+                      >
+                        {member.role}
+                      </p>
+
+                      {member.bio ? (
+                        <motion.p
+                          initial={false}
+                          animate={isActive ? { opacity: 1, y: 0 } : { opacity: 0.72, y: 10 }}
+                          transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
+                          className="mt-2 max-w-sm text-[0.95rem] leading-[1.35] tracking-[0.04em] text-white/80"
                           style={{ fontFamily: "Smooch Sans, sans-serif" }}
                         >
-                          {member.name}
-                        </h2>
-                        <p className="text-sm md:text-base text-zinc-300 font-light tracking-[0.2em] uppercase">
-                          {member.role}
-                        </p>
-                        {member.bio ? (
-                          <p
-                            className="mt-2 max-w-2xl font-light leading-[1.3] tracking-[0.04em] text-white/82"
-                            style={{ fontFamily: "Smooch Sans, sans-serif" }}
-                          >
-                            {member.bio}
-                          </p>
-                        ) : null}
-                      </motion.div>
-
-                      <motion.div
-                        initial={false}
-                        animate={isActive ? { opacity: 1, y: 0 } : { opacity: 0.72, y: 20 }}
-                        transition={{ duration: 0.65, delay: 0.14, ease: [0.16, 1, 0.3, 1] }}
-                        className="flex flex-col items-start md:items-end gap-4 w-full md:w-auto"
-                      >
-                        <span className="hidden md:block text-[10px] md:text-xs tracking-[0.3em] text-zinc-400 uppercase">
-                          OTOMATİK 05.5 SN
-                        </span>
-                        <Button
-                          className="bg-white text-black hover:bg-zinc-200 hover:text-black rounded-full px-8 py-6 text-xs md:text-sm tracking-widest uppercase transition-all w-full md:w-auto shadow-lg"
-                        >
-                          TÜM EKİPLERİ GÖR
-                        </Button>
-                      </motion.div>
+                          {member.bio}
+                        </motion.p>
+                      ) : null}
                     </div>
                   </div>
-                </div>
-              </CarouselItem>
-            );
-          })}
-        </CarouselContent>
+                </CarouselItem>
+              );
+            })}
+          </CarouselContent>
 
-        <CarouselPrevious className="left-4 border-white/15 bg-black/28 text-white backdrop-blur-md hover:bg-black/44 disabled:opacity-0 sm:left-6 lg:left-8" />
-        <CarouselNext className="right-4 border-white/15 bg-black/28 text-white backdrop-blur-md hover:bg-black/44 disabled:opacity-0 sm:right-6 lg:right-8" />
-      </Carousel>
+          <CarouselPrevious className="left-2 md:left-4 border-white/15 bg-black/28 text-white backdrop-blur-md hover:bg-black/44 disabled:opacity-0" />
+          <CarouselNext className="right-2 md:right-4 border-white/15 bg-black/28 text-white backdrop-blur-md hover:bg-black/44 disabled:opacity-0" />
+        </Carousel>
+      </div>
     </section>
   );
 }
