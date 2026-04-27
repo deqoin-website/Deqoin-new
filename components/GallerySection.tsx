@@ -183,7 +183,7 @@ function HeroSlide({
             transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
             className="max-w-3xl"
           >
-            <h2 className="mt-4 font-[family-name:var(--font-smooch)] text-[clamp(3rem,11vw,7rem)] font-normal leading-[0.84] tracking-[0.08em] text-white drop-shadow-[0_12px_30px_rgba(0,0,0,0.5)]">
+            <h2 className="mt-4 font-[family-name:var(--font-smooch)] text-[clamp(3rem,11vw,7rem)] font-thin leading-[0.84] tracking-[0.08em] text-white drop-shadow-[0_12px_30px_rgba(0,0,0,0.5)]" style={{ fontWeight: 100 }}>
               {title}
             </h2>
           </motion.div>
