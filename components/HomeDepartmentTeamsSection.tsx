@@ -33,7 +33,7 @@ const categoryTitleMap = Object.fromEntries(
 ) as Record<string, string>;
 
 const AUTOPLAY_DELAY = 9000;
-const SECTION_CLASS_NAME = "team-section snap-section relative w-full min-h-screen bg-zinc-950 py-20 overflow-hidden";
+const SECTION_CLASS_NAME = "w-full min-h-screen !bg-zinc-950 py-24 overflow-hidden";
 
 export default function HomeDepartmentTeamsSection({ className }: { className?: string }) {
   const [members, setMembers] = useState<TeamMember[]>(fallbackTeamMembers);
@@ -106,11 +106,12 @@ export default function HomeDepartmentTeamsSection({ className }: { className?: 
   return (
     <section
       id="departman-ekipleri"
-      className={cn(SECTION_CLASS_NAME, className)}
+      className={cn("team-section snap-section relative", SECTION_CLASS_NAME, className)}
+      style={{ backgroundColor: "#09090b" }}
     >
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 px-6 md:px-16 mb-12 md:mb-16 max-w-[1600px] mx-auto w-full z-10 relative">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 px-6 md:px-16 mb-12 max-w-[1600px] mx-auto w-full z-10">
         <h2
-          className="text-4xl md:text-5xl lg:text-6xl font-thin text-white uppercase tracking-[0.2em]"
+          className="text-4xl md:text-5xl lg:text-7xl font-thin text-white uppercase tracking-[0.2em]"
           style={{ fontFamily: "Smooch Sans, sans-serif" }}
         >
           DEPARTMAN EKİPLERİ
