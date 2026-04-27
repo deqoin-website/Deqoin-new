@@ -2,12 +2,14 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { motion, useReducedMotion } from "framer-motion";
 import ConsultationModal from "../components/ConsultationModal";
 import HeroSlider from "../components/HeroSlider";
 import WorkflowSection from "../components/WorkflowSection";
 import GallerySection from "../components/GallerySection";
 import HomeDepartmentTeamsSection from "../components/HomeDepartmentTeamsSection";
 import Footer from "@/components/Footer";
+import { Button } from "@/components/ui/button";
 
 const SERVICE_CARD_IMAGE_BY_TYPE: Record<string, string> = {
   design: "https://zzawgisa3efgdxnm.public.blob.vercel-storage.com/design-studio-home.png",
@@ -18,6 +20,7 @@ const SERVICE_CARD_IMAGE_BY_TYPE: Record<string, string> = {
 export default function Page() {
   const [isConsultationOpen, setIsConsultationOpen] = useState(false);
   const [slides, setSlides] = useState<any[]>([]);
+  const shouldReduceMotion = useReducedMotion();
 
   const [serviceCards, setServiceCards] = useState<any[]>([
     {
@@ -163,7 +166,71 @@ export default function Page() {
         </section>
 
 
-        <section className="w-full min-h-screen bg-zinc-950"></section>
+        <section className="w-full min-h-screen bg-zinc-950 text-white">
+          <div className="mx-auto flex min-h-screen w-full max-w-[1600px] flex-col gap-12 px-6 py-24 sm:px-10 lg:grid lg:grid-cols-2 lg:gap-28 lg:px-16 lg:py-28">
+            <motion.div
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, amount: 0.35 }}
+              transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
+              variants={{
+                hidden: { opacity: 0, y: shouldReduceMotion ? 0 : 20 },
+                visible: { opacity: 1, y: 0 },
+              }}
+              className="order-1 flex flex-col gap-8 lg:justify-center lg:pr-8"
+            >
+              <h2
+                className="max-w-3xl text-[clamp(4.5rem,9vw,7.75rem)] font-thin leading-[0.9] tracking-[-0.06em] text-white"
+                style={{ fontFamily: "var(--font-smooch), sans-serif" }}
+              >
+                Sizin hikayeniz, sizin mekanınız.
+              </h2>
+
+              <p
+                className="max-w-2xl text-[clamp(1.35rem,2vw,1.75rem)] font-light leading-[1.7] tracking-[-0.02em] text-zinc-300"
+                style={{ fontFamily: "var(--font-smooch), sans-serif" }}
+              >
+                Biz deqoin'i kurarken tek bir inancımız vardı: Bir ev, sadece dört duvar ve eşyalardan
+                ibaret olamaz. Bu yüzden mimarinin teknik gücünü, sizin kişisel zevklerinizle ve yaşam
+                tarzınızla harmanlıyoruz. Hayatınıza dokunan, içinde kendinizi huzurlu hissedeceğiniz ve
+                yıllara meydan okuyan sıcak yaşam alanları tasarlıyoruz. Kısacası, sizin hikayenizi
+                mekanlara yansıtıyoruz.
+              </p>
+
+              <div>
+                <Button
+                  asChild
+                  variant="ghost"
+                  className="h-auto rounded-none bg-transparent px-0 py-0 text-[1.15rem] font-light tracking-[0.14em] text-white hover:bg-transparent hover:text-zinc-300"
+                >
+                  <Link href="/faaliyet-alanlarimiz" style={{ fontFamily: "var(--font-smooch), sans-serif" }}>
+                    Design &amp; Collection -&gt;
+                  </Link>
+                </Button>
+              </div>
+            </motion.div>
+
+            <motion.div
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, amount: 0.3 }}
+              transition={{ duration: 0.95, ease: [0.16, 1, 0.3, 1], delay: 0.05 }}
+              variants={{
+                hidden: { opacity: 0, y: shouldReduceMotion ? 0 : 20 },
+                visible: { opacity: 1, y: 0 },
+              }}
+              className="order-2 lg:order-none lg:pt-8"
+            >
+              <div className="relative aspect-[4/5] w-full overflow-hidden bg-zinc-900 sm:aspect-[16/10] lg:aspect-[4/5]">
+                <img
+                  src="/images/about_interior.png"
+                  alt="deqoin atölye ve kütüphane iç mekanı"
+                  className="h-full w-full object-cover object-center"
+                />
+              </div>
+            </motion.div>
+          </div>
+        </section>
 
         <HomeDepartmentTeamsSection className="homepage-team-section" />
 
