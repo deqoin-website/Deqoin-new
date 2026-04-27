@@ -139,63 +139,29 @@ export default function HomeDepartmentTeamsSection({ className }: { className?: 
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
                   <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.08),transparent_24%),radial-gradient(circle_at_bottom_right,rgba(255,255,255,0.02),transparent_28%)]" />
 
-                  <div className="absolute inset-0 z-10 flex h-full flex-col justify-between px-4 py-5 sm:px-6 sm:py-6 lg:px-10 lg:py-8">
-                    <div className="flex items-start justify-end gap-4">
-                      <motion.div
-                        initial={false}
-                        animate={isActive ? { opacity: 1, y: 0 } : { opacity: 0.5, y: -8 }}
-                        transition={{ duration: 0.55, delay: 0.06, ease: [0.16, 1, 0.3, 1] }}
-                        className="text-right"
-                      >
-                        <span className="font-[family-name:var(--font-smooch)] text-[0.82rem] uppercase tracking-[0.34em] text-white/68">
-                          {String(activeIndex + 1).padStart(2, "0")} / {String(members.length).padStart(2, "0")}
-                        </span>
-                      </motion.div>
-                    </div>
+                  <div className="absolute inset-0 flex flex-col justify-end">
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent pointer-events-none" />
 
-                    <div className="absolute bottom-0 left-0 w-full px-8 md:px-16 pb-16 md:pb-24 max-w-screen-2xl mx-auto flex flex-col md:flex-row justify-between items-end">
+                    <div className="relative z-10 w-full max-w-[1400px] mx-auto px-8 md:px-16 pb-12 md:pb-24 flex flex-col md:flex-row justify-between items-end gap-8">
                       <motion.div
                         initial={false}
                         animate={isActive ? { opacity: 1, y: 0 } : { opacity: 0.72, y: 24 }}
                         transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-                        className="max-w-4xl"
+                        className="flex flex-col gap-2"
                       >
-                        <motion.p
-                          initial={false}
-                          animate={isActive ? { opacity: 1, y: 0 } : { opacity: 0.6, y: 12 }}
-                          transition={{ duration: 0.55, delay: 0.05, ease: [0.16, 1, 0.3, 1] }}
-                          className="mb-3 font-[family-name:var(--font-smooch)] text-[0.86rem] uppercase tracking-[0.4em] text-white/60 sm:text-[0.92rem]"
-                        >
+                        <p className="text-xs md:text-sm tracking-[0.3em] text-zinc-400 uppercase">
                           {categoryTitle}
-                        </motion.p>
-
-                        <motion.h2
-                          initial={false}
-                          animate={isActive ? { opacity: 1, y: 0 } : { opacity: 0.68, y: 16 }}
-                          transition={{ duration: 0.65, delay: 0.08, ease: [0.16, 1, 0.3, 1] }}
-                          className="max-w-4xl font-[family-name:var(--font-smooch)] text-[clamp(3rem,9vw,7rem)] font-light uppercase leading-[0.84] tracking-[0.08em] text-white"
-                        >
+                        </p>
+                        <h2 className="text-6xl md:text-8xl font-thin text-white font-smooch tracking-wide">
                           {member.name}
-                        </motion.h2>
-
-                        <motion.p
-                          initial={false}
-                          animate={isActive ? { opacity: 1, y: 0 } : { opacity: 0.66, y: 16 }}
-                          transition={{ duration: 0.65, delay: 0.12, ease: [0.16, 1, 0.3, 1] }}
-                          className="mt-3 font-[family-name:var(--font-smooch)] text-[1rem] uppercase tracking-[0.3em] text-white/76 sm:text-[1.08rem] lg:text-[1.15rem]"
-                        >
+                        </h2>
+                        <p className="text-sm md:text-lg text-zinc-300 tracking-[0.2em] font-light">
                           {member.role}
-                        </motion.p>
-
+                        </p>
                         {member.bio ? (
-                          <motion.p
-                            initial={false}
-                            animate={isActive ? { opacity: 1, y: 0 } : { opacity: 0.58, y: 18 }}
-                            transition={{ duration: 0.7, delay: 0.16, ease: [0.16, 1, 0.3, 1] }}
-                            className="mt-4 max-w-2xl font-[family-name:var(--font-smooch)] text-[1rem] font-light leading-[1.3] tracking-[0.04em] text-white/82 sm:text-[1.08rem] lg:text-[1.18rem]"
-                          >
+                          <p className="mt-2 max-w-2xl font-[family-name:var(--font-smooch)] text-[1rem] font-light leading-[1.3] tracking-[0.04em] text-white/82 sm:text-[1.08rem] lg:text-[1.18rem]">
                             {member.bio}
-                          </motion.p>
+                          </p>
                         ) : null}
                       </motion.div>
 
@@ -203,38 +169,20 @@ export default function HomeDepartmentTeamsSection({ className }: { className?: 
                         initial={false}
                         animate={isActive ? { opacity: 1, y: 0 } : { opacity: 0.72, y: 20 }}
                         transition={{ duration: 0.65, delay: 0.14, ease: [0.16, 1, 0.3, 1] }}
-                        className="hidden shrink-0 flex-col items-end gap-4 lg:flex"
+                        className="flex flex-col items-end gap-4"
                       >
-                        <span className="font-[family-name:var(--font-smooch)] text-[0.78rem] uppercase tracking-[0.34em] text-white/50">
-                          Otomatik 05.5 sn
+                        <span className="text-[10px] md:text-xs tracking-[0.3em] text-zinc-400">
+                          OTOMATİK 05.5 SN
                         </span>
                         <Button
                           asChild
                           variant="outline"
-                          className="border-white/12 bg-white text-black font-[family-name:var(--font-smooch)] text-[0.86rem] uppercase tracking-[0.28em] hover:bg-zinc-200 hover:text-black transition-colors"
+                          className="bg-white text-black hover:bg-zinc-200 hover:text-black rounded-full px-8 py-6 text-sm md:text-base tracking-widest transition-all duration-300"
                         >
-                          <Link href="/departman-ekipleri">TUM EKIPLERI GOR</Link>
+                          <Link href="/departman-ekipleri">TÜM EKİPLERİ GÖR</Link>
                         </Button>
                       </motion.div>
                     </div>
-
-                    <motion.div
-                      initial={false}
-                      animate={isActive ? { opacity: 1, y: 0 } : { opacity: 0.74, y: 16 }}
-                      transition={{ duration: 0.55, delay: 0.18, ease: [0.16, 1, 0.3, 1] }}
-                      className="flex items-center justify-between gap-4 lg:hidden"
-                    >
-                      <span className="font-[family-name:var(--font-smooch)] text-[0.76rem] uppercase tracking-[0.34em] text-white/52">
-                        Otomatik 05.5 sn
-                      </span>
-                      <Button
-                        asChild
-                        variant="outline"
-                        className="border-white/12 bg-white text-black font-[family-name:var(--font-smooch)] text-[0.8rem] uppercase tracking-[0.24em] hover:bg-zinc-200 hover:text-black transition-colors"
-                      >
-                        <Link href="/departman-ekipleri">TUM EKIPLERI GOR</Link>
-                      </Button>
-                    </motion.div>
                   </div>
                 </div>
               </CarouselItem>
