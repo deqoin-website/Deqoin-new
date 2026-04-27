@@ -8,7 +8,6 @@ import GallerySection from "../components/GallerySection";
 import HomeDepartmentTeamsSection from "../components/HomeDepartmentTeamsSection";
 import Footer from "@/components/Footer";
 import AboutShowcaseSection from "@/components/AboutShowcaseSection";
-import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel";
 
 const SERVICE_CARD_IMAGE_BY_TYPE: Record<string, string> = {
   design: "https://zzawgisa3efgdxnm.public.blob.vercel-storage.com/design-studio-home.png",
@@ -127,54 +126,47 @@ export default function Page() {
           </div>
           
           <div className="section-content-area" style={{ padding: '0' }}>
-            <Carousel opts={{ align: "start" }} className="w-full">
-              <CarouselContent className="ml-0">
-                {serviceCards.map((card) => (
-                  <CarouselItem
-                    key={card.title}
-                    className="pl-0 basis-[85%] md:basis-1/3 min-w-0"
-                  >
-                    <a
-                      href={card.href}
-                      className={`service-card relative w-full h-[65vh] md:h-[85vh] rounded-none overflow-hidden group cursor-pointer border-r border-zinc-900/50 ${card.title === "Material Studio" ? "service-card-material-highlight" : ""}`}
+            <div className="services-grid" style={{ width: '100%', height: '100%' }}>
+              {serviceCards.map((card) => (
+                <a
+                  key={card.title}
+                  href={card.href}
+                  className={`service-card relative w-full h-[64vh] md:h-[78vh] lg:h-[85vh] rounded-none overflow-hidden group cursor-pointer border-r border-zinc-900/50 ${card.title === "Material Studio" ? "service-card-material-highlight" : ""}`}
+                >
+                  <img 
+                    src={card.image} 
+                    alt={card.title} 
+                    style={{ filter: `blur(${card.blur || 0}px)` }}
+                  />
+                  <div 
+                    className="service-overlay" 
+                    style={{ background: `rgba(0,0,0,${(card.overlay ?? 30) / 100})` }}
+                  />
+                  <div className="absolute bottom-0 left-0 w-full p-6 md:p-8 lg:p-10 flex flex-col gap-2 z-10">
+                    <h3
+                      className="text-5xl md:text-5xl lg:text-8xl font-thin text-white uppercase tracking-widest leading-none drop-shadow-lg"
+                      style={{ fontFamily: "Smooch Sans, sans-serif", fontWeight: 100 }}
+                      lang="en"
                     >
-                      <img 
-                        src={card.image} 
-                        alt={card.title} 
-                        className="absolute inset-0 w-full h-full object-cover object-center"
-                        style={{ filter: `blur(${card.blur || 0}px)` }}
-                      />
-                      <div 
-                        className="service-overlay" 
-                        style={{ background: `rgba(0,0,0,${(card.overlay ?? 30) / 100})` }}
-                      />
-                      <div className="absolute bottom-0 left-0 w-full p-6 md:p-8 lg:p-10 flex flex-col gap-2 z-10">
-                        <h3
-                          className="text-5xl md:text-5xl lg:text-8xl font-thin text-white uppercase tracking-widest leading-none drop-shadow-lg"
-                          style={{ fontFamily: "Smooch Sans, sans-serif", fontWeight: 100 }}
-                          lang="en"
-                        >
-                          {card.title.toLocaleUpperCase("en-US")}
-                        </h3>
+                      {card.title.toLocaleUpperCase("en-US")}
+                    </h3>
 
-                        {"subTitle" in card && (
-                          <p className="text-xs md:text-xs lg:text-sm tracking-[0.3em] text-zinc-300 font-light uppercase mt-2 drop-shadow-md">
-                            {card.subTitle}
-                          </p>
-                        )}
+                    {"subTitle" in card && (
+                      <p className="text-xs md:text-xs lg:text-sm tracking-[0.3em] text-zinc-300 font-light uppercase mt-2 drop-shadow-md">
+                        {card.subTitle}
+                      </p>
+                    )}
 
-                        <div className="flex items-center gap-2 mt-4 text-xs tracking-[0.2em] text-white/80 uppercase font-light group-hover:text-white transition-colors">
-                          <span>DETAYLARI GÖR</span>
-                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                          </svg>
-                        </div>
-                      </div>
-                    </a>
-                  </CarouselItem>
-                ))}
-              </CarouselContent>
-            </Carousel>
+                    <div className="flex items-center gap-2 mt-4 text-xs tracking-[0.2em] text-white/80 uppercase font-light group-hover:text-white transition-colors">
+                      <span>DETAYLARI GÖR</span>
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                      </svg>
+                    </div>
+                  </div>
+                </a>
+              ))}
+            </div>
           </div>
         </section>
 
