@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import Link from "next/link";
 import { motion } from "framer-motion";
 import Lenis from "lenis";
 import Autoplay from "embla-carousel-autoplay";
@@ -106,15 +105,15 @@ export default function HomeDepartmentTeamsSection({ className }: { className?: 
   return (
     <section
       id="departman-ekipleri"
-      className={cn("team-section snap-section relative overflow-hidden bg-black text-white", className)}
+      className={cn("team-section snap-section relative overflow-hidden bg-zinc-950 text-white", className)}
     >
       <Carousel
-        className="h-screen w-full"
+        className="w-full md:max-w-7xl md:mx-auto md:h-[80vh] md:rounded-3xl md:overflow-hidden md:shadow-2xl h-[100dvh] md:bg-zinc-950"
         opts={{ align: "start", loop: true }}
         plugins={[autoplay]}
         setApi={setCarouselApi}
       >
-        <CarouselContent className="h-screen">
+        <CarouselContent className="h-[100dvh] md:h-[80vh]">
           {members.map((member, index) => {
             const slideImage =
               member.image || fallbackTeamMembers[index % fallbackTeamMembers.length]?.image || "";
@@ -124,42 +123,45 @@ export default function HomeDepartmentTeamsSection({ className }: { className?: 
             return (
               <CarouselItem
                 key={member._id ?? member.id ?? `${member.name}-${index}`}
-                className="min-h-screen h-screen basis-full"
+                className="basis-full h-[100dvh] md:h-[80vh]"
               >
-                <div className="relative min-h-screen h-full w-full overflow-hidden bg-zinc-950">
+                <div className="relative w-full h-[100dvh] md:h-[80vh] md:max-w-7xl mx-auto md:rounded-3xl overflow-hidden bg-zinc-950">
                   {slideImage ? (
                     <img
                       src={slideImage}
                       alt={member.name}
                       loading={index === 0 ? "eager" : "lazy"}
-                      className="absolute inset-0 h-full w-full object-cover object-center"
+                      className="w-full h-full object-cover object-top"
                     />
                   ) : null}
 
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-                  <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.08),transparent_24%),radial-gradient(circle_at_bottom_right,rgba(255,255,255,0.02),transparent_28%)]" />
-
                   <div className="absolute inset-0 flex flex-col justify-end">
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent pointer-events-none" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent pointer-events-none" />
 
-                    <div className="relative z-10 w-full max-w-[1400px] mx-auto px-8 md:px-16 pb-12 md:pb-24 flex flex-col md:flex-row justify-between items-end gap-8">
+                    <div className="relative z-10 w-full px-6 md:px-16 pb-12 md:pb-16 flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
                       <motion.div
                         initial={false}
                         animate={isActive ? { opacity: 1, y: 0 } : { opacity: 0.72, y: 24 }}
                         transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
                         className="flex flex-col gap-2"
                       >
-                        <p className="text-xs md:text-sm tracking-[0.3em] text-zinc-400 uppercase">
+                        <p className="text-xs tracking-[0.3em] text-zinc-400 uppercase">
                           {categoryTitle}
                         </p>
-                        <h2 className="text-6xl md:text-8xl font-thin text-white font-smooch tracking-wide">
+                        <h2
+                          className="text-5xl md:text-7xl font-thin text-white uppercase tracking-widest"
+                          style={{ fontFamily: "Smooch Sans, sans-serif" }}
+                        >
                           {member.name}
                         </h2>
-                        <p className="text-sm md:text-lg text-zinc-300 tracking-[0.2em] font-light">
+                        <p className="text-sm md:text-base text-zinc-300 font-light tracking-[0.2em] uppercase">
                           {member.role}
                         </p>
                         {member.bio ? (
-                          <p className="mt-2 max-w-2xl font-[family-name:var(--font-smooch)] text-[1rem] font-light leading-[1.3] tracking-[0.04em] text-white/82 sm:text-[1.08rem] lg:text-[1.18rem]">
+                          <p
+                            className="mt-2 max-w-2xl font-light leading-[1.3] tracking-[0.04em] text-white/82"
+                            style={{ fontFamily: "Smooch Sans, sans-serif" }}
+                          >
                             {member.bio}
                           </p>
                         ) : null}
@@ -169,17 +171,15 @@ export default function HomeDepartmentTeamsSection({ className }: { className?: 
                         initial={false}
                         animate={isActive ? { opacity: 1, y: 0 } : { opacity: 0.72, y: 20 }}
                         transition={{ duration: 0.65, delay: 0.14, ease: [0.16, 1, 0.3, 1] }}
-                        className="flex flex-col items-end gap-4"
+                        className="flex flex-col items-start md:items-end gap-4 w-full md:w-auto"
                       >
-                        <span className="text-[10px] md:text-xs tracking-[0.3em] text-zinc-400">
+                        <span className="hidden md:block text-[10px] md:text-xs tracking-[0.3em] text-zinc-400 uppercase">
                           OTOMATİK 05.5 SN
                         </span>
                         <Button
-                          asChild
-                          variant="outline"
-                          className="bg-white text-black hover:bg-zinc-200 hover:text-black rounded-full px-8 py-6 text-sm md:text-base tracking-widest transition-all duration-300"
+                          className="bg-white text-black hover:bg-zinc-200 hover:text-black rounded-full px-8 py-6 text-xs md:text-sm tracking-widest uppercase transition-all w-full md:w-auto shadow-lg"
                         >
-                          <Link href="/departman-ekipleri">TÜM EKİPLERİ GÖR</Link>
+                          TÜM EKİPLERİ GÖR
                         </Button>
                       </motion.div>
                     </div>
