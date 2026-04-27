@@ -34,7 +34,7 @@ export default function IletisimPage() {
   // Defaults fallback
   const email = settings?.contactEmail || "info@deqoin.com";
   const address = settings?.address || "350 Evler Mah. Ali Dirikoç Blv. Sena Apartmanı No: 13 İç Kapı No: Z01 Merkez / NEVŞEHİR";
-  const mapUrl = settings?.googleMapsUrl || "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3111.45!2d34.71!3d38.63!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x152a6078e8b61e2f%3A0x6b8a8b1b1b1b1b1b!2sAli%20Diriko%C3%A7%20Blv.%2C%20Nev%C5%9Fehir!5e0!3m2!1str!2str!4v1712218000000!5m2!1str!2str";
+  const mapUrl = settings?.googleMapsUrl || "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3117.0644830095275!2d34.7201851!3d38.6243976!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x152a6e69ed170e93%3A0x3b7b1d4921eafca0!2sdeqoin!5e0!3m2!1str!2str!4v1777285865004!5m2!1str!2str";
 
   return (
     <main className="contact-page-master">
@@ -84,7 +84,7 @@ export default function IletisimPage() {
       <section className="google-map-section">
         <div className="map-header">
           <span className="location-label">MERKEZ OFİSİMİZ</span>
-          <h4>NEVŞEHİR, TÜRKİYE</h4>
+          <h4 style={{ color: "#fff" }}>NEVŞEHİR, TÜRKİYE</h4>
         </div>
         <div className="map-frame-wrapper">
           <iframe 
