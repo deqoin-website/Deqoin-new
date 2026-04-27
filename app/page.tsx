@@ -131,7 +131,7 @@ export default function Page() {
                 <a
                   key={card.title}
                   href={card.href}
-                  className={`service-card ${card.title === "Material Studio" ? "service-card-material-highlight" : ""}`}
+                  className={`service-card relative w-full h-[70vh] md:h-[80vh] lg:h-[85vh] rounded-none overflow-hidden group cursor-pointer border-r border-zinc-900/50 ${card.title === "Material Studio" ? "service-card-material-highlight" : ""}`}
                 >
                   <img 
                     src={card.image} 
@@ -142,19 +142,26 @@ export default function Page() {
                     className="service-overlay" 
                     style={{ background: `rgba(0,0,0,${(card.overlay ?? 30) / 100})` }}
                   />
-                  <div className="service-copy">
-                    <div>
-                      <h3>{card.title}</h3>
-                      {"subTitle" in card && (
-                        <p style={{ fontSize: "1.2rem", color: "rgba(255,255,255,0.8)", marginTop: "0.5rem", letterSpacing: "0.2em", textTransform: "uppercase", lineHeight: 1 }}>{card.subTitle}</p>
-                      )}
-                      <div className="service-line" />
-                      <div className="service-cta">
-                        <span>DETAYLARI GÖR</span>
-                        <span className="material-symbols-outlined">arrow_forward</span>
-                      </div>
+                  <div className="absolute bottom-0 left-0 w-full p-6 md:p-10 flex flex-col gap-2 z-10">
+                    <h3
+                      className="text-5xl md:text-7xl lg:text-8xl font-thin text-white uppercase tracking-widest leading-none drop-shadow-lg"
+                      style={{ fontFamily: "Smooch Sans, sans-serif", fontWeight: 100 }}
+                    >
+                      {card.title}
+                    </h3>
+
+                    {"subTitle" in card && (
+                      <p className="text-xs md:text-sm tracking-[0.3em] text-zinc-300 font-light uppercase mt-2 drop-shadow-md">
+                        {card.subTitle}
+                      </p>
+                    )}
+
+                    <div className="flex items-center gap-2 mt-4 text-xs tracking-[0.2em] text-white/80 uppercase font-light group-hover:text-white transition-colors">
+                      <span>DETAYLARI GÖR</span>
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                      </svg>
                     </div>
-                    <span className="vertical-text">{card.sideLabel}</span>
                   </div>
                 </a>
               ))}
