@@ -38,9 +38,9 @@ const serviceCards = [
 export default function FaaliyetAlanlarimiz() {
   return (
     <main className="w-full min-h-screen bg-zinc-950 flex flex-col site-shell project-detail-shell faaliyet-alanlarimiz-page" style={{ paddingTop: "12rem" }}>
-      <section className="w-full min-h-screen relative flex flex-col justify-center overflow-hidden py-24 services-section" style={{ background: "transparent" }}>
+      <section className="w-full min-h-screen bg-zinc-950 py-24 md:py-32 flex flex-col justify-center overflow-hidden services-section" style={{ background: "transparent" }}>
         <div className="section-inner" style={{ paddingBottom: "4rem", textAlign: "center" }}>
-          <div style={{ marginBottom: "5rem" }}>
+          <div style={{ marginBottom: "4rem" }}>
             <h1 style={{ fontFamily: "var(--font-smooch), sans-serif", fontSize: "clamp(4rem, 10vw, 8rem)", fontWeight: 100, color: "#fff", letterSpacing: "0.2em", textTransform: "uppercase", margin: 0 }}>DESIGN & COLLECTION</h1>
             <p style={{ fontFamily: "var(--font-display), sans-serif", fontSize: "1.2rem", letterSpacing: "0.4em", fontWeight: 300, color: "rgba(255,255,255,0.7)", textTransform: "uppercase", marginTop: "1rem" }}>
               STUDIO SELECTION
@@ -49,8 +49,8 @@ export default function FaaliyetAlanlarimiz() {
         </div>
         <div className="services-grid">
           {serviceCards.map((card) => (
-            <Link key={card.title} href={card.href} className="service-card">
-              <img src={card.image} alt={card.title} style={{ filter: `blur(${card.blur || 0}px)` }} />
+            <Link key={card.title} href={card.href} className="service-card relative w-full h-[50vh] md:h-[60vh] lg:h-[65vh] rounded-2xl overflow-hidden group">
+              <img src={card.image} alt={card.title} className="w-full h-full object-cover object-center" style={{ filter: `blur(${card.blur || 0}px)` }} />
               <div className="service-overlay" style={{ background: `rgba(0,0,0,${(card.overlay ?? 30) / 100})` }} />
               <div className="service-copy">
                 <div>
