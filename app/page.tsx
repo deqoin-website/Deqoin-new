@@ -126,12 +126,12 @@ export default function Page() {
           </div>
           
           <div className="section-content-area" style={{ padding: '0' }}>
-            <div className="services-grid flex w-full overflow-x-auto md:overflow-hidden snap-x snap-mandatory hide-scrollbar touch-pan-x gap-4 md:gap-0" style={{ width: '100%', height: '100%' }}>
+            <div className="services-grid hide-scrollbar" style={{ width: '100%', height: '100%' }}>
               {serviceCards.map((card) => (
                 <a
                   key={card.title}
                   href={card.href}
-                  className={`service-card relative shrink-0 w-[85%] sm:w-[60%] md:w-full snap-center md:snap-none h-[64vh] md:h-[78vh] lg:h-[85vh] rounded-none overflow-hidden group cursor-pointer border-r border-zinc-900/50 ${card.title === "Material Studio" ? "service-card-material-highlight" : ""}`}
+                  className={`service-card relative w-full h-[64vh] md:h-[78vh] lg:h-[85vh] rounded-none overflow-hidden group cursor-pointer border-r border-zinc-900/50 ${card.title === "Material Studio" ? "service-card-material-highlight" : ""}`}
                 >
                   <img 
                     src={card.image} 
