@@ -127,7 +127,7 @@ export default function Page() {
           </div>
           
           <div className="section-content-area" style={{ padding: '0' }}>
-            <Carousel opts={{ align: "start", dragFree: true }} className="w-full">
+            <Carousel opts={{ align: "start" }} className="w-full">
               <CarouselContent className="ml-0">
                 {serviceCards.map((card) => (
                   <CarouselItem
