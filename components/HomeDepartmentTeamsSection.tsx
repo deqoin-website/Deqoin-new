@@ -32,7 +32,7 @@ const categoryTitleMap = Object.fromEntries(
     .map((filter) => [filter.key, filter.title]),
 ) as Record<string, string>;
 
-const AUTOPLAY_DELAY = 5500;
+const AUTOPLAY_DELAY = 9000;
 
 export default function HomeDepartmentTeamsSection({ className }: { className?: string }) {
   const [members, setMembers] = useState<TeamMember[]>(fallbackTeamMembers);
@@ -125,23 +125,33 @@ export default function HomeDepartmentTeamsSection({ className }: { className?: 
 
         <Carousel
           className="w-full overflow-visible"
-          opts={{ align: "start", loop: true }}
+          opts={{ align: "center", loop: true, containScroll: false }}
           plugins={[autoplay]}
           setApi={setCarouselApi}
         >
-          <CarouselContent className="-ml-4">
+          <CarouselContent className="-ml-4 items-stretch">
             {members.map((member, index) => {
               const slideImage =
                 member.image || fallbackTeamMembers[index % fallbackTeamMembers.length]?.image || "";
               const categoryTitle = categoryTitleMap[member.category] ?? member.category;
               const isActive = index === activeIndex;
+              const isAdjacent = Math.abs(index - activeIndex) === 1;
 
               return (
                 <CarouselItem
                   key={member._id ?? member.id ?? `${member.name}-${index}`}
                   className="basis-full md:basis-1/2 lg:basis-1/3 xl:basis-1/4 pl-4"
                 >
-                  <div className="relative w-full aspect-[3/4] md:h-[70vh] rounded-2xl overflow-hidden group ml-0 md:ml-0">
+                  <div
+                    className={[
+                      "relative w-full aspect-[3/4] md:h-[70vh] rounded-2xl overflow-hidden group ml-0 md:ml-0 transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]",
+                      isActive
+                        ? "scale-100 opacity-100 shadow-2xl blur-0"
+                        : isAdjacent
+                          ? "scale-[0.94] opacity-60 blur-[1px]"
+                          : "scale-[0.88] opacity-35 blur-[3px]",
+                    ].join(" ")}
+                  >
                     {slideImage ? (
                       <img
                         src={slideImage}
