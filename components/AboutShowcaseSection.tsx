@@ -43,10 +43,10 @@ export default function AboutShowcaseSection() {
           <div>
             <Button
               className="bg-white text-black hover:bg-zinc-200 hover:text-black rounded-full px-8 py-6 text-lg font-medium transition-all duration-300"
-              onClick={() => router.push("/faaliyet-alanlarimiz")}
+              onClick={() => router.push("/hakkimizda")}
             >
               <span style={{ fontFamily: "var(--font-smooch), sans-serif" }}>
-                Design &amp; Collection -&gt;
+                Hakkımızda
               </span>
             </Button>
           </div>
