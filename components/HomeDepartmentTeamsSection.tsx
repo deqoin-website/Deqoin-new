@@ -105,24 +105,27 @@ export default function HomeDepartmentTeamsSection({ className }: { className?: 
   return (
     <section
       id="departman-ekipleri"
-      className={cn("team-section snap-section relative overflow-hidden bg-zinc-950 text-white", className)}
+      className={cn("team-section snap-section relative w-full min-h-screen py-20 overflow-hidden bg-zinc-950 text-white", className)}
     >
-      <div className="mx-auto flex w-full max-w-7xl flex-col gap-10 px-6 py-12 md:px-10 md:py-14">
-        <div className="flex items-end justify-between gap-6">
-          <div className="flex flex-col gap-2">
-            <p
-              className="text-xs tracking-[0.35em] text-zinc-400 uppercase"
-              style={{ fontFamily: "Smooch Sans, sans-serif" }}
-            >
-              DEPARTMAN EKİPLERİ
-            </p>
-          </div>
-
-          <Button className="bg-white text-black hover:bg-zinc-200 rounded-full px-8 py-6 text-sm md:text-base tracking-widest uppercase transition-all duration-300 shadow-lg">
-            TÜM EKİPLERİ GÖR
-          </Button>
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 px-6 md:px-16 mb-12 md:mb-16 max-w-[1600px] mx-auto w-full">
+        <div className="flex flex-col gap-2">
+          <p
+            className="text-4xl md:text-5xl lg:text-6xl font-thin text-white uppercase tracking-[0.2em]"
+            style={{ fontFamily: "Smooch Sans, sans-serif" }}
+          >
+            DEPARTMAN EKİPLERİ
+          </p>
         </div>
 
+        <Button
+          className="bg-white text-black hover:bg-zinc-200 rounded-full px-6 py-4 md:px-8 md:py-6 text-xl md:text-2xl tracking-widest transition-all"
+          style={{ fontFamily: "Smooch Sans, sans-serif" }}
+        >
+          TÜM EKİPLERİ GÖR
+        </Button>
+      </div>
+
+      <div className="mx-auto w-full max-w-[1600px] px-6 md:px-16">
         <Carousel
           className="w-full overflow-visible"
           opts={{ align: "center", loop: true, containScroll: false }}
@@ -140,7 +143,7 @@ export default function HomeDepartmentTeamsSection({ className }: { className?: 
               return (
                 <CarouselItem
                   key={member._id ?? member.id ?? `${member.name}-${index}`}
-                  className="basis-full md:basis-1/2 lg:basis-1/3 xl:basis-1/4 pl-4"
+                  className="basis-[85%] md:basis-1/2 lg:basis-1/3 xl:basis-1/4 pl-4 md:pl-6"
                 >
                   <div
                     className={[
