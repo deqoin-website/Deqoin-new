@@ -74,16 +74,13 @@ export default function Footer() {
       <div className="footer-top">
         <div className="footer-top-inner">
           <div className="footer-cta-block">
-            <span className="footer-cta-label">BİR PROJENİZ Mİ VAR?</span>
-            <h2
-              className="text-6xl md:text-8xl lg:text-[9rem] font-thin text-white tracking-widest leading-none mb-10"
-              style={{ fontFamily: 'Smooch Sans, sans-serif' }}
-            >
-              Gerçeğe dönüştürelim.
+            <span className="footer-cta-label">Bir Projeniz mi Var?</span>
+            <h2 className="footer-cta-title">
+              Şimdi<br />tasarlayalım.
             </h2>
             <button
               type="button"
-              className="footer-cta-btn hero-cta bg-white text-black hover:bg-zinc-200 rounded-full px-10 py-8 text-sm md:text-base tracking-widest uppercase transition-all duration-300"
+              className="footer-cta-btn hero-cta"
               onClick={() => setIsConsultationOpen(true)}
             >
               <span className="hero-cta-text">RANDEVU TALEP ET</span>
