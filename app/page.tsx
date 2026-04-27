@@ -126,17 +126,16 @@ export default function Page() {
           </div>
           
           <div className="section-content-area" style={{ padding: '0' }}>
-            <div className="services-grid flex w-full overflow-x-auto md:overflow-hidden snap-x snap-mandatory hide-scrollbar ml-0" style={{ width: '100%', height: '100%' }}>
+            <div className="services-grid" style={{ width: '100%', height: '100%' }}>
               {serviceCards.map((card) => (
                 <a
                   key={card.title}
                   href={card.href}
-                  className={`service-card relative shrink-0 w-[85%] sm:w-[60%] md:w-[33.333333%] h-[70vh] md:h-[80vh] lg:h-[85vh] snap-center md:snap-align-none border-r border-zinc-900/50 group cursor-pointer pl-0 rounded-2xl md:rounded-none overflow-hidden ${card.title === "Material Studio" ? "service-card-material-highlight" : ""}`}
+                  className={`service-card relative w-full h-[64vh] md:h-[78vh] lg:h-[85vh] rounded-none overflow-hidden group cursor-pointer border-r border-zinc-900/50 ${card.title === "Material Studio" ? "service-card-material-highlight" : ""}`}
                 >
                   <img 
                     src={card.image} 
                     alt={card.title} 
-                    className="w-full h-full object-cover object-center"
                     style={{ filter: `blur(${card.blur || 0}px)` }}
                   />
                   <div 
