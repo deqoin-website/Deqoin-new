@@ -72,37 +72,32 @@ export default function Footer() {
     <footer className={`site-footer ${pathname === "/" ? "homepage-footer-snap" : ""}`.trim()}>
       {/* ── TOP STRIP ── */}
       <div className="footer-top">
-        <div className="relative w-full min-h-[70vh] bg-zinc-950 pt-32 pb-16 px-6 md:px-16 flex flex-col justify-center z-10">
-          <div className="max-w-[1600px] mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-12 items-end border-b border-zinc-800/50 pb-20 mb-10">
-            <div className="lg:col-span-8 flex flex-col items-start gap-6">
-              <p className="text-xs md:text-sm tracking-[0.4em] text-zinc-400 uppercase">
-                BİR PROJENİZ Mİ VAR?
-              </p>
+        <div className="footer-top-inner">
+          <div className="footer-cta-block">
+            <span className="footer-cta-label">BİR PROJENİZ Mİ VAR?</span>
+            <h2
+              className="text-6xl md:text-8xl lg:text-[9rem] font-thin text-white tracking-widest leading-none mb-10"
+              style={{ fontFamily: 'Smooch Sans, sans-serif' }}
+            >
+              Gerçeğe dönüştürelim.
+            </h2>
+            <button
+              type="button"
+              className="footer-cta-btn hero-cta bg-white text-black hover:bg-zinc-200 rounded-full px-10 py-8 text-sm md:text-base tracking-widest uppercase transition-all duration-300"
+              onClick={() => setIsConsultationOpen(true)}
+            >
+              <span className="hero-cta-text">RANDEVU TALEP ET</span>
+              <div className="hero-cta-circle">
+                <span className="material-symbols-outlined">arrow_right_alt</span>
+              </div>
+            </button>
+          </div>
 
-              <h2
-                className="text-6xl md:text-8xl lg:text-[10rem] font-thin text-white tracking-widest leading-none"
-                style={{ fontFamily: 'Smooch Sans, sans-serif' }}
-              >
-                Gerçeğe dönüştürelim.
-              </h2>
-
-              <button
-                type="button"
-                className="bg-white text-black hover:bg-zinc-200 rounded-full px-10 py-8 mt-6 text-sm md:text-base tracking-widest uppercase transition-all duration-300"
-                onClick={() => setIsConsultationOpen(true)}
-              >
-                RANDEVU TALEP ET
-              </button>
-            </div>
-
-            <div className="lg:col-span-4 flex flex-col lg:items-end text-left lg:text-right gap-4 pb-2">
-              <p className="text-xs md:text-sm tracking-[0.4em] text-zinc-500 uppercase">
-                OFİS ADRESİMİZ
-              </p>
-              <p className="text-zinc-300 font-light leading-relaxed max-w-sm text-lg">
-                {address}
-              </p>
-            </div>
+          <div className="footer-address-block">
+            <span className="footer-nav-label">Ofis Adresimiz</span>
+            <address className="footer-address" style={{ whiteSpace: 'pre-wrap' }}>
+              {address}
+            </address>
           </div>
         </div>
       </div>
