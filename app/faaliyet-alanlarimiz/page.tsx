@@ -31,12 +31,23 @@ const serviceCards = [
 
 export default function FaaliyetAlanlarimiz() {
   return (
-    <main className="site-shell project-detail-shell" style={{ paddingTop: "12rem" }}>
-      <section className="services-section" style={{ background: "transparent" }}>
+    <main className="h-screen w-full overflow-y-auto overflow-x-hidden snap-y snap-mandatory scroll-smooth bg-zinc-950 flex flex-col project-detail-shell">
+      <section className="snap-start w-full min-h-screen bg-zinc-950 py-24 md:py-32 flex flex-col justify-center overflow-hidden">
         <div className="section-inner" style={{ paddingBottom: "4rem", textAlign: "center" }}>
           <div style={{ marginBottom: "5rem" }}>
             <h1 style={{ fontFamily: "var(--font-smooch), sans-serif", fontSize: "clamp(4rem, 10vw, 8rem)", fontWeight: 100, color: "#fff", letterSpacing: "0.2em", textTransform: "uppercase", margin: 0 }}>DESIGN & COLLECTION</h1>
             <p style={{ fontFamily: "var(--font-display), sans-serif", fontSize: "1.2rem", letterSpacing: "0.4em", fontWeight: 300, color: "rgba(255,255,255,0.7)", textTransform: "uppercase", marginTop: "1rem" }}>
+              STUDIO SELECTION
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section className="snap-start w-full min-h-screen bg-zinc-950 py-24 md:py-32 flex flex-col justify-center overflow-hidden">
+        <div className="section-inner" style={{ paddingBottom: "3rem", textAlign: "center" }}>
+          <div style={{ marginBottom: "4rem" }}>
+            <h2 style={{ fontFamily: "var(--font-smooch), sans-serif", fontSize: "clamp(3rem, 8vw, 6rem)", fontWeight: 100, color: "#fff", letterSpacing: "0.18em", textTransform: "uppercase", margin: 0 }}>DESIGN & COLLECTION</h2>
+            <p style={{ fontFamily: "var(--font-display), sans-serif", fontSize: "1rem", letterSpacing: "0.35em", fontWeight: 300, color: "rgba(255,255,255,0.65)", textTransform: "uppercase", marginTop: "1rem" }}>
               STUDIO SELECTION
             </p>
           </div>
@@ -63,6 +74,37 @@ export default function FaaliyetAlanlarimiz() {
               </div>
             </Link>
           ))}
+        </div>
+      </section>
+
+      <section className="snap-start w-full min-h-screen bg-zinc-950 py-24 md:py-32 flex flex-col justify-center overflow-hidden">
+        <div className="mx-auto w-full max-w-[1600px] px-6 md:px-16 grid grid-cols-1 lg:grid-cols-12 gap-12 items-end">
+          <div className="lg:col-span-8 flex flex-col items-start gap-6">
+            <p className="text-xs md:text-sm tracking-[0.4em] text-zinc-400 uppercase">
+              BİR PROJENİZ Mİ VAR?
+            </p>
+            <h2
+              className="text-6xl md:text-8xl lg:text-[9rem] font-thin text-white tracking-widest leading-none mb-10"
+              style={{ fontFamily: "Smooch Sans, sans-serif" }}
+            >
+              Gerçeğe dönüştürelim.
+            </h2>
+            <Link
+              href="/iletisim"
+              className="bg-white text-black hover:bg-zinc-200 rounded-full px-10 py-8 text-sm md:text-base tracking-widest uppercase transition-all duration-300"
+              style={{ fontFamily: "Smooch Sans, sans-serif" }}
+            >
+              RANDEVU TALEP ET
+            </Link>
+          </div>
+          <div className="lg:col-span-4 flex flex-col lg:items-end text-left lg:text-right gap-4 pb-2">
+            <p className="text-xs md:text-sm tracking-[0.4em] text-zinc-500 uppercase">
+              OFİS ADRESİMİZ
+            </p>
+            <p className="text-zinc-300 font-light leading-relaxed max-w-sm text-lg">
+              350 Evler Mah. Ali Dirikoç Blv.No: 13 Merkez / NEVŞEHİR
+            </p>
+          </div>
         </div>
       </section>
     </main>
