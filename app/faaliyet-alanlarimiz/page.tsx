@@ -37,8 +37,8 @@ const serviceCards = [
 
 export default function FaaliyetAlanlarimiz() {
   return (
-    <main className="h-screen w-full overflow-y-auto overflow-x-hidden snap-y snap-mandatory scroll-smooth bg-zinc-950 site-shell project-detail-shell faaliyet-alanlarimiz-page" style={{ paddingTop: "12rem" }}>
-      <section className="h-screen w-full snap-start snap-always relative flex flex-col justify-center overflow-hidden shrink-0 services-section" style={{ background: "transparent" }}>
+    <main className="w-full min-h-screen bg-zinc-950 flex flex-col site-shell project-detail-shell faaliyet-alanlarimiz-page" style={{ paddingTop: "12rem" }}>
+      <section className="w-full min-h-screen relative flex flex-col justify-center overflow-hidden py-24 services-section" style={{ background: "transparent" }}>
         <div className="section-inner" style={{ paddingBottom: "4rem", textAlign: "center" }}>
           <div style={{ marginBottom: "5rem" }}>
             <h1 style={{ fontFamily: "var(--font-smooch), sans-serif", fontSize: "clamp(4rem, 10vw, 8rem)", fontWeight: 100, color: "#fff", letterSpacing: "0.2em", textTransform: "uppercase", margin: 0 }}>DESIGN & COLLECTION</h1>
