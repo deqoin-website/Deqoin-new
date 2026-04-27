@@ -131,7 +131,7 @@ export default function Page() {
                 <a
                   key={card.title}
                   href={card.href}
-                  className={`service-card relative w-full h-[70vh] md:h-[80vh] lg:h-[85vh] rounded-none overflow-hidden group cursor-pointer border-r border-zinc-900/50 ${card.title === "Material Studio" ? "service-card-material-highlight" : ""}`}
+                  className={`service-card relative w-full h-[64vh] md:h-[72vh] lg:h-[85vh] rounded-none overflow-hidden group cursor-pointer border-r border-zinc-900/50 ${card.title === "Material Studio" ? "service-card-material-highlight" : ""}`}
                 >
                   <img 
                     src={card.image} 
@@ -144,7 +144,7 @@ export default function Page() {
                   />
                   <div className="absolute bottom-0 left-0 w-full p-6 md:p-10 flex flex-col gap-2 z-10">
                     <h3
-                      className="text-5xl md:text-7xl lg:text-8xl font-thin text-white uppercase tracking-widest leading-none drop-shadow-lg"
+                      className="text-5xl md:text-6xl lg:text-8xl font-thin text-white uppercase tracking-widest leading-none drop-shadow-lg"
                       style={{ fontFamily: "Smooch Sans, sans-serif", fontWeight: 100 }}
                     >
                       {card.title}
