@@ -47,7 +47,12 @@ export default function AboutShowcaseSection() {
               className="rounded-full text-white border-zinc-700 hover:bg-zinc-100 hover:text-black transition-all"
               onClick={() => router.push("/faaliyet-alanlarimiz")}
             >
-              <span style={{ fontFamily: "var(--font-smooch), sans-serif" }}>Design &amp; Collection -&gt;</span>
+              <span
+                className="text-white"
+                style={{ fontFamily: "var(--font-smooch), sans-serif" }}
+              >
+                Design &amp; Collection -&gt;
+              </span>
             </Button>
           </div>
         </motion.div>
