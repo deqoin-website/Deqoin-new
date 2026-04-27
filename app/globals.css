@@ -530,7 +530,6 @@ video {
 }
 
 .topbar-links a {
-  color: #fff !important;
   text-decoration: none;
 }
 
@@ -661,12 +660,6 @@ video {
 .mobile-menu-nav button {
   background: transparent;
   border: none;
-  font-family: var(--font-display), sans-serif;
-  font-size: clamp(2.5rem, 6vw, 4rem);
-  font-weight: 200;
-  text-transform: uppercase;
-  letter-spacing: 0.15em;
-  color: #fff;
   transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
   transform: translateY(20px);
   opacity: 0;
@@ -689,12 +682,6 @@ video {
 .mobile-menu-overlay.open .mobile-menu-nav a:nth-child(3), .mobile-menu-overlay.open .mobile-menu-nav button:nth-child(3) { transition-delay: 0.2s; }
 .mobile-menu-overlay.open .mobile-menu-nav a:nth-child(4), .mobile-menu-overlay.open .mobile-menu-nav button:nth-child(4) { transition-delay: 0.25s; }
 .mobile-menu-overlay.open .mobile-menu-nav a:nth-child(5), .mobile-menu-overlay.open .mobile-menu-nav button:nth-child(5) { transition-delay: 0.3s; }
-
-.mobile-menu-nav a:hover,
-.mobile-menu-nav button:hover {
-  color: #cca883;
-  letter-spacing: 0.25em;
-}
 
 .mobile-menu-footer {
   position: absolute;

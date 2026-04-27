@@ -18,6 +18,8 @@ export default function Header() {
   const [isLogoLoaded, setIsLogoLoaded] = useState(false);
   const pathname = usePathname();
   const searchInputRef = useRef<HTMLInputElement>(null);
+  const navLinkClassName =
+    "text-xl md:text-2xl font-light uppercase tracking-[0.2em] text-white/90 hover:text-white transition-colors";
 
   useEffect(() => {
     if (isMenuOpen || isSearchOpen) {
@@ -107,11 +109,11 @@ export default function Header() {
           </button>
         </div>
         <nav className="mobile-menu-nav">
-          <Link href="/#hero-slider" onClick={() => setIsMenuOpen(false)}>Ana Sayfa</Link>
-          <Link href="/faaliyet-alanlarimiz" onClick={() => setIsMenuOpen(false)}>Design & Collection</Link>
-          <Link href="/galeri" onClick={() => setIsMenuOpen(false)}>Galeri</Link>
-          <Link href="/hakkimizda" onClick={() => setIsMenuOpen(false)}>Hakkımızda</Link>
-          <Link href="/iletisim" onClick={() => setIsMenuOpen(false)}>
+          <Link href="/#hero-slider" className={navLinkClassName} style={{ fontFamily: "Smooch Sans, sans-serif" }} onClick={() => setIsMenuOpen(false)}>ANA SAYFA</Link>
+          <Link href="/faaliyet-alanlarimiz" className={navLinkClassName} style={{ fontFamily: "Smooch Sans, sans-serif" }} onClick={() => setIsMenuOpen(false)}>DESIGN & COLLECTION</Link>
+          <Link href="/galeri" className={navLinkClassName} style={{ fontFamily: "Smooch Sans, sans-serif" }} onClick={() => setIsMenuOpen(false)}>GALERİ</Link>
+          <Link href="/hakkimizda" className={navLinkClassName} style={{ fontFamily: "Smooch Sans, sans-serif" }} onClick={() => setIsMenuOpen(false)}>HAKKIMIZDA</Link>
+          <Link href="/iletisim" className={navLinkClassName} style={{ fontFamily: "Smooch Sans, sans-serif" }} onClick={() => setIsMenuOpen(false)}>
             İLETİŞİM
           </Link>
         </nav>
@@ -197,11 +199,11 @@ export default function Header() {
           </div>
           <div className="topbar-brand">
             <div className="topbar-links">
-              <Link href="/">Ana Sayfa</Link>
-              <Link href="/faaliyet-alanlarimiz">Design & Collection</Link>
-              <Link href="/galeri">Galeri</Link>
-              <Link href="/hakkimizda">Hakkımızda</Link>
-              <Link href="/iletisim" className="topbar-nav-button">
+              <Link href="/" className={navLinkClassName} style={{ fontFamily: "Smooch Sans, sans-serif" }}>ANA SAYFA</Link>
+              <Link href="/faaliyet-alanlarimiz" className={navLinkClassName} style={{ fontFamily: "Smooch Sans, sans-serif" }}>DESIGN & COLLECTION</Link>
+              <Link href="/galeri" className={navLinkClassName} style={{ fontFamily: "Smooch Sans, sans-serif" }}>GALERİ</Link>
+              <Link href="/hakkimizda" className={navLinkClassName} style={{ fontFamily: "Smooch Sans, sans-serif" }}>HAKKIMIZDA</Link>
+              <Link href="/iletisim" className={navLinkClassName} style={{ fontFamily: "Smooch Sans, sans-serif" }}>
                 İLETİŞİM
               </Link>
             </div>
