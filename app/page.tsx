@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { motion, useReducedMotion } from "framer-motion";
 import ConsultationModal from "../components/ConsultationModal";
 import HeroSlider from "../components/HeroSlider";
@@ -21,6 +21,7 @@ export default function Page() {
   const [isConsultationOpen, setIsConsultationOpen] = useState(false);
   const [slides, setSlides] = useState<any[]>([]);
   const shouldReduceMotion = useReducedMotion();
+  const router = useRouter();
 
   const [serviceCards, setServiceCards] = useState<any[]>([
     {
@@ -166,8 +167,8 @@ export default function Page() {
         </section>
 
 
-        <section className="w-full min-h-screen bg-zinc-950 text-white">
-          <div className="mx-auto flex min-h-screen w-full max-w-[1600px] flex-col gap-12 px-6 py-24 sm:px-10 lg:grid lg:grid-cols-2 lg:gap-28 lg:px-16 lg:py-28">
+        <section className="w-full h-screen snap-center snap-always flex items-center justify-center overflow-hidden bg-zinc-950 text-white">
+          <div className="max-w-7xl mx-auto w-full grid grid-cols-1 md:grid-cols-2 gap-12 px-6 md:px-12 items-center">
             <motion.div
               initial="hidden"
               whileInView="visible"
@@ -177,17 +178,17 @@ export default function Page() {
                 hidden: { opacity: 0, y: shouldReduceMotion ? 0 : 20 },
                 visible: { opacity: 1, y: 0 },
               }}
-              className="order-1 flex flex-col gap-8 lg:justify-center lg:pr-8"
+              className="order-1 flex flex-col justify-center lg:pr-8"
             >
               <h2
-                className="max-w-3xl text-[clamp(4.5rem,9vw,7.75rem)] font-thin leading-[0.9] tracking-[-0.06em] text-white"
+                className="text-6xl md:text-8xl font-thin text-white tracking-tight mb-6"
                 style={{ fontFamily: "var(--font-smooch), sans-serif" }}
               >
                 Sizin hikayeniz, sizin mekanınız.
               </h2>
 
               <p
-                className="max-w-2xl text-[clamp(1.35rem,2vw,1.75rem)] font-light leading-[1.7] tracking-[-0.02em] text-zinc-300"
+                className="text-xl md:text-2xl text-zinc-400 font-light leading-relaxed mb-8"
                 style={{ fontFamily: "var(--font-smooch), sans-serif" }}
               >
                 Biz deqoin'i kurarken tek bir inancımız vardı: Bir ev, sadece dört duvar ve eşyalardan
@@ -199,13 +200,12 @@ export default function Page() {
 
               <div>
                 <Button
-                  asChild
-                  variant="ghost"
-                  className="h-auto rounded-none bg-transparent px-0 py-0 text-[1.15rem] font-light tracking-[0.14em] text-white hover:bg-transparent hover:text-zinc-300"
+                  variant="outline"
+                  size="lg"
+                  className="rounded-full text-zinc-300 border-zinc-700 hover:bg-zinc-100 hover:text-black transition-all"
+                  onClick={() => router.push("/faaliyet-alanlarimiz")}
                 >
-                  <Link href="/faaliyet-alanlarimiz" style={{ fontFamily: "var(--font-smooch), sans-serif" }}>
-                    Design &amp; Collection -&gt;
-                  </Link>
+                  <span style={{ fontFamily: "var(--font-smooch), sans-serif" }}>Design &amp; Collection -&gt;</span>
                 </Button>
               </div>
             </motion.div>
@@ -219,13 +219,13 @@ export default function Page() {
                 hidden: { opacity: 0, y: shouldReduceMotion ? 0 : 20 },
                 visible: { opacity: 1, y: 0 },
               }}
-              className="order-2 lg:order-none lg:pt-8"
+              className="order-2 lg:order-none"
             >
-              <div className="relative aspect-[4/5] w-full overflow-hidden bg-zinc-900 sm:aspect-[16/10] lg:aspect-[4/5]">
+              <div className="relative w-full h-[50vh] md:h-[70vh] rounded-2xl overflow-hidden">
                 <img
                   src="/images/about_interior.png"
                   alt="deqoin atölye ve kütüphane iç mekanı"
-                  className="h-full w-full object-cover object-center"
+                  className="object-cover w-full h-full"
                 />
               </div>
             </motion.div>
