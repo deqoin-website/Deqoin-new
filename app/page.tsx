@@ -128,11 +128,11 @@ export default function Page() {
           
           <div className="section-content-area" style={{ padding: '0' }}>
             <Carousel opts={{ align: "start", dragFree: true }} className="w-full">
-              <CarouselContent className="flex w-full overflow-x-auto md:overflow-visible snap-x snap-mandatory hide-scrollbar ml-0">
+              <CarouselContent className="ml-0">
                 {serviceCards.map((card) => (
                   <CarouselItem
                     key={card.title}
-                    className="pl-0 basis-[85%] md:basis-[33.333333%] shrink-0 min-w-0 snap-center md:snap-align-none"
+                    className="pl-0 basis-[85%] md:basis-1/3 min-w-0"
                   >
                     <a
                       href={card.href}

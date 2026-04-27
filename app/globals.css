@@ -2963,20 +2963,6 @@ video {
     margin-top: 0.9rem;
   }
 
-  .homepage-snap-shell .homepage-services-section .services-grid {
-    display: flex;
-    flex-wrap: nowrap;
-    justify-content: flex-start;
-  }
-}
-
-.hide-scrollbar {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-}
-
-.hide-scrollbar::-webkit-scrollbar {
-  display: none;
 }
 
 @media (min-width: 1025px) {
@@ -5943,23 +5929,6 @@ video {
 }
 
 @media (max-width: 767px) {
-  .homepage-snap-shell .homepage-services-section .services-grid {
-    display: flex;
-    flex-wrap: nowrap;
-    gap: 0;
-    justify-content: flex-start;
-    overflow-x: auto;
-    overflow-y: hidden;
-    -webkit-overflow-scrolling: touch;
-    scroll-snap-type: x mandatory;
-  }
-
-  .homepage-snap-shell .homepage-services-section .service-card {
-    flex: 0 0 85%;
-    width: 85%;
-    scroll-snap-align: center;
-  }
-
   .faaliyet-alanlarimiz-page .services-grid {
     grid-template-columns: 1fr;
     gap: 0.85rem;
