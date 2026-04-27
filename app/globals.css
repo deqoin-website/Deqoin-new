@@ -2977,8 +2977,9 @@ video {
   }
 
   .homepage-snap-shell .homepage-services-section .services-grid {
-    grid-template-columns: 1fr;
-    justify-content: stretch;
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
   }
 
   .homepage-snap-shell .homepage-services-section .service-card {
@@ -2986,8 +2987,16 @@ video {
     min-height: 0;
     aspect-ratio: 9 / 16;
     align-self: start;
-    width: 100%;
   }
+}
+
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
 }
 
 @media (min-width: 1025px) {
