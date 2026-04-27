@@ -146,8 +146,9 @@ export default function Page() {
                     <h3
                       className="text-5xl md:text-5xl lg:text-8xl font-thin text-white uppercase tracking-widest leading-none drop-shadow-lg"
                       style={{ fontFamily: "Smooch Sans, sans-serif", fontWeight: 100 }}
+                      lang="en"
                     >
-                      {card.title}
+                      {card.title.toLocaleUpperCase("en-US")}
                     </h3>
 
                     {"subTitle" in card && (
