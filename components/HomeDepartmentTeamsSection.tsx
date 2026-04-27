@@ -15,7 +15,6 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
-import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
 
 type TeamMember = {
@@ -137,23 +136,11 @@ export default function HomeDepartmentTeamsSection({ className }: { className?: 
                     />
                   ) : null}
 
-                  <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0.18)_0%,rgba(0,0,0,0.32)_30%,rgba(0,0,0,0.82)_100%)]" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
                   <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.08),transparent_24%),radial-gradient(circle_at_bottom_right,rgba(255,255,255,0.02),transparent_28%)]" />
 
                   <div className="absolute inset-0 z-10 flex h-full flex-col justify-between px-4 py-5 sm:px-6 sm:py-6 lg:px-10 lg:py-8">
-                    <div className="flex items-start justify-between gap-4">
-                      <motion.div
-                        initial={false}
-                        animate={isActive ? { opacity: 1, y: 0 } : { opacity: 0.45, y: -8 }}
-                        transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
-                        className="flex flex-col gap-3"
-                      >
-                        <span className="font-[family-name:var(--font-smooch)] text-[0.78rem] uppercase tracking-[0.46em] text-white/70">
-                          Departman Ekipleri
-                        </span>
-                        <Separator className="w-24 bg-white/15" />
-                      </motion.div>
-
+                    <div className="flex items-start justify-end gap-4">
                       <motion.div
                         initial={false}
                         animate={isActive ? { opacity: 1, y: 0 } : { opacity: 0.5, y: -8 }}
@@ -166,7 +153,7 @@ export default function HomeDepartmentTeamsSection({ className }: { className?: 
                       </motion.div>
                     </div>
 
-                    <div className="flex w-full items-end justify-between gap-6">
+                    <div className="absolute bottom-0 left-0 w-full px-8 md:px-16 pb-16 md:pb-24 max-w-screen-2xl mx-auto flex flex-col md:flex-row justify-between items-end">
                       <motion.div
                         initial={false}
                         animate={isActive ? { opacity: 1, y: 0 } : { opacity: 0.72, y: 24 }}
@@ -224,7 +211,7 @@ export default function HomeDepartmentTeamsSection({ className }: { className?: 
                         <Button
                           asChild
                           variant="outline"
-                          className="border-white/12 bg-white/95 font-[family-name:var(--font-smooch)] text-[0.86rem] uppercase tracking-[0.28em] text-black hover:bg-white"
+                          className="border-white/12 bg-white text-black font-[family-name:var(--font-smooch)] text-[0.86rem] uppercase tracking-[0.28em] hover:bg-zinc-200 hover:text-black transition-colors"
                         >
                           <Link href="/departman-ekipleri">TUM EKIPLERI GOR</Link>
                         </Button>
@@ -243,7 +230,7 @@ export default function HomeDepartmentTeamsSection({ className }: { className?: 
                       <Button
                         asChild
                         variant="outline"
-                        className="border-white/12 bg-white/95 font-[family-name:var(--font-smooch)] text-[0.8rem] uppercase tracking-[0.24em] text-black hover:bg-white"
+                        className="border-white/12 bg-white text-black font-[family-name:var(--font-smooch)] text-[0.8rem] uppercase tracking-[0.24em] hover:bg-zinc-200 hover:text-black transition-colors"
                       >
                         <Link href="/departman-ekipleri">TUM EKIPLERI GOR</Link>
                       </Button>
