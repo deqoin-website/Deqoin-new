@@ -37,7 +37,7 @@ export default function Footer() {
 
   // Fallback defaults
   const logoUrl = settings?.logoUrl || "/images/logo-new.jpeg";
-  const address = settings?.address || "350 Evler Mah. Ali Dirikoç Blv. Sena Apartmanı No: 13 İç Kapı No: Z01 Merkez / NEVŞEHİR";
+  const address = settings?.address || "350 Evler Mah. Ali Dirikoç Blv.No: 13 Merkez / NEVŞEHİR";
   const tagline = settings?.studioName ? `${settings.studioName} Studio` : "Mimari, Tasarım ve Uygulama alanlarında dünya standartları.";
   const social = settings?.socialLinks || {};
 
