@@ -33,6 +33,7 @@ const categoryTitleMap = Object.fromEntries(
 ) as Record<string, string>;
 
 const AUTOPLAY_DELAY = 9000;
+const SECTION_CLASS_NAME = "team-section snap-section relative w-full min-h-screen bg-zinc-950 py-20 overflow-hidden";
 
 export default function HomeDepartmentTeamsSection({ className }: { className?: string }) {
   const [members, setMembers] = useState<TeamMember[]>(fallbackTeamMembers);
@@ -105,7 +106,7 @@ export default function HomeDepartmentTeamsSection({ className }: { className?: 
   return (
     <section
       id="departman-ekipleri"
-      className={cn("team-section snap-section relative w-full min-h-screen bg-zinc-950 py-20 overflow-hidden", className)}
+      className={cn(SECTION_CLASS_NAME, className)}
     >
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 px-6 md:px-16 mb-12 md:mb-16 max-w-[1600px] mx-auto w-full z-10 relative">
         <h2
