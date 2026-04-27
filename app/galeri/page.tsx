@@ -1,456 +1,148 @@
 "use client";
 
-import { useState, useMemo, Suspense, useEffect } from "react";
-import { useSearchParams } from "next/navigation";
-import ProjectInsightPanel from "../../components/ProjectInsightPanel";
-import { ProjectDetail } from "../../data/projects";
+import { useMemo, useState } from "react";
+
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { cn } from "@/lib/utils";
 
 const categories = [
-  { key: "all", title: "HEPSİ", sideLabel: "Selection" },
-  { key: "konut", title: "KONUT", sideLabel: "Residential" },
-  { key: "ticari", title: "TİCARİ", sideLabel: "Commercial" },
-  { key: "ic-mimari", title: "İÇ MİMARİ", sideLabel: "Interiors" },
-  { key: "restorasyon", title: "RESTORASYON", sideLabel: "Revival" },
-  { key: "karma-kullanim", title: "KARMA KULLANIM", sideLabel: "Mixed-Use" },
-  { key: "kurursal-alan", title: "KURUMSAL", sideLabel: "Corporate" },
-  { key: "butik-otel", title: "OTEL", sideLabel: "Boutique" },
-  { key: "kultur-yapisi", title: "KÜLTÜR", sideLabel: "Culture" },
-  { key: "peyzaj", title: "PEYZAJ", sideLabel: "Landscape" },
+  { key: "all", title: "HEPSİ" },
+  { key: "ic-mimari", title: "İÇ MİMARİ" },
+  { key: "konut", title: "KONUT" },
+  { key: "ticari", title: "TİCARİ" },
+  { key: "restorasyon", title: "RESTORASYON" },
+  { key: "peyzaj", title: "PEYZAJ" },
+  { key: "otel", title: "OTEL" },
+  { key: "kurumsal", title: "KURUMSAL" },
 ] as const;
 
-function GaleriContent() {
-  const searchParams = useSearchParams();
-  const materialParam = searchParams?.get("material") ?? null;
-  
-  const [projectsData, setProjectsData] = useState<ProjectDetail[]>([]);
-  const [activeFilter, setActiveFilter] = useState<(typeof categories)[number]["key"]>("all");
+const projects = [
+  { id: 1, category: "ic-mimari", title: "BOSPHORUS VİLLA", image: "/images/projects/gallery_1.png" },
+  { id: 2, category: "konut", title: "NOIR RESIDENCE", image: "/images/projects/gallery_2.png" },
+  { id: 3, category: "ticari", title: "ATELIER HOUSE", image: "/images/projects/gallery_1.png" },
+  { id: 4, category: "restorasyon", title: "HERITAGE COURT", image: "/images/projects/gallery_2.png" },
+  { id: 5, category: "peyzaj", title: "MIRROR GARDEN", image: "/images/projects/gallery_1.png" },
+  { id: 6, category: "kurumsal", title: "SILENT OFFICE", image: "/images/projects/gallery_2.png" },
+] as const;
+
+type CategoryKey = (typeof categories)[number]["key"];
+
+export default function GaleriPage() {
+  const [activeFilter, setActiveFilter] = useState<CategoryKey>("all");
   const [searchTerm, setSearchTerm] = useState("");
-  const [isMobileDrawerOpen, setIsMobileDrawerOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
-  const [activeProjectSlug, setActiveProjectSlug] = useState<string | null>(null);
 
-  // Fetch projects from MongoDB
-  useEffect(() => {
-    const fetchProjects = async () => {
-      try {
-        const res = await fetch('/api/projects');
-        const data = await res.json();
-        setProjectsData(data);
-      } catch (err) {
-        console.error("Failed to fetch projects:", err);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    fetchProjects();
-  }, []);
+  const visibleProjects = useMemo(() => {
+    const query = searchTerm.trim().toLowerCase();
 
-  const filteredProjects = useMemo(() => {
-    let result = projectsData;
-    
-    // Category filter
-    if (activeFilter !== "all" && !materialParam) {
-      result = result.filter(p => p.category === activeFilter);
-    }
-    
-    // Material filter (from URL)
-    if (materialParam) {
-      result = result.filter(p => p.materials?.includes(materialParam));
-    }
-    
-    // Search filter
-    if (searchTerm.trim() !== "") {
-      const lowerSearch = searchTerm.toLowerCase();
-      result = result.filter(p => 
-        p.title.toLowerCase().includes(lowerSearch) || 
-        p.description.toLowerCase().includes(lowerSearch)
-      );
-    }
-    
-    return result;
-  }, [activeFilter, searchTerm, materialParam]);
+    return projects.filter((project) => {
+      const matchesCategory = activeFilter === "all" || project.category === activeFilter;
+      const matchesSearch =
+        query.length === 0 ||
+        project.title.toLowerCase().includes(query) ||
+        project.category.toLowerCase().includes(query);
 
-  const selectedProject = useMemo(
-    () => filteredProjects.find((project) => project.slug === activeProjectSlug) ?? null,
-    [activeProjectSlug, filteredProjects],
-  );
-
-  useEffect(() => {
-    if (!activeProjectSlug) return;
-
-    const previousOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-
-    return () => {
-      document.body.style.overflow = previousOverflow;
-    };
-  }, [activeProjectSlug]);
-
-  const handleCategorySelect = (key: (typeof categories)[number]["key"]) => {
-    setActiveFilter(key);
-    setIsMobileDrawerOpen(false);
-  };
+      return matchesCategory && matchesSearch;
+    });
+  }, [activeFilter, searchTerm]);
 
   return (
-    <main className="site-shell project-detail-shell galeri-page gallery-vertical-shell">
-      <div className="section-inner" style={{ paddingBottom: "6rem" }}>
-        
-        {/* HEADER SECTION */}
-        <div className="galeri-header-section gallery-snap-point">
-          <h1 className="galeri-title">GALERİ</h1>
-          <p className="galeri-subtitle">
-            Tüm Çalışmalarımız & Portfolyo
-          </p>
-        </div>
-
-        {/* SEARCH & MOBILE FILTER BAR */}
-        <div className="studio-search-container gallery-snap-point galeri-filter-bar" style={{ position: 'sticky', top: '80px', zIndex: 100, background: 'rgba(10,10,10,0.8)', backdropFilter: 'blur(20px)', borderBottom: '1px solid rgba(255,255,255,0.05)', marginBottom: '4rem' }}>
-          <div className="studio-search-bar">
-            <span className="material-symbols-outlined">search</span>
-            <input 
-              type="text" 
-              placeholder="Galeri, Şehir veya Detay Ara..." 
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-          </div>
-
-          <button 
-            className="mobile-filter-toggle"
-            onClick={() => setIsMobileDrawerOpen(true)}
+    <main className="min-h-screen w-full bg-zinc-950 pb-24 text-white">
+      <section className="mx-auto w-full max-w-[1600px] px-6 md:px-16 pt-28">
+        <header className="mb-10">
+          <h1
+            className="text-6xl md:text-8xl font-thin tracking-[0.3em] text-white uppercase leading-none"
+            style={{ fontFamily: "Smooch Sans, sans-serif" }}
           >
-            <span className="material-symbols-outlined">tune</span>
-            FİLTRELE
-            {activeFilter !== "all" && <span className="active-dot"></span>}
-          </button>
-        </div>
+            GALERİ
+          </h1>
+          <p
+            className="mt-4 text-sm tracking-[0.4em] text-zinc-400 uppercase"
+            style={{ fontFamily: "Smooch Sans, sans-serif" }}
+          >
+            TÜM ÇALIŞMALARIMIZ & PORTFOLYO
+          </p>
+        </header>
 
-        {/* MOBILE DRAWER */}
-        <div className={`studio-mobile-drawer-overlay ${isMobileDrawerOpen ? 'active' : ''}`} onClick={() => setIsMobileDrawerOpen(false)} />
-        <div className={`studio-mobile-drawer ${isMobileDrawerOpen ? 'active' : ''}`}>
-          <div className="drawer-header galeri-drawer-header">
-            <h3>KATEGORİLER</h3>
-            <button className="drawer-close galeri-drawer-close" onClick={() => setIsMobileDrawerOpen(false)} aria-label="Filtreleri kapat">
-              <span className="material-symbols-outlined">close</span>
-            </button>
-          </div>
+        <div className="grid grid-cols-1 lg:grid-cols-5 gap-12 max-w-[1600px] mx-auto px-0 mt-12">
+          <aside className="lg:col-span-1 sticky top-32 h-fit flex flex-col gap-2">
+            {categories.map((category) => {
+              const isActive = activeFilter === category.key;
 
-          <div className="drawer-content">
-            <ul className="mobile-filter-list">
-              {categories.map((filter) => (
-                <li key={filter.key} className="mobile-filter-item">
-                  <button 
-                    className={`mobile-filter-button ${activeFilter === filter.key ? 'active' : ''}`}
-                    onClick={() => handleCategorySelect(filter.key)}
-                  >
-                    {filter.title}
-                    {activeFilter === filter.key && <span className="material-symbols-outlined">check_small</span>}
-                  </button>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-        </div>
-
-        <div className="studio-main">
-          
-          {/* SIDEBAR (DESKTOP) */}
-          <aside className="studio-sidebar" style={{ position: 'sticky', top: '180px' }}>
-            <div className="filter-group">
-              <h4 style={{ fontSize: '0.7rem', letterSpacing: '0.3em', color: 'rgba(255,255,255,0.3)', marginBottom: '2rem' }}>KATEGORİLER</h4>
-              <ul className="filter-list" style={{ listStyle: 'none', padding: 0 }}>
-                {categories.map((filter) => (
-                  <li key={filter.key} style={{ marginBottom: '1rem' }}>
-                    <button 
-                      className={`filter-button ${activeFilter === filter.key ? "active" : ""}`}
-                      onClick={() => setActiveFilter(filter.key)}
-                      style={{ 
-                        background: 'none', 
-                        border: 'none', 
-                        color: activeFilter === filter.key ? '#fff' : 'rgba(255,255,255,0.4)',
-                        fontFamily: 'var(--font-display)',
-                        fontSize: '0.8rem',
-                        letterSpacing: '0.2em',
-                        cursor: 'pointer',
-                        transition: 'all 0.3s ease',
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '1rem'
-                      }}
-                    >
-                      <span style={{ 
-                        width: '4px', 
-                        height: '4px', 
-                        borderRadius: '50%', 
-                        background: '#cca883', 
-                        opacity: activeFilter === filter.key ? 1 : 0,
-                        transition: 'all 0.3s ease'
-                      }} />
-                      {filter.title}
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
+              return (
+                <Button
+                  key={category.key}
+                  type="button"
+                  variant="ghost"
+                  onClick={() => setActiveFilter(category.key)}
+                  className={cn(
+                    "w-full justify-start rounded-none px-0 py-2 text-left text-lg md:text-xl font-thin uppercase tracking-[0.25em] transition-colors hover:bg-transparent",
+                    isActive
+                      ? "bg-zinc-900/50 text-white hover:bg-zinc-900/50 hover:text-white"
+                      : "text-zinc-500 hover:text-white",
+                  )}
+                  style={{ fontFamily: "Smooch Sans, sans-serif" }}
+                >
+                  {category.title}
+                </Button>
+              );
+            })}
           </aside>
 
-          {/* PROJECT GRID */}
-          <div className="project-grid project-grid-sensory" style={{ marginTop: 0 }}>
-            {isLoading ? (
-               <div style={{ textAlign: "center", padding: "10rem 0", gridColumn: '1/-1', color: '#cca883' }}>YÜKLENİYOR...</div>
-            ) : filteredProjects.length > 0 ? (
-               filteredProjects.map((project) => (
-                <button
-                  type="button"
-                  className="project-card project-card-trigger project-card-gallery-sensory gallery-snap-point"
-                  key={project.slug}
-                  onClick={() => setActiveProjectSlug(project.slug)}
-                  aria-label={`${project.title} proje bilgisini aç`}
-                >
-                  <img src={project.coverImage} alt={project.title} />
-                  <div className="project-overlay" />
-                  <div className="project-slide-glow" />
-                  <h4>{project.title}</h4>
-                  <p className="vertical-text">{project.label}</p>
-                </button>
-              ))
+          <div className="lg:col-span-4">
+            <Input
+              type="search"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              placeholder="ARAMA"
+              className="bg-transparent border-x-0 border-t-0 border-b border-zinc-800 px-0 text-base tracking-[0.3em] uppercase placeholder:text-zinc-600 focus-visible:ring-0"
+              style={{ fontFamily: "Smooch Sans, sans-serif" }}
+            />
+
+            {visibleProjects.length > 0 ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 mt-12">
+                {visibleProjects.map((project, index) => (
+                  <div
+                    key={project.id}
+                    className="relative w-full aspect-[4/3] md:aspect-[3/4] lg:aspect-square rounded-xl overflow-hidden group cursor-pointer"
+                    style={{ fontFamily: "Smooch Sans, sans-serif" }}
+                  >
+                    <img
+                      src={project.image}
+                      className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
+                      alt="Proje"
+                      loading={index < 2 ? "eager" : "lazy"}
+                    />
+
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent opacity-80 group-hover:opacity-100 transition-opacity duration-500" />
+
+                    <div className="absolute bottom-0 left-0 w-full p-6 md:p-8 flex flex-col gap-2 translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
+                      <p className="text-[10px] md:text-xs tracking-[0.3em] text-zinc-400 uppercase">
+                        {categories.find((category) => category.key === project.category)?.title ?? "İÇ MİMARİ"}
+                      </p>
+                      <h3
+                        className="text-4xl md:text-5xl font-thin text-white uppercase tracking-widest leading-none"
+                        style={{ fontFamily: "Smooch Sans, sans-serif" }}
+                      >
+                        {project.title}
+                      </h3>
+                    </div>
+                  </div>
+                ))}
+              </div>
             ) : (
-              <div style={{ textAlign: "center", padding: "10rem 0", color: "rgba(255,255,255,0.3)", gridColumn: '1/-1' }}>
-                <span className="material-symbols-outlined" style={{ fontSize: "3rem", marginBottom: "1rem" }}>search_off</span>
-                <p>Aradığınız kriterlere uygun proje bulunamadı.</p>
+              <div className="flex min-h-[50vh] items-center justify-center text-center">
+                <p
+                  className="text-3xl md:text-5xl font-thin tracking-[0.18em] text-zinc-300"
+                  style={{ fontFamily: "Smooch Sans, sans-serif" }}
+                >
+                  Aradığınız kriterlere uygun proje bulunamadı.
+                </p>
               </div>
             )}
           </div>
         </div>
-      </div>
-      <ProjectInsightPanel project={selectedProject} onClose={() => setActiveProjectSlug(null)} />
-
-      <style jsx>{`
-        .galeri-page {
-          background: #080808;
-          color: #fff;
-          padding-top: 12rem;
-        }
-
-        .galeri-header-section {
-          margin-bottom: 2rem;
-        }
-
-        .galeri-title {
-          font-family: var(--font-display), sans-serif;
-          font-size: clamp(2.6rem, 7vw, 5.5rem);
-          font-weight: 200;
-          letter-spacing: 0.1em;
-          color: #fff;
-          line-height: 0.95;
-          margin: 0;
-          text-transform: uppercase;
-        }
-
-        .galeri-subtitle {
-          color: #cca883;
-          max-width: 30rem;
-          line-height: 1.6;
-          letter-spacing: 0.35em;
-          font-size: 0.72rem;
-          text-transform: uppercase;
-          margin-top: 1rem;
-        }
-
-        .galeri-page .studio-search-container {
-          background: rgba(8, 8, 8, 0.82) !important;
-          border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-        }
-
-        .galeri-page .studio-search-bar {
-          background: rgba(18, 18, 18, 0.9);
-        }
-
-        .galeri-page .studio-search-bar input,
-        .galeri-page .studio-search-bar input::placeholder,
-        .galeri-page .studio-search-bar .material-symbols-outlined {
-          color: #cca883;
-        }
-
-        .galeri-page .mobile-filter-toggle,
-        .galeri-page .filter-button,
-        .galeri-page .mobile-filter-button,
-        .galeri-page .drawer-header h3 {
-          color: #fff;
-        }
-
-        .galeri-page .filter-group h4,
-        .galeri-page .mobile-filter-button:hover,
-        .galeri-page .filter-button:hover,
-        .galeri-page .mobile-filter-button .material-symbols-outlined,
-        .galeri-page .filter-button.active::after {
-          color: #cca883;
-        }
-
-        .galeri-page .project-card-gallery-sensory h4,
-        .galeri-page .project-card-gallery-sensory .vertical-text {
-          color: #fff;
-          text-shadow: 0 2px 18px rgba(0, 0, 0, 0.35);
-        }
-
-        .galeri-page .project-card-gallery-sensory .project-overlay {
-          background: linear-gradient(180deg, rgba(0,0,0,0.1), rgba(0,0,0,0.68));
-        }
-
-        .galeri-page .project-card-gallery-sensory .project-slide-glow {
-          filter: blur(0px);
-          opacity: 0.85;
-        }
-
-        .galeri-page .project-detail-sheet {
-          color: #fff;
-        }
-
-        @media (max-width: 1024px) {
-          .galeri-page .project-grid {
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-          }
-        }
-
-        @media (max-width: 767px) {
-          .galeri-page {
-            overflow-x: hidden;
-            padding-top: 9rem;
-          }
-
-          .galeri-page .section-inner {
-            padding-top: 3.5rem;
-            padding-left: 1rem;
-            padding-right: 1rem;
-          }
-
-          .galeri-header-section {
-            margin-bottom: 1.5rem;
-          }
-
-          .galeri-title {
-            font-size: clamp(2.2rem, 12vw, 3.4rem);
-            letter-spacing: 0.08em;
-          }
-
-          .galeri-subtitle {
-            font-size: 0.62rem;
-            letter-spacing: 0.28em;
-            max-width: 100%;
-          }
-
-          .galeri-page .studio-search-container {
-            position: sticky !important;
-            top: 6rem !important;
-            margin-bottom: 2rem;
-            padding-left: 0;
-            padding-right: 0;
-            z-index: 110;
-          }
-
-          .galeri-page .studio-search-bar {
-            padding: 0.35rem 1rem;
-          }
-
-          .galeri-page .studio-search-bar input {
-            font-size: 0.85rem;
-            letter-spacing: 0.04em;
-          }
-
-          .galeri-page .mobile-filter-toggle {
-            width: 100%;
-            padding: 1rem;
-            letter-spacing: 0.22em;
-          }
-
-          .galeri-page .studio-main {
-            gap: 1.5rem;
-          }
-
-          .galeri-page .studio-sidebar {
-            display: none;
-          }
-
-          .galeri-page .project-grid.project-grid-sensory {
-            width: 100%;
-            margin-left: 0;
-            margin-right: 0;
-            padding: 0;
-            grid-template-columns: 1fr;
-            gap: 1rem;
-          }
-
-          .galeri-page .project-card-gallery-sensory {
-            height: 72svh;
-            min-height: 72svh;
-            border-radius: 1.1rem !important;
-          }
-
-          .galeri-page .project-card-gallery-sensory h4 {
-            left: 0.9rem;
-            right: auto;
-            bottom: 1.15rem;
-            font-size: 1rem;
-            max-width: 68vw;
-            text-align: left;
-          }
-
-          .galeri-page .project-card-gallery-sensory p,
-          .galeri-page .project-card-gallery-sensory .vertical-text {
-            top: 0.9rem;
-            right: 0.9rem;
-            bottom: auto;
-            left: auto;
-            font-size: 0.56rem;
-            letter-spacing: 0.34em;
-            max-width: min(45vw, 10rem);
-            text-align: right;
-          }
-
-          .galeri-page .studio-mobile-drawer {
-            width: min(88vw, 340px);
-            z-index: 2200;
-          }
-
-          .galeri-page .studio-mobile-drawer-overlay {
-            z-index: 2190;
-          }
-
-          .galeri-page .galeri-drawer-header {
-            padding: 6.5rem 1.25rem 1.5rem;
-          }
-
-          .galeri-page .galeri-drawer-close {
-            width: 2.75rem;
-            height: 2.75rem;
-            display: grid;
-            place-items: center;
-            color: #fff;
-            border: 1px solid rgba(255,255,255,0.12);
-            background: rgba(255,255,255,0.04);
-            border-radius: 999px;
-          }
-
-          .galeri-page .galeri-drawer-close .material-symbols-outlined {
-            color: #fff;
-            font-size: 1.25rem;
-          }
-
-          .galeri-page .studio-mobile-drawer-overlay {
-            top: 0;
-          }
-        }
-      `}</style>
+      </section>
     </main>
-  );
-}
-
-export default function AllProjects() {
-  return (
-    <Suspense fallback={<div style={{ minHeight: '100vh', background: '#0a0a0a' }}></div>}>
-      <GaleriContent />
-    </Suspense>
   );
 }
