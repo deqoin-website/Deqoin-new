@@ -1,191 +1,106 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
-
-import Lenis from "lenis";
-import Autoplay from "embla-carousel-autoplay";
+import { useMemo, useState } from "react";
 import { motion } from "framer-motion";
-import { Loader2 } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { teamFilters, teamMembers } from "@/data/team";
 
-import { Card, CardContent } from "@/components/ui/card";
-import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel";
-import { Separator } from "@/components/ui/separator";
-
-type TeamMember = {
-  _id?: string;
-  id?: string;
-  name: string;
-  role: string;
-  bio?: string;
-  image: string;
-  socials?: {
-    linkedin?: string;
-    instagram?: string;
-  };
-};
+type TeamFilterKey = (typeof teamFilters)[number]["key"];
 
 export default function OurTeam() {
-  const [teamMembers, setTeamMembers] = useState<TeamMember[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [carouselApi, setCarouselApi] = useState<any>(null);
-  const [activeIndex, setActiveIndex] = useState(0);
+  const [activeFilter, setActiveFilter] = useState<TeamFilterKey>("all");
 
-  useEffect(() => {
-    const lenis = new Lenis({ lerp: 0.08, smoothWheel: true });
-    let frame = 0;
-
-    const raf = (time: number) => {
-      lenis.raf(time);
-      frame = window.requestAnimationFrame(raf);
-    };
-
-    frame = window.requestAnimationFrame(raf);
-
-    return () => {
-      window.cancelAnimationFrame(frame);
-      lenis.destroy();
-    };
-  }, []);
-
-  useEffect(() => {
-    const fetchTeam = async () => {
-      try {
-        const res = await fetch("/api/admin/team");
-        if (res.ok) {
-          const data = await res.json();
-          setTeamMembers(data);
-        }
-      } catch (error) {
-        console.error("Team fetch error:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchTeam();
-  }, []);
-
-  const autoplay = useMemo(
-    () =>
-      Autoplay({
-        delay: 6000,
-        stopOnInteraction: false,
-        stopOnMouseEnter: false,
-      }),
-    [],
-  );
-
-  useEffect(() => {
-    if (!carouselApi) return;
-
-    const handleSelect = () => setActiveIndex(carouselApi.selectedScrollSnap());
-    handleSelect();
-    carouselApi.on("select", handleSelect);
-    carouselApi.on("reInit", handleSelect);
-
-    return () => {
-      carouselApi.off("select", handleSelect);
-      carouselApi.off("reInit", handleSelect);
-    };
-  }, [carouselApi]);
-
-  if (loading) {
-    return (
-      <div className="flex min-h-[70vh] items-center justify-center bg-black pt-48">
-        <Loader2 className="animate-spin text-white/70" size={44} />
-      </div>
-    );
-  }
+  const visibleMembers = useMemo(() => {
+    if (activeFilter === "all") return teamMembers;
+    return teamMembers.filter((member) => member.category === activeFilter);
+  }, [activeFilter]);
 
   return (
-    <main className="bg-zinc-950 text-white">
-      <section className="relative h-[100svh] w-full overflow-hidden">
-        <Carousel className="h-[100svh] w-full" opts={{ loop: true, align: "start" }} setApi={setCarouselApi} plugins={[autoplay]}>
-          <CarouselContent className="h-[100svh]">
-            {teamMembers.map((member, index) => (
-              <CarouselItem key={member._id ?? member.id ?? index} className="h-[100svh] basis-full">
-                <motion.div
-                  initial={{ opacity: 0.9, scale: 1.02 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-                  className="relative h-[100svh] w-full overflow-hidden bg-black"
-                >
+    <main className="min-h-screen bg-zinc-950 text-white">
+      <section className="relative w-full min-h-screen overflow-hidden bg-zinc-950 pt-28 pb-20">
+        <div className="mx-auto w-full max-w-7xl px-6 md:px-10 lg:px-16">
+          <motion.div
+            initial={{ opacity: 0, y: 18 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+            className="mb-12 flex flex-col gap-8"
+          >
+            <h1
+              className="text-5xl md:text-7xl lg:text-8xl font-thin uppercase tracking-[0.3em] text-white"
+              style={{ fontFamily: "Smooch Sans, sans-serif" }}
+            >
+              EKİBİMİZ
+            </h1>
+
+            <div className="flex flex-wrap gap-3">
+              {teamFilters.map((filter) => {
+                const isActive = filter.key === activeFilter;
+                return (
+                  <button
+                    key={filter.key}
+                    type="button"
+                    onClick={() => setActiveFilter(filter.key)}
+                    className={cn(
+                      "rounded-full px-5 py-2 text-sm uppercase tracking-[0.28em] transition-colors",
+                      isActive ? "text-white" : "text-zinc-500 hover:text-zinc-300",
+                    )}
+                    style={{ fontFamily: "Smooch Sans, sans-serif" }}
+                  >
+                    <span className={cn("pb-1", isActive && "border-b border-white")}>
+                      {filter.title}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+          </motion.div>
+
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            {visibleMembers.map((member, index) => (
+              <motion.article
+                key={member.id}
+                initial={{ opacity: 0, y: 24 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.65, delay: index * 0.06, ease: [0.16, 1, 0.3, 1] }}
+                className="group"
+              >
+                <div className="relative aspect-[3/4] overflow-hidden rounded-3xl bg-zinc-900">
                   <img
                     src={member.image}
                     alt={member.name}
-                    className="absolute inset-0 h-full w-full object-cover"
-                    loading={index === 0 ? "eager" : "lazy"}
+                    className="h-full w-full object-cover object-top transition-transform duration-700 group-hover:scale-105"
+                    loading="lazy"
                   />
 
-                  <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0.18)_0%,rgba(0,0,0,0.34)_35%,rgba(0,0,0,0.76)_100%)]" />
-                  <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.06),transparent_22%),radial-gradient(circle_at_bottom_right,rgba(255,255,255,0.02),transparent_26%)]" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent" />
 
-                  <div className="absolute inset-0 z-10 flex h-full w-full flex-col justify-between px-4 py-4 sm:px-6 sm:py-6 lg:px-10 lg:py-8">
-                    <div className="flex items-start justify-between">
-                      <div className="flex flex-col gap-3">
-                        <span className="font-[family-name:var(--font-smooch)] text-[0.72rem] uppercase tracking-[0.42em] text-white/60">
-                          DEPARTMAN EKİPLERİ
-                        </span>
-                        <Separator className="w-28 bg-white/10" />
-                      </div>
-
-                      <span className="font-[family-name:var(--font-smooch)] text-[0.72rem] uppercase tracking-[0.4em] text-white/60">
-                        {String(activeIndex + 1).padStart(2, "0")} / {String(teamMembers.length).padStart(2, "0")}
-                      </span>
+                  <div className="absolute inset-0 flex items-end p-6 md:p-8">
+                    <div className="flex w-full flex-col gap-2">
+                      <p
+                        className="text-[10px] md:text-xs uppercase tracking-[0.35em] text-zinc-400"
+                        style={{ fontFamily: "Smooch Sans, sans-serif" }}
+                      >
+                        {teamFilters.find((filter) => filter.key === member.category)?.title ?? "HEPSİ"}
+                      </p>
+                      <h3
+                        className="text-5xl md:text-6xl font-thin uppercase tracking-widest leading-none text-white"
+                        style={{ fontFamily: "Smooch Sans, sans-serif" }}
+                      >
+                        {member.name}
+                      </h3>
+                      <p
+                        className="mt-2 text-xs md:text-sm font-light uppercase tracking-[0.2em] text-zinc-300"
+                        style={{ fontFamily: "Smooch Sans, sans-serif" }}
+                      >
+                        {member.role}
+                      </p>
                     </div>
-
-                    <Card className="max-w-4xl border border-white/10 bg-black/30 backdrop-blur-xl">
-                      <CardContent className="flex flex-col gap-4 p-5 sm:p-6 lg:p-8">
-                        <div className="flex flex-col gap-2">
-                          <span className="font-[family-name:var(--font-smooch)] text-[clamp(2.2rem,5vw,4.4rem)] font-normal leading-[0.92] tracking-[0.08em] text-white">
-                            {member.name}
-                          </span>
-                          <p className="font-[family-name:var(--font-smooch)] text-[0.92rem] font-light uppercase tracking-[0.32em] text-white/78">
-                            {member.role}
-                          </p>
-                        </div>
-
-                        {member.bio ? (
-                          <>
-                            <Separator className="bg-white/10" />
-                            <p className="max-w-3xl font-[family-name:var(--font-smooch)] text-[0.95rem] font-light leading-[1.4] tracking-[0.04em] text-white/82">
-                              {member.bio}
-                            </p>
-                          </>
-                        ) : null}
-
-                        <div className="mt-2 flex items-center justify-between gap-4">
-                          <div className="flex flex-wrap items-center gap-3">
-                            {member.socials?.linkedin ? (
-                              <a
-                                href={member.socials.linkedin}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="font-[family-name:var(--font-smooch)] text-[0.72rem] uppercase tracking-[0.28em] text-white/70 transition hover:text-white"
-                              >
-                                LinkedIn
-                              </a>
-                            ) : null}
-                            {member.socials?.instagram ? (
-                              <a
-                                href={member.socials.instagram}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="font-[family-name:var(--font-smooch)] text-[0.72rem] uppercase tracking-[0.28em] text-white/70 transition hover:text-white"
-                              >
-                                Instagram
-                              </a>
-                            ) : null}
-                          </div>
-                        </div>
-                      </CardContent>
-                    </Card>
                   </div>
-                </motion.div>
-              </CarouselItem>
+                </div>
+              </motion.article>
             ))}
-          </CarouselContent>
-        </Carousel>
+          </div>
+        </div>
       </section>
     </main>
   );
