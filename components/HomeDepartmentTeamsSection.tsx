@@ -107,18 +107,16 @@ export default function HomeDepartmentTeamsSection({ className }: { className?: 
       id="departman-ekipleri"
       className={cn("team-section snap-section relative w-full min-h-screen py-20 overflow-hidden bg-zinc-950 text-white", className)}
     >
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 px-6 md:px-16 mb-12 md:mb-16 max-w-[1600px] mx-auto w-full">
-        <div className="flex flex-col gap-2">
-          <p
-            className="text-4xl md:text-5xl lg:text-6xl font-thin text-black uppercase tracking-[0.2em]"
-            style={{ fontFamily: "Smooch Sans, sans-serif" }}
-          >
-            DEPARTMAN EKİPLERİ
-          </p>
-        </div>
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 px-6 md:px-16 mb-12 md:mb-16 max-w-[1600px] mx-auto w-full z-10 relative">
+        <h2
+          className="text-4xl md:text-5xl lg:text-6xl font-thin text-white uppercase tracking-[0.2em]"
+          style={{ fontFamily: "Smooch Sans, sans-serif" }}
+        >
+          DEPARTMAN EKİPLERİ
+        </h2>
 
         <Button
-          className="bg-white text-black hover:bg-zinc-200 rounded-full px-6 py-4 md:px-8 md:py-6 text-xl md:text-2xl tracking-widest transition-all"
+          className="bg-white text-black hover:bg-zinc-200 rounded-full px-8 py-6 text-xl tracking-widest transition-all uppercase"
           style={{ fontFamily: "Smooch Sans, sans-serif" }}
         >
           TÜM EKİPLERİ GÖR
