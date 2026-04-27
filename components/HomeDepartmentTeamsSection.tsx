@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import Link from "next/link";
 import { motion } from "framer-motion";
 import Lenis from "lenis";
 import Autoplay from "embla-carousel-autoplay";
@@ -118,10 +119,11 @@ export default function HomeDepartmentTeamsSection({ className }: { className?: 
         </h2>
 
         <Button
+          asChild
           className="bg-white text-black hover:bg-zinc-200 rounded-full px-8 py-6 text-xl tracking-widest transition-all uppercase"
           style={{ fontFamily: "Smooch Sans, sans-serif" }}
         >
-          TÜM EKİPLERİ GÖR
+          <Link href="/departman-ekipleri">TÜM EKİPLERİ GÖR</Link>
         </Button>
       </div>
 
