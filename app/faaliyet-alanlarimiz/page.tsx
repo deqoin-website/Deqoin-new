@@ -46,10 +46,10 @@ export default function FaaliyetAlanlarimiz() {
             {serviceCards.map((item) => (
               <CarouselItem
                 key={item.title}
-                className="pl-4 md:basis-1/2 lg:basis-1/3"
+                className="pl-4 md:pl-6 basis-[85%] sm:basis-[70%] md:basis-1/2 lg:basis-1/3"
               >
                 <Link href={item.href} className="block">
-                  <div className="relative w-full h-[50vh] md:h-[60vh] lg:h-[65vh] rounded-2xl overflow-hidden group cursor-pointer">
+                  <div className="relative w-full h-[60vh] md:h-[70vh] lg:h-[75vh] max-h-[800px] rounded-2xl overflow-hidden group cursor-pointer">
                     <img
                       src={item.image}
                       className="w-full h-full object-cover object-center transition-transform duration-1000 group-hover:scale-105"
