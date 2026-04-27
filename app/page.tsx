@@ -163,56 +163,7 @@ export default function Page() {
         </section>
 
 
-        <section className="about-section snap-section homepage-section-v2" id="about-us">
-          <div className="section-header-area">
-            <div>
-              <h2 style={{ 
-                fontFamily: "var(--font-smooch), sans-serif", 
-                fontSize: "clamp(2.2rem, 6vw, 4.5rem)", 
-                fontWeight: 100, 
-                letterSpacing: "0.12em",
-                color: "#fff",
-                lineHeight: "1.1"
-              }}>Geleneklerin ötesinde.</h2>
-              <div className="section-line" />
-            </div>
-          </div>
-          
-          <div className="section-content-area">
-            <div className="section-inner about-grid homepage-about-grid" style={{ padding: 0 }}>
-              <div className="about-copy">
-                <div className="about-text">
-                  <div className="about-label-row">
-                    <span className="vertical-text">Atölye Felsefesi</span>
-                    <p style={{ color: "#fff" }}>
-                      Mimarlığın yaşayan bir varlık olduğu ilkesiyle kurulan DEQOIN, yapı
-                      mühendisliğinin soğuk hassasiyetini, kişiye özel iç mekanların sıcak ruhuyla
-                      birleştiriyor. Biz sadece ev inşa etmiyoruz; atmosferler kurguluyoruz. Her proje
-                      benzersiz bir monolittir; kimliğin ve zamansızlığın tekil, uyumlu bir ifadesidir.
-                    </p>
-                  </div>
-                  <div className="homepage-copy-cta">
-                    <Link href="/faaliyet-alanlarimiz" className="premium-all-btn">
-                      <span className="premium-btn-text">Design & Collection</span>
-                      <span className="material-symbols-outlined premium-btn-icon">east</span>
-                    </Link>
-                  </div>
-                </div>
-              </div>
-
-              <div className="about-visual">
-                <div className="about-frame">
-                  <div className="about-image-wrap">
-                    <img
-                      src="https://zzawgisa3efgdxnm.public.blob.vercel-storage.com/hakkimizda-home.png"
-                      alt="Atmospheric architectural interior DEQOIN philosophy masterpiece"
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
+        <section className="w-full min-h-screen bg-zinc-950"></section>
 
         <HomeDepartmentTeamsSection className="homepage-team-section" />
 
