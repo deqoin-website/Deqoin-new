@@ -48,6 +48,7 @@ export default function JournalPage() {
   const [selectedContentTypes, setSelectedContentTypes] = useState<string[]>([]);
   const [selectedArticleSlug, setSelectedArticleSlug] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
+  const [isMobileFiltersOpen, setIsMobileFiltersOpen] = useState(false);
 
   const visibleArticles = useMemo(() => {
     const query = searchTerm.trim().toLowerCase();
@@ -100,6 +101,17 @@ export default function JournalPage() {
     }
   }, [currentPage, totalPages]);
 
+  useEffect(() => {
+    if (!isMobileFiltersOpen) return;
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [isMobileFiltersOpen]);
+
   return (
     <main className="min-h-screen w-full bg-[#080808] pb-24 text-white">
       <section className="mx-auto w-full max-w-[1700px] px-6 pt-28 md:px-10 lg:px-16">
@@ -121,9 +133,149 @@ export default function JournalPage() {
           </p>
         </header>
 
+        <div className="lg:hidden mb-8">
+          <button
+            type="button"
+            className="mobile-filter-toggle w-full"
+            onClick={() => setIsMobileFiltersOpen(true)}
+          >
+            <span className="material-symbols-outlined">tune</span>
+            KATEGORİLER
+            {(selectedDepartments.length > 0 || selectedProjectTypes.length > 0 || selectedContentTypes.length > 0) && (
+              <span className="active-dot" />
+            )}
+          </button>
+        </div>
+
+        <div
+          className={`studio-mobile-drawer-overlay ${isMobileFiltersOpen ? "active" : ""}`}
+          onClick={() => setIsMobileFiltersOpen(false)}
+        />
+
+        <div className={`studio-mobile-drawer ${isMobileFiltersOpen ? "active" : ""} lg:hidden`}>
+          <div className="drawer-header">
+            <h3>KATEGORİLER</h3>
+            <button className="drawer-close" type="button" onClick={() => setIsMobileFiltersOpen(false)}>
+              <span className="material-symbols-outlined">close</span>
+            </button>
+          </div>
+
+          <div className="drawer-content">
+            <div className="px-4 mb-8">
+              <SidebarInput
+                className="bg-zinc-900/50 border-zinc-800 text-white rounded-none focus-visible:ring-1 focus-visible:ring-zinc-700 h-12 text-xs font-light tracking-widest placeholder:text-zinc-600"
+                placeholder="MAKALE ARA..."
+                value={searchTerm}
+                onChange={(event) => {
+                  setSearchTerm(event.target.value);
+                  setCurrentPage(1);
+                }}
+              />
+            </div>
+
+            <div className="px-4 flex flex-col gap-8 pb-8">
+              <SidebarGroup>
+                <SidebarGroupLabel className="text-[10px] md:text-xs tracking-[0.4em] text-zinc-500 uppercase font-light mb-4 px-4 bg-transparent">
+                  DEPARTMANLAR
+                </SidebarGroupLabel>
+                <SidebarMenu>
+                  {JOURNAL_DEPARTMENTS.map((item) => {
+                    const isActive = selectedDepartments.includes(item.value);
+
+                    return (
+                      <SidebarMenuItem key={item.value}>
+                        <SidebarMenuButton
+                          asChild
+                          isActive={isActive}
+                          className="rounded-none hover:bg-zinc-900/60 hover:text-white text-zinc-400 transition-colors h-10 px-4"
+                        >
+                          <button
+                            type="button"
+                            className="w-full text-left text-xs tracking-[0.3em] font-light uppercase"
+                            onClick={() => {
+                              setCurrentPage(1);
+                              setSelectedDepartments((current) => toggleValue(current, item.value));
+                            }}
+                          >
+                            {item.label}
+                          </button>
+                        </SidebarMenuButton>
+                      </SidebarMenuItem>
+                    );
+                  })}
+                </SidebarMenu>
+              </SidebarGroup>
+
+              <SidebarGroup>
+                <SidebarGroupLabel className="text-[10px] md:text-xs tracking-[0.4em] text-zinc-500 uppercase font-light mb-4 px-4 bg-transparent">
+                  PROJE TÜRLERİ
+                </SidebarGroupLabel>
+                <SidebarMenu>
+                  {JOURNAL_PROJECT_TYPES.map((item) => {
+                    const isActive = selectedProjectTypes.includes(item.value);
+
+                    return (
+                      <SidebarMenuItem key={item.value}>
+                        <SidebarMenuButton
+                          asChild
+                          isActive={isActive}
+                          className="rounded-none hover:bg-zinc-900/60 hover:text-white text-zinc-400 transition-colors h-10 px-4"
+                        >
+                          <button
+                            type="button"
+                            className="w-full text-left text-xs tracking-[0.3em] font-light uppercase"
+                            onClick={() => {
+                              setCurrentPage(1);
+                              setSelectedProjectTypes((current) => toggleValue(current, item.value));
+                            }}
+                          >
+                            {item.label}
+                          </button>
+                        </SidebarMenuButton>
+                      </SidebarMenuItem>
+                    );
+                  })}
+                </SidebarMenu>
+              </SidebarGroup>
+
+              <SidebarGroup>
+                <SidebarGroupLabel className="text-[10px] md:text-xs tracking-[0.4em] text-zinc-500 uppercase font-light mb-4 px-4 bg-transparent">
+                  İÇERİK TÜRÜ
+                </SidebarGroupLabel>
+                <SidebarMenu>
+                  {JOURNAL_CONTENT_TYPES.map((item) => {
+                    const isActive = selectedContentTypes.includes(item.value);
+
+                    return (
+                      <SidebarMenuItem key={item.value}>
+                        <SidebarMenuButton
+                          asChild
+                          isActive={isActive}
+                          className="rounded-none hover:bg-zinc-900/60 hover:text-white text-zinc-400 transition-colors h-10 px-4"
+                        >
+                          <button
+                            type="button"
+                            className="w-full text-left text-xs tracking-[0.3em] font-light uppercase"
+                            onClick={() => {
+                              setCurrentPage(1);
+                              setSelectedContentTypes((current) => toggleValue(current, item.value));
+                            }}
+                          >
+                            {item.label}
+                          </button>
+                        </SidebarMenuButton>
+                      </SidebarMenuItem>
+                    );
+                  })}
+                </SidebarMenu>
+              </SidebarGroup>
+            </div>
+          </div>
+        </div>
+
         <SidebarProvider defaultOpen>
           <div className="grid grid-cols-1 gap-12 w-full lg:grid-cols-[300px_minmax(0,1fr)]">
-            <Sidebar collapsible="none" className="w-full border-none bg-transparent shadow-none">
+            <Sidebar collapsible="none" className="hidden w-full border-none bg-transparent shadow-none lg:block">
               <SidebarContent className="sticky top-28 flex flex-col gap-10 bg-transparent">
                 <div className="px-4 mb-8">
                   <SidebarInput
