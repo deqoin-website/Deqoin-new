@@ -84,7 +84,6 @@ export default function KesifPage() {
               image={stage.image}
               title={stage.title.toUpperCase()}
               sideLabel={stage.sideLabel}
-              description={stage.detail}
               overlay={30}
             />
           ))}
