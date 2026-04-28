@@ -47,22 +47,6 @@ export default function StudioVerticalCard({
         </div>
       </div>
 
-      <div className="absolute top-0 right-0 h-full w-10 md:w-12 2xl:w-16 bg-zinc-800/90 border-l border-zinc-700/30 z-30 flex flex-col items-center justify-between py-10 md:py-16">
-        <button
-          type="button"
-          aria-label="Kapat"
-          className="absolute top-4 right-4 text-zinc-500 hover:text-white transition-colors z-40"
-        >
-          <span className="material-symbols-outlined text-[18px] leading-none">close</span>
-        </button>
-
-        <p
-          className="text-[11px] md:text-sm 2xl:text-base tracking-[0.85em] leading-none text-red-500 font-light uppercase [writing-mode:vertical-rl] rotate-180 whitespace-nowrap"
-          style={{ fontFamily: "Smooch Sans, sans-serif" }}
-        >
-          {sideLabel}
-        </p>
-      </div>
     </>
   );
 
