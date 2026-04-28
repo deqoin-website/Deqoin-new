@@ -57,7 +57,7 @@ export default function StudioVerticalCard({
         </button>
 
         <p
-          className="text-[10px] md:text-xs 2xl:text-sm tracking-[0.5em] text-white font-light uppercase [writing-mode:vertical-rl] rotate-180 whitespace-nowrap"
+          className="text-[10px] md:text-xs 2xl:text-sm tracking-[0.5em] text-red-500 font-light uppercase [writing-mode:vertical-rl] rotate-180 whitespace-nowrap"
           style={{ fontFamily: "Smooch Sans, sans-serif" }}
         >
           {sideLabel}
