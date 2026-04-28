@@ -7,6 +7,7 @@ import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import StudioBackButton from "./StudioBackButton";
 import ProjectInsightPanel from "./ProjectInsightPanel";
+import ProjectCard from "./ProjectCard";
 import HeroSlider from "./HeroSlider";
 import WorkflowSection, { type WorkflowStep } from "./WorkflowSection";
 import { CalendarDays, Compass, Hammer, Layers, PenTool } from "lucide-react";
@@ -407,11 +408,11 @@ export default function DepartmentStudio({
         <div className="studio-gallery studio-gallery-sensory">
           {filteredProjects.length > 0 ? (
             filteredProjects.map((project) => (
-              <div
+              <ProjectCard
                 key={project.slug}
-                className="project-card-interactive project-card-interactive-sensory studio-snap-point"
-                role="button"
-                tabIndex={0}
+                image={project.coverImage}
+                title={project.title}
+                category={project.label}
                 onClick={() => setActiveProjectSlug(project.slug)}
                 onKeyDown={(event) => {
                   if (event.key === "Enter" || event.key === " ") {
@@ -419,36 +420,7 @@ export default function DepartmentStudio({
                     setActiveProjectSlug(project.slug);
                   }
                 }}
-              >
-                <div className="project-card-img">
-                  <img src={project.coverImage} alt={project.title} />
-                  <div className="project-card-badge">{project.label}</div>
-                </div>
-                
-                <div className="project-card-info">
-                  <h3>{project.title}</h3>
-                  <div className="project-meta-row">
-                    <div className="meta-item"><label>MÜŞTERİ</label><span>{project.client}</span></div>
-                    <div className="meta-item"><label>YIL</label><span>{project.year}</span></div>
-                    <div className="meta-item"><label>ALAN</label><span>{project.area}</span></div>
-                  </div>
-                  <div className="project-story-section">
-                    <div className="story-block"><h5>MİMARİ VİZYON</h5><p>{project.vision}</p></div>
-                    <div className="story-block"><h5>TEKNİK DETAYLAR</h5><p>{project.techDetails}</p></div>
-                  </div>
-                  <div className="project-card-footer">
-                    <button
-                      className="project-action-btn"
-                      onClick={(event) => {
-                        event.stopPropagation();
-                        setIsConsultationOpen(true);
-                      }}
-                    >
-                      SÜRECİ BAŞLAT <span className="material-symbols-outlined">arrow_right_alt</span>
-                    </button>
-                  </div>
-                </div>
-              </div>
+              />
             ))
           ) : (
             <div className="no-projects">Aramanızla eşleşen proje bulunamadı.</div>

@@ -1,12 +1,12 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import Link from "next/link";
 import ConsultationModal from "../../components/ConsultationModal";
 import { Loader2 } from "lucide-react";
 import HeroSlider from "../../components/HeroSlider";
 import WorkflowSection from "../../components/WorkflowSection";
 import NextStepCarouselSection from "../../components/NextStepCarouselSection";
+import ProjectCard from "../../components/ProjectCard";
 import { materyalKategorileri } from "../../data/materyal-studyo";
 
 const materialCategories = materyalKategorileri;
@@ -93,25 +93,13 @@ export default function MateryalStudyo() {
 
           <div className="services-grid material-studio-grid materyal-studyo-grid">
             {categoryItems.map((card: any) => (
-              <Link
+              <ProjectCard
                 key={card.slug}
                 href={`/materyal-studyo/${card.slug}`}
-                className="service-card"
-              >
-                <img src={card.image} alt={card.title} />
-                <div className="service-overlay" />
-                <div className="service-copy">
-                  <div>
-                    <h3>{card.title}</h3>
-                    <div className="service-line" />
-                    <div className="service-cta">
-                      <span>DETAYLARI GÖR</span>
-                      <span className="material-symbols-outlined">arrow_forward</span>
-                    </div>
-                  </div>
-                  <span className="vertical-text">{card.sideLabel}</span>
-                </div>
-              </Link>
+                image={card.image}
+                title={card.title}
+                category={card.sideLabel}
+              />
             ))}
           </div>
         </div>

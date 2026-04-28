@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import ProjectCard from "@/components/ProjectCard";
 import { cn } from "@/lib/utils";
 
 const categories = [
@@ -148,32 +149,13 @@ export default function GaleriPage() {
             {visibleProjects.length > 0 ? (
               <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 mt-12">
                 {visibleProjects.map((project, index) => (
-                  <div
+                  <ProjectCard
                     key={project.id}
-                    className="relative w-full aspect-[4/3] md:aspect-[3/4] lg:aspect-square rounded-xl overflow-hidden group cursor-pointer"
-                    style={{ fontFamily: "Smooch Sans, sans-serif" }}
-                  >
-                    <img
-                      src={project.image}
-                      className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
-                      alt="Proje"
-                      loading={index < 2 ? "eager" : "lazy"}
-                    />
-
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent opacity-80 group-hover:opacity-100 transition-opacity duration-500" />
-
-                    <div className="absolute bottom-0 left-0 w-full p-6 md:p-8 flex flex-col gap-2 translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
-                      <p className="text-[10px] md:text-xs tracking-[0.3em] text-zinc-400 uppercase">
-                        {categories.find((category) => category.key === project.category)?.title ?? "İÇ MİMARİ"}
-                      </p>
-                      <h3
-                        className="text-4xl md:text-5xl font-thin text-white uppercase tracking-widest leading-none"
-                        style={{ fontFamily: "Smooch Sans, sans-serif" }}
-                      >
-                        {project.title}
-                      </h3>
-                    </div>
-                  </div>
+                    image={project.image}
+                    title={project.title}
+                    category={categories.find((category) => category.key === project.category)?.title ?? "İÇ MİMARİ"}
+                    loading={index < 2 ? "eager" : "lazy"}
+                  />
                 ))}
               </div>
             ) : (
