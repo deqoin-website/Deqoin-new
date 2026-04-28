@@ -34,9 +34,9 @@ export default function StudioVerticalCard({
         style={{ opacity: overlay / 100 }}
       />
 
-      <div className="absolute bottom-8 md:bottom-12 left-8 md:left-12 flex flex-col gap-3 md:gap-4 z-20 max-w-[calc(100%-5rem)] md:max-w-[calc(100%-7rem)] pr-4">
+      <div className="absolute bottom-8 md:bottom-12 left-6 md:left-10 flex flex-col gap-3 md:gap-4 z-20 max-w-[calc(100%-5rem)] md:max-w-[calc(100%-7rem)] pr-4">
         <h3
-          className="text-3xl md:text-4xl lg:text-5xl xl:text-6xl 2xl:text-[6rem] font-thin text-white uppercase tracking-widest leading-none drop-shadow-lg"
+          className="text-[calc(3rem-1px)] md:text-[calc(4rem-1px)] lg:text-[calc(5rem-1px)] xl:text-[calc(6rem-1px)] 2xl:text-[calc(6rem-1px)] font-thin text-white uppercase tracking-widest leading-none drop-shadow-lg"
           style={{ fontFamily: "Smooch Sans, sans-serif", fontWeight: 100 }}
         >
           {title}
@@ -57,7 +57,7 @@ export default function StudioVerticalCard({
         </button>
 
         <p
-          className="text-[10px] md:text-xs 2xl:text-sm tracking-[0.5em] text-red-500 font-light uppercase [writing-mode:vertical-rl] rotate-180 whitespace-nowrap"
+          className="text-[11px] md:text-sm 2xl:text-base tracking-[0.85em] leading-none text-red-500 font-light uppercase [writing-mode:vertical-rl] rotate-180 whitespace-nowrap"
           style={{ fontFamily: "Smooch Sans, sans-serif" }}
         >
           {sideLabel}
