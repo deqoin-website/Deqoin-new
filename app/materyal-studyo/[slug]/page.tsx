@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import { materyalKategorileri } from "../../../data/materyal-studyo";
 import { projectsData } from "../../../data/projects";
 import DepartmentStudio from "../../../components/DepartmentStudio";
+import NextStepCarouselSection from "../../../components/NextStepCarouselSection";
 import Footer from "../../../components/Footer";
 import { Loader2 } from "lucide-react";
 
@@ -71,6 +72,7 @@ export default function MaterialDetail({ params }: { params: Promise<ServicePara
           products={products}
           workflowType="material"
         />
+        <NextStepCarouselSection currentStudio="materyal-studyo" />
       </main>
       <Footer />
     </>

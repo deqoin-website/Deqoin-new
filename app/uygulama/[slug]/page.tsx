@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import { uygulamaBirimleri } from "../../../data/uygulama-birimleri";
 import { projectsData } from "../../../data/projects";
 import DepartmentStudio from "../../../components/DepartmentStudio";
+import NextStepCarouselSection from "../../../components/NextStepCarouselSection";
 import Footer from "../../../components/Footer";
 import { Loader2 } from "lucide-react";
 
@@ -71,6 +72,7 @@ export default function ExecutionDetail({ params }: { params: Promise<ServicePar
           products={products}
           workflowType="execution"
         />
+        <NextStepCarouselSection currentStudio="uygulama" />
       </main>
       <Footer />
     </>

@@ -4,9 +4,9 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import ConsultationModal from "../../components/ConsultationModal";
 import { Loader2 } from "lucide-react";
-import SwipeAppointmentButton from "../../components/SwipeAppointmentButton";
 import HeroSlider from "../../components/HeroSlider";
 import WorkflowSection from "../../components/WorkflowSection";
+import NextStepCarouselSection from "../../components/NextStepCarouselSection";
 import { materyalKategorileri } from "../../data/materyal-studyo";
 
 const materialCategories = materyalKategorileri;
@@ -57,9 +57,6 @@ export default function MateryalStudyo() {
   const heroSection = content?.sections?.find((s: any) => s.id === "hero");
   const heroBlur = 2;
   const heroOverlay = 30;
-  const ctaSection = content?.sections?.find((s: any) => s.id === "cta");
-  const ctaBlur = 2;
-  const ctaOverlay = 30;
   const categoryItems = (content?.sections?.find((s: any) => s.id === "categories")?.items?.length > 0
     ? content.sections.find((s: any) => s.id === "categories").items
     : materialCategories
@@ -92,7 +89,6 @@ export default function MateryalStudyo() {
               <h2 style={{ marginBottom: "0.5rem", textTransform: "uppercase", color: "#fff" }}>MATERIAL COLLECTION</h2>
               <div className="section-line" />
             </div>
-
           </div>
 
           <div className="services-grid material-studio-grid materyal-studyo-grid">
@@ -121,24 +117,7 @@ export default function MateryalStudyo() {
         </div>
       </section>
 
-      <section className="mimari-cta-banner">
-        <div className="mimari-cta-bg">
-          <img
-            src={ctaSection?.image || materialCategories[0]?.image || "https://images.unsplash.com/photo-1540932239986-30128078f3c5?q=80&w=2048&auto=format&fit=crop"}
-            alt="CTA"
-            style={{ filter: `blur(${ctaBlur}px)` }}
-          />
-        </div>
-        <div className="mimari-cta-overlay" style={{ background: `rgba(0,0,0,${ctaOverlay / 100})` }} />
-        <div className="mimari-cta-content">
-          <span className="section-small-label" style={{ color: "#cca883" }}>BİR SONRAKİ ADIM</span>
-          <h2 className="mimari-cta-title">Materyal Seçimini Projeye Dönüştürelim</h2>
-          <p className="mimari-cta-sub">
-            Seçtiğiniz kategori için en doğru teknik ve estetik kombinasyonu birlikte planlayalım.
-          </p>
-          <SwipeAppointmentButton onActivate={() => setIsConsultationOpen(true)} />
-        </div>
-      </section>
+      <NextStepCarouselSection currentStudio="materyal-studyo" />
 
       <ConsultationModal
         isOpen={isConsultationOpen}

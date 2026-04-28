@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import { mimariServices } from "../../../data/mimari-hizmetler";
 import { projectsData } from "../../../data/projects";
 import DepartmentStudio from "../../../components/DepartmentStudio";
+import NextStepCarouselSection from "../../../components/NextStepCarouselSection";
 import Footer from "../../../components/Footer";
 import { Loader2 } from "lucide-react";
 
@@ -75,6 +76,7 @@ export default function MimariDetail({ params }: { params: Promise<ServiceParams
           products={products}
           workflowType="design"
         />
+        <NextStepCarouselSection currentStudio="mimari" />
       </main>
       <Footer />
     </>

@@ -3,10 +3,10 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import ConsultationModal from "../../components/ConsultationModal";
-import SwipeAppointmentButton from "../../components/SwipeAppointmentButton";
 import HeroSlider from "../../components/HeroSlider";
 import Footer from "../../components/Footer";
 import WorkflowSection from "../../components/WorkflowSection";
+import NextStepCarouselSection from "../../components/NextStepCarouselSection";
 
 const heroSlides = [
   "/images/slider/mimari_slide.png",
@@ -109,12 +109,6 @@ export default function MimariPage() {
   const [contentVersion, setContentVersion] = useState<string>("");
   const [pageInfo, setPageInfo] = useState({ title: 'DESIGN STUDIO', subtitle: 'MİMARİ TASARIMIN GELECEĞİNİ ŞEKİLLENDİRİYORUZ' });
   const [heroVisual, setHeroVisual] = useState({ blur: 2, overlay: 30 });
-  const [ctaSection, setCtaSection] = useState({
-    image: '/images/slider/mimari_slide.png',
-    blur: 2,
-    overlay: 30,
-  });
-
   useEffect(() => {
     const fetchContent = async () => {
       try {
@@ -140,14 +134,6 @@ export default function MimariPage() {
               ...item,
               image: resolveCategoryImage(item),
             })));
-          }
-          const cta = data.sections.find((s: any) => s.id === 'cta');
-          if (cta) {
-            setCtaSection({
-              image: cta.image || '/images/slider/mimari_slide.png',
-              blur: 2,
-              overlay: cta.overlay ?? 30,
-            });
           }
         }
       } catch (err) {
@@ -210,47 +196,7 @@ export default function MimariPage() {
       </section>
 
       {/* CTA BANNER */}
-      <section className="mimari-cta-banner snap-section gallery-snap-point">
-        <div className="mimari-cta-bg">
-          <img src={withVersion(ctaSection.image, contentVersion)} alt="CTA" style={{ filter: `blur(${ctaSection.blur ?? 0}px)` }} />
-        </div>
-        <div className="mimari-cta-overlay" style={{ background: `rgba(0,0,0,${(ctaSection.overlay ?? 30) / 100})` }} />
-        <div className="mimari-cta-content mimari-cta-content-split">
-          <div className="mimari-cta-copy">
-            <span className="section-small-label" style={{ color: "#cca883" }}>BİR SONRAKI ADIM</span>
-            <h2 className="mimari-cta-title">
-              <span style={{ display: "block" }}>Mimari Vizyonunuzu</span>
-              <span style={{ display: "block", color: "#cca883" }}>Projeye Dönüştürelim</span>
-            </h2>
-            <p className="mimari-cta-sub">
-              Seçtiğiniz mimari fikri birlikte teknik, estetik ve uygulanabilir bir projeye çevirelim.
-            </p>
-            <div className="mimari-cta-badges">
-              <span>Konsept analizi</span>
-              <span>Teknik planlama</span>
-              <span>Uygulama hazırlığı</span>
-            </div>
-            <SwipeAppointmentButton onActivate={() => setIsConsultationOpen(true)} />
-          </div>
-
-          <div className="mimari-cta-panel">
-            <span className="section-small-label" style={{ color: "#cca883", marginBottom: "1rem", display: "block" }}>SÜREÇ</span>
-            {[
-              { value: "01", label: "Konsept analizi", desc: "İhtiyaç ve estetik hedefleri netleştiririz." },
-              { value: "02", label: "Teknik planlama", desc: "Ölçü, malzeme ve uygulama senaryosunu kurarız." },
-              { value: "03", label: "Uygulama hazırlığı", desc: "Sahaya inmeden önce tüm kararları sabitleriz." },
-            ].map((item) => (
-              <div key={item.value} className="mimari-cta-step">
-                <div className="mimari-cta-step-index">{item.value}</div>
-                <div className="mimari-cta-step-copy">
-                  <h3>{item.label}</h3>
-                  <p>{item.desc}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+      <NextStepCarouselSection currentStudio="mimari" />
 
       <ConsultationModal 
         isOpen={isConsultationOpen} 
