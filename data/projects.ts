@@ -19,6 +19,10 @@ export type ProjectDetail = {
   client: string;
   year: string;
   area: string;
+  studio?: string;
+  leadArchitects?: string;
+  sustainability?: string;
+  location?: string;
   description: string;
   vision: string;      // The "tok" architectural vision
   techDetails: string; // Engineering and material specs
