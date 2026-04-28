@@ -132,7 +132,7 @@ export default function ProjectFilterSidebar(props: ProjectFilterSidebarProps) {
                       )}
                     >
                       <span
-                        className="text-[0.84rem] uppercase tracking-[0.42em] md:text-[0.76rem]"
+                        className="text-xs md:text-sm lg:text-base tracking-[0.2em] md:tracking-[0.3em] font-light uppercase"
                         style={{ fontFamily: "Smooch Sans, sans-serif" }}
                       >
                         {option.label}
