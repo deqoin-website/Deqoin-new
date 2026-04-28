@@ -43,7 +43,7 @@ export default function ProjectFilterSidebar({
       </div>
 
       <div className="flex flex-col">
-        <span className="mb-6 block text-xs font-light uppercase tracking-[0.3em] text-zinc-500">
+        <span className="mb-6 block text-xs font-light uppercase tracking-[0.3em] text-red-500">
           {title}
         </span>
         <div className="flex flex-col gap-1">
