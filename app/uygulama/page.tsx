@@ -7,8 +7,7 @@ import { Loader2 } from "lucide-react";
 import SwipeAppointmentButton from "../../components/SwipeAppointmentButton";
 import { uygulamaBirimleri } from "../../data/uygulama-birimleri";
 import HeroSlider from "../../components/HeroSlider";
-import WorkflowMarquee from "../../components/WorkflowMarquee";
-import { useWorkflowContent } from "../../components/useWorkflowContent";
+import WorkflowSection from "../../components/WorkflowSection";
 
 const executionCategories = uygulamaBirimleri.filter((item) =>
   [
@@ -26,7 +25,6 @@ export default function UygulamaPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [isConsultationOpen, setIsConsultationOpen] = useState(false);
   const heroRef = useRef<HTMLDivElement>(null);
-  const { workflow } = useWorkflowContent();
 
   useEffect(() => {
     const fetchContent = async () => {
@@ -86,8 +84,7 @@ export default function UygulamaPage() {
         showScrollHint={true}
       />
 
-      {/* WORKFLOW SECTION */}
-      <WorkflowMarquee steps={workflow.steps} title={workflow.title} className="snap-section" />
+      <WorkflowSection className="snap-section" />
 
       {/* MANİFESTO */}
 

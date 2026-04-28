@@ -6,8 +6,7 @@ import ConsultationModal from "../../components/ConsultationModal";
 import SwipeAppointmentButton from "../../components/SwipeAppointmentButton";
 import HeroSlider from "../../components/HeroSlider";
 import Footer from "../../components/Footer";
-import WorkflowMarquee from "../../components/WorkflowMarquee";
-import { useWorkflowContent } from "../../components/useWorkflowContent";
+import WorkflowSection from "../../components/WorkflowSection";
 
 const heroSlides = [
   "/images/slider/mimari_slide.png",
@@ -115,7 +114,6 @@ export default function MimariPage() {
     blur: 2,
     overlay: 30,
   });
-  const { workflow } = useWorkflowContent();
 
   useEffect(() => {
     const fetchContent = async () => {
@@ -182,8 +180,7 @@ export default function MimariPage() {
         showScrollHint={true}
       />
 
-      {/* WORKFLOW SECTION */}
-      <WorkflowMarquee steps={workflow.steps} title={workflow.title} />
+      <WorkflowSection className="snap-section" />
 
       <section className="services-section snap-section gallery-snap-point" style={{ background: "transparent", paddingTop: "6rem", minHeight: "100svh" }}>
         
