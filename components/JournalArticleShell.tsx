@@ -8,6 +8,7 @@ import { Card } from "@/components/ui/card";
 import type { JournalArticle, JournalSection } from "@/data/journal";
 import { projectsData } from "@/data/projects";
 import { cn } from "@/lib/utils";
+import PageNumberNavigator, { type PageNavItem } from "./PageNumberNavigator";
 
 type JournalArticleShellProps = {
   article: JournalArticle;
@@ -120,6 +121,15 @@ export default function JournalArticleShell({
   onClose,
 }: JournalArticleShellProps) {
   const isDrawer = variant === "drawer";
+  const pageNavItems: PageNavItem[] = [
+    { id: "journal-cover", label: "01", title: "COVER" },
+    ...article.sections.map((_, index) => ({
+      id: `journal-section-${index + 1}`,
+      label: String(index + 2).padStart(2, "0"),
+      title: `SECTION ${index + 1}`,
+    })),
+    { id: "journal-meta", label: String(article.sections.length + 2).padStart(2, "0"), title: "META" },
+  ];
 
   return (
     <article
@@ -187,7 +197,7 @@ export default function JournalArticleShell({
         <div className="min-h-0 flex-1 overflow-y-auto">
           <div className="grid min-h-0 grid-cols-1 lg:grid-cols-[1.1fr_0.9fr]">
             <section className="border-b border-white/10 lg:border-b-0 lg:border-r lg:border-white/10">
-              <div className="group relative aspect-[4/3] overflow-hidden bg-black lg:h-[52svh] lg:aspect-auto">
+              <div id="journal-cover" className="group relative aspect-[4/3] overflow-hidden bg-black lg:h-[52svh] lg:aspect-auto">
                 <img
                   src={article.coverImage}
                   alt={article.title}
@@ -206,12 +216,16 @@ export default function JournalArticleShell({
 
               <div className="border-t border-white/10 px-5 py-6 md:px-8 md:py-8">
                 <div className="grid grid-cols-1 gap-6">
-                  {article.sections.map((section, index) => renderSection(section, index))}
+                  {article.sections.map((section, index) => (
+                    <div key={`journal-section-${index + 1}`} id={`journal-section-${index + 1}`}>
+                      {renderSection(section, index)}
+                    </div>
+                  ))}
                 </div>
               </div>
             </section>
 
-            <aside className="flex min-h-0 flex-col">
+            <aside id="journal-meta" className="flex min-h-0 flex-col">
               <div className="border-b border-white/10 px-5 py-5 md:px-8 md:py-7">
                 <p className="text-[0.62rem] uppercase tracking-[0.5em] text-white/35">
                   DEQOIN JOURNAL
@@ -303,6 +317,8 @@ export default function JournalArticleShell({
               </div>
             </aside>
           </div>
+
+          <PageNumberNavigator items={pageNavItems} className="px-5 pb-8 md:px-8" label="SAYFA" />
         </div>
       </div>
     </article>

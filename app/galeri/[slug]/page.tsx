@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
+import PageNumberNavigator from "@/components/PageNumberNavigator";
 import { projectsData } from "@/data/projects";
 
 type ProjectParams = {
@@ -50,7 +51,7 @@ export default async function ProjectDetail({ params }: { params: Promise<Projec
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-12">
-          <div className="lg:col-span-4">
+          <div id="gallery-hero" className="lg:col-span-4">
             <div className="relative w-full aspect-[4/3] md:aspect-[16/9] overflow-hidden rounded-2xl">
               <img
                 src={project.coverImage}
@@ -76,7 +77,7 @@ export default async function ProjectDetail({ params }: { params: Promise<Projec
             </div>
           </div>
 
-          <aside className="lg:col-span-1 lg:sticky lg:top-32 h-fit">
+          <aside id="gallery-meta" className="lg:col-span-1 lg:sticky lg:top-32 h-fit">
             <div className="flex flex-col gap-6 border border-zinc-900/80 bg-black/20 p-6 md:p-8 rounded-2xl">
               <div>
                 <p
@@ -118,7 +119,7 @@ export default async function ProjectDetail({ params }: { params: Promise<Projec
         </div>
 
         <div className="mt-16 grid grid-cols-1 lg:grid-cols-5 gap-12">
-          <div className="lg:col-span-4 grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div id="gallery-details" className="lg:col-span-4 grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="rounded-2xl border border-zinc-900/80 bg-black/20 p-6 md:p-8">
               <p className="mb-4 text-[10px] tracking-[0.35em] text-zinc-500 uppercase" style={{ fontFamily: "Smooch Sans, sans-serif" }}>
                 ÇALIŞMA BİLGİSİ
@@ -148,7 +149,7 @@ export default async function ProjectDetail({ params }: { params: Promise<Projec
           </div>
         </div>
 
-        <div className="mt-16">
+        <div id="gallery-images" className="mt-16">
           <div className="flex items-end justify-between gap-4 mb-8">
             <h2
               className="text-3xl md:text-5xl font-thin tracking-[0.22em] uppercase text-white"
@@ -181,7 +182,7 @@ export default async function ProjectDetail({ params }: { params: Promise<Projec
           </div>
         </div>
 
-        <div className="mt-16 border-t border-zinc-900/80 pt-8 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <div id="gallery-story" className="mt-16 border-t border-zinc-900/80 pt-8 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <p
             className="text-[10px] md:text-xs tracking-[0.35em] text-zinc-500 uppercase"
             style={{ fontFamily: "Smooch Sans, sans-serif" }}
@@ -195,6 +196,18 @@ export default async function ProjectDetail({ params }: { params: Promise<Projec
             {project.label}
           </p>
         </div>
+
+        <PageNumberNavigator
+          label="SAYFA"
+          items={[
+            { id: "gallery-hero", label: "01", title: "HERO" },
+            { id: "gallery-meta", label: "02", title: "META" },
+            { id: "gallery-details", label: "03", title: "DETAILS" },
+            { id: "gallery-images", label: "04", title: "GALLERY" },
+            { id: "gallery-story", label: "05", title: "STORY" },
+          ]}
+          className="pt-12"
+        />
       </section>
     </main>
   );

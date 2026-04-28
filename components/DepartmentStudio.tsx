@@ -11,6 +11,7 @@ import ProjectCard from "./ProjectCard";
 import ProjectFilterSidebar from "./ProjectFilterSidebar";
 import HeroSlider from "./HeroSlider";
 import WorkflowSection, { type WorkflowStep } from "./WorkflowSection";
+import PageNumberNavigator, { type PageNavItem } from "./PageNumberNavigator";
 import { CalendarDays, Compass, Hammer, Layers, PenTool } from "lucide-react";
 
 interface DepartmentStudioProps {
@@ -198,6 +199,23 @@ export default function DepartmentStudio({
     return products.filter(p => p.category === activeProductCategory);
   }, [products, activeProductCategory]);
 
+  const pageNavItems: PageNavItem[] = useMemo(() => {
+    const items: PageNavItem[] = [
+      { id: "studio-hero", label: "01", title: "HERO" },
+      { id: "studio-workflow", label: "02", title: "WORKFLOW" },
+      { id: "studio-insights", label: "03", title: "CONTENT" },
+    ];
+
+    if (products && products.length > 0) {
+      items.push({ id: "studio-products", label: "04", title: "PRODUCTS" });
+      items.push({ id: "studio-gallery", label: "05", title: "GALLERY" });
+    } else {
+      items.push({ id: "studio-gallery", label: "04", title: "GALLERY" });
+    }
+
+    return items;
+  }, [products]);
+
   useEffect(() => {
     if (!activeProjectSlug) return;
 
@@ -223,27 +241,31 @@ export default function DepartmentStudio({
       <StudioBackButton />
       <div className="studio-page studio-vertical-shell">
 
-      <HeroSlider 
-        slides={heroSlides.map((url, idx) => {
-          const isVideo = (idx === 0 && mediaType === 'video') || url.toLowerCase().match(/\.(mp4|webm|ogg)$/) !== null;
-          return {
-            title: title,
-            motto: subtitle,
-            mediaUrl: url,
-            image: !isVideo ? url : undefined,
-            mediaType: isVideo ? 'video' : 'image',
-            blur: heroBlur,
-            overlay: heroOverlay
-          };
-        })} 
-        onAppointmentClick={() => setIsConsultationOpen(true)}
-      />
+      <section id="studio-hero">
+        <HeroSlider 
+          slides={heroSlides.map((url, idx) => {
+            const isVideo = (idx === 0 && mediaType === 'video') || url.toLowerCase().match(/\.(mp4|webm|ogg)$/) !== null;
+            return {
+              title: title,
+              motto: subtitle,
+              mediaUrl: url,
+              image: !isVideo ? url : undefined,
+              mediaType: isVideo ? 'video' : 'image',
+              blur: heroBlur,
+              overlay: heroOverlay
+            };
+          })} 
+          onAppointmentClick={() => setIsConsultationOpen(true)}
+        />
+      </section>
 
       {/* WORKFLOW SECTION */}
-      <WorkflowSection steps={workflowSteps} className="snap-section" />
+      <section id="studio-workflow">
+        <WorkflowSection steps={workflowSteps} className="snap-section" />
+      </section>
 
       {/* RICH CONTENT SECTION: FOCUS AREAS */}
-      <section className="rich-service-content studio-snap-point">
+      <section id="studio-insights" className="rich-service-content studio-snap-point">
         <div className="rich-content-inner">
 
           {focusAreas && focusAreas.length > 0 && (
@@ -266,7 +288,7 @@ export default function DepartmentStudio({
 
       {/* PRODUCTS SECTION */}
       {products && products.length > 0 && (
-        <section className="studio-products-section">
+        <section id="studio-products" className="studio-products-section">
           <div className="products-inner">
             <div className="products-header">
               <span className="section-small-label">ÜRÜN KOLEKSİYONU</span>
@@ -373,7 +395,7 @@ export default function DepartmentStudio({
         )}
       </AnimatePresence>
 
-      <div className="studio-main">
+      <div id="studio-gallery" className="studio-main">
         <ProjectFilterSidebar
           activeCategory={activeCategory}
           categories={displayCategories.map((cat) => ({ label: cat.label, value: String(cat.value) }))}
@@ -407,6 +429,8 @@ export default function DepartmentStudio({
           )}
         </div>
       </div>
+
+      <PageNumberNavigator items={pageNavItems} className="pb-12" />
 
       <ConsultationModal 
         isOpen={isConsultationOpen} 
