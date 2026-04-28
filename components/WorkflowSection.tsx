@@ -53,8 +53,8 @@ function WorkflowStepCard({ step }: { step: WorkflowStep }) {
     <Card className="group relative h-full overflow-hidden rounded-xl border border-zinc-800 bg-[#1A1A1A] shadow-[0_14px_36px_rgba(0,0,0,0.28)] transition-all duration-500 ease-out hover:-translate-y-1 hover:border-zinc-700 hover:shadow-[0_18px_46px_rgba(0,0,0,0.4)]">
       <CardHeader className="relative flex h-full flex-col gap-5 p-6 md:p-8">
         <div className="flex items-start justify-between gap-4">
-          <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full border border-zinc-700 bg-zinc-900 text-zinc-100">
-            <span className="font-[family-name:var(--font-smooch)] text-[1.35rem] font-normal leading-none tracking-[0.08em]">
+          <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full border border-zinc-700 bg-zinc-900 text-red-500">
+            <span className="font-[family-name:var(--font-smooch)] text-[1.35rem] font-normal leading-none tracking-[0.08em] text-red-500">
               {step.id}
             </span>
           </div>
@@ -83,7 +83,7 @@ function WorkflowMobileStep({ step }: { step: WorkflowStep }) {
     <div className="relative pl-10 sm:pl-12">
       <div className="absolute left-2.5 top-0 bottom-0 w-px bg-zinc-700 sm:left-3.5" />
       <div className="absolute left-2.5 top-7 z-10 flex h-4 w-4 -translate-x-1/2 items-center justify-center rounded-full border border-zinc-700 bg-zinc-950 sm:left-3.5">
-        <div className="h-1.5 w-1.5 rounded-full bg-zinc-200" />
+        <div className="h-1.5 w-1.5 rounded-full bg-red-500" />
       </div>
 
       <div className="w-full min-w-0">
@@ -107,7 +107,7 @@ function WorkflowDesktopStep({
       <div
         className={`absolute left-1/2 z-20 flex h-4 w-4 -translate-x-1/2 items-center justify-center rounded-full border border-zinc-500 bg-zinc-950 lg:top-1/2 lg:-translate-y-1/2`}
       >
-        <div className="h-1.5 w-1.5 rounded-full bg-zinc-200" />
+        <div className="h-1.5 w-1.5 rounded-full bg-red-500" />
       </div>
 
       <div
