@@ -71,16 +71,16 @@ export default function NextStepCarouselSection({
       <div className="mx-auto w-full max-w-[1600px] px-6 md:px-16 py-20 md:py-28">
         <div className="mb-10 md:mb-14">
           <p
-            className="text-[0.7rem] md:text-[0.8rem] tracking-[0.5em] uppercase text-[#cca883] mb-3"
+            className="text-xs md:text-sm tracking-[0.4em] text-zinc-400 uppercase text-center mt-4"
             style={{ fontFamily: "Smooch Sans, sans-serif" }}
           >
-            {subtitle}
+            VİZYONUNUZU TAMAMLAYIN
           </p>
           <h2
-            className="text-5xl md:text-7xl lg:text-8xl font-thin uppercase leading-none tracking-[0.12em] text-white"
-            style={{ fontFamily: "Smooch Sans, sans-serif", fontWeight: 100 }}
+            className="text-5xl md:text-7xl lg:text-8xl font-thin text-white uppercase tracking-[0.2em] text-center leading-none"
+            style={{ fontFamily: "Smooch Sans, sans-serif" }}
           >
-            {title}
+            TASARIM YOLCULUĞU
           </h2>
         </div>
 
