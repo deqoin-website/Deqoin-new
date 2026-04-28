@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { projectsData } from "../data/projects";
 import { teamMembers } from "../data/team";
+import { journalArticles } from "../data/journal";
 import ConsultationModal from "./ConsultationModal";
 // ThemeToggle removed from public site
 
@@ -20,6 +21,8 @@ export default function Header() {
   const searchInputRef = useRef<HTMLInputElement>(null);
   const navLinkClassName =
     "text-base md:text-lg lg:text-xl font-light uppercase tracking-[0.15em] text-white/80 hover:text-white hover:underline decoration-white/30 underline-offset-8 transition-colors";
+  const journalNavLinkClassName =
+    "text-base md:text-lg lg:text-xl font-thin uppercase tracking-[0.2em] text-white/80 hover:text-white hover:underline decoration-white/30 underline-offset-8 transition-colors";
 
   useEffect(() => {
     if (isMenuOpen || isSearchOpen) {
@@ -77,7 +80,7 @@ export default function Header() {
 
   // Compute live search results
   const searchResults = useMemo(() => {
-    if (!searchQuery.trim()) return { projects: [], team: [] };
+    if (!searchQuery.trim()) return { projects: [], team: [], journal: [] };
     
     const query = searchQuery.toLowerCase();
     
@@ -93,7 +96,22 @@ export default function Header() {
       t.category.toLowerCase().includes(query)
     );
 
-    return { projects: filteredProjects, team: filteredTeam };
+    const filteredJournal = journalArticles.filter(article =>
+      [
+        article.title,
+        article.deck,
+        article.intro,
+        article.articleType,
+        article.departments.join(" "),
+        article.projectTypes.join(" "),
+        article.contentTypes.join(" "),
+      ]
+        .join(" ")
+        .toLowerCase()
+        .includes(query)
+    );
+
+    return { projects: filteredProjects, team: filteredTeam, journal: filteredJournal };
   }, [searchQuery]);
 
   if (pathname.startsWith('/admin')) {
@@ -112,6 +130,7 @@ export default function Header() {
           <Link href="/#hero-slider" className={navLinkClassName} style={{ fontFamily: "Smooch Sans, sans-serif" }} onClick={() => setIsMenuOpen(false)}>ANA SAYFA</Link>
           <Link href="/faaliyet-alanlarimiz" className={navLinkClassName} style={{ fontFamily: "Smooch Sans, sans-serif" }} onClick={() => setIsMenuOpen(false)}>DESIGN & COLLECTION</Link>
           <Link href="/galeri" className={navLinkClassName} style={{ fontFamily: "Smooch Sans, sans-serif" }} onClick={() => setIsMenuOpen(false)}>GALERİ</Link>
+          <Link href="/journal" className={journalNavLinkClassName} style={{ fontFamily: "Smooch Sans, sans-serif" }} onClick={() => setIsMenuOpen(false)}>JOURNAL</Link>
           <Link href="/hakkimizda" className={navLinkClassName} style={{ fontFamily: "Smooch Sans, sans-serif" }} onClick={() => setIsMenuOpen(false)}>HAKKIMIZDA</Link>
           <Link href="/iletisim" className={navLinkClassName} style={{ fontFamily: "Smooch Sans, sans-serif" }} onClick={() => setIsMenuOpen(false)}>
             İLETİŞİM
@@ -141,7 +160,7 @@ export default function Header() {
           </div>
 
           <div className="search-results-container">
-            {searchQuery.trim() !== "" && searchResults.projects.length === 0 && searchResults.team.length === 0 && (
+            {searchQuery.trim() !== "" && searchResults.projects.length === 0 && searchResults.team.length === 0 && searchResults.journal.length === 0 && (
               <div className="no-results-msg">&quot;{searchQuery}&quot; için sonuç bulunamadı.</div>
             )}
 
@@ -182,6 +201,25 @@ export default function Header() {
                 </div>
               </div>
             )}
+
+            {searchResults.journal.length > 0 && (
+              <div className="results-group" style={{ marginTop: '3rem' }}>
+                <span className="results-label">JOURNAL</span>
+                <div className="results-grid">
+                  {searchResults.journal.map(article => (
+                    <Link href={`/journal/${article.slug}`} key={`journal-${article.slug}`} className="search-result-card" onClick={() => setIsSearchOpen(false)}>
+                      <div className="result-img-wrap">
+                        {article.coverImage && <img src={article.coverImage} alt={article.title} />}
+                      </div>
+                      <div className="result-info">
+                        <h4>{article.title}</h4>
+                        <span>{article.articleType} · {article.readTime}</span>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -202,6 +240,7 @@ export default function Header() {
               <Link href="/" className={navLinkClassName} style={{ fontFamily: "Smooch Sans, sans-serif" }}>ANA SAYFA</Link>
               <Link href="/faaliyet-alanlarimiz" className={navLinkClassName} style={{ fontFamily: "Smooch Sans, sans-serif" }}>DESIGN & COLLECTION</Link>
               <Link href="/galeri" className={navLinkClassName} style={{ fontFamily: "Smooch Sans, sans-serif" }}>GALERİ</Link>
+              <Link href="/journal" className={journalNavLinkClassName} style={{ fontFamily: "Smooch Sans, sans-serif" }}>JOURNAL</Link>
               <Link href="/hakkimizda" className={navLinkClassName} style={{ fontFamily: "Smooch Sans, sans-serif" }}>HAKKIMIZDA</Link>
               <Link href="/iletisim" className={navLinkClassName} style={{ fontFamily: "Smooch Sans, sans-serif" }}>
                 İLETİŞİM
