@@ -59,8 +59,8 @@ function WorkflowStepCard({ step }: { step: WorkflowStep }) {
             </span>
           </div>
 
-          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-zinc-800 bg-zinc-950 text-[#caa883] transition-colors duration-300 group-hover:bg-zinc-900">
-            <Icon className="h-7 w-7 text-[#caa883]" />
+          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-zinc-800 bg-zinc-950 text-red-500 transition-colors duration-300 group-hover:bg-zinc-900">
+            <Icon className="h-7 w-7 text-red-500" />
           </div>
         </div>
 
