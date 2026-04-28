@@ -36,7 +36,7 @@ export default function StudioVerticalCard({
 
       <div className="absolute bottom-8 md:bottom-12 left-8 md:left-12 flex flex-col gap-3 md:gap-4 z-20 max-w-[calc(100%-5rem)] md:max-w-[calc(100%-7rem)] pr-4">
         <h3
-          className="text-4xl md:text-5xl lg:text-6xl xl:text-7xl 2xl:text-[7rem] font-thin text-white uppercase tracking-widest leading-none drop-shadow-lg"
+          className="text-3xl md:text-4xl lg:text-5xl xl:text-6xl 2xl:text-[6rem] font-thin text-white uppercase tracking-widest leading-none drop-shadow-lg"
           style={{ fontFamily: "Smooch Sans, sans-serif", fontWeight: 100 }}
         >
           {title}
