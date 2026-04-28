@@ -36,10 +36,7 @@ export default function ProjectCard({
 
       <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent z-10 pointer-events-none" />
 
-      <div className="absolute bottom-6 left-6 md:bottom-8 md:left-8 flex flex-col gap-1 md:gap-2 z-20">
-        <p className="text-[10px] md:text-xs tracking-[0.3em] text-zinc-300 uppercase font-thin">
-          {category}
-        </p>
+      <div className="absolute bottom-6 left-6 md:bottom-8 md:left-8 z-20 max-w-[calc(100%-4rem)]">
         <h3
           className="text-2xl md:text-3xl font-light text-white uppercase tracking-widest drop-shadow-md leading-snug"
           style={{ fontFamily: "Smooch Sans, sans-serif", fontWeight: 100 }}
@@ -47,6 +44,10 @@ export default function ProjectCard({
           {title}
         </h3>
       </div>
+
+      <p className="absolute bottom-6 right-6 md:bottom-8 md:right-8 text-[10px] md:text-xs tracking-[0.4em] text-zinc-400 font-light uppercase z-20 [writing-mode:vertical-rl] rotate-180 whitespace-nowrap drop-shadow-md">
+        {category}
+      </p>
     </>
   );
 
