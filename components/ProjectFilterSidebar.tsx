@@ -104,13 +104,13 @@ export default function ProjectFilterSidebar(props: ProjectFilterSidebarProps) {
             <section key={sectionTitle} className={cn("flex flex-col gap-4", sectionClassName)}>
               <header className="flex items-end justify-between gap-4">
                 <h3
-                  className="text-[0.68rem] font-thin uppercase tracking-[0.55em] text-white/55"
+                  className="text-[0.68rem] font-thin uppercase tracking-[0.55em] text-red-500"
                   style={{ fontFamily: "Smooch Sans, sans-serif" }}
                 >
                   {sectionTitle}
                 </h3>
                 {group.description ? (
-                  <p className="max-w-[11rem] text-right text-[0.58rem] uppercase tracking-[0.35em] text-white/28">
+                  <p className="max-w-[11rem] text-right text-[0.58rem] uppercase tracking-[0.35em] text-red-400/90">
                     {group.description}
                   </p>
                 ) : null}
