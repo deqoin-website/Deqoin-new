@@ -15,6 +15,7 @@ export type ProjectDetail = {
   title: string;
   label: string;
   category: Category;
+  department: "MİMARİ TASARIM" | "MATERYAL STÜDYO" | "UYGULAMA HİZMETLERİ" | "MÜHENDİSLİK";
   coverImage: string;
   client: string;
   year: string;
@@ -38,6 +39,7 @@ export const projectsData: ProjectDetail[] = [
     title: "ZIND NAABA HOTEL",
     label: "BUTİK OTEL",
     category: "butik-otel",
+    department: "MİMARİ TASARIM",
     coverImage: "https://lh3.googleusercontent.com/aida-public/AB6AXuDQ33Fr_mp_94UQUZyYOcRBRBK4SsC3hdWkie-fw6V2__i_B1h6AdSqBrcIxAAgXdz-v3B0bxiTC-ksADc_Szblsz7rQvFfbm-HT7bZ1XL4bsM_asUURcwntMziJsDYv2IG_IZ29E-x6Q-o8X94qQUEmwhhDhnCvzR73u_lPOfR2qgqCLbkcFE__mn9WB-1VfwW7H_DqV9DkwKYK7M0io-43LvxYatvgMsrwap-p4wEffe-ljtcBwrQlBdN4PP7Q0JGnYBjixX0YQ0",
     client: "Zind Naaba Group",
     year: "2024",
@@ -55,6 +57,7 @@ export const projectsData: ProjectDetail[] = [
     title: "SKYLINE RESIDENCE",
     label: "LÜKS KONUT",
     category: "luks-konut",
+    department: "MİMARİ TASARIM",
     coverImage: "https://lh3.googleusercontent.com/aida-public/AB6AXuBg-MKl4zF6vfhExOXkEX-PKVlktOgQYI9EevfKIIYXVJ2wtmRpvybiQLaOtQdeYc_lIPrntEOUrCatq_Efo6fw-z-0-6TilLvAsA4tcYK-QcbjqdetFT2T2EreDjugTzsElsUeoEqEM9i_daWDWBBOJXiZvrjMKWtS2z5I5ZuzOLXWozpZ8MroEnEj5yRtFuaubPctxfeO_ZAZ5E5Tawo9b6yB5w0pmG4_axQCW--XoR8nAAImAE_M5UpM2vFx3tuR2ePYvZ-VmaY",
     client: "Skyline Developments",
     year: "2023",
@@ -72,6 +75,7 @@ export const projectsData: ProjectDetail[] = [
     title: "LUMINA GALLERY",
     label: "KÜLTÜR YAPISI",
     category: "kultur-yapisi",
+    department: "MATERYAL STÜDYO",
     coverImage: "https://lh3.googleusercontent.com/aida-public/AB6AXuA6ch6quj8NI1itL20E5PhIg-48fajZE_vr98u3teQ-X7iSPzBfAvJnkTJ3RuJVxc2gjJk51KmYZk9sWDTwAjNMVHOwiJPfJh3i0VYt8Cfzsf6cPXv8SRUsh66wCIyRnDgQLMJg2_1yHEHCnFIbIJoBzDcFEntZjDdLiFO8q1WvslXUxTqhQNEyc8D_USmsB4iizRnCFmQqpbt_btAIebK4vy_8mB0LYZXdZk9Mtj6xqQ8e91yqi86iYoLhuoh8fXoG0Gcgep-wrSw",
     client: "Lumina Arts",
     year: "2023",
@@ -89,6 +93,7 @@ export const projectsData: ProjectDetail[] = [
     title: "NEXUS CORPORATE",
     label: "KURUMSAL ALAN",
     category: "kurumsal-alan",
+    department: "MÜHENDİSLİK",
     coverImage: "https://lh3.googleusercontent.com/aida-public/AB6AXuDQ33Fr_mp_94UQUZyYOcRBRBK4SsC3hdWkie-fw6V2__i_B1h6AdSqBrcIxAAgXdz-v3B0bxiTC-ksADc_Szblsz7rQvFfbm-HT7bZ1XL4bsM_asUURcwntMziJsDYv2IG_IZ29E-x6Q-o8X94qQUEmwhhDhnCvzR73u_lPOfR2qgqCLbkcFE__mn9WB-1VfwW7H_DqV9DkwKYK7M0io-43LvxYatvgMsrwap-p4wEffe-ljtcBwrQlBdN4PP7Q0JGnYBjixX0YQ0",
     client: "Nexus Global",
     year: "2024",
@@ -104,6 +109,7 @@ export const projectsData: ProjectDetail[] = [
     title: "VERTEX MIXED",
     label: "KARMA KULLANIM",
     category: "karma-kullanim",
+    department: "MÜHENDİSLİK",
     coverImage: "https://lh3.googleusercontent.com/aida-public/AB6AXuBg-MKl4zF6vfhExOXkEX-PKVlktOgQYI9EevfKIIYXVJ2wtmRpvybiQLaOtQdeYc_lIPrntEOUrCatq_Efo6fw-z-0-6TilLvAsA4tcYK-QcbjqdetFT2T2EreDjugTzsElsUeoEqEM9i_daWDWBBOJXiZvrjMKWtS2z5I5ZuzOLXWozpZ8MroEnEj5yRtFuaubPctxfeO_ZAZ5E5Tawo9b6yB5w0pmG4_axQCW--XoR8nAAImAE_M5UpM2vFx3tuR2ePYvZ-VmaY",
     client: "Vertex Group",
     year: "2024",
@@ -119,6 +125,7 @@ export const projectsData: ProjectDetail[] = [
     title: "OBSIDIAN TOWER",
     label: "TİCARİ YAPI",
     category: "ticari-yapi",
+    department: "UYGULAMA HİZMETLERİ",
     coverImage: "https://lh3.googleusercontent.com/aida-public/AB6AXuCVUCHLvB4gqKIu87ZlNcr3oZLDY1XgwMEMQcp-pzAUlFS1Nn-nmjan1oheeXLiJ94VJmZA_oBfMSPF7jZZuVG47cEkP7h1goKj5Y9WgqVshN-x4CHN0Cdm1zFfAK5KszWNO6pl8w1-gfW6Wb3njqQOsjkQ8-pCuF6dDd8ggmvjFL-N9m4Fe4Lj-pi8WbEEAKONv-Sz-Yl9wNOSPvazMnMZ5Gjdm2myTHVi_vIL4aoeENqkME8bn_RKrHn4r6XvpVXXxsRugi5gKPU",
     client: "Obsidian Holdings",
     year: "2023",

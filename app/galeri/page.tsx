@@ -10,7 +10,6 @@ import { cn } from "@/lib/utils";
 import { projectsData } from "@/data/projects";
 
 const CATEGORY_LABELS: Record<string, string> = {
-  all: "HEPSİ",
   "luks-konut": "LÜKS KONUT",
   "ticari-yapi": "TİCARİ YAPI",
   "karma-kullanim": "KARMA KULLANIM",
@@ -23,25 +22,40 @@ const CATEGORY_LABELS: Record<string, string> = {
   peyzaj: "PEYZAJ",
 };
 
-type CategoryKey = keyof typeof CATEGORY_LABELS;
+const DEPARTMENTS = [
+  "HEPSİ",
+  "MİMARİ TASARIM",
+  "MATERYAL STÜDYO",
+  "UYGULAMA HİZMETLERİ",
+  "MÜHENDİSLİK",
+] as const;
+
+type DepartmentKey = (typeof DEPARTMENTS)[number];
 
 function getCategoryLabel(category: string) {
   return CATEGORY_LABELS[category] ?? category.toUpperCase();
 }
 
+function buildFilterButtonClass(isActive: boolean) {
+  return cn(
+    "w-full justify-start rounded-none px-0 py-2 text-left text-lg font-thin uppercase tracking-[0.25em] transition-colors hover:bg-transparent",
+    isActive
+      ? "bg-zinc-900/50 text-white hover:bg-zinc-900/50 hover:text-white"
+      : "text-zinc-500 hover:text-white",
+  );
+}
+
 export default function GaleriPage() {
-  const [activeFilter, setActiveFilter] = useState<CategoryKey>("all");
+  const [selectedCategory, setSelectedCategory] = useState<string>("HEPSİ");
+  const [selectedDepartment, setSelectedDepartment] = useState<DepartmentKey>("HEPSİ");
   const [searchTerm, setSearchTerm] = useState("");
   const [isMobileCategoriesOpen, setIsMobileCategoriesOpen] = useState(false);
   const [selectedProjectSlug, setSelectedProjectSlug] = useState<string | null>(null);
 
   const categories = useMemo(
     () => [
-      { key: "all" as const, title: "HEPSİ" },
-      ...Array.from(new Set(projectsData.map((project) => project.category))).map((category) => ({
-        key: category as CategoryKey,
-        title: getCategoryLabel(category),
-      })),
+      "HEPSİ",
+      ...Array.from(new Set(projectsData.map((project) => getCategoryLabel(project.category)))),
     ],
     [],
   );
@@ -50,8 +64,9 @@ export default function GaleriPage() {
     const query = searchTerm.trim().toLowerCase();
 
     return projectsData.filter((project) => {
-      const matchesCategory = activeFilter === "all" || project.category === activeFilter;
-      const matchesSearch =
+      const matchCategory = selectedCategory === "HEPSİ" || getCategoryLabel(project.category) === selectedCategory;
+      const matchDepartment = selectedDepartment === "HEPSİ" || project.department === selectedDepartment;
+      const matchSearch =
         query.length === 0 ||
         [
           project.title,
@@ -61,14 +76,15 @@ export default function GaleriPage() {
           project.vision,
           project.techDetails,
           project.story,
+          project.department,
         ]
           .join(" ")
           .toLowerCase()
           .includes(query);
 
-      return matchesCategory && matchesSearch;
+      return matchCategory && matchDepartment && matchSearch;
     });
-  }, [activeFilter, searchTerm]);
+  }, [searchTerm, selectedCategory, selectedDepartment]);
 
   const selectedProject = useMemo(
     () => projectsData.find((project) => project.slug === selectedProjectSlug) ?? null,
@@ -96,26 +112,48 @@ export default function GaleriPage() {
         <div className="mx-auto mt-12 grid grid-cols-1 gap-12 lg:grid-cols-5">
           <aside className="hidden h-fit flex-col gap-2 lg:sticky lg:top-32 lg:col-span-1 lg:flex">
             {categories.map((category) => {
-              const isActive = activeFilter === category.key;
+              const isActive = selectedCategory === category;
 
               return (
                 <Button
-                  key={category.key}
+                  key={category}
                   type="button"
                   variant="ghost"
-                  onClick={() => setActiveFilter(category.key)}
-                  className={cn(
-                    "w-full justify-start rounded-none px-0 py-2 text-left text-lg font-thin uppercase tracking-[0.25em] transition-colors hover:bg-transparent",
-                    isActive
-                      ? "bg-zinc-900/50 text-white hover:bg-zinc-900/50 hover:text-white"
-                      : "text-zinc-500 hover:text-white",
-                  )}
+                  onClick={() => setSelectedCategory(category)}
+                  className={buildFilterButtonClass(isActive)}
                   style={{ fontFamily: "Smooch Sans, sans-serif" }}
                 >
-                  {category.title}
+                  {category}
                 </Button>
               );
             })}
+
+            <div className="mt-16 flex flex-col gap-6">
+              <h3
+                className="text-xs font-light uppercase tracking-[0.3em] text-zinc-500"
+                style={{ fontFamily: "Smooch Sans, sans-serif" }}
+              >
+                DEPARTMANLAR
+              </h3>
+              <ul className="flex flex-col gap-4">
+                {DEPARTMENTS.map((dept) => {
+                  const isActive = selectedDepartment === dept;
+
+                  return (
+                    <li key={dept}>
+                      <button
+                        type="button"
+                        onClick={() => setSelectedDepartment(dept)}
+                        className={buildFilterButtonClass(isActive)}
+                        style={{ fontFamily: "Smooch Sans, sans-serif" }}
+                      >
+                        {dept}
+                      </button>
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
           </aside>
 
           <div className="lg:col-span-4">
@@ -138,35 +176,59 @@ export default function GaleriPage() {
                 className="w-full justify-between rounded-none border border-zinc-800/70 bg-transparent px-0 py-3 text-left text-lg font-thin uppercase tracking-[0.25em] text-white hover:bg-transparent"
                 style={{ fontFamily: "Smooch Sans, sans-serif" }}
               >
-                <span>Kategoriler</span>
+                <span>Filtreler</span>
                 <span className="text-zinc-500" aria-hidden="true">
                   {isMobileCategoriesOpen ? "−" : "+"}
                 </span>
               </Button>
 
               {isMobileCategoriesOpen && (
-                <div className="mt-3 flex flex-col gap-2">
-                  {categories.map((category) => {
-                    const isActive = activeFilter === category.key;
+                <div className="mt-3 flex flex-col gap-10">
+                  <div className="flex flex-col gap-2">
+                    {categories.map((category) => {
+                      const isActive = selectedCategory === category;
 
-                    return (
-                      <Button
-                        key={category.key}
-                        type="button"
-                        variant="ghost"
-                        onClick={() => setActiveFilter(category.key)}
-                        className={cn(
-                          "w-full justify-start rounded-none px-0 py-2 text-left text-lg font-thin uppercase tracking-[0.25em] transition-colors hover:bg-transparent",
-                          isActive
-                            ? "bg-zinc-900/50 text-white hover:bg-zinc-900/50 hover:text-white"
-                            : "text-zinc-500 hover:text-white",
-                        )}
-                        style={{ fontFamily: "Smooch Sans, sans-serif" }}
-                      >
-                        {category.title}
-                      </Button>
-                    );
-                  })}
+                      return (
+                        <Button
+                          key={category}
+                          type="button"
+                          variant="ghost"
+                          onClick={() => setSelectedCategory(category)}
+                          className={buildFilterButtonClass(isActive)}
+                          style={{ fontFamily: "Smooch Sans, sans-serif" }}
+                        >
+                          {category}
+                        </Button>
+                      );
+                    })}
+                  </div>
+
+                  <div className="flex flex-col gap-6">
+                    <h3
+                      className="text-xs font-light uppercase tracking-[0.3em] text-zinc-500"
+                      style={{ fontFamily: "Smooch Sans, sans-serif" }}
+                    >
+                      DEPARTMANLAR
+                    </h3>
+                    <ul className="flex flex-col gap-4">
+                      {DEPARTMENTS.map((dept) => {
+                        const isActive = selectedDepartment === dept;
+
+                        return (
+                          <li key={dept}>
+                            <button
+                              type="button"
+                              onClick={() => setSelectedDepartment(dept)}
+                              className={buildFilterButtonClass(isActive)}
+                              style={{ fontFamily: "Smooch Sans, sans-serif" }}
+                            >
+                              {dept}
+                            </button>
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  </div>
                 </div>
               )}
             </div>
@@ -204,10 +266,7 @@ export default function GaleriPage() {
         </div>
       </section>
 
-      <ProjectInsightPanel
-        project={selectedProject}
-        onClose={() => setSelectedProjectSlug(null)}
-      />
+      <ProjectInsightPanel project={selectedProject} onClose={() => setSelectedProjectSlug(null)} />
     </main>
   );
 }
