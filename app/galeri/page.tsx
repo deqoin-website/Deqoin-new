@@ -130,7 +130,7 @@ export default function GaleriPage() {
 
             <div className="mt-16 flex flex-col gap-6">
               <h3
-                className="text-xs font-light uppercase tracking-[0.3em] text-zinc-500"
+                className="text-xs font-light uppercase tracking-[0.3em] text-red-500"
                 style={{ fontFamily: "Smooch Sans, sans-serif" }}
               >
                 DEPARTMANLAR
@@ -205,7 +205,7 @@ export default function GaleriPage() {
 
                   <div className="flex flex-col gap-6">
                     <h3
-                      className="text-xs font-light uppercase tracking-[0.3em] text-zinc-500"
+                      className="text-xs font-light uppercase tracking-[0.3em] text-red-500"
                       style={{ fontFamily: "Smooch Sans, sans-serif" }}
                     >
                       DEPARTMANLAR
