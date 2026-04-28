@@ -128,15 +128,14 @@ export default function JournalPage() {
             </div>
 
             {visibleArticles.length > 0 ? (
-              <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3">
+              <div className="grid grid-cols-1 xl:grid-cols-2 gap-12 md:gap-16 lg:gap-24 w-full">
                 {visibleArticles.map((article, index) => (
-                  <div key={article.slug} className={index === 0 ? "sm:col-span-2 xl:col-span-2" : ""}>
-                    <JournalCard
-                      article={article}
-                      loading={index < 2 ? "eager" : "lazy"}
-                      onClick={() => setSelectedArticleSlug(article.slug)}
-                    />
-                  </div>
+                  <JournalCard
+                    key={article.slug}
+                    article={article}
+                    loading={index < 2 ? "eager" : "lazy"}
+                    onClick={() => setSelectedArticleSlug(article.slug)}
+                  />
                 ))}
               </div>
             ) : (
