@@ -1,9 +1,10 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import JournalCard from "@/components/JournalCard";
 import JournalDrawer from "@/components/JournalDrawer";
+import { Button } from "@/components/ui/button";
 import {
   Sidebar,
   SidebarContent,
@@ -27,12 +28,26 @@ function toggleValue(values: string[], value: string) {
   return values.includes(value) ? values.filter((item) => item !== value) : [...values, value];
 }
 
+const ARTICLES_PER_PAGE = 6;
+
+function buildPageNumbers(currentPage: number, totalPages: number) {
+  if (totalPages <= 7) {
+    return Array.from({ length: totalPages }, (_, index) => index + 1);
+  }
+
+  const pages = new Set<number>([1, totalPages, currentPage - 1, currentPage, currentPage + 1]);
+  return Array.from(pages)
+    .filter((page) => page >= 1 && page <= totalPages)
+    .sort((a, b) => a - b);
+}
+
 export default function JournalPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedDepartments, setSelectedDepartments] = useState<string[]>([]);
   const [selectedProjectTypes, setSelectedProjectTypes] = useState<string[]>([]);
   const [selectedContentTypes, setSelectedContentTypes] = useState<string[]>([]);
   const [selectedArticleSlug, setSelectedArticleSlug] = useState<string | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
 
   const visibleArticles = useMemo(() => {
     const query = searchTerm.trim().toLowerCase();
@@ -63,10 +78,27 @@ export default function JournalPage() {
     });
   }, [searchTerm, selectedContentTypes, selectedDepartments, selectedProjectTypes]);
 
+  const totalPages = Math.max(1, Math.ceil(visibleArticles.length / ARTICLES_PER_PAGE));
+  const pageNumbers = useMemo(() => buildPageNumbers(currentPage, totalPages), [currentPage, totalPages]);
+  const paginatedArticles = useMemo(() => {
+    const start = (currentPage - 1) * ARTICLES_PER_PAGE;
+    return visibleArticles.slice(start, start + ARTICLES_PER_PAGE);
+  }, [currentPage, visibleArticles]);
+
   const selectedArticle = useMemo(
     () => (selectedArticleSlug ? getJournalArticleBySlug(selectedArticleSlug) : null),
     [selectedArticleSlug],
   );
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm, selectedContentTypes, selectedDepartments, selectedProjectTypes]);
+
+  useEffect(() => {
+    if (currentPage > totalPages) {
+      setCurrentPage(totalPages);
+    }
+  }, [currentPage, totalPages]);
 
   return (
     <main className="min-h-screen w-full bg-[#080808] pb-24 text-white">
@@ -98,7 +130,10 @@ export default function JournalPage() {
                     className="bg-zinc-900/50 border-zinc-800 text-white rounded-none focus-visible:ring-1 focus-visible:ring-zinc-700 h-12 text-xs font-light tracking-widest placeholder:text-zinc-600"
                     placeholder="MAKALE ARA..."
                     value={searchTerm}
-                    onChange={(event) => setSearchTerm(event.target.value)}
+                    onChange={(event) => {
+                      setSearchTerm(event.target.value);
+                      setCurrentPage(1);
+                    }}
                   />
                 </div>
 
@@ -120,9 +155,10 @@ export default function JournalPage() {
                             <button
                               type="button"
                               className="w-full text-left text-xs tracking-[0.3em] font-light uppercase"
-                              onClick={() =>
-                                setSelectedDepartments((current) => toggleValue(current, item.value))
-                              }
+                              onClick={() => {
+                                setCurrentPage(1);
+                                setSelectedDepartments((current) => toggleValue(current, item.value));
+                              }}
                             >
                               {item.label}
                             </button>
@@ -151,9 +187,10 @@ export default function JournalPage() {
                             <button
                               type="button"
                               className="w-full text-left text-xs tracking-[0.3em] font-light uppercase"
-                              onClick={() =>
-                                setSelectedProjectTypes((current) => toggleValue(current, item.value))
-                              }
+                              onClick={() => {
+                                setCurrentPage(1);
+                                setSelectedProjectTypes((current) => toggleValue(current, item.value));
+                              }}
                             >
                               {item.label}
                             </button>
@@ -182,9 +219,10 @@ export default function JournalPage() {
                             <button
                               type="button"
                               className="w-full text-left text-xs tracking-[0.3em] font-light uppercase"
-                              onClick={() =>
-                                setSelectedContentTypes((current) => toggleValue(current, item.value))
-                              }
+                              onClick={() => {
+                                setCurrentPage(1);
+                                setSelectedContentTypes((current) => toggleValue(current, item.value));
+                              }}
                             >
                               {item.label}
                             </button>
@@ -198,17 +236,63 @@ export default function JournalPage() {
             </Sidebar>
 
             <div className="flex min-h-0 flex-col gap-8">
-              {visibleArticles.length > 0 ? (
-                <div className="grid grid-cols-1 xl:grid-cols-2 gap-12 md:gap-16 lg:gap-24 w-full">
-                  {visibleArticles.map((article, index) => (
-                    <JournalCard
-                      key={article.slug}
-                      article={article}
-                      loading={index < 2 ? "eager" : "lazy"}
-                      onClick={() => setSelectedArticleSlug(article.slug)}
-                    />
-                  ))}
-                </div>
+              {paginatedArticles.length > 0 ? (
+                <>
+                  <div className="grid grid-cols-1 xl:grid-cols-2 gap-12 md:gap-16 lg:gap-24 w-full">
+                    {paginatedArticles.map((article, index) => (
+                      <JournalCard
+                        key={article.slug}
+                        article={article}
+                        loading={index < 2 ? "eager" : "lazy"}
+                        onClick={() => setSelectedArticleSlug(article.slug)}
+                      />
+                    ))}
+                  </div>
+
+                  <div className="flex flex-col items-center gap-4 pt-8">
+                    <div className="flex flex-wrap items-center justify-center gap-3">
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        className="rounded-none border border-zinc-800 bg-transparent px-4 py-2 text-[10px] uppercase tracking-[0.35em] text-zinc-400 hover:bg-zinc-900 hover:text-white disabled:opacity-30"
+                        onClick={() => setCurrentPage((page) => Math.max(1, page - 1))}
+                        disabled={currentPage === 1}
+                      >
+                        ÖNCEKİ
+                      </Button>
+
+                      {pageNumbers.map((page) => (
+                        <Button
+                          key={page}
+                          type="button"
+                          variant="ghost"
+                          onClick={() => setCurrentPage(page)}
+                          className={`rounded-none border px-4 py-2 text-[10px] uppercase tracking-[0.35em] ${
+                            page === currentPage
+                              ? "border-white bg-white text-zinc-950 hover:bg-white hover:text-zinc-950"
+                              : "border-zinc-800 bg-transparent text-zinc-500 hover:bg-zinc-900 hover:text-white"
+                          }`}
+                        >
+                          {String(page).padStart(2, "0")}
+                        </Button>
+                      ))}
+
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        className="rounded-none border border-zinc-800 bg-transparent px-4 py-2 text-[10px] uppercase tracking-[0.35em] text-zinc-400 hover:bg-zinc-900 hover:text-white disabled:opacity-30"
+                        onClick={() => setCurrentPage((page) => Math.min(totalPages, page + 1))}
+                        disabled={currentPage === totalPages}
+                      >
+                        SONRAKİ
+                      </Button>
+                    </div>
+
+                    <p className="text-[10px] uppercase tracking-[0.5em] text-zinc-500">
+                      SAYFA {String(currentPage).padStart(2, "0")} / {String(totalPages).padStart(2, "0")}
+                    </p>
+                  </div>
+                </>
               ) : (
                 <div className="flex min-h-[50vh] items-center justify-center text-center">
                   <p
