@@ -227,6 +227,17 @@ export default function DepartmentStudio({
     };
   }, [activeProjectSlug]);
 
+  useEffect(() => {
+    if (!isMobileDrawerOpen) return;
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [isMobileDrawerOpen]);
+
   const handleCategorySelect = (category: Category | string) => {
     setActiveCategory(category);
     setIsMobileDrawerOpen(false);
@@ -258,6 +269,18 @@ export default function DepartmentStudio({
           onAppointmentClick={() => setIsConsultationOpen(true)}
         />
       </section>
+
+      <div className="mt-6 lg:hidden">
+        <button
+          type="button"
+          className="mobile-filter-toggle w-full"
+          onClick={() => setIsMobileDrawerOpen(true)}
+        >
+          <span className="material-symbols-outlined">tune</span>
+          KATEGORİLER
+          {activeCategory !== "ALL" && <span className="active-dot" />}
+        </button>
+      </div>
 
       {/* WORKFLOW SECTION */}
       <section id="studio-workflow">
@@ -339,17 +362,6 @@ export default function DepartmentStudio({
           </div>
         </section>
       )}
-
-      <div className="mt-6 lg:hidden">
-        <button
-          className="mobile-filter-toggle"
-          onClick={() => setIsMobileDrawerOpen(true)}
-        >
-          <span className="material-symbols-outlined">tune</span>
-          FİLTRELE
-          {activeCategory !== "ALL" && <span className="active-dot"></span>}
-        </button>
-      </div>
 
       {/* MOBILE DRAWER */}
       <AnimatePresence>

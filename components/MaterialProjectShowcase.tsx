@@ -106,6 +106,17 @@ export default function MaterialProjectShowcase({
     };
   }, [activeProjectSlug]);
 
+  useEffect(() => {
+    if (!isMobileDrawerOpen) return;
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [isMobileDrawerOpen]);
+
   const handleCategorySelect = (category: string) => {
     setActiveCategory(category);
     setIsMobileDrawerOpen(false);
@@ -131,9 +142,9 @@ export default function MaterialProjectShowcase({
       </section>
 
       <div className="mt-6 lg:hidden">
-        <button className="mobile-filter-toggle" onClick={() => setIsMobileDrawerOpen(true)}>
+        <button className="mobile-filter-toggle w-full" onClick={() => setIsMobileDrawerOpen(true)}>
           <span className="material-symbols-outlined">tune</span>
-          FİLTRELE
+          KATEGORİLER
           {activeCategory !== "ALL" && <span className="active-dot" />}
         </button>
       </div>
