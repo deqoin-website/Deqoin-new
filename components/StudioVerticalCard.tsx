@@ -48,7 +48,7 @@ export default function StudioVerticalCard({
       </div>
 
       <p
-        className="absolute top-1/2 right-4 md:right-6 -translate-y-1/2 text-[11px] md:text-sm 2xl:text-base tracking-[0.85em] leading-none text-red-500 font-light uppercase [writing-mode:vertical-rl] rotate-180 whitespace-nowrap z-30"
+        className="absolute top-8 md:top-12 right-4 md:right-6 text-[11px] md:text-sm 2xl:text-base tracking-[0.85em] leading-none text-white font-light uppercase [writing-mode:vertical-rl] rotate-180 whitespace-nowrap z-30"
         style={{ fontFamily: "Smooch Sans, sans-serif" }}
       >
         {sideLabel}
