@@ -59,11 +59,11 @@ export default function StudioVerticalCard({
 
   if (href) {
     return (
-      <Link href={href} className="relative w-full h-[65vh] md:h-[80vh] group overflow-hidden">
+      <Link href={href} className="relative w-full h-[72vh] md:h-[88vh] group overflow-hidden">
         {content}
       </Link>
     );
   }
 
-  return <div className="relative w-full h-[65vh] md:h-[80vh] group overflow-hidden">{content}</div>;
+  return <div className="relative w-full h-[72vh] md:h-[88vh] group overflow-hidden">{content}</div>;
 }
