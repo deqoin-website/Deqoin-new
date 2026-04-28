@@ -36,18 +36,16 @@ export default function ProjectCard({
 
       <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/30 to-transparent opacity-90 group-hover:opacity-100 transition-opacity duration-500" />
 
-      <div className="absolute inset-0 flex items-end p-6 md:p-8">
-        <div className="flex flex-col gap-2 text-left">
-          <p className="text-[10px] md:text-xs tracking-[0.3em] text-zinc-300 uppercase">
-            {category}
-          </p>
-          <h3
-            className="text-4xl md:text-5xl font-thin text-white uppercase tracking-widest leading-none"
-            style={{ fontFamily: "Smooch Sans, sans-serif" }}
-          >
-            {title}
-          </h3>
-        </div>
+      <div className="absolute bottom-0 left-0 p-6 md:p-10 2xl:p-16 flex flex-col gap-3 md:gap-4 2xl:gap-6 z-20 text-left">
+        <p className="text-xs md:text-sm 2xl:text-base tracking-[0.4em] uppercase font-light text-white/70">
+          {category}
+        </p>
+        <h3
+          className="text-6xl md:text-7xl lg:text-8xl xl:text-9xl 2xl:text-[10rem] font-thin uppercase tracking-widest leading-none text-white drop-shadow-lg"
+          style={{ fontFamily: "Smooch Sans, sans-serif", fontWeight: 100 }}
+        >
+          {title}
+        </h3>
       </div>
     </>
   );

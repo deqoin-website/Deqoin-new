@@ -7,6 +7,7 @@ import HeroSlider from "../../components/HeroSlider";
 import Footer from "../../components/Footer";
 import WorkflowSection from "../../components/WorkflowSection";
 import NextStepCarouselSection from "../../components/NextStepCarouselSection";
+import StudioVerticalCard from "../../components/StudioVerticalCard";
 
 const heroSlides = [
   "/images/slider/mimari_slide.png",
@@ -172,25 +173,15 @@ export default function MimariPage() {
         
         <div className="services-grid mimari-grid">
           {categories.map((card) => (
-          <Link
+            <StudioVerticalCard
               key={card.title}
               href={card.href || `/mimari/${card.slug}`}
-              className="service-card"
-            >
-              <img src={withVersion(resolveCategoryImage(card), contentVersion)} alt={card.title} style={{ filter: `blur(${card.blur || 0}px)` }} />
-              <div className="service-overlay" style={{ background: `rgba(0,0,0,${(card.overlay ?? 30) / 100})` }} />
-              <div className="service-copy">
-                <div>
-                  <h3>{card.title}</h3>
-                  <div className="service-line" />
-                  <div className="service-cta">
-                    <span>DETAYLARI GÖR</span>
-                    <span className="material-symbols-outlined">arrow_forward</span>
-                  </div>
-                </div>
-                <span className="vertical-text">{card.sideLabel}</span>
-              </div>
-            </Link>
+              image={withVersion(resolveCategoryImage(card), contentVersion)}
+              title={card.title.toUpperCase()}
+              sideLabel={card.sideLabel}
+              blur={card.blur || 0}
+              overlay={card.overlay ?? 30}
+            />
           ))}
         </div>
       </section>

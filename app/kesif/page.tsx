@@ -7,6 +7,7 @@ import SwipeAppointmentButton from "../../components/SwipeAppointmentButton";
 import HeroSlider from "../../components/HeroSlider";
 import WorkflowMarquee from "../../components/WorkflowMarquee";
 import { useWorkflowContent } from "../../components/useWorkflowContent";
+import StudioVerticalCard from "../../components/StudioVerticalCard";
 
 const heroSlides = [
   "/images/slider/mimari_slide.png",
@@ -78,20 +79,14 @@ export default function KesifPage() {
       <section className="services-section" style={{ background: "transparent", paddingTop: "6rem" }}>
         <div className="services-grid">
           {kesifStages.map((stage) => (
-            <div key={stage.title} className="service-card">
-              <img src={stage.image} alt={stage.title} />
-              <div className="service-overlay" style={{ background: `rgba(0,0,0,0.3)` }} />
-              <div className="service-copy">
-                <div>
-                  <h3>{stage.title}</h3>
-                  <div className="service-line" />
-                  <p style={{ fontSize: "0.9rem", color: "rgba(255,255,255,0.7)", marginTop: "1rem", maxWidth: "300px" }}>
-                    {stage.detail}
-                  </p>
-                </div>
-                <span className="vertical-text">{stage.sideLabel}</span>
-              </div>
-            </div>
+            <StudioVerticalCard
+              key={stage.title}
+              image={stage.image}
+              title={stage.title.toUpperCase()}
+              sideLabel={stage.sideLabel}
+              description={stage.detail}
+              overlay={30}
+            />
           ))}
         </div>
       </section>
