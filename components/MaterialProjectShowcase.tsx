@@ -5,6 +5,7 @@ import { Category, ProjectDetail } from "../data/projects";
 import ConsultationModal from "./ConsultationModal";
 import ProjectInsightPanel from "./ProjectInsightPanel";
 import ProjectCard from "./ProjectCard";
+import ProjectFilterSidebar from "./ProjectFilterSidebar";
 
 type MaterialProjectShowcaseProps = {
   materialSlug?: string;
@@ -129,17 +130,7 @@ export default function MaterialProjectShowcase({
         </p>
       </section>
 
-      <div className="studio-search-container material-studio-search studio-snap-point">
-        <div className="studio-search-bar">
-          <span className="material-symbols-outlined">search</span>
-          <input
-            type="text"
-            placeholder={`${materialTitle} odaklı proje veya detay ara...`}
-            value={searchQuery}
-            onChange={(event) => setSearchQuery(event.target.value)}
-          />
-        </div>
-
+      <div className="mt-6 lg:hidden">
         <button className="mobile-filter-toggle" onClick={() => setIsMobileDrawerOpen(true)}>
           <span className="material-symbols-outlined">tune</span>
           FİLTRELE
@@ -180,23 +171,18 @@ export default function MaterialProjectShowcase({
       </div>
 
       <section className="studio-main material-studio-main">
-        <aside className="studio-sidebar">
-          <div className="filter-group">
-            <h4>KATEGORİLER</h4>
-            <ul className="filter-list">
-              {displayCategories.map((category: { label: string; value: string }) => (
-                <li key={category.value} className="filter-item">
-                  <button
-                    className={`filter-button ${activeCategory === category.value ? "active" : ""}`}
-                    onClick={() => setActiveCategory(category.value)}
-                  >
-                    {category.label}
-                  </button>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </aside>
+        <ProjectFilterSidebar
+          activeCategory={activeCategory}
+          categories={displayCategories.map((category: { label: string; value: string }) => ({
+            label: category.label,
+            value: category.value,
+          }))}
+          onCategoryChange={setActiveCategory}
+          onSearchChange={setSearchQuery}
+          searchPlaceholder={`${materialTitle} odaklı proje veya detay ara...`}
+          searchValue={searchQuery}
+          title="KATEGORİLER"
+        />
 
         <div className="studio-gallery studio-gallery-sensory">
           {filteredProjects.length > 0 ? (

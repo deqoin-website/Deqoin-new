@@ -8,6 +8,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import StudioBackButton from "./StudioBackButton";
 import ProjectInsightPanel from "./ProjectInsightPanel";
 import ProjectCard from "./ProjectCard";
+import ProjectFilterSidebar from "./ProjectFilterSidebar";
 import HeroSlider from "./HeroSlider";
 import WorkflowSection, { type WorkflowStep } from "./WorkflowSection";
 import { CalendarDays, Compass, Hammer, Layers, PenTool } from "lucide-react";
@@ -317,19 +318,8 @@ export default function DepartmentStudio({
         </section>
       )}
 
-      {/* SEARCH & MOBILE FILTER BAR */}
-      <div className="studio-search-container studio-snap-point">
-        <div className="studio-search-bar">
-          <span className="material-symbols-outlined">search</span>
-          <input 
-            type="text" 
-            placeholder="Proje ara (örn: Skyline, Rezidans...)" 
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
-        </div>
-
-        <button 
+      <div className="mt-6 lg:hidden">
+        <button
           className="mobile-filter-toggle"
           onClick={() => setIsMobileDrawerOpen(true)}
         >
@@ -384,25 +374,15 @@ export default function DepartmentStudio({
       </AnimatePresence>
 
       <div className="studio-main">
-        {/* SIDEBAR FILTERS (DESKTOP) */}
-        <aside className="studio-sidebar">
-          <div className="filter-group">
-            <h4 style={{ letterSpacing: "0.2em", fontSize: "0.7rem", color: "#a68966", marginBottom: "2rem" }}>KATEGORİLER</h4>
-            <ul className="filter-list">
-              {displayCategories.map((cat) => (
-                <li key={cat.value} className="filter-item">
-                  <button 
-                    className={`filter-button ${activeCategory === cat.value ? 'active' : ''}`}
-                    onClick={() => setActiveCategory(cat.value)}
-                  >
-                    {cat.label}
-                  </button>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-        </aside>
+        <ProjectFilterSidebar
+          activeCategory={activeCategory}
+          categories={displayCategories.map((cat) => ({ label: cat.label, value: String(cat.value) }))}
+          onCategoryChange={(value) => setActiveCategory(value)}
+          onSearchChange={setSearchQuery}
+          searchPlaceholder="Proje ara (örn: Skyline, Rezidans...)"
+          searchValue={searchQuery}
+          title="KATEGORİLER"
+        />
 
         {/* GALLERY GRID */}
         <div className="studio-gallery studio-gallery-sensory">
