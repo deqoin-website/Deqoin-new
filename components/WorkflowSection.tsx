@@ -156,8 +156,8 @@ export default function WorkflowSection({
           <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.02),transparent_42%)]" />
 
           <CardHeader className="relative flex-none p-4 pb-3 md:p-5 md:pb-4">
-            <div className="max-w-4xl">
-              <CardTitle className="mt-2.5 font-[family-name:var(--font-smooch)] text-[clamp(2.1rem,8vw,3rem)] font-normal leading-[0.92] tracking-[0.1em] text-white md:text-[clamp(1.7rem,3.6vw,3rem)]">
+            <div className="mx-auto max-w-4xl text-center">
+              <CardTitle className="mt-2.5 text-center font-[family-name:var(--font-smooch)] text-[clamp(2.1rem,8vw,3rem)] font-normal leading-[0.92] tracking-[0.1em] text-white md:text-[clamp(1.7rem,3.6vw,3rem)]">
                 {title}
               </CardTitle>
             </div>
