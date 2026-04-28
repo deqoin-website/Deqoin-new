@@ -34,9 +34,9 @@ export default function StudioVerticalCard({
         style={{ opacity: overlay / 100 }}
       />
 
-      <div className="absolute bottom-8 md:bottom-12 left-6 md:left-10 flex flex-col gap-3 md:gap-4 z-20 max-w-[calc(100%-5rem)] md:max-w-[calc(100%-7rem)] pr-4">
+      <div className="absolute bottom-8 md:bottom-12 left-8 md:left-12 flex flex-col gap-3 md:gap-4 z-20 max-w-[calc(100%-6rem)] md:max-w-[calc(100%-9rem)] pr-4">
         <h3
-          className="text-[calc(3rem-1px)] md:text-[calc(4rem-1px)] lg:text-[calc(5rem-1px)] xl:text-[calc(6rem-1px)] 2xl:text-[calc(6rem-1px)] font-thin text-white uppercase tracking-widest leading-none drop-shadow-lg"
+          className="text-5xl md:text-6xl lg:text-7xl xl:text-8xl 2xl:text-[8rem] font-thin text-white uppercase tracking-widest leading-none drop-shadow-lg"
           style={{ fontFamily: "Smooch Sans, sans-serif", fontWeight: 100 }}
         >
           {title}
@@ -47,12 +47,16 @@ export default function StudioVerticalCard({
         </div>
       </div>
 
-      <p
-        className="absolute top-8 md:top-12 right-4 md:right-6 text-[11px] md:text-sm 2xl:text-base tracking-[0.85em] leading-none text-white font-light uppercase [writing-mode:vertical-rl] rotate-180 whitespace-nowrap z-30"
-        style={{ fontFamily: "Smooch Sans, sans-serif" }}
-      >
-        {sideLabel}
-      </p>
+      <div className="absolute top-0 right-0 h-full w-12 md:w-16 2xl:w-20 bg-zinc-800/90 border-l border-zinc-700/30 z-30 flex flex-col items-center justify-between py-10 md:py-16 backdrop-blur-sm">
+        <span aria-hidden="true" className="flex-1" />
+        <p
+          className="text-[10px] md:text-xs 2xl:text-sm tracking-[0.5em] text-zinc-400 font-light uppercase [writing-mode:vertical-rl] rotate-180 whitespace-nowrap drop-shadow-md"
+          style={{ fontFamily: "Smooch Sans, sans-serif" }}
+        >
+          {sideLabel}
+        </p>
+        <span aria-hidden="true" className="flex-1" />
+      </div>
 
     </>
   );
