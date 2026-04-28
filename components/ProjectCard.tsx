@@ -34,14 +34,14 @@ export default function ProjectCard({
         className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
       />
 
-      <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/30 to-transparent opacity-90 group-hover:opacity-100 transition-opacity duration-500" />
+      <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent z-10 pointer-events-none" />
 
-      <div className="absolute bottom-0 left-0 p-6 md:p-10 2xl:p-16 flex flex-col gap-3 md:gap-4 2xl:gap-6 z-20 text-left">
-        <p className="text-xs md:text-sm 2xl:text-base tracking-[0.4em] uppercase font-light text-white/70">
+      <div className="absolute bottom-6 left-6 md:bottom-8 md:left-8 flex flex-col gap-1 md:gap-2 z-20">
+        <p className="text-[10px] md:text-xs tracking-[0.3em] text-zinc-300 uppercase font-thin">
           {category}
         </p>
         <h3
-          className="text-6xl md:text-7xl lg:text-8xl xl:text-9xl 2xl:text-[10rem] font-thin uppercase tracking-widest leading-none text-white drop-shadow-lg"
+          className="text-2xl md:text-3xl font-light text-white uppercase tracking-widest drop-shadow-md leading-snug"
           style={{ fontFamily: "Smooch Sans, sans-serif", fontWeight: 100 }}
         >
           {title}
