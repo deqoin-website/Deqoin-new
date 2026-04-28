@@ -34,9 +34,9 @@ export default function StudioVerticalCard({
         style={{ opacity: overlay / 100 }}
       />
 
-      <div className="absolute bottom-8 md:bottom-12 left-8 md:left-12 flex flex-col gap-2 z-20 max-w-[calc(100%-5rem)] md:max-w-[calc(100%-7rem)] pr-4">
+      <div className="absolute bottom-8 md:bottom-12 left-8 md:left-12 flex flex-col gap-3 md:gap-4 z-20 max-w-[calc(100%-6rem)] md:max-w-[calc(100%-9rem)] pr-4">
         <h3
-          className="text-5xl md:text-6xl lg:text-7xl xl:text-8xl 2xl:text-9xl font-thin text-white uppercase tracking-widest leading-none drop-shadow-lg break-words"
+          className="text-5xl md:text-6xl lg:text-7xl xl:text-8xl 2xl:text-[8rem] font-thin text-white uppercase tracking-widest leading-none drop-shadow-lg"
           style={{ fontFamily: "Smooch Sans, sans-serif", fontWeight: 100 }}
         >
           {title}
@@ -47,7 +47,15 @@ export default function StudioVerticalCard({
         </div>
       </div>
 
-      <div className="absolute top-0 right-0 h-full w-12 md:w-16 2xl:w-20 bg-black/85 backdrop-blur-md border-l border-white/10 z-30 flex items-center justify-center">
+      <div className="absolute top-0 right-0 h-full w-12 md:w-16 2xl:w-20 bg-zinc-800/90 border-l border-zinc-700/30 z-30 flex flex-col items-center justify-between py-10 md:py-16">
+        <button
+          type="button"
+          aria-label="Kapat"
+          className="absolute top-4 right-4 text-zinc-500 hover:text-white transition-colors z-40"
+        >
+          <span className="material-symbols-outlined text-[18px] leading-none">close</span>
+        </button>
+
         <p
           className="text-[10px] md:text-xs 2xl:text-sm tracking-[0.5em] text-zinc-400 font-light uppercase [writing-mode:vertical-rl] rotate-180 whitespace-nowrap"
           style={{ fontFamily: "Smooch Sans, sans-serif" }}
