@@ -14,6 +14,7 @@ type ExecutionCategoryClientProps = {
 
 export default function ExecutionCategoryClient({ unit }: ExecutionCategoryClientProps) {
   const [isConsultationOpen, setIsConsultationOpen] = useState(false);
+  const [isMobileDrawerOpen, setIsMobileDrawerOpen] = useState(false);
   
   const [currentSlide, setCurrentSlide] = useState(0);
   const heroSlides = unit.sliderImages && unit.sliderImages.length > 0 
@@ -67,6 +68,17 @@ export default function ExecutionCategoryClient({ unit }: ExecutionCategoryClien
         </div>
       </section>
 
+      <div className="mt-6 px-4 lg:hidden">
+        <button
+          type="button"
+          className="mobile-filter-toggle w-full"
+          onClick={() => setIsMobileDrawerOpen(true)}
+        >
+          <span className="material-symbols-outlined">tune</span>
+          KATEGORİLER
+        </button>
+      </div>
+
       <section className="mimari-manifesto">
         <div className="mimari-manifesto-inner">
           <div className="mimari-manifesto-label">
@@ -96,7 +108,10 @@ export default function ExecutionCategoryClient({ unit }: ExecutionCategoryClien
         executionUnitSlug={unit.slug} 
         materialTitle={unit.title} 
         projects={projectsData} 
-        customCategories={unit.categories} 
+        customCategories={unit.categories}
+        mobileDrawerOpen={isMobileDrawerOpen}
+        onMobileDrawerOpenChange={setIsMobileDrawerOpen}
+        hideMobileToggle
       />
 
       <section style={{ padding: "4rem 2rem", textAlign: "center", borderTop: "1px solid rgba(255,255,255,0.05)" }}>

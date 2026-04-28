@@ -14,6 +14,7 @@ type MaterialCategoryClientProps = {
 
 export default function MaterialCategoryClient({ category }: MaterialCategoryClientProps) {
   const [isConsultationOpen, setIsConsultationOpen] = useState(false);
+  const [isMobileDrawerOpen, setIsMobileDrawerOpen] = useState(false);
   
   const [currentSlide, setCurrentSlide] = useState(0);
   const heroSlides = category.sliderImages && category.sliderImages.length > 0 
@@ -67,6 +68,17 @@ export default function MaterialCategoryClient({ category }: MaterialCategoryCli
         </div>
       </section>
 
+      <div className="mt-6 px-4 lg:hidden">
+        <button
+          type="button"
+          className="mobile-filter-toggle w-full"
+          onClick={() => setIsMobileDrawerOpen(true)}
+        >
+          <span className="material-symbols-outlined">tune</span>
+          KATEGORİLER
+        </button>
+      </div>
+
       <div className="no-retail-notice" style={{ marginTop: "4rem", marginBottom: "0" }}>
         <div className="notice-inner">
           <span className="material-symbols-outlined">info</span>
@@ -99,7 +111,15 @@ export default function MaterialCategoryClient({ category }: MaterialCategoryCli
         </div>
       </section>
 
-      <MaterialProjectShowcase materialSlug={category.slug} materialTitle={category.title} projects={projectsData} customCategories={category.categories} />
+      <MaterialProjectShowcase
+        materialSlug={category.slug}
+        materialTitle={category.title}
+        projects={projectsData}
+        customCategories={category.categories}
+        mobileDrawerOpen={isMobileDrawerOpen}
+        onMobileDrawerOpenChange={setIsMobileDrawerOpen}
+        hideMobileToggle
+      />
 
       <section style={{ padding: "4rem 2rem", textAlign: "center", borderTop: "1px solid rgba(255,255,255,0.05)" }}>
         <Link href="/materyal-studyo" className="mimari-ghost-btn" style={{ margin: "0 auto" }}>

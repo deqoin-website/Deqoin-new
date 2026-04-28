@@ -13,6 +13,9 @@ type MaterialProjectShowcaseProps = {
   materialTitle: string;
   projects: ProjectDetail[];
   customCategories?: { label: string; value: string }[];
+  mobileDrawerOpen?: boolean;
+  onMobileDrawerOpenChange?: (open: boolean) => void;
+  hideMobileToggle?: boolean;
 };
 
 const CATEGORY_LABELS: Record<Category, string> = {
@@ -34,12 +37,17 @@ export default function MaterialProjectShowcase({
   materialTitle,
   projects,
   customCategories,
+  mobileDrawerOpen,
+  onMobileDrawerOpenChange,
+  hideMobileToggle = false,
 }: MaterialProjectShowcaseProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState<string>("ALL");
   const [isConsultationOpen, setIsConsultationOpen] = useState(false);
-  const [isMobileDrawerOpen, setIsMobileDrawerOpen] = useState(false);
+  const [internalMobileDrawerOpen, setInternalMobileDrawerOpen] = useState(false);
   const [activeProjectSlug, setActiveProjectSlug] = useState<string | null>(null);
+  const isMobileDrawerOpen = mobileDrawerOpen ?? internalMobileDrawerOpen;
+  const setMobileDrawerOpen = onMobileDrawerOpenChange ?? setInternalMobileDrawerOpen;
 
   const studioProjects = useMemo(() => {
     if (materialSlug) {
@@ -119,7 +127,7 @@ export default function MaterialProjectShowcase({
 
   const handleCategorySelect = (category: string) => {
     setActiveCategory(category);
-    setIsMobileDrawerOpen(false);
+    setMobileDrawerOpen(false);
 
     if (window.innerWidth < 1024) {
       document.querySelector(".studio-gallery")?.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -141,22 +149,24 @@ export default function MaterialProjectShowcase({
         </p>
       </section>
 
-      <div className="mt-6 lg:hidden">
-        <button className="mobile-filter-toggle w-full" onClick={() => setIsMobileDrawerOpen(true)}>
-          <span className="material-symbols-outlined">tune</span>
-          KATEGORİLER
-          {activeCategory !== "ALL" && <span className="active-dot" />}
-        </button>
-      </div>
+      {!hideMobileToggle && (
+        <div className="mt-6 lg:hidden">
+          <button className="mobile-filter-toggle w-full" onClick={() => setMobileDrawerOpen(true)}>
+            <span className="material-symbols-outlined">tune</span>
+            KATEGORİLER
+            {activeCategory !== "ALL" && <span className="active-dot" />}
+          </button>
+        </div>
+      )}
 
       <div
         className={`studio-mobile-drawer-overlay ${isMobileDrawerOpen ? "active" : ""}`}
-        onClick={() => setIsMobileDrawerOpen(false)}
+        onClick={() => setMobileDrawerOpen(false)}
       />
       <div className={`studio-mobile-drawer ${isMobileDrawerOpen ? "active" : ""}`}>
         <div className="drawer-header">
           <h3>KATEGORİLER</h3>
-          <button className="drawer-close" onClick={() => setIsMobileDrawerOpen(false)}>
+          <button className="drawer-close" onClick={() => setMobileDrawerOpen(false)}>
             <span className="material-symbols-outlined">close</span>
           </button>
         </div>
