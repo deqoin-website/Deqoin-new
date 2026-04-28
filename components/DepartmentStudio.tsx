@@ -8,8 +8,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import StudioBackButton from "./StudioBackButton";
 import ProjectInsightPanel from "./ProjectInsightPanel";
 import HeroSlider from "./HeroSlider";
-import WorkflowMarquee from "./WorkflowMarquee";
-import { useWorkflowContent } from "./useWorkflowContent";
+import WorkflowSection, { type WorkflowStep } from "./WorkflowSection";
+import { CalendarDays, Compass, Hammer, Layers, PenTool } from "lucide-react";
 
 interface DepartmentStudioProps {
   title: string;
@@ -45,6 +45,105 @@ const DEFAULT_CATEGORIES: { label: string; value: Category | string }[] = [
   { label: "KÜLTÜR YAPISI", value: "kultur-yapisi" },
 ];
 
+const WORKFLOW_VARIANTS: Record<NonNullable<DepartmentStudioProps["workflowType"]>, WorkflowStep[]> = {
+  design: [
+    {
+      id: "01",
+      title: "Randevu",
+      description: "İhtiyaçlar, hedefler ve beklentiler tek bir çerçevede toplanır.",
+      icon: CalendarDays,
+    },
+    {
+      id: "02",
+      title: "Keşif",
+      description: "Alan, program ve teknik sınırlar yerinde analiz edilir.",
+      icon: Compass,
+    },
+    {
+      id: "03",
+      title: "Tasarım",
+      description: "Kavramsal dil, mekansal kurgu ve detay kararları birleştirilir.",
+      icon: PenTool,
+    },
+    {
+      id: "04",
+      title: "Malzeme",
+      description: "Yüzey, doku ve ürün seçimleri rafine edilir.",
+      icon: Layers,
+    },
+    {
+      id: "05",
+      title: "Uygulama",
+      description: "Sahada üretim, kontrol ve teslim süreci yönetilir.",
+      icon: Hammer,
+    },
+  ],
+  material: [
+    {
+      id: "01",
+      title: "Randevu",
+      description: "Malzeme hedefleri, kullanım senaryosu ve bütçe çerçevesi belirlenir.",
+      icon: CalendarDays,
+    },
+    {
+      id: "02",
+      title: "Keşif",
+      description: "Doku, performans ve dayanım ihtiyaçları teknik olarak değerlendirilir.",
+      icon: Compass,
+    },
+    {
+      id: "03",
+      title: "Tasarım",
+      description: "Uygun yüzey ve birleşim kararlarıyla güçlü bir dil kurulur.",
+      icon: PenTool,
+    },
+    {
+      id: "04",
+      title: "Malzeme",
+      description: "Numune, varyasyon ve final seçimler netleştirilir.",
+      icon: Layers,
+    },
+    {
+      id: "05",
+      title: "Uygulama",
+      description: "Seçilen malzemeler kontrollü şekilde projeye aktarılır.",
+      icon: Hammer,
+    },
+  ],
+  execution: [
+    {
+      id: "01",
+      title: "Randevu",
+      description: "Saha başlangıcı, beklenti ve teslim takvimi planlanır.",
+      icon: CalendarDays,
+    },
+    {
+      id: "02",
+      title: "Keşif",
+      description: "Uygulama sahası, metraj ve üretim koşulları incelenir.",
+      icon: Compass,
+    },
+    {
+      id: "03",
+      title: "Tasarım",
+      description: "Uygulanabilir detaylar ve montaj düzeni netleştirilir.",
+      icon: PenTool,
+    },
+    {
+      id: "04",
+      title: "Malzeme",
+      description: "Tedarik, kalite ve saha koordinasyonu eşleştirilir.",
+      icon: Layers,
+    },
+    {
+      id: "05",
+      title: "Uygulama",
+      description: "İş programı kontrollü biçimde sahaya uygulanır.",
+      icon: Hammer,
+    },
+  ],
+};
+
 export default function DepartmentStudio({ 
   title, 
   subtitle, 
@@ -67,7 +166,7 @@ export default function DepartmentStudio({
   const [isMobileDrawerOpen, setIsMobileDrawerOpen] = useState(false);
   const [activeProjectSlug, setActiveProjectSlug] = useState<string | null>(null);
   const [activeProductCategory, setActiveProductCategory] = useState<string>("ALL");
-  const { workflow } = useWorkflowContent();
+  const workflowSteps = WORKFLOW_VARIANTS[workflowType];
   
   const heroSlides = images && images.length > 0 ? images : [heroImage, ...FALLBACK_SLIDES.filter(img => img !== heroImage)];
 
@@ -139,7 +238,7 @@ export default function DepartmentStudio({
       />
 
       {/* WORKFLOW SECTION */}
-      <WorkflowMarquee steps={workflow.steps} title={workflow.title} className="snap-section" />
+      <WorkflowSection steps={workflowSteps} className="snap-section" />
 
       {/* RICH CONTENT SECTION: FOCUS AREAS */}
       <section className="rich-service-content studio-snap-point">

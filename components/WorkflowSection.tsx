@@ -6,14 +6,14 @@ import { CalendarDays, Compass, Hammer, Layers, PenTool } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 
-type WorkflowStep = {
+export type WorkflowStep = {
   id: string;
   title: string;
   description: string;
   icon: LucideIcon;
 };
 
-const WORKFLOW_STEPS: WorkflowStep[] = [
+const DEFAULT_WORKFLOW_STEPS: WorkflowStep[] = [
   {
     id: "01",
     title: "Randevu",
@@ -131,10 +131,14 @@ function WorkflowDesktopStep({
 
 type WorkflowSectionProps = {
   className?: string;
+  title?: string;
+  steps?: WorkflowStep[];
 };
 
 export default function WorkflowSection({
   className = "",
+  title = "İŞ AKIŞI",
+  steps = DEFAULT_WORKFLOW_STEPS,
 }: WorkflowSectionProps) {
   return (
     <section
@@ -154,7 +158,7 @@ export default function WorkflowSection({
           <CardHeader className="relative flex-none p-4 pb-3 md:p-5 md:pb-4">
             <div className="max-w-4xl">
               <CardTitle className="mt-2.5 font-[family-name:var(--font-smooch)] text-[clamp(2.1rem,8vw,3rem)] font-normal leading-[0.92] tracking-[0.1em] text-white md:text-[clamp(1.7rem,3.6vw,3rem)]">
-                İŞ AKIŞI
+                {title}
               </CardTitle>
             </div>
 
@@ -165,7 +169,7 @@ export default function WorkflowSection({
             <div className="lg:hidden">
               <div className="relative mx-auto max-w-6xl px-0 sm:px-2">
                 <div className="space-y-5">
-                  {WORKFLOW_STEPS.map((step) => (
+                  {steps.map((step) => (
                     <WorkflowMobileStep key={step.id} step={step} />
                   ))}
                 </div>
@@ -176,7 +180,7 @@ export default function WorkflowSection({
               <div className="absolute left-0 right-0 top-1/2 hidden h-px -translate-y-1/2 bg-zinc-500/80 lg:block" />
 
               <div className="flex flex-col lg:flex-row items-center justify-center gap-6 md:gap-10 lg:gap-4 relative w-full">
-                {WORKFLOW_STEPS.map((step, index) => {
+                {steps.map((step, index) => {
                   const isOdd = index % 2 === 0;
 
                   return (
