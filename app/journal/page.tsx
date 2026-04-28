@@ -4,7 +4,17 @@ import { useMemo, useState } from "react";
 
 import JournalCard from "@/components/JournalCard";
 import JournalDrawer from "@/components/JournalDrawer";
-import ProjectFilterSidebar, { type FilterGroup } from "@/components/ProjectFilterSidebar";
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarGroup,
+  SidebarGroupLabel,
+  SidebarInput,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarProvider,
+} from "@/components/ui/sidebar";
 import {
   JOURNAL_CONTENT_TYPES,
   JOURNAL_DEPARTMENTS,
@@ -23,33 +33,6 @@ export default function JournalPage() {
   const [selectedProjectTypes, setSelectedProjectTypes] = useState<string[]>([]);
   const [selectedContentTypes, setSelectedContentTypes] = useState<string[]>([]);
   const [selectedArticleSlug, setSelectedArticleSlug] = useState<string | null>(null);
-
-  const filterGroups: FilterGroup[] = useMemo(
-    () => [
-      {
-        title: "DEPARTMANLAR",
-        description: "MİMARİ OKUMA KATMANLARI",
-        options: JOURNAL_DEPARTMENTS.map((item) => ({ label: item.label, value: item.value })),
-        selectedValues: selectedDepartments,
-        onToggle: (value) => setSelectedDepartments((current) => toggleValue(current, value)),
-      },
-      {
-        title: "PROJE TÜRLERİ",
-        description: "GALERİ KATEGORİLERİYLE SENKRON",
-        options: JOURNAL_PROJECT_TYPES.map((item) => ({ label: item.label, value: item.value })),
-        selectedValues: selectedProjectTypes,
-        onToggle: (value) => setSelectedProjectTypes((current) => toggleValue(current, value)),
-      },
-      {
-        title: "İÇERİK TÜRÜ",
-        description: "EDITORYAL KATEGORİLER",
-        options: JOURNAL_CONTENT_TYPES.map((item) => ({ label: item.label, value: item.value })),
-        selectedValues: selectedContentTypes,
-        onToggle: (value) => setSelectedContentTypes((current) => toggleValue(current, value)),
-      },
-    ],
-    [selectedContentTypes, selectedDepartments, selectedProjectTypes],
-  );
 
   const visibleArticles = useMemo(() => {
     const query = searchTerm.trim().toLowerCase();
@@ -106,50 +89,139 @@ export default function JournalPage() {
           </p>
         </header>
 
-        <div className="grid grid-cols-1 gap-12 lg:grid-cols-[300px_minmax(0,1fr)]">
-          <ProjectFilterSidebar
-            className="hidden lg:flex"
-            title="JOURNAL"
-            searchPlaceholder="MAKALE ARA"
-            searchValue={searchTerm}
-            onSearchChange={setSearchTerm}
-            groups={filterGroups}
-          />
-
-          <div className="flex min-h-0 flex-col gap-8">
-            <div className="lg:hidden">
-              <ProjectFilterSidebar
-                title="JOURNAL"
-                searchPlaceholder="MAKALE ARA"
-                searchValue={searchTerm}
-                onSearchChange={setSearchTerm}
-                groups={filterGroups}
-              />
-            </div>
-
-            {visibleArticles.length > 0 ? (
-              <div className="grid grid-cols-1 xl:grid-cols-2 gap-12 md:gap-16 lg:gap-24 w-full">
-                {visibleArticles.map((article, index) => (
-                  <JournalCard
-                    key={article.slug}
-                    article={article}
-                    loading={index < 2 ? "eager" : "lazy"}
-                    onClick={() => setSelectedArticleSlug(article.slug)}
+        <SidebarProvider defaultOpen>
+          <div className="grid grid-cols-1 gap-12 w-full lg:grid-cols-[300px_minmax(0,1fr)]">
+            <Sidebar collapsible="none" className="w-full border-none bg-transparent shadow-none">
+              <SidebarContent className="sticky top-28 flex flex-col gap-10 bg-transparent">
+                <div className="px-4 mb-8">
+                  <SidebarInput
+                    className="bg-zinc-900/50 border-zinc-800 text-white rounded-none focus-visible:ring-1 focus-visible:ring-zinc-700 h-12 text-xs font-light tracking-widest placeholder:text-zinc-600"
+                    placeholder="MAKALE ARA..."
+                    value={searchTerm}
+                    onChange={(event) => setSearchTerm(event.target.value)}
                   />
-                ))}
-              </div>
-            ) : (
-              <div className="flex min-h-[50vh] items-center justify-center text-center">
-                <p
-                  className="max-w-3xl text-3xl font-thin uppercase tracking-[0.2em] text-white/40 md:text-5xl"
-                  style={{ fontFamily: "Smooch Sans, sans-serif" }}
-                >
-                  ARADIĞINIZ KRİTERLERE UYGUN MAKALE BULUNAMADI.
-                </p>
-              </div>
-            )}
+                </div>
+
+                <SidebarGroup>
+                  <SidebarGroupLabel className="text-[10px] md:text-xs tracking-[0.4em] text-zinc-500 uppercase font-light mb-4 px-4 bg-transparent">
+                    DEPARTMANLAR
+                  </SidebarGroupLabel>
+                  <SidebarMenu>
+                    {JOURNAL_DEPARTMENTS.map((item) => {
+                      const isActive = selectedDepartments.includes(item.value);
+
+                      return (
+                        <SidebarMenuItem key={item.value}>
+                          <SidebarMenuButton
+                            asChild
+                            isActive={isActive}
+                            className="rounded-none hover:bg-zinc-900/60 hover:text-white text-zinc-400 transition-colors h-10 px-4"
+                          >
+                            <button
+                              type="button"
+                              className="w-full text-left text-xs tracking-[0.3em] font-light uppercase"
+                              onClick={() =>
+                                setSelectedDepartments((current) => toggleValue(current, item.value))
+                              }
+                            >
+                              {item.label}
+                            </button>
+                          </SidebarMenuButton>
+                        </SidebarMenuItem>
+                      );
+                    })}
+                  </SidebarMenu>
+                </SidebarGroup>
+
+                <SidebarGroup>
+                  <SidebarGroupLabel className="text-[10px] md:text-xs tracking-[0.4em] text-zinc-500 uppercase font-light mb-4 px-4 bg-transparent">
+                    PROJE TÜRLERİ
+                  </SidebarGroupLabel>
+                  <SidebarMenu>
+                    {JOURNAL_PROJECT_TYPES.map((item) => {
+                      const isActive = selectedProjectTypes.includes(item.value);
+
+                      return (
+                        <SidebarMenuItem key={item.value}>
+                          <SidebarMenuButton
+                            asChild
+                            isActive={isActive}
+                            className="rounded-none hover:bg-zinc-900/60 hover:text-white text-zinc-400 transition-colors h-10 px-4"
+                          >
+                            <button
+                              type="button"
+                              className="w-full text-left text-xs tracking-[0.3em] font-light uppercase"
+                              onClick={() =>
+                                setSelectedProjectTypes((current) => toggleValue(current, item.value))
+                              }
+                            >
+                              {item.label}
+                            </button>
+                          </SidebarMenuButton>
+                        </SidebarMenuItem>
+                      );
+                    })}
+                  </SidebarMenu>
+                </SidebarGroup>
+
+                <SidebarGroup>
+                  <SidebarGroupLabel className="text-[10px] md:text-xs tracking-[0.4em] text-zinc-500 uppercase font-light mb-4 px-4 bg-transparent">
+                    İÇERİK TÜRÜ
+                  </SidebarGroupLabel>
+                  <SidebarMenu>
+                    {JOURNAL_CONTENT_TYPES.map((item) => {
+                      const isActive = selectedContentTypes.includes(item.value);
+
+                      return (
+                        <SidebarMenuItem key={item.value}>
+                          <SidebarMenuButton
+                            asChild
+                            isActive={isActive}
+                            className="rounded-none hover:bg-zinc-900/60 hover:text-white text-zinc-400 transition-colors h-10 px-4"
+                          >
+                            <button
+                              type="button"
+                              className="w-full text-left text-xs tracking-[0.3em] font-light uppercase"
+                              onClick={() =>
+                                setSelectedContentTypes((current) => toggleValue(current, item.value))
+                              }
+                            >
+                              {item.label}
+                            </button>
+                          </SidebarMenuButton>
+                        </SidebarMenuItem>
+                      );
+                    })}
+                  </SidebarMenu>
+                </SidebarGroup>
+              </SidebarContent>
+            </Sidebar>
+
+            <div className="flex min-h-0 flex-col gap-8">
+              {visibleArticles.length > 0 ? (
+                <div className="grid grid-cols-1 xl:grid-cols-2 gap-12 md:gap-16 lg:gap-24 w-full">
+                  {visibleArticles.map((article, index) => (
+                    <JournalCard
+                      key={article.slug}
+                      article={article}
+                      loading={index < 2 ? "eager" : "lazy"}
+                      onClick={() => setSelectedArticleSlug(article.slug)}
+                    />
+                  ))}
+                </div>
+              ) : (
+                <div className="flex min-h-[50vh] items-center justify-center text-center">
+                  <p
+                    className="max-w-3xl text-3xl font-thin uppercase tracking-[0.2em] text-white/40 md:text-5xl"
+                    style={{ fontFamily: "Smooch Sans, sans-serif" }}
+                  >
+                    ARADIĞINIZ KRİTERLERE UYGUN MAKALE BULUNAMADI.
+                  </p>
+                </div>
+              )}
+            </div>
           </div>
-        </div>
+        </SidebarProvider>
       </section>
 
       <JournalDrawer article={selectedArticle} onClose={() => setSelectedArticleSlug(null)} />
