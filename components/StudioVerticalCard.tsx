@@ -34,9 +34,9 @@ export default function StudioVerticalCard({
         style={{ opacity: overlay / 100 }}
       />
 
-      <div className="absolute bottom-8 md:bottom-12 left-8 md:left-12 flex flex-col gap-3 md:gap-4 z-20 max-w-[calc(100%-6rem)] md:max-w-[calc(100%-9rem)] pr-4">
+      <div className="absolute bottom-8 md:bottom-12 left-8 md:left-12 flex flex-col gap-3 md:gap-4 z-20 max-w-[calc(100%-5rem)] md:max-w-[calc(100%-7rem)] pr-4">
         <h3
-          className="text-5xl md:text-6xl lg:text-7xl xl:text-8xl 2xl:text-[8rem] font-thin text-white uppercase tracking-widest leading-none drop-shadow-lg"
+          className="text-4xl md:text-5xl lg:text-6xl xl:text-7xl 2xl:text-[7rem] font-thin text-white uppercase tracking-widest leading-none drop-shadow-lg"
           style={{ fontFamily: "Smooch Sans, sans-serif", fontWeight: 100 }}
         >
           {title}
@@ -47,7 +47,7 @@ export default function StudioVerticalCard({
         </div>
       </div>
 
-      <div className="absolute top-0 right-0 h-full w-12 md:w-16 2xl:w-20 bg-zinc-800/90 border-l border-zinc-700/30 z-30 flex flex-col items-center justify-between py-10 md:py-16">
+      <div className="absolute top-0 right-0 h-full w-10 md:w-12 2xl:w-16 bg-zinc-800/90 border-l border-zinc-700/30 z-30 flex flex-col items-center justify-between py-10 md:py-16">
         <button
           type="button"
           aria-label="Kapat"
@@ -57,7 +57,7 @@ export default function StudioVerticalCard({
         </button>
 
         <p
-          className="text-[10px] md:text-xs 2xl:text-sm tracking-[0.5em] text-zinc-400 font-light uppercase [writing-mode:vertical-rl] rotate-180 whitespace-nowrap"
+          className="text-[10px] md:text-xs 2xl:text-sm tracking-[0.5em] text-white font-light uppercase [writing-mode:vertical-rl] rotate-180 whitespace-nowrap"
           style={{ fontFamily: "Smooch Sans, sans-serif" }}
         >
           {sideLabel}
