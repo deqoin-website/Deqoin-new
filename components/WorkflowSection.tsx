@@ -54,7 +54,7 @@ function WorkflowStepCard({ step }: { step: WorkflowStep }) {
       <CardHeader className="relative flex h-full flex-col gap-5 p-0">
         <div className="flex items-start justify-between gap-4">
           <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full border border-white/10 bg-white/5 text-red-500 backdrop-blur-md">
-            <span className="font-[family-name:var(--font-smooch)] text-[1.35rem] font-normal leading-none tracking-[0.08em] text-red-500">
+            <span className="font-[family-name:var(--font-smooch)] text-[1.35rem] font-semibold leading-none tracking-[0.08em] text-red-500">
               {step.id}
             </span>
           </div>
