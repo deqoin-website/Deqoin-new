@@ -141,7 +141,7 @@ export default function WorkflowSection({
 }: WorkflowSectionProps) {
   return (
     <section
-      className={`w-full min-h-screen bg-zinc-950 flex flex-col justify-center items-center pt-24 md:pt-32 pb-40 md:pb-56 lg:pb-72 overflow-x-hidden ${className}`.trim()}
+      className={`relative w-full min-h-screen bg-zinc-950 flex flex-col items-center pt-40 md:pt-48 lg:pt-56 pb-48 lg:pb-64 overflow-x-hidden ${className}`.trim()}
       aria-label="İş Akış Süreci"
       style={{ fontFamily: "var(--font-smooch)" }}
     >
@@ -150,21 +150,17 @@ export default function WorkflowSection({
         <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.028)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.028)_1px,transparent_1px)] bg-[size:4rem_4rem] opacity-20" />
       </div>
 
-      <div className="relative mx-auto w-full max-w-[1600px] xl:max-w-[1800px]">
-        <div className="relative flex h-full flex-col overflow-hidden rounded-[1.6rem]">
-          <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.02),transparent_42%)]" />
+      <div className="w-full text-center mb-32 md:mb-48 relative z-30">
+        <h2 className="text-4xl md:text-5xl font-thin tracking-[0.3em] text-white uppercase">
+          {title}
+        </h2>
+      </div>
 
-          <CardHeader className="relative flex-none p-4 pb-3 md:p-5 md:pb-4">
-            <div className="mx-auto max-w-4xl text-center">
-              <CardTitle className="mt-2.5 text-center font-[family-name:var(--font-smooch)] text-[clamp(2.1rem,8vw,3rem)] font-normal leading-[0.92] tracking-[0.1em] text-white md:text-[clamp(1.7rem,3.6vw,3rem)]">
-                {title}
-              </CardTitle>
-            </div>
+      <div className="relative w-full max-w-7xl mx-auto px-4 md:px-8 z-20">
+        <div className="relative flex h-full flex-col">
+          <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-zinc-500/80 lg:block" />
 
-            <Separator className="mt-3 bg-zinc-700" />
-          </CardHeader>
-
-          <CardContent className="relative mt-0 mb-32 flex flex-1 flex-col px-4 pb-4 pt-2 md:mt-0 md:mb-48 md:px-5 md:pb-5 md:pt-3 lg:mb-56 lg:mt-24">
+          <CardContent className="relative mt-0 mb-32 flex flex-1 flex-col px-0 pb-4 pt-2 md:mt-0 md:mb-48 md:pb-5 md:pt-3 lg:mb-56 lg:mt-24">
             <div className="lg:hidden">
               <div className="relative mx-auto max-w-6xl px-0 sm:px-2">
                 <div className="space-y-5 border-l border-white/10 pl-6 sm:pl-8">
@@ -178,7 +174,7 @@ export default function WorkflowSection({
             <div className="relative hidden lg:flex lg:h-[30rem]">
               <div className="absolute left-0 right-0 top-1/2 hidden h-px -translate-y-1/2 bg-zinc-500/80 lg:block" />
 
-              <div className="flex flex-col lg:flex-row items-center justify-center gap-6 md:gap-10 lg:gap-4 relative w-full">
+              <div className="relative flex w-full flex-col items-center justify-center gap-6 lg:flex-row lg:gap-4">
                 {steps.map((step, index) => {
                   const isOdd = index % 2 === 0;
 
