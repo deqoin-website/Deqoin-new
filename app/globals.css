@@ -126,6 +126,11 @@ video {
   width: 100%;
 }
 
+.studio-snap-shell {
+  position: relative;
+  width: 100%;
+}
+
 @media (min-width: 1024px) {
   .homepage-snap-shell {
     height: 100vh;
@@ -157,6 +162,37 @@ video {
 
   .homepage-snap-shell > .snap-section,
   .homepage-snap-shell > .homepage-footer-snap {
+    width: 100%;
+  }
+
+  .studio-snap-shell {
+    height: 100vh;
+    height: 100svh;
+    overflow-y: auto;
+    scroll-snap-type: y mandatory;
+    scroll-behavior: smooth;
+    scroll-padding-top: 5rem;
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+  }
+
+  .studio-snap-shell::-webkit-scrollbar {
+    display: none; /* Chrome, Safari and Opera */
+  }
+
+  .studio-snap-shell .snap-section {
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+    height: 100vh !important;
+    height: 100svh !important;
+    width: 100% !important;
+    min-height: 100vh !important;
+    min-height: 100svh !important;
+    overflow: hidden;
+    box-sizing: border-box;
+  }
+
+  .studio-snap-shell > .snap-section {
     width: 100%;
   }
 }
@@ -2909,10 +2945,22 @@ video {
   .snap-section {
     scroll-snap-align: none;
   }
+
+  .studio-snap-shell {
+    scroll-snap-type: none;
+  }
+
+  .studio-snap-shell .snap-section {
+    scroll-snap-align: none;
+  }
 }
 
 @media (max-width: 767px) {
   .homepage-snap-shell .snap-section {
+    min-height: calc(100svh - 4.5rem);
+  }
+
+  .studio-snap-shell .snap-section {
     min-height: calc(100svh - 4.5rem);
   }
 

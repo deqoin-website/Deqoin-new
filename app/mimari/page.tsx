@@ -153,7 +153,7 @@ export default function MimariPage() {
   }, []);
 
   return (
-    <main className="site-shell project-detail-shell mimari-vertical-shell mimari-page h-screen w-full overflow-y-auto snap-y snap-proximity scroll-smooth scroll-pt-20">
+    <main className="site-shell project-detail-shell mimari-vertical-shell mimari-page studio-snap-shell">
       {/* ── DYNAMIC BLURRED HERO ── */}
       <HeroSlider 
         slides={slides.map(img => ({
@@ -165,12 +165,12 @@ export default function MimariPage() {
         }))} 
         onAppointmentClick={() => setIsConsultationOpen(true)}
         showScrollHint={true}
-        className="snap-start w-full min-h-screen flex flex-col justify-center relative"
+        className="snap-section snap-start w-full min-h-screen flex flex-col justify-center relative"
       />
 
-      <WorkflowSection className="snap-start w-full min-h-screen flex flex-col justify-center relative" />
+      <WorkflowSection className="snap-section snap-start w-full min-h-screen flex flex-col justify-center relative" />
 
-      <section className="services-section snap-start w-full min-h-screen flex flex-col justify-center relative gallery-snap-point" style={{ background: "transparent", paddingTop: "6rem", minHeight: "100svh" }}>
+      <section className="services-section snap-section snap-start w-full min-h-screen flex flex-col justify-center relative gallery-snap-point" style={{ background: "transparent", paddingTop: "6rem", minHeight: "100svh" }}>
         
         <div className="services-grid mimari-grid">
           {categories.map((card) => (
@@ -190,7 +190,7 @@ export default function MimariPage() {
       {/* CTA BANNER */}
       <NextStepCarouselSection
         currentStudio="mimari"
-        className="snap-start w-full min-h-screen flex flex-col justify-center items-center relative px-4 md:px-8 bg-[#080808] text-white border-t border-white/8"
+        className="snap-section snap-start w-full min-h-screen flex flex-col justify-center items-center relative px-4 md:px-8 bg-[#080808] text-white border-t border-white/8"
       />
 
       <ConsultationModal 
@@ -198,7 +198,7 @@ export default function MimariPage() {
         onClose={() => setIsConsultationOpen(false)} 
       />
 
-      <section className="snap-start w-full min-h-screen flex flex-col justify-center relative gallery-snap-point" style={{ minHeight: "100svh" }}>
+      <section className="snap-section snap-start w-full min-h-screen flex flex-col justify-center relative gallery-snap-point" style={{ minHeight: "100svh" }}>
         <Footer />
       </section>
     </main>
