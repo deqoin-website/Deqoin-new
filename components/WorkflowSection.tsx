@@ -50,16 +50,16 @@ function WorkflowStepCard({ step }: { step: WorkflowStep }) {
   const Icon = step.icon;
 
   return (
-    <Card className="group relative h-full overflow-hidden rounded-xl border border-zinc-800 bg-[#1A1A1A] shadow-[0_14px_36px_rgba(0,0,0,0.28)] transition-all duration-500 ease-out hover:-translate-y-1 hover:border-zinc-700 hover:shadow-[0_18px_46px_rgba(0,0,0,0.4)]">
-      <CardHeader className="relative flex h-full flex-col gap-5 p-6 md:p-8">
+    <Card className="group relative h-full overflow-hidden rounded-xl border border-white/10 bg-white/5 p-8 backdrop-blur-md transition-all duration-500 hover:bg-white/10">
+      <CardHeader className="relative flex h-full flex-col gap-5 p-0">
         <div className="flex items-start justify-between gap-4">
-          <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full border border-zinc-700 bg-zinc-900 text-red-500">
+          <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full border border-white/10 bg-white/5 text-red-500 backdrop-blur-md">
             <span className="font-[family-name:var(--font-smooch)] text-[1.35rem] font-normal leading-none tracking-[0.08em] text-red-500">
               {step.id}
             </span>
           </div>
 
-          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-zinc-800 bg-zinc-950 text-zinc-400 transition-colors duration-300 group-hover:bg-zinc-900">
+          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-white/10 bg-white/5 text-zinc-400 backdrop-blur-md transition-colors duration-300 group-hover:bg-white/10">
             <Icon className="h-7 w-7 text-zinc-400" />
           </div>
         </div>
@@ -80,13 +80,12 @@ function WorkflowStepCard({ step }: { step: WorkflowStep }) {
 
 function WorkflowMobileStep({ step }: { step: WorkflowStep }) {
   return (
-    <div className="relative pl-10 sm:pl-12">
-      <div className="absolute left-2.5 top-0 bottom-0 w-px bg-zinc-700 sm:left-3.5" />
-      <div className="absolute left-2.5 top-7 z-10 flex h-4 w-4 -translate-x-1/2 items-center justify-center rounded-full border border-zinc-700 bg-zinc-950 sm:left-3.5">
+    <div className="relative">
+      <div className="absolute -left-2 top-8 z-10 flex h-4 w-4 items-center justify-center rounded-full border border-white/15 bg-zinc-950/90 backdrop-blur-md sm:top-9">
         <div className="h-1.5 w-1.5 rounded-full bg-red-500" />
       </div>
 
-      <div className="w-full min-w-0">
+      <div className="w-full min-w-0 pl-6 sm:pl-8">
         <WorkflowStepCard step={step} />
       </div>
     </div>
@@ -103,15 +102,15 @@ function WorkflowDesktopStep({
   const isTop = align === "top";
 
   return (
-    <div className="relative w-full sm:w-[80%] md:w-[70%] lg:w-[18rem] mx-auto h-full">
+    <div className="relative mx-auto h-full w-full lg:w-[18rem] md:w-[70%] sm:w-[80%]">
       <div
-        className={`absolute left-1/2 z-20 flex h-4 w-4 -translate-x-1/2 items-center justify-center rounded-full border border-zinc-500 bg-zinc-950 lg:top-1/2 lg:-translate-y-1/2`}
+        className="absolute left-1/2 z-20 flex h-4 w-4 -translate-x-1/2 items-center justify-center rounded-full border border-white/15 bg-zinc-950/90 backdrop-blur-md lg:top-1/2 lg:-translate-y-1/2"
       >
         <div className="h-1.5 w-1.5 rounded-full bg-red-500" />
       </div>
 
       <div
-        className={`absolute left-1/2 h-8 w-px -translate-x-1/2 bg-zinc-500 lg:top-1/2 ${
+        className={`absolute left-1/2 h-8 w-px -translate-x-1/2 bg-white/15 lg:top-1/2 ${
           isTop ? "lg:-translate-y-full" : "lg:translate-y-0"
         }`}
       />
@@ -142,7 +141,7 @@ export default function WorkflowSection({
 }: WorkflowSectionProps) {
   return (
     <section
-      className={`w-full min-h-screen bg-zinc-950 flex flex-col justify-center items-center py-24 md:py-32 overflow-hidden ${className}`.trim()}
+      className={`w-full min-h-screen bg-zinc-950 flex flex-col justify-center items-center pt-24 md:pt-32 pb-32 lg:pb-56 overflow-hidden ${className}`.trim()}
       aria-label="İş Akış Süreci"
       style={{ fontFamily: "var(--font-smooch)" }}
     >
@@ -151,8 +150,8 @@ export default function WorkflowSection({
         <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.028)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.028)_1px,transparent_1px)] bg-[size:4rem_4rem] opacity-20" />
       </div>
 
-      <div className="w-full max-w-[1600px] xl:max-w-[1800px] mx-auto bg-zinc-900/30 rounded-3xl p-8 md:p-16 lg:p-24 relative border border-zinc-800/50 shadow-2xl">
-        <Card className="relative flex h-full flex-col overflow-hidden rounded-[1.6rem] border border-zinc-900 bg-black shadow-[0_24px_70px_rgba(0,0,0,0.5)]">
+      <div className="relative mx-auto w-full max-w-[1600px] xl:max-w-[1800px]">
+        <div className="relative flex h-full flex-col overflow-hidden rounded-[1.6rem]">
           <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.02),transparent_42%)]" />
 
           <CardHeader className="relative flex-none p-4 pb-3 md:p-5 md:pb-4">
@@ -168,7 +167,7 @@ export default function WorkflowSection({
           <CardContent className="relative mt-0 flex flex-1 flex-col px-4 pb-4 pt-2 md:mt-0 md:px-5 md:pb-5 md:pt-3 lg:mt-24">
             <div className="lg:hidden">
               <div className="relative mx-auto max-w-6xl px-0 sm:px-2">
-                <div className="space-y-5">
+                <div className="space-y-5 border-l border-white/10 pl-6 sm:pl-8">
                   {steps.map((step) => (
                     <WorkflowMobileStep key={step.id} step={step} />
                   ))}
@@ -194,7 +193,7 @@ export default function WorkflowSection({
               </div>
             </div>
           </CardContent>
-        </Card>
+        </div>
       </div>
     </section>
   );
