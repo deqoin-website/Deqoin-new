@@ -20,6 +20,7 @@ interface HeroSliderProps {
   showScrollHint?: boolean;
   autoplayDelay?: number;
   slideTransitionDuration?: number;
+  className?: string;
 }
 
 export default function HeroSlider({
@@ -28,6 +29,7 @@ export default function HeroSlider({
   showScrollHint = false,
   autoplayDelay = 6000,
   slideTransitionDuration = 1.2,
+  className,
 }: HeroSliderProps) {
   const [index, setIndex] = useState(0);
   const [direction, setDirection] = useState(0);
@@ -111,7 +113,7 @@ export default function HeroSlider({
 
   return (
     <section 
-      className="hero-section snap-section" 
+      className={className ? `hero-section ${className}` : "hero-section snap-section"} 
       onTouchStart={handleTouchStart} 
       onTouchEnd={handleTouchEnd}
       style={{ height: '100vh', minHeight: '100vh', position: 'relative', overflow: 'hidden', boxSizing: 'border-box' }}

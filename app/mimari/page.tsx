@@ -153,7 +153,7 @@ export default function MimariPage() {
   }, []);
 
   return (
-    <main className="site-shell project-detail-shell mimari-vertical-shell mimari-page">
+    <main className="site-shell project-detail-shell mimari-vertical-shell mimari-page h-screen w-full overflow-y-auto snap-y snap-proximity scroll-smooth scroll-pt-20">
       {/* ── DYNAMIC BLURRED HERO ── */}
       <HeroSlider 
         slides={slides.map(img => ({
@@ -165,11 +165,12 @@ export default function MimariPage() {
         }))} 
         onAppointmentClick={() => setIsConsultationOpen(true)}
         showScrollHint={true}
+        className="snap-start w-full min-h-screen flex flex-col justify-center relative"
       />
 
-      <WorkflowSection className="snap-section" />
+      <WorkflowSection className="snap-start w-full min-h-screen flex flex-col justify-center relative" />
 
-      <section className="services-section snap-section gallery-snap-point" style={{ background: "transparent", paddingTop: "6rem", minHeight: "100svh" }}>
+      <section className="services-section snap-start w-full min-h-screen flex flex-col justify-center relative gallery-snap-point" style={{ background: "transparent", paddingTop: "6rem", minHeight: "100svh" }}>
         
         <div className="services-grid mimari-grid">
           {categories.map((card) => (
@@ -187,14 +188,17 @@ export default function MimariPage() {
       </section>
 
       {/* CTA BANNER */}
-      <NextStepCarouselSection currentStudio="mimari" />
+      <NextStepCarouselSection
+        currentStudio="mimari"
+        className="snap-start w-full min-h-screen flex flex-col justify-center items-center relative px-4 md:px-8 bg-[#080808] text-white border-t border-white/8"
+      />
 
       <ConsultationModal 
         isOpen={isConsultationOpen} 
         onClose={() => setIsConsultationOpen(false)} 
       />
 
-      <section className="snap-section gallery-snap-point" style={{ minHeight: "100svh" }}>
+      <section className="snap-start w-full min-h-screen flex flex-col justify-center relative gallery-snap-point" style={{ minHeight: "100svh" }}>
         <Footer />
       </section>
     </main>

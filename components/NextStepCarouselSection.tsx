@@ -42,8 +42,10 @@ function resolveStudio(pathname?: string, fallback?: StudioKey): StudioKey | nul
 
 export default function NextStepCarouselSection({
   currentStudio,
+  className,
 }: {
   currentStudio?: StudioKey;
+  className?: string;
 }) {
   const pathname = usePathname();
   const studio = resolveStudio(pathname, currentStudio);
@@ -53,7 +55,13 @@ export default function NextStepCarouselSection({
   const nextStep = NEXT_STEP_BY_STUDIO[studio];
 
   return (
-    <section className="next-step-section w-full flex justify-center items-center px-4 md:px-8 py-16 md:py-24 bg-[#080808] text-white border-t border-white/8">
+    <section
+      className={
+        className
+          ? `next-step-section ${className}`
+          : "next-step-section w-full flex justify-center items-center px-4 md:px-8 py-16 md:py-24 bg-[#080808] text-white border-t border-white/8"
+      }
+    >
       <div className="w-full">
         <Link href={nextStep.href} className="block w-full">
           <div className="relative w-full max-w-[90rem] mx-auto aspect-square md:aspect-[21/9] lg:h-[500px] overflow-hidden group cursor-pointer rounded-none">
