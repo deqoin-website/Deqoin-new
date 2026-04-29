@@ -47,17 +47,6 @@ export default function StudioVerticalCard({
         </div>
       </div>
 
-      <div className="absolute top-0 right-0 h-full w-12 md:w-16 2xl:w-20 bg-zinc-800/90 border-l border-zinc-700/30 z-30 flex flex-col items-center justify-between py-10 md:py-16">
-        <span aria-hidden="true" className="flex-1" />
-        <p
-          className="text-[10px] md:text-xs 2xl:text-sm tracking-[0.5em] text-zinc-400 font-light uppercase [writing-mode:vertical-rl] rotate-180 whitespace-nowrap drop-shadow-md"
-          style={{ fontFamily: "Smooch Sans, sans-serif" }}
-        >
-          {sideLabel}
-        </p>
-        <span aria-hidden="true" className="flex-1" />
-      </div>
-
     </>
   );
 
