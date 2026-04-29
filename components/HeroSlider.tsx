@@ -18,9 +18,17 @@ interface HeroSliderProps {
   slides: HeroSlide[];
   onAppointmentClick: () => void;
   showScrollHint?: boolean;
+  autoplayDelay?: number;
+  slideTransitionDuration?: number;
 }
 
-export default function HeroSlider({ slides, onAppointmentClick, showScrollHint = false }: HeroSliderProps) {
+export default function HeroSlider({
+  slides,
+  onAppointmentClick,
+  showScrollHint = false,
+  autoplayDelay = 6000,
+  slideTransitionDuration = 1.2,
+}: HeroSliderProps) {
   const [index, setIndex] = useState(0);
   const [direction, setDirection] = useState(0);
   const [isIntroReady, setIsIntroReady] = useState(false);
@@ -64,9 +72,9 @@ export default function HeroSlider({ slides, onAppointmentClick, showScrollHint 
     const timer = setInterval(() => {
       setDirection(1);
       setIndex((prev) => (prev + 1) % slides.length);
-    }, 6000);
+    }, autoplayDelay);
     return () => clearInterval(timer);
-  }, [slides.length]);
+  }, [slides.length, autoplayDelay]);
 
   const navigate = (newDirection: number) => {
     playFlipSound();
@@ -98,7 +106,7 @@ export default function HeroSlider({ slides, onAppointmentClick, showScrollHint 
     background: "#cca883",
     width: "100%",
     transformOrigin: "left",
-    animation: "heroLineProgress 6s linear forwards",
+    animation: `heroLineProgress ${autoplayDelay}ms linear forwards`,
   };
 
   return (
@@ -121,7 +129,7 @@ export default function HeroSlider({ slides, onAppointmentClick, showScrollHint 
               initial={{ opacity: 0, scale: 1.08, x: direction >= 0 ? 40 : -40, filter: "blur(14px) brightness(0.24)" }}
               animate={{ opacity: isIntroReady ? 1 : 0, scale: 1, x: 0, filter: "blur(0px) brightness(0.4)" }}
               exit={{ opacity: 0, scale: 1.08, x: direction >= 0 ? -40 : 40, filter: "blur(16px) brightness(0.18)" }}
-              transition={{ duration: 1.2, ease: [0.77, 0, 0.175, 1] }}
+              transition={{ duration: slideTransitionDuration, ease: [0.77, 0, 0.175, 1] }}
               style={{ width: '100%', height: '100%', objectFit: 'cover' }}
             >
               <source src={currentSlide?.mediaUrl} />
@@ -148,7 +156,7 @@ export default function HeroSlider({ slides, onAppointmentClick, showScrollHint 
                 x: direction >= 0 ? -40 : 40, 
                 filter: `blur(${Math.max((currentSlide?.blur || 0), 1) + 8}px) brightness(0.2) saturate(0.85)` 
               }}
-              transition={{ duration: 1.2, ease: [0.77, 0, 0.175, 1] }}
+              transition={{ duration: slideTransitionDuration, ease: [0.77, 0, 0.175, 1] }}
               style={{
                 backgroundImage: `url(${currentSlide?.image || currentSlide?.mediaUrl})`,
                 backgroundSize: "cover",

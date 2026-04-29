@@ -101,6 +101,8 @@ export default function Page() {
       <HeroSlider 
         slides={slides} 
         onAppointmentClick={() => setIsConsultationOpen(true)} 
+        autoplayDelay={8000}
+        slideTransitionDuration={1}
       />
 
         <WorkflowSection className="snap-section homepage-workflow-section" />
