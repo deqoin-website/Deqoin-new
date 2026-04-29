@@ -12,6 +12,9 @@ type SwipeAppointmentButtonProps = {
 
 const HANDLE_SIZE = 58;
 const TRACK_PADDING = 4;
+const NUDGE_OUT_DURATION = 4.8;
+const NUDGE_BACK_DURATION = 3.3;
+const NUDGE_PAUSE_MS = 150;
 
 export default function SwipeAppointmentButton({
   onActivate,
@@ -63,37 +66,37 @@ export default function SwipeAppointmentButton({
 
     const runNudge = async () => {
       while (!cancelled) {
-        // Minimal initial pause for a near-continuous flow
+        // Deliberate pause to keep the motion calm and understated
         await new Promise<void>((resolve) => {
-          nudgeTimeoutRef.current = window.setTimeout(() => resolve(), 100);
+          nudgeTimeoutRef.current = window.setTimeout(() => resolve(), NUDGE_PAUSE_MS);
         });
         if (cancelled || hasInteracted) break;
 
-        // Slow, fluid slide out to the FULL distance
+        // Slower, fluid slide out to the FULL distance
         await animate(x, travel, {
           type: "tween",
-          duration: 3.2, // Slightly increased for the full distance consistency
+          duration: NUDGE_OUT_DURATION,
           ease: [0.445, 0.05, 0.55, 0.95],
         }).finished;
         if (cancelled || hasInteracted) break;
 
-        // Negligible pause at the end
+        // Deliberate pause at the end
         await new Promise<void>((resolve) => {
-          nudgeCycleRef.current = window.setTimeout(() => resolve(), 100);
+          nudgeCycleRef.current = window.setTimeout(() => resolve(), NUDGE_PAUSE_MS);
         });
         if (cancelled || hasInteracted) break;
 
-        // Extremely slow drift back to zero
+        // Slower drift back to zero
         await animate(x, 0, {
           type: "tween",
-          duration: 2.2,
+          duration: NUDGE_BACK_DURATION,
           ease: [0.445, 0.05, 0.55, 0.95],
         }).finished;
         if (cancelled || hasInteracted) break;
 
-        // Minimal pause before restarting the cycle
+        // Deliberate pause before restarting the cycle
         await new Promise<void>((resolve) => {
-          nudgeCycleRef.current = window.setTimeout(() => resolve(), 100);
+          nudgeCycleRef.current = window.setTimeout(() => resolve(), NUDGE_PAUSE_MS);
         });
       }
     };
