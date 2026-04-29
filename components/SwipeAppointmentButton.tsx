@@ -12,9 +12,9 @@ type SwipeAppointmentButtonProps = {
 
 const HANDLE_SIZE = 58;
 const TRACK_PADDING = 4;
-const NUDGE_OUT_DURATION = 4.8;
-const NUDGE_BACK_DURATION = 3.3;
-const NUDGE_PAUSE_MS = 150;
+const NUDGE_OUT_DURATION = 5.76;
+const NUDGE_BACK_DURATION = 3.96;
+const NUDGE_PAUSE_MS = 180;
 
 export default function SwipeAppointmentButton({
   onActivate,
