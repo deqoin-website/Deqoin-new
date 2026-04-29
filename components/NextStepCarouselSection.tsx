@@ -53,10 +53,10 @@ export default function NextStepCarouselSection({
   const nextStep = NEXT_STEP_BY_STUDIO[studio];
 
   return (
-    <section className="next-step-section bg-[#080808] text-white border-t border-white/8">
-      <div className="w-full flex justify-center px-4 md:px-8 mt-12 mb-24">
+    <section className="next-step-section w-full flex justify-center items-center px-4 md:px-8 py-16 md:py-24 bg-[#080808] text-white border-t border-white/8">
+      <div className="w-full">
         <Link href={nextStep.href} className="block w-full">
-          <div className="relative w-full max-w-6xl aspect-square md:aspect-[21/9] lg:h-[500px] overflow-hidden group cursor-pointer rounded-none">
+          <div className="relative w-full max-w-[90rem] mx-auto aspect-square md:aspect-[21/9] lg:h-[500px] overflow-hidden group cursor-pointer rounded-none">
             <Image
               src={nextStep.image}
               alt={nextStep.title}
