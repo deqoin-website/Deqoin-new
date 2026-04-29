@@ -3,7 +3,7 @@
 import type { LucideIcon } from "lucide-react";
 import { CalendarDays, Compass, Hammer, Layers, PenTool } from "lucide-react";
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 
 export type WorkflowStep = {
@@ -50,7 +50,7 @@ function WorkflowStepCard({ step }: { step: WorkflowStep }) {
   const Icon = step.icon;
 
   return (
-    <Card className="group relative h-full overflow-hidden rounded-xl border border-white/10 bg-white/5 p-8 backdrop-blur-md transition-all duration-500 hover:bg-white/10">
+    <Card className="group relative w-full rounded-xl border border-white/10 bg-white/5 p-6 backdrop-blur-md transition-all duration-500 hover:bg-white/10 lg:p-8">
       <CardHeader className="relative flex h-full flex-col gap-5 p-0">
         <div className="flex items-start justify-between gap-4">
           <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full border border-white/10 bg-white/5 text-red-500 backdrop-blur-md">
@@ -92,42 +92,6 @@ function WorkflowMobileStep({ step }: { step: WorkflowStep }) {
   );
 }
 
-function WorkflowDesktopStep({
-  step,
-  align,
-}: {
-  step: WorkflowStep;
-  align: "top" | "bottom";
-}) {
-  const isTop = align === "top";
-
-  return (
-    <div className="relative mx-auto h-full w-full lg:w-[18rem] md:w-[70%] sm:w-[80%]">
-      <div
-        className="absolute left-1/2 z-20 flex h-4 w-4 -translate-x-1/2 items-center justify-center rounded-full border border-white/15 bg-zinc-950/90 backdrop-blur-md lg:top-1/2 lg:-translate-y-1/2"
-      >
-        <div className="h-1.5 w-1.5 rounded-full bg-red-500" />
-      </div>
-
-      <div
-        className={`absolute left-1/2 h-8 w-px -translate-x-1/2 bg-white/15 lg:top-1/2 ${
-          isTop ? "lg:-translate-y-full" : "lg:translate-y-0"
-        }`}
-      />
-
-      <div
-        className={`absolute left-0 right-0 ${
-          isTop ? "lg:bottom-[calc(50%+2rem)]" : "lg:top-[calc(50%+2rem)]"
-        }`}
-      >
-        <div className="w-full mx-auto">
-          <WorkflowStepCard step={step} />
-        </div>
-      </div>
-    </div>
-  );
-}
-
 type WorkflowSectionProps = {
   className?: string;
   title?: string;
@@ -141,7 +105,7 @@ export default function WorkflowSection({
 }: WorkflowSectionProps) {
   return (
     <section
-      className={`relative w-full min-h-screen bg-zinc-950 flex flex-col items-center pt-40 md:pt-48 lg:pt-56 pb-48 lg:pb-64 overflow-x-hidden ${className}`.trim()}
+      className={`relative w-full pt-24 pb-48 md:pt-32 md:pb-64 bg-zinc-950 overflow-hidden flex flex-col items-center ${className}`.trim()}
       aria-label="İş Akış Süreci"
       style={{ fontFamily: "var(--font-smooch)" }}
     >
@@ -156,39 +120,29 @@ export default function WorkflowSection({
         </h2>
       </div>
 
-      <div className="relative w-full max-w-7xl mx-auto px-4 md:px-8 z-20">
-        <div className="relative flex h-full flex-col">
-          <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-zinc-500/80 lg:block" />
+      <div className="relative w-full max-w-7xl mx-auto px-4 md:px-8 mt-24">
+        {/* MASAÜSTÜ YATAY ÇİZGİ (Tam Ortada) */}
+        <div className="hidden md:block absolute top-1/2 left-4 right-4 h-[1px] bg-zinc-800 -translate-y-1/2 z-0" />
 
-          <CardContent className="relative mt-0 mb-32 flex flex-1 flex-col px-0 pb-4 pt-2 md:mt-0 md:mb-48 md:pb-5 md:pt-3 lg:mb-56 lg:mt-24">
-            <div className="lg:hidden">
-              <div className="relative mx-auto max-w-6xl px-0 sm:px-2">
-                <div className="space-y-5 border-l border-white/10 pl-6 sm:pl-8">
-                  {steps.map((step) => (
-                    <WorkflowMobileStep key={step.id} step={step} />
-                  ))}
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-6 md:gap-8 relative z-10 items-center">
+          {steps.map((step, index) => {
+            const isTop = index % 2 === 0;
+            const wrapperClassName = isTop
+              ? "col-span-1 md:-translate-y-[60%] flex flex-col items-center"
+              : "col-span-1 md:translate-y-[60%] flex flex-col items-center mt-12 md:mt-0";
+
+            return (
+              <div key={step.id} className={wrapperClassName}>
+                <div className="md:hidden w-full">
+                  <WorkflowMobileStep step={step} />
+                </div>
+
+                <div className="hidden w-full md:block">
+                  <WorkflowStepCard step={step} />
                 </div>
               </div>
-            </div>
-
-            <div className="relative hidden lg:flex lg:h-[30rem]">
-              <div className="absolute left-0 right-0 top-1/2 hidden h-px -translate-y-1/2 bg-zinc-500/80 lg:block" />
-
-              <div className="relative flex w-full flex-col items-center justify-center gap-6 lg:flex-row lg:gap-4">
-                {steps.map((step, index) => {
-                  const isOdd = index % 2 === 0;
-
-                  return (
-                    <WorkflowDesktopStep
-                      key={step.id}
-                      step={step}
-                      align={isOdd ? "top" : "bottom"}
-                    />
-                  );
-                })}
-              </div>
-            </div>
-          </CardContent>
+            );
+          })}
         </div>
       </div>
     </section>
