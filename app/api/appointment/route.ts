@@ -12,9 +12,9 @@ export async function POST(request: Request) {
       email: clientEmail, 
       phone, 
       company, 
-      city, 
+      city,
+      location,
       department, 
-      subCategory, 
       note 
     } = body;
 
@@ -27,8 +27,8 @@ export async function POST(request: Request) {
       surname: lastName,
       email: clientEmail,
       phone: phone,
-      city: `${city} ${company ? `(${company})` : ""}`.trim(),
-      interestedDepartment: `${department} - ${subCategory}`,
+      city: location || `${city} ${company ? `(${company})` : ""}`.trim() || "Belirtilmedi",
+      interestedDepartment: department || "Belirtilmedi",
       projectDetails: note,
       status: "Yeni"
     };
@@ -72,10 +72,9 @@ export async function POST(request: Request) {
           <p style="margin: 10px 0;"><b>Müşteri:</b> ${firstName} ${lastName}</p>
           <p style="margin: 10px 0;"><b>E-Posta:</b> <a href="mailto:${clientEmail}">${clientEmail}</a></p>
           <p style="margin: 10px 0;"><b>Telefon:</b> <a href="tel:${phone}">${phone}</a></p>
-          <p style="margin: 10px 0;"><b>Lokasyon:</b> ${city} ${company ? `(${company})` : ""}</p>
+          <p style="margin: 10px 0;"><b>Lokasyon:</b> ${location || `${city} ${company ? `(${company})` : ""}`.trim() || "Belirtilmedi"}</p>
           <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;" />
           <p style="margin: 10px 0;"><b>Departman:</b> ${department}</p>
-          <p style="margin: 10px 0;"><b>Alt Dal:</b> ${subCategory}</p>
           <div style="margin-top: 20px; padding: 15px; background: #f9f9f9; border-left: 4px solid #000;">
             <p style="margin: 0; font-weight: bold; margin-bottom: 10px;">Müşteri Notu:</p>
             <p style="margin: 0; line-height: 1.6;">${note}</p>
