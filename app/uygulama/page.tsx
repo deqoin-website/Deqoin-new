@@ -4,7 +4,7 @@ import { useRef, useEffect, useState } from "react";
 import ConsultationModal from "../../components/ConsultationModal";
 import { Loader2 } from "lucide-react";
 import { uygulamaBirimleri } from "../../data/uygulama-birimleri";
-import ProjectCard from "../../components/ProjectCard";
+import StudioVerticalCard from "../../components/StudioVerticalCard";
 import HeroSlider from "../../components/HeroSlider";
 import WorkflowSection from "../../components/WorkflowSection";
 import NextStepCarouselSection from "../../components/NextStepCarouselSection";
@@ -101,12 +101,11 @@ export default function UygulamaPage() {
 
           <div className="services-grid material-studio-grid uygulama-grid">
             {executionCategories.map((card) => (
-              <ProjectCard
+              <StudioVerticalCard
                 key={card.slug}
                 href={`/uygulama/${card.slug}`}
                 image={card.image}
                 title={card.title}
-                category={card.sideLabel}
               />
             ))}
           </div>

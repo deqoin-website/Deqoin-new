@@ -6,7 +6,7 @@ import { Loader2 } from "lucide-react";
 import HeroSlider from "../../components/HeroSlider";
 import WorkflowSection from "../../components/WorkflowSection";
 import NextStepCarouselSection from "../../components/NextStepCarouselSection";
-import ProjectCard from "../../components/ProjectCard";
+import StudioVerticalCard from "../../components/StudioVerticalCard";
 import { materyalKategorileri } from "../../data/materyal-studyo";
 
 const materialCategories = materyalKategorileri;
@@ -93,12 +93,11 @@ export default function MateryalStudyo() {
 
           <div className="services-grid material-studio-grid materyal-studyo-grid">
             {categoryItems.map((card: any) => (
-              <ProjectCard
+              <StudioVerticalCard
                 key={card.slug}
                 href={`/materyal-studyo/${card.slug}`}
                 image={card.image}
                 title={card.title}
-                category={card.sideLabel}
               />
             ))}
           </div>
