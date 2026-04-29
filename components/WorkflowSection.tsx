@@ -105,7 +105,7 @@ export default function WorkflowSection({
 }: WorkflowSectionProps) {
   return (
     <section
-      className={`relative w-full pt-24 pb-48 md:pt-32 md:pb-64 bg-zinc-950 overflow-hidden flex flex-col items-center ${className}`.trim()}
+      className={`relative w-full pt-16 md:pt-20 lg:pt-24 pb-48 md:pb-64 bg-zinc-950 overflow-hidden flex flex-col items-center ${className}`.trim()}
       aria-label="İş Akış Süreci"
       style={{ fontFamily: "var(--font-smooch)" }}
     >
@@ -120,7 +120,7 @@ export default function WorkflowSection({
         </h2>
       </div>
 
-      <div className="relative w-full max-w-7xl mx-auto px-4 md:px-8 mt-24">
+      <div className="relative w-full max-w-7xl mx-auto px-4 md:px-8 mt-12 md:mt-16">
         {/* MASAÜSTÜ YATAY ÇİZGİ (Tam Ortada) */}
         <div className="hidden md:block absolute top-1/2 left-4 right-4 h-[1px] bg-zinc-800 -translate-y-1/2 z-0" />
 
