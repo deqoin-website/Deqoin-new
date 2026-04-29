@@ -141,7 +141,7 @@ export default function WorkflowSection({
 }: WorkflowSectionProps) {
   return (
     <section
-      className={`w-full min-h-screen bg-zinc-950 flex flex-col justify-center items-center pt-24 md:pt-32 pb-32 lg:pb-56 overflow-hidden ${className}`.trim()}
+      className={`w-full min-h-screen bg-zinc-950 flex flex-col justify-center items-center pt-24 md:pt-32 pb-40 md:pb-56 lg:pb-72 overflow-x-hidden ${className}`.trim()}
       aria-label="İş Akış Süreci"
       style={{ fontFamily: "var(--font-smooch)" }}
     >
@@ -164,7 +164,7 @@ export default function WorkflowSection({
             <Separator className="mt-3 bg-zinc-700" />
           </CardHeader>
 
-          <CardContent className="relative mt-0 flex flex-1 flex-col px-4 pb-4 pt-2 md:mt-0 md:px-5 md:pb-5 md:pt-3 lg:mt-24">
+          <CardContent className="relative mt-0 mb-32 flex flex-1 flex-col px-4 pb-4 pt-2 md:mt-0 md:mb-48 md:px-5 md:pb-5 md:pt-3 lg:mb-56 lg:mt-24">
             <div className="lg:hidden">
               <div className="relative mx-auto max-w-6xl px-0 sm:px-2">
                 <div className="space-y-5 border-l border-white/10 pl-6 sm:pl-8">
