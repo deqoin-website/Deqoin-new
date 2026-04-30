@@ -1,5 +1,7 @@
 "use client";
 
+/* eslint-disable @next/next/no-img-element */
+
 import { useEffect, useState } from "react";
 import ConsultationModal from "../components/ConsultationModal";
 import HeroSlider from "../components/HeroSlider";
@@ -16,33 +18,44 @@ const SERVICE_CARD_IMAGE_BY_TYPE: Record<string, string> = {
   execution: "/images/workflow/execution-studio-home.png",
 };
 
+const DEFAULT_SERVICE_CARDS = [
+  {
+    href: "/mimari",
+    title: "Design Studio",
+    subTitle: "Mimari Tasarım",
+    sideLabel: "Structural Integrity",
+    image: SERVICE_CARD_IMAGE_BY_TYPE.design,
+    studioType: "design",
+    blur: 0,
+    overlay: 30,
+  },
+  {
+    href: "/materyal-studyo",
+    title: "Material Studio",
+    subTitle: "Ürün ve Malzeme",
+    sideLabel: "Aesthetic Soul",
+    image: SERVICE_CARD_IMAGE_BY_TYPE.material,
+    studioType: "material",
+    blur: 0,
+    overlay: 30,
+  },
+  {
+    href: "/uygulama",
+    title: "Execution Studio",
+    subTitle: "Uygulama Hizmetleri",
+    sideLabel: "Precision Craft",
+    image: SERVICE_CARD_IMAGE_BY_TYPE.execution,
+    studioType: "execution",
+    blur: 0,
+    overlay: 30,
+  },
+];
+
 export default function Page() {
   const [isConsultationOpen, setIsConsultationOpen] = useState(false);
   const [slides, setSlides] = useState<any[]>([]);
 
-  const [serviceCards, setServiceCards] = useState<any[]>([
-    {
-      href: "/mimari",
-      title: "Design Studio",
-      subTitle: "Mimari Tasarım",
-      sideLabel: "Structural Integrity",
-      image: SERVICE_CARD_IMAGE_BY_TYPE.design,
-    },
-    {
-      href: "/materyal-studyo",
-      title: "Material Studio",
-      subTitle: "Ürün ve Malzeme",
-      sideLabel: "Aesthetic Soul",
-      image: SERVICE_CARD_IMAGE_BY_TYPE.material,
-    },
-    {
-      href: "/uygulama",
-      title: "Execution Studio",
-      subTitle: "Uygulama Hizmetleri",
-      sideLabel: "Precision Craft",
-      image: SERVICE_CARD_IMAGE_BY_TYPE.execution,
-    },
-  ]);
+  const [serviceCards, setServiceCards] = useState<any[]>(DEFAULT_SERVICE_CARDS);
   useEffect(() => {
     const fetchSlides = async () => {
       try {
@@ -77,16 +90,25 @@ export default function Page() {
         if (res.ok) {
           const data = await res.json();
           if (data.length > 0) {
-             const mapped = data.map((card: any) => ({
-                href: card.studioType === 'design' ? '/mimari' : card.studioType === 'material' ? '/materyal-studyo' : '/uygulama',
-                title: card.title,
-                subTitle: card.description,
-                image: resolveStudioCardImage(card.image, card.studioType) || SERVICE_CARD_IMAGE_BY_TYPE[card.studioType] || SERVICE_CARD_IMAGE_BY_TYPE.execution,
-                sideLabel: card.studioType === 'design' ? 'Structural Integrity' : card.studioType === 'material' ? 'Aesthetic Soul' : 'Precision Craft',
-                blur: card.blur || 0,
-                overlay: card.overlay ?? 30
-             }));
-             setServiceCards(mapped);
+             const mappedByType = new Map(
+              data.map((card: any) => [
+                card.studioType,
+                {
+                  href: card.studioType === 'design' ? '/mimari' : card.studioType === 'material' ? '/materyal-studyo' : '/uygulama',
+                  title: card.title,
+                  subTitle: card.description,
+                  image: resolveStudioCardImage(card.image, card.studioType) || SERVICE_CARD_IMAGE_BY_TYPE[card.studioType] || SERVICE_CARD_IMAGE_BY_TYPE.execution,
+                  sideLabel: card.studioType === 'design' ? 'Structural Integrity' : card.studioType === 'material' ? 'Aesthetic Soul' : 'Precision Craft',
+                  blur: card.blur || 0,
+                  overlay: card.overlay ?? 30,
+                  studioType: card.studioType,
+                },
+              ]),
+             );
+
+             setServiceCards(
+              DEFAULT_SERVICE_CARDS.map((fallback) => mappedByType.get(fallback.studioType) || fallback),
+             );
           }
         }
       } catch (err) {

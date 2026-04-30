@@ -39,13 +39,17 @@ const DEFAULT_CARDS = [
 export async function GET() {
   try {
     await connectToDatabase();
-    let cards = await StudioCard.find().sort({ order: 1 });
-    
-    // Seed if empty
-    if (cards.length === 0) {
-      cards = await StudioCard.insertMany(DEFAULT_CARDS);
+    const existing = await StudioCard.find().sort({ order: 1 });
+    const existingByType = new Map(existing.map((card) => [card.studioType, card]));
+
+    for (const seed of DEFAULT_CARDS) {
+      if (!existingByType.has(seed.studioType)) {
+        const created = await StudioCard.create(seed);
+        existingByType.set(seed.studioType, created);
+      }
     }
 
+    const cards = DEFAULT_CARDS.map((seed) => existingByType.get(seed.studioType) ?? seed);
     return NextResponse.json(cards);
   } catch (error) {
     console.error("Studio Cards GET error:", error);
