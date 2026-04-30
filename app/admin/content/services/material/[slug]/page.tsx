@@ -21,12 +21,12 @@ import {
   Sparkles,
   Target,
   Trash2,
-  Upload,
   Wrench,
   X,
 } from 'lucide-react';
 
 import { useNotification } from '@/components/admin/AdminNotificationProvider';
+import { AdminImageDropzone } from '@/components/admin/AdminImageDropzone';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -466,39 +466,28 @@ export default function MaterialDetailEditor() {
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-4">
-                    <label className="group relative flex aspect-[4/3] cursor-pointer items-center justify-center overflow-hidden rounded-[1.5rem] border-2 border-dashed border-[color:var(--line)] bg-[color:var(--surface)]">
-                      {currentHero ? (
-                        <img src={currentHero} alt={department.title} className="h-full w-full object-cover" />
-                      ) : (
-                        <div className="flex flex-col items-center gap-3 p-6 text-center text-[color:var(--text-muted)]">
-                          <Upload className="h-7 w-7 text-[color:var(--accent)]" />
-                          <p className="text-sm font-medium text-[color:var(--text)]">Görsel ekleyin</p>
-                        </div>
-                      )}
-                      <input
-                        type="file"
-                        accept="image/*,video/*"
-                        className="hidden"
-                        onChange={async (event) => {
-                          const file = event.target.files?.[0];
-                          if (!file) return;
-                          try {
-                            const url = await uploadFile(file);
-                            const next = cloneDepartment(department);
-                            next.image = url;
-                            next.mediaType = file.type.startsWith('video/') ? 'video' : 'image';
-                            setDepartment(next);
-                            setIsDirty(true);
-                            await saveDepartment(next);
-                            showToast('Kapak görseli güncellendi.', 'success');
-                          } catch (error) {
-                            showToast(error instanceof Error ? error.message : 'Yükleme başarısız.', 'error');
-                          } finally {
-                            event.target.value = '';
-                          }
-                        }}
-                      />
-                    </label>
+                    <AdminImageDropzone
+                      aspectClassName="aspect-[4/3]"
+                      accept="image/*,video/*"
+                      buttonLabel="Kapak seç"
+                      description="Hero görselini sürükle-bırak ile değiştirin."
+                      emptySubtitle="Kapak görselini sürükleyin veya tıklayıp seçin."
+                      emptyTitle="Kapak görseli ekleyin"
+                      previewAlt={department.title}
+                      previewType={department.mediaType === 'video' ? 'video' : 'image'}
+                      previewUrl={currentHero}
+                      title="Kapak Görseli"
+                      onFileSelect={async (file) => {
+                        const url = await uploadFile(file);
+                        const next = cloneDepartment(department);
+                        next.image = url;
+                        next.mediaType = file.type.startsWith('video/') ? 'video' : 'image';
+                        setDepartment(next);
+                        setIsDirty(true);
+                        await saveDepartment(next);
+                        showToast('Kapak görseli güncellendi.', 'success');
+                      }}
+                    />
                     <div className="grid grid-cols-2 gap-3">
                       <Badge variant="outline" className="border-[color:var(--line)] bg-[color:var(--surface)] text-[color:var(--text-muted)]">
                         Media: {department.mediaType}
@@ -604,36 +593,22 @@ export default function MaterialDetailEditor() {
                       <div className="rounded-[1.25rem] border border-[color:var(--line)] bg-[color:var(--surface)] p-4 text-sm text-[color:var(--text-muted)]">
                         {department.sliderImages.length} slider görseli mevcut.
                       </div>
-                      <Button
-                        type="button"
-                        variant="outline"
-                        className="w-full border-[color:var(--line)] bg-[color:var(--surface)] text-[color:var(--text)]"
-                        onClick={() => document.getElementById('material-detail-slider-add')?.click()}
-                      >
-                        <Plus className="mr-2 h-4 w-4" />
-                        Slider Görseli Ekle
-                      </Button>
-                      <input
-                        id="material-detail-slider-add"
-                        type="file"
+                      <AdminImageDropzone
+                        aspectClassName="aspect-[16/10]"
                         accept="image/*"
-                        className="hidden"
-                        onChange={async (event) => {
-                          const file = event.target.files?.[0];
-                          if (!file) return;
-                          try {
-                            const url = await uploadFile(file);
-                            const next = cloneDepartment(department);
-                            next.sliderImages.push(url);
-                            setDepartment(next);
-                            setIsDirty(true);
-                            await saveDepartment(next);
-                            showToast('Slider görseli eklendi.', 'success');
-                          } catch (error) {
-                            showToast(error instanceof Error ? error.message : 'Yükleme başarısız.', 'error');
-                          } finally {
-                            event.target.value = '';
-                          }
+                        buttonLabel="Slider ekle"
+                        description="Yeni slider görseli yükleyin."
+                        emptySubtitle="Yeni slider görselini sürükleyin veya tıklayıp seçin."
+                        emptyTitle="Slider görseli ekleyin"
+                        title="Slider Görseli Ekle"
+                        onFileSelect={async (file) => {
+                          const url = await uploadFile(file);
+                          const next = cloneDepartment(department);
+                          next.sliderImages.push(url);
+                          setDepartment(next);
+                          setIsDirty(true);
+                          await saveDepartment(next);
+                          showToast('Slider görseli eklendi.', 'success');
                         }}
                       />
                     </CardContent>
@@ -643,58 +618,40 @@ export default function MaterialDetailEditor() {
                 <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
                   {department.sliderImages.map((slide, index) => (
                     <Card key={`${slide}-${index}`} className="overflow-hidden border border-[color:var(--line)] bg-[color:var(--surface-muted)] shadow-none">
-                      <div className="aspect-[16/10]">
-                        <img src={slide} alt={`Slide ${index + 1}`} className="h-full w-full object-cover" />
-                      </div>
-                      <CardContent className="flex items-center justify-between gap-2 p-4">
-                        <span className="text-sm text-[color:var(--text-muted)]">Slide {index + 1}</span>
-                        <div className="flex gap-2">
-                          <Button
-                            type="button"
-                            variant="outline"
-                            size="icon"
-                            className="h-10 w-10 border-[color:var(--line)] bg-[color:var(--surface)] text-[color:var(--text)]"
-                            onClick={() => document.getElementById(`material-detail-slider-replace-${index}`)?.click()}
-                          >
-                            <ImageIcon className="h-4 w-4" />
-                          </Button>
-                          <Button
-                            type="button"
-                            variant="outline"
-                            size="icon"
-                            className="h-10 w-10 border-rose-500/20 bg-rose-500/10 text-rose-700 hover:bg-rose-500 hover:text-white dark:text-rose-300"
-                            onClick={() =>
-                              mutateDepartment((draft) => {
-                                draft.sliderImages.splice(index, 1);
-                              })
-                            }
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
-                          <input
-                            id={`material-detail-slider-replace-${index}`}
-                            type="file"
-                            accept="image/*"
-                            className="hidden"
-                            onChange={async (event) => {
-                              const file = event.target.files?.[0];
-                              if (!file) return;
-                              try {
-                                const url = await uploadFile(file);
-                                const next = cloneDepartment(department);
-                                next.sliderImages[index] = url;
-                                setDepartment(next);
-                                setIsDirty(true);
-                                await saveDepartment(next);
-                                showToast('Slider görseli güncellendi.', 'success');
-                              } catch (error) {
-                                showToast(error instanceof Error ? error.message : 'Yükleme başarısız.', 'error');
-                              } finally {
-                                event.target.value = '';
-                              }
-                            }}
-                          />
-                        </div>
+                      <AdminImageDropzone
+                        aspectClassName="aspect-[16/10]"
+                        accept="image/*"
+                        buttonLabel="Değiştir"
+                        description={`Slide ${index + 1} görselini sürükleyip bırakın.`}
+                        emptySubtitle={`Slide ${index + 1} görselini seçin.`}
+                        emptyTitle={`Slide ${index + 1}`}
+                        previewAlt={`Slide ${index + 1}`}
+                        previewUrl={slide}
+                        title={`Slide ${index + 1}`}
+                        onFileSelect={async (file) => {
+                          const url = await uploadFile(file);
+                          const next = cloneDepartment(department);
+                          next.sliderImages[index] = url;
+                          setDepartment(next);
+                          setIsDirty(true);
+                          await saveDepartment(next);
+                          showToast('Slider görseli güncellendi.', 'success');
+                        }}
+                      />
+                      <CardContent className="flex items-center justify-end gap-2 p-4">
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="icon"
+                          className="h-10 w-10 border-rose-500/20 bg-rose-500/10 text-rose-700 hover:bg-rose-500 hover:text-white dark:text-rose-300"
+                          onClick={() =>
+                            mutateDepartment((draft) => {
+                              draft.sliderImages.splice(index, 1);
+                            })
+                          }
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
                       </CardContent>
                     </Card>
                   ))}

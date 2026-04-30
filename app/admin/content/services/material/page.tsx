@@ -13,7 +13,6 @@ import {
   Eye,
   FileText,
   FolderKanban,
-  Globe2,
   Image as ImageIcon,
   Loader2,
   Plus,
@@ -21,11 +20,11 @@ import {
   Save,
   Sparkles,
   Trash2,
-  Upload,
   X,
 } from 'lucide-react';
 
 import { useNotification } from '@/components/admin/AdminNotificationProvider';
+import { AdminImageDropzone } from '@/components/admin/AdminImageDropzone';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -535,39 +534,27 @@ export default function MaterialEditor() {
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-4">
-                    <label className="group relative flex aspect-[4/3] cursor-pointer items-center justify-center overflow-hidden rounded-[1.5rem] border-2 border-dashed border-[color:var(--line)] bg-[color:var(--surface)]">
-                      {heroSection?.slides?.[0] ? (
-                        <img src={heroSection.slides[0]} alt="Hero" className="h-full w-full object-cover" />
-                      ) : (
-                        <div className="flex flex-col items-center gap-3 p-6 text-center text-[color:var(--text-muted)]">
-                          <Upload className="h-7 w-7 text-[color:var(--accent)]" />
-                          <p className="text-sm font-medium text-[color:var(--text)]">Hero görseli ekleyin</p>
-                        </div>
-                      )}
-                      <input
-                        type="file"
-                        accept="image/*"
-                        className="hidden"
-                        onChange={async (event) => {
-                          const file = event.target.files?.[0];
-                          if (!file) return;
-                          try {
-                            const url = await uploadFile(file);
-                            const nextContent = cloneContent(content);
-                            const hero = nextContent.sections.find((section) => section.id === 'hero');
-                            if (hero) hero.slides = [url];
-                            setContent(nextContent);
-                            setIsDirty(true);
-                            await saveContent(nextContent);
-                            showToast('Hero görseli güncellendi.', 'success');
-                          } catch (error) {
-                            showToast(error instanceof Error ? error.message : 'Yükleme başarısız.', 'error');
-                          } finally {
-                            event.target.value = '';
-                          }
-                        }}
-                      />
-                    </label>
+                    <AdminImageDropzone
+                      aspectClassName="aspect-[4/3]"
+                      accept="image/*"
+                      buttonLabel="Hero seç"
+                      description="Ana kapak görselini sürükle-bırak ile değiştirin."
+                      emptySubtitle="Kapak görselini sürükleyin veya tıklayıp seçin."
+                      emptyTitle="Hero görseli ekleyin"
+                      previewAlt="Hero"
+                      previewUrl={heroSection?.slides?.[0]}
+                      title="Hero Görseli"
+                      onFileSelect={async (file) => {
+                        const url = await uploadFile(file);
+                        const nextContent = cloneContent(content);
+                        const hero = nextContent.sections.find((section) => section.id === 'hero');
+                        if (hero) hero.slides = [url];
+                        setContent(nextContent);
+                        setIsDirty(true);
+                        await saveContent(nextContent);
+                        showToast('Hero görseli güncellendi.', 'success');
+                      }}
+                    />
                     <div className="grid grid-cols-2 gap-3">
                       <Badge variant="outline" className="border-[color:var(--line)] bg-[color:var(--surface)] text-[color:var(--text-muted)]">
                         Blur: {heroSection?.blur || 0}px
@@ -642,43 +629,26 @@ export default function MaterialEditor() {
                   </div>
 
                   <div className="space-y-3">
-                    <div className="flex items-center justify-between">
-                      <p className="text-sm font-medium text-[color:var(--text)]">Hero Slider</p>
-                      <Button
-                        type="button"
-                        variant="outline"
-                        className="border-[color:var(--line)] bg-[color:var(--surface-muted)] text-[color:var(--text)]"
-                        onClick={() => document.getElementById('material-hero-add')?.click()}
-                      >
-                        <Plus className="mr-2 h-4 w-4" />
-                        Görsel Ekle
-                      </Button>
-                    </div>
-                    <input
-                      id="material-hero-add"
-                      type="file"
+                    <AdminImageDropzone
+                      aspectClassName="aspect-[16/10]"
                       accept="image/*"
-                      className="hidden"
-                      onChange={async (event) => {
-                        const file = event.target.files?.[0];
-                        if (!file) return;
-                        try {
-                          const url = await uploadFile(file);
-                          const nextContent = cloneContent(content);
-                          const hero = nextContent.sections.find((section) => section.id === 'hero');
-                          if (hero) {
-                            hero.slides = hero.slides || [];
-                            hero.slides.push(url);
-                          }
-                          setContent(nextContent);
-                          setIsDirty(true);
-                          await saveContent(nextContent);
-                          showToast('Hero görseli eklendi.', 'success');
-                        } catch (error) {
-                          showToast(error instanceof Error ? error.message : 'Yükleme başarısız.', 'error');
-                        } finally {
-                          event.target.value = '';
+                      buttonLabel="Görsel ekle"
+                      description="Hero slider havuzuna yeni görsel sürükleyin."
+                      emptySubtitle="Hero görselini sürükleyin veya tıklayıp seçin."
+                      emptyTitle="Hero slider görseli"
+                      title="Hero Slider"
+                      onFileSelect={async (file) => {
+                        const url = await uploadFile(file);
+                        const nextContent = cloneContent(content);
+                        const hero = nextContent.sections.find((section) => section.id === 'hero');
+                        if (hero) {
+                          hero.slides = hero.slides || [];
+                          hero.slides.push(url);
                         }
+                        setContent(nextContent);
+                        setIsDirty(true);
+                        await saveContent(nextContent);
+                        showToast('Hero görseli eklendi.', 'success');
                       }}
                     />
                     <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
@@ -723,39 +693,27 @@ export default function MaterialEditor() {
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-4">
-                    <label className="group relative flex aspect-[4/3] cursor-pointer items-center justify-center overflow-hidden rounded-[1.5rem] border-2 border-dashed border-[color:var(--line)] bg-[color:var(--surface)]">
-                      {ctaSection?.image ? (
-                        <img src={ctaSection.image} alt="CTA" className="h-full w-full object-cover" />
-                      ) : (
-                        <div className="flex flex-col items-center gap-3 p-6 text-center text-[color:var(--text-muted)]">
-                          <Globe2 className="h-7 w-7 text-[color:var(--accent)]" />
-                          <p className="text-sm font-medium text-[color:var(--text)]">CTA görseli ekleyin</p>
-                        </div>
-                      )}
-                      <input
-                        type="file"
-                        accept="image/*"
-                        className="hidden"
-                        onChange={async (event) => {
-                          const file = event.target.files?.[0];
-                          if (!file) return;
-                          try {
-                            const url = await uploadFile(file);
-                            const nextContent = cloneContent(content);
-                            const cta = nextContent.sections.find((section) => section.id === 'cta');
-                            if (cta) cta.image = url;
-                            setContent(nextContent);
-                            setIsDirty(true);
-                            await saveContent(nextContent);
-                            showToast('CTA görseli güncellendi.', 'success');
-                          } catch (error) {
-                            showToast(error instanceof Error ? error.message : 'Yükleme başarısız.', 'error');
-                          } finally {
-                            event.target.value = '';
-                          }
-                        }}
-                      />
-                    </label>
+                    <AdminImageDropzone
+                      aspectClassName="aspect-[4/3]"
+                      accept="image/*"
+                      buttonLabel="CTA seç"
+                      description="Sonraki adım alanının görselini sürükle-bırak ile değiştirin."
+                      emptySubtitle="CTA görselini sürükleyin veya tıklayıp seçin."
+                      emptyTitle="CTA görseli ekleyin"
+                      previewAlt="CTA"
+                      previewUrl={ctaSection?.image}
+                      title="CTA Görseli"
+                      onFileSelect={async (file) => {
+                        const url = await uploadFile(file);
+                        const nextContent = cloneContent(content);
+                        const cta = nextContent.sections.find((section) => section.id === 'cta');
+                        if (cta) cta.image = url;
+                        setContent(nextContent);
+                        setIsDirty(true);
+                        await saveContent(nextContent);
+                        showToast('CTA görseli güncellendi.', 'success');
+                      }}
+                    />
                   </CardContent>
                 </Card>
 
@@ -844,9 +802,38 @@ export default function MaterialEditor() {
                 <div className="grid gap-4 md:grid-cols-2 2xl:grid-cols-3">
                   {categoryItems.map((item, index) => (
                     <Card key={`${item.slug}-${index}`} className="overflow-hidden border border-[color:var(--line)] bg-[color:var(--surface-muted)] shadow-[0_20px_60px_rgba(0,0,0,0.12)]">
-                      <div className="aspect-[16/10] bg-[color:var(--surface)]">
-                        <img src={item.image} alt={item.title} className="h-full w-full object-cover" />
-                      </div>
+                      <AdminImageDropzone
+                        aspectClassName="aspect-[16/10]"
+                        accept="image/*"
+                        buttonLabel="Görsel seç"
+                        description="Kategori kartı görselini sürükleyip bırakın."
+                        emptySubtitle="Kart görselini sürükleyin ya da tıklayıp seçin."
+                        emptyTitle="Kategori görseli"
+                        previewAlt={item.title}
+                        previewUrl={item.image}
+                        title={item.title}
+                        onFileSelect={async (file) => {
+                          const url = await uploadFile(file);
+                          mutateContent((draft) => {
+                            const categories = draft.sections.find((section) => section.id === 'categories');
+                            if (!categories?.items?.[index]) return;
+                            categories.items[index].image = url;
+                          });
+                          await saveContent({
+                            ...content,
+                            sections: content.sections.map((section) =>
+                              section.id === 'categories'
+                                ? {
+                                    ...section,
+                                    items: categoryItems.map((category, categoryIndex) =>
+                                      categoryIndex === index ? { ...category, image: url } : category,
+                                    ),
+                                  }
+                                : section,
+                            ),
+                          });
+                        }}
+                      />
                       <CardContent className="space-y-4 p-4">
                         <div className="space-y-2">
                           <Input
@@ -1042,9 +1029,9 @@ export default function MaterialEditor() {
                 </Button>
               </div>
 
-              <div className="space-y-4 p-5 sm:p-6">
-                <div className="grid gap-4 sm:grid-cols-2">
-                  <Input
+                <div className="space-y-4 p-5 sm:p-6">
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    <Input
                     value={newCategory.title}
                     onChange={(event) => setNewCategory((prev) => ({ ...prev, title: event.target.value }))}
                     className="h-12 rounded-2xl border-[color:var(--line)] bg-[color:var(--surface-muted)] text-[color:var(--text)]"
@@ -1058,18 +1045,29 @@ export default function MaterialEditor() {
                   />
                 </div>
                 <div className="grid gap-4 sm:grid-cols-2">
-                  <Input
-                    value={newCategory.slug}
-                    onChange={(event) => setNewCategory((prev) => ({ ...prev, slug: event.target.value }))}
-                    className="h-12 rounded-2xl border-[color:var(--line)] bg-[color:var(--surface-muted)] text-[color:var(--text)]"
-                    placeholder="slug"
-                  />
-                  <Input
-                    value={newCategory.image}
-                    onChange={(event) => setNewCategory((prev) => ({ ...prev, image: event.target.value }))}
-                    className="h-12 rounded-2xl border-[color:var(--line)] bg-[color:var(--surface-muted)] text-[color:var(--text)]"
-                    placeholder="Görsel URL"
-                  />
+                    <Input
+                      value={newCategory.slug}
+                      onChange={(event) => setNewCategory((prev) => ({ ...prev, slug: event.target.value }))}
+                      className="h-12 rounded-2xl border-[color:var(--line)] bg-[color:var(--surface-muted)] text-[color:var(--text)]"
+                      placeholder="slug"
+                    />
+                  <div className="sm:col-span-2">
+                    <AdminImageDropzone
+                      aspectClassName="aspect-[16/10]"
+                      accept="image/*"
+                      buttonLabel="Görsel seç"
+                      description="Yeni kategori için görsel yükleyin."
+                      emptySubtitle="Kategori görselini sürükleyin veya tıklayıp seçin."
+                      emptyTitle="Kategori görseli"
+                      previewAlt={newCategory.title || 'Yeni kategori'}
+                      previewUrl={newCategory.image}
+                      title="Kategori görseli"
+                      onFileSelect={async (file) => {
+                        const url = await uploadFile(file);
+                        setNewCategory((prev) => ({ ...prev, image: url }));
+                      }}
+                    />
+                  </div>
                 </div>
                 <Button
                   type="button"
