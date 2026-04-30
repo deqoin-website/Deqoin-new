@@ -68,7 +68,7 @@ export async function PUT(request: Request) {
         StudioCard.findOneAndUpdate(
           { studioType: card.studioType }, 
           card, 
-          { upsert: true, new: true }
+          { upsert: true, returnDocument: "after" }
         )
       );
       const updated = await Promise.all(promises);
