@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { Sun, Moon } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { safeGetLocalStorage, safeSetLocalStorage } from '@/lib/browser-storage';
 
 export default function ThemeToggle() {
   const [theme, setTheme] = useState<'dark' | 'light'>('dark');
@@ -10,7 +11,7 @@ export default function ThemeToggle() {
 
   useEffect(() => {
     setMounted(true);
-    const savedTheme = localStorage.getItem('deqoin_theme') as 'dark' | 'light';
+    const savedTheme = safeGetLocalStorage('deqoin_theme') as 'dark' | 'light';
     if (savedTheme) {
       setTheme(savedTheme);
       document.documentElement.setAttribute('data-theme', savedTheme);
@@ -24,7 +25,7 @@ export default function ThemeToggle() {
     const newTheme = theme === 'dark' ? 'light' : 'dark';
     setTheme(newTheme);
     document.documentElement.setAttribute('data-theme', newTheme);
-    localStorage.setItem('deqoin_theme', newTheme);
+    safeSetLocalStorage('deqoin_theme', newTheme);
   };
 
   if (!mounted) return null;

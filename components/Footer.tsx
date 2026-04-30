@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import ConsultationModal from "./ConsultationModal";
+import { safeSetLocalStorage } from "@/lib/browser-storage";
 
 export default function Footer() {
   const [settings, setSettings] = useState<any>(null);
@@ -22,7 +23,7 @@ export default function Footer() {
         const data = await res.json();
         setSettings(data);
         if (data.logoUrl) {
-          localStorage.setItem('deqoin_logo', data.logoUrl);
+          safeSetLocalStorage('deqoin_logo', data.logoUrl);
         }
       } catch (err) {
         console.error("Failed to fetch settings:", err);

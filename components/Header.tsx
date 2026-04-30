@@ -7,6 +7,7 @@ import { projectsData } from "../data/projects";
 import { teamMembers } from "../data/team";
 import { journalArticles } from "../data/journal";
 import ConsultationModal from "./ConsultationModal";
+import { safeGetLocalStorage, safeSetLocalStorage } from "@/lib/browser-storage";
 // ThemeToggle removed from public site
 
 export default function Header() {
@@ -57,7 +58,7 @@ export default function Header() {
   // Fetch site settings (logo)
   useEffect(() => {
     // Check cache first
-    const cachedLogo = localStorage.getItem('deqoin_logo');
+    const cachedLogo = safeGetLocalStorage('deqoin_logo');
     if (cachedLogo) setLogoUrl(cachedLogo);
 
     const fetchSettings = async () => {
@@ -66,7 +67,7 @@ export default function Header() {
         const data = await res.json();
         if (data.logoUrl) {
           setLogoUrl(data.logoUrl);
-          localStorage.setItem('deqoin_logo', data.logoUrl);
+          safeSetLocalStorage('deqoin_logo', data.logoUrl);
         }
       } catch (err) {
         console.error("Failed to fetch settings:", err);
