@@ -3,6 +3,7 @@
 /* eslint-disable @next/next/no-img-element */
 
 import { useEffect, useMemo, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import {
   ArrowDown,
@@ -53,11 +54,6 @@ type WorkflowScope = {
   description: string;
   route: string;
   group: string;
-};
-
-type LoadedScope = {
-  raw: any;
-  draft: WorkflowContentDraft;
 };
 
 const PAGE_SCOPES: WorkflowScope[] = [
@@ -140,8 +136,13 @@ const createDefaultDraft = (scope: WorkflowScope): WorkflowContentDraft => {
 
 export default function WorkflowAdminPage() {
   const { showToast } = useNotification();
-  const [selectedScopeKey, setSelectedScopeKey] = useState(PAGE_SCOPES[0].key);
-  const [workflow, setWorkflow] = useState<WorkflowContentDraft>(createDefaultDraft(PAGE_SCOPES[0]));
+  const searchParams = useSearchParams();
+  const initialScopeKey = useMemo(() => {
+    const candidate = searchParams.get("scope");
+    return candidate && ALL_SCOPES.some((scope) => scope.key === candidate) ? candidate : PAGE_SCOPES[0].key;
+  }, [searchParams]);
+  const [selectedScopeKey, setSelectedScopeKey] = useState(initialScopeKey);
+  const [workflow, setWorkflow] = useState<WorkflowContentDraft>(createDefaultDraft(ALL_SCOPES.find((scope) => scope.key === initialScopeKey) || PAGE_SCOPES[0]));
   const [rawContent, setRawContent] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isScopeLoading, setIsScopeLoading] = useState(false);
@@ -154,6 +155,14 @@ export default function WorkflowAdminPage() {
     () => ALL_SCOPES.find((scope) => scope.key === selectedScopeKey) || PAGE_SCOPES[0],
     [selectedScopeKey],
   );
+
+  useEffect(() => {
+    const nextScopeKey = searchParams.get("scope");
+    if (!nextScopeKey) return;
+    if (ALL_SCOPES.some((scope) => scope.key === nextScopeKey) && nextScopeKey !== selectedScopeKey) {
+      setSelectedScopeKey(nextScopeKey);
+    }
+  }, [searchParams, selectedScopeKey]);
 
   const groupedScopes = useMemo(() => {
     const term = searchQuery.trim().toLowerCase();

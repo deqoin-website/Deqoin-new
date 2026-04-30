@@ -1,8 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { 
   LayoutDashboard, 
   Image as ImageIcon, 
@@ -27,6 +27,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [openSubmenus, setOpenSubmenus] = useState<string[]>([]);
   const pathname = usePathname();
+  const searchParams = useSearchParams();
   const router = useRouter();
 
   const toggleSubmenu = (item: any) => {
@@ -104,7 +105,17 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     {
       group: 'İŞ AKIŞLARI',
       items: [
-        { name: 'Workflow Yönetimi', icon: Workflow, path: '/admin/content/workflow' },
+        {
+          name: 'Workflow Yönetimi',
+          icon: Workflow,
+          path: '/admin/content/workflow',
+          subItems: [
+            { name: 'Keşif Genel Akış', path: '/admin/content/workflow?scope=page:kesif' },
+            { name: 'Mimari Genel Akış', path: '/admin/content/workflow?scope=page:mimari' },
+            { name: 'Materyal Genel Akış', path: '/admin/content/workflow?scope=page:material' },
+            { name: 'Uygulama Genel Akış', path: '/admin/content/workflow?scope=page:execution' },
+          ],
+        },
       ],
     },
     {
@@ -118,7 +129,14 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   const allItems = menuGroups.flatMap(g => g.items);
   const allSubItems = allItems.flatMap(i => i.subItems || []);
-  const currentPathItem = allItems.find(item => item.path === pathname) || allSubItems.find(s => s.path === pathname);
+  const currentPath = searchParams.toString() ? `${pathname}?${searchParams.toString()}` : pathname;
+  const currentPathItem = allItems.find(item => item.path === currentPath || item.path === pathname) || allSubItems.find(s => s.path === currentPath || s.path === pathname);
+
+  useEffect(() => {
+    if (pathname.startsWith('/admin/content/workflow')) {
+      setOpenSubmenus((prev) => (prev.includes('Workflow Yönetimi') ? prev : [...prev, 'Workflow Yönetimi']));
+    }
+  }, [pathname]);
 
   const handleLogout = async () => {
     try {

@@ -36,7 +36,6 @@ import {
   normalizeAboutContent,
   type AboutContent,
   type AboutSection,
-  type AboutStat,
 } from '@/lib/about-content';
 import { cn } from '@/lib/utils';
 
@@ -144,32 +143,6 @@ export default function CorporateAboutAdmin() {
     updateData({
       ...data,
       [field]: value,
-    });
-  };
-
-  const updateStat = (index: number, field: keyof AboutStat, value: string) => {
-    const nextStats = [...data.stats];
-    nextStats[index] = {
-      ...nextStats[index],
-      [field]: value,
-    };
-    updateData({
-      ...data,
-      stats: nextStats,
-    });
-  };
-
-  const addStat = () => {
-    updateData({
-      ...data,
-      stats: [...data.stats, { label: 'YENİ ETİKET', value: 'YENİ DEĞER' }],
-    });
-  };
-
-  const removeStat = (index: number) => {
-    updateData({
-      ...data,
-      stats: data.stats.filter((_, statIndex) => statIndex !== index),
     });
   };
 
@@ -342,7 +315,6 @@ export default function CorporateAboutAdmin() {
               <Badge>Hakkımızda</Badge>
               <Badge variant={isDirty ? 'default' : 'secondary'}>{isDirty ? 'Kaydedilmemiş değişiklik' : 'Senkronize'}</Badge>
               <Badge variant={apiError ? 'outline' : 'secondary'}>{apiError ? 'API uyarısı' : 'API bağlantısı aktif'}</Badge>
-              <Badge variant="outline">{data.stats.length} istatistik</Badge>
               <Badge variant="outline">{data.sections.length} blok</Badge>
             </div>
 
@@ -458,17 +430,6 @@ export default function CorporateAboutAdmin() {
                   </div>
                 </div>
               </motion.div>
-
-              <Separator />
-
-              <div className="grid gap-3 md:grid-cols-3">
-                {preview.stats.map((stat, index) => (
-                  <div key={`preview-stat-${index}`} className="rounded-3xl border border-white/10 bg-black/20 p-5">
-                    <p className="text-xs uppercase tracking-[0.2em] text-zinc-500">{stat.label}</p>
-                    <p className="mt-3 text-2xl font-semibold tracking-[0.08em] text-zinc-50">{stat.value}</p>
-                  </div>
-                ))}
-              </div>
 
               <Separator />
 
@@ -644,104 +605,6 @@ export default function CorporateAboutAdmin() {
                       </div>
                     </div>
                   </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card className="border-white/10 bg-white/[0.04]">
-              <CardHeader className="flex-row items-center justify-between gap-4 space-y-0">
-                <div>
-                  <CardTitle className="text-xl tracking-[0.06em]">İstatistikler</CardTitle>
-                  <CardDescription>Bu kartlar ana sayfadaki editlenebilir Hakkımızda verisinin parçasıdır.</CardDescription>
-                </div>
-                <Button type="button" variant="outline" onClick={addStat} className="border-white/10 bg-white/[0.03]">
-                  <Plus className="mr-2 h-4 w-4" />
-                  İstatistik ekle
-                </Button>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                {data.stats.length === 0 && (
-                  <div className="rounded-3xl border border-dashed border-white/10 bg-black/20 p-8 text-center text-sm text-zinc-500">
-                    Henüz istatistik yok. Yeni bir kart ekleyebilirsiniz.
-                  </div>
-                )}
-
-                <div className="grid gap-4">
-                  {data.stats.map((stat, index) => (
-                    <div key={`${stat.label}-${index}`} className="rounded-3xl border border-white/10 bg-black/20 p-4">
-                      <div className="mb-4 flex items-center justify-between gap-3">
-                        <Badge variant="secondary">İstatistik {String(index + 1).padStart(2, '0')}</Badge>
-                        <div className="flex items-center gap-2">
-                          <Button
-                            type="button"
-                            size="icon"
-                            variant="ghost"
-                            disabled={index === 0}
-                            onClick={() => {
-                              const next = [...data.stats];
-                              if (index > 0) {
-                                [next[index - 1], next[index]] = [next[index], next[index - 1]];
-                                updateData({ ...data, stats: next });
-                              }
-                            }}
-                            className="h-8 w-8 text-zinc-400 hover:bg-white/5 hover:text-zinc-100"
-                          >
-                            <ArrowUp className="h-4 w-4" />
-                          </Button>
-                          <Button
-                            type="button"
-                            size="icon"
-                            variant="ghost"
-                            disabled={index === data.stats.length - 1}
-                            onClick={() => {
-                              const next = [...data.stats];
-                              if (index < next.length - 1) {
-                                [next[index + 1], next[index]] = [next[index], next[index + 1]];
-                                updateData({ ...data, stats: next });
-                              }
-                            }}
-                            className="h-8 w-8 text-zinc-400 hover:bg-white/5 hover:text-zinc-100"
-                          >
-                            <ArrowDown className="h-4 w-4" />
-                          </Button>
-                          <Button
-                            type="button"
-                            variant="ghost"
-                            onClick={() => removeStat(index)}
-                            className="h-8 px-3 text-zinc-400 hover:bg-white/5 hover:text-red-300"
-                          >
-                            <Trash2 className="mr-2 h-4 w-4" />
-                            Sil
-                          </Button>
-                        </div>
-                      </div>
-
-                      <div className="grid gap-4 md:grid-cols-2">
-                        <div className="space-y-2">
-                          <label className="text-xs font-semibold uppercase tracking-[0.2em] text-zinc-400">
-                            Etiket
-                          </label>
-                          <Input
-                            value={stat.label}
-                            onChange={(event) => updateStat(index, 'label', event.target.value)}
-                            placeholder="DENEYİM"
-                            className="border-white/10 bg-black/20 text-zinc-100 placeholder:text-zinc-500"
-                          />
-                        </div>
-                        <div className="space-y-2">
-                          <label className="text-xs font-semibold uppercase tracking-[0.2em] text-zinc-400">
-                            Değer
-                          </label>
-                          <Input
-                            value={stat.value}
-                            onChange={(event) => updateStat(index, 'value', event.target.value)}
-                            placeholder="10+ YIL"
-                            className="border-white/10 bg-black/20 text-zinc-100 placeholder:text-zinc-500"
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  ))}
                 </div>
               </CardContent>
             </Card>
