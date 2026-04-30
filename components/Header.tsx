@@ -21,8 +21,6 @@ export default function Header() {
   const searchInputRef = useRef<HTMLInputElement>(null);
   const navLinkClassName =
     "text-base md:text-lg lg:text-xl font-light uppercase tracking-[0.15em] text-white hover:text-white hover:underline decoration-white/30 underline-offset-8 transition-colors";
-  const journalNavLinkClassName =
-    "text-base md:text-lg lg:text-xl font-thin uppercase tracking-[0.2em] text-white hover:text-white hover:underline decoration-white/30 underline-offset-8 transition-colors";
   const mobileMenuLinkStyle = {
     fontFamily: "Smooch Sans, sans-serif",
     color: "#fff",
@@ -135,7 +133,7 @@ export default function Header() {
           <Link href="/#hero-slider" className={navLinkClassName} style={mobileMenuLinkStyle} onClick={() => setIsMenuOpen(false)}>ANA SAYFA</Link>
           <Link href="/faaliyet-alanlarimiz" className={navLinkClassName} style={mobileMenuLinkStyle} onClick={() => setIsMenuOpen(false)}>DESIGN & COLLECTION</Link>
           <Link href="/galeri" className={navLinkClassName} style={mobileMenuLinkStyle} onClick={() => setIsMenuOpen(false)}>GALERİ</Link>
-          <Link href="/journal" className={journalNavLinkClassName} style={mobileMenuLinkStyle} onClick={() => setIsMenuOpen(false)}>JOURNAL</Link>
+          <Link href="/journal" className={navLinkClassName} style={mobileMenuLinkStyle} onClick={() => setIsMenuOpen(false)}>JOURNAL</Link>
           <Link href="/hakkimizda" className={navLinkClassName} style={mobileMenuLinkStyle} onClick={() => setIsMenuOpen(false)}>HAKKIMIZDA</Link>
           <Link href="/iletisim" className={navLinkClassName} style={mobileMenuLinkStyle} onClick={() => setIsMenuOpen(false)}>
             İLETİŞİM
@@ -245,7 +243,7 @@ export default function Header() {
               <Link href="/" className={navLinkClassName} style={{ fontFamily: "Smooch Sans, sans-serif" }}>ANA SAYFA</Link>
               <Link href="/faaliyet-alanlarimiz" className={navLinkClassName} style={{ fontFamily: "Smooch Sans, sans-serif" }}>DESIGN & COLLECTION</Link>
               <Link href="/galeri" className={navLinkClassName} style={{ fontFamily: "Smooch Sans, sans-serif" }}>GALERİ</Link>
-              <Link href="/journal" className={journalNavLinkClassName} style={{ fontFamily: "Smooch Sans, sans-serif" }}>JOURNAL</Link>
+              <Link href="/journal" className={navLinkClassName} style={{ fontFamily: "Smooch Sans, sans-serif" }}>JOURNAL</Link>
               <Link href="/hakkimizda" className={navLinkClassName} style={{ fontFamily: "Smooch Sans, sans-serif" }}>HAKKIMIZDA</Link>
               <Link href="/iletisim" className={navLinkClassName} style={{ fontFamily: "Smooch Sans, sans-serif" }}>
                 İLETİŞİM
