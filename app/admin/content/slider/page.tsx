@@ -1,443 +1,1070 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  Image as ImageIcon, 
-  Video, 
-  Save, 
-  Sliders, 
-  Type, 
-  Plus, 
-  Trash2, 
-  Upload, 
-  Loader2, 
-  Check, 
+/* eslint-disable @next/next/no-img-element */
+
+import { useCallback, useEffect, useState } from 'react';
+import Link from 'next/link';
+import { AnimatePresence, motion } from 'framer-motion';
+import {
+  ArrowDown,
+  ArrowUp,
+  BadgeCheck,
+  CheckCircle2,
+  Database,
   Eye,
-  GripVertical
+  FileText,
+  Image as ImageIcon,
+  Loader2,
+  Plus,
+  RefreshCw,
+  Save,
+  Sparkles,
+  Trash2,
+  Upload,
 } from 'lucide-react';
+
 import { useNotification } from '@/components/admin/AdminNotificationProvider';
-import { AdminSaveBar } from '@/components/admin/AdminSaveBar';
+import { AdminImageDropzone } from '@/components/admin/AdminImageDropzone';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Separator } from '@/components/ui/separator';
+import { Textarea } from '@/components/ui/textarea';
+import { SLIDER_IMAGE_URLS } from '@/lib/slider-images';
+
+type TabKey = 'genel' | 'medya' | 'efektler';
+type ApiStatus = 'idle' | 'loading' | 'ok' | 'error';
+
+type SlideItem = {
+  _id: string;
+  title: string;
+  subtitle?: string;
+  mediaUrl: string;
+  mediaType: 'image' | 'video';
+  blur: number;
+  overlay: number;
+  order: number;
+  active: boolean;
+  _temporary?: boolean;
+};
+
+const TAB_ITEMS: Array<{ key: TabKey; label: string; description: string; icon: typeof FileText }> = [
+  { key: 'genel', label: 'Genel', description: 'Başlık, alt başlık ve durum', icon: FileText },
+  { key: 'medya', label: 'Medya', description: 'Slider görseli veya video yükle', icon: ImageIcon },
+  { key: 'efektler', label: 'Efektler', description: 'Blur ve overlay ayarları', icon: Sparkles },
+];
+
+const cloneSlides = (value: SlideItem[]) => JSON.parse(JSON.stringify(value)) as SlideItem[];
+
+const isVideoUrl = (value?: string) => /\.(mp4|webm|mov|m4v)(\?|#|$)/i.test(value || '');
+
+const probeMeta = (status: ApiStatus) => {
+  if (status === 'ok') {
+    return {
+      label: 'Çalışıyor',
+      className: 'border-emerald-500/20 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300',
+      icon: CheckCircle2,
+    };
+  }
+
+  if (status === 'error') {
+    return {
+      label: 'Hata',
+      className: 'border-rose-500/20 bg-rose-500/10 text-rose-700 dark:text-rose-300',
+      icon: BadgeCheck,
+    };
+  }
+
+  if (status === 'loading') {
+    return {
+      label: 'Kontrol',
+      className: 'border-amber-500/20 bg-amber-500/10 text-amber-700 dark:text-amber-300',
+      icon: Loader2,
+    };
+  }
+
+  return {
+    label: 'Bekliyor',
+    className: 'border-[color:var(--line)] bg-[color:var(--surface-muted)] text-[color:var(--text-muted)]',
+    icon: BadgeCheck,
+  };
+};
+
+const normalizeSlide = (slide: any, index: number): SlideItem => {
+  const mediaType = slide?.mediaType === 'video' || isVideoUrl(slide?.mediaUrl) ? 'video' : 'image';
+  return {
+    _id: String(slide?._id || slide?.id || `slide-${index}`),
+    title: slide?.title || 'BAŞLIKSIZ SAHNE',
+    subtitle: slide?.subtitle || '',
+    mediaUrl: slide?.mediaUrl || '',
+    mediaType,
+    blur: Number.isFinite(Number(slide?.blur)) ? Number(slide.blur) : 0,
+    overlay: Number.isFinite(Number(slide?.overlay)) ? Number(slide.overlay) : 30,
+    order: Number.isFinite(Number(slide?.order)) ? Number(slide.order) : index,
+    active: slide?.active !== false,
+    _temporary: Boolean(slide?._temporary),
+  };
+};
+
+const normalizeSlides = (data: any) =>
+  (Array.isArray(data) ? data : []).map(normalizeSlide).sort((a, b) => a.order - b.order);
+
+const normalizeOrder = (slides: SlideItem[]) => slides.map((slide, index) => ({ ...slide, order: index }));
+
+const createTemporarySlide = (order: number): SlideItem => ({
+  _id: `tmp-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+  title: 'YENİ SAHNE',
+  subtitle: 'ALT BAŞLIK',
+  mediaUrl: SLIDER_IMAGE_URLS.mimari,
+  mediaType: 'image',
+  blur: 0,
+  overlay: 30,
+  order,
+  active: true,
+  _temporary: true,
+});
 
 export default function SliderConfigPage() {
   const { showToast, confirm: premiumConfirm } = useNotification();
-  const [slides, setSlides] = useState<any[]>([]);
-  const [initialSlides, setInitialSlides] = useState<any[]>([]);
+  const [tab, setTab] = useState<TabKey>('genel');
+  const [slides, setSlides] = useState<SlideItem[]>([]);
+  const [initialSlides, setInitialSlides] = useState<SlideItem[]>([]);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
   const [isDirty, setIsDirty] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
-  const [activePreviewId, setActivePreviewId] = useState<string | null>(null);
+  const [apiStatus, setApiStatus] = useState({
+    content: 'loading' as ApiStatus,
+    publicFeed: 'loading' as ApiStatus,
+    upload: 'loading' as ApiStatus,
+    updatedAt: '',
+  });
+
+  const selectedSlide = slides.find((slide) => slide._id === selectedId) || slides[0] || null;
+  const totalSlides = slides.length;
+  const activeSlides = slides.filter((slide) => slide.active).length;
+  const videoSlides = slides.filter((slide) => slide.mediaType === 'video').length;
+  const updatedLabel = apiStatus.updatedAt ? new Date(apiStatus.updatedAt).toLocaleDateString('tr-TR') : 'Henüz yok';
+  const contentMeta = probeMeta(apiStatus.content);
+  const publicFeedMeta = probeMeta(apiStatus.publicFeed);
+  const uploadMeta = probeMeta(apiStatus.upload);
+  const ContentStatusIcon = contentMeta.icon;
+  const PublicFeedStatusIcon = publicFeedMeta.icon;
+  const UploadStatusIcon = uploadMeta.icon;
+
+  const fetchSlides = useCallback(async () => {
+    setIsLoading(true);
+    setApiStatus((prev) => ({ ...prev, content: 'loading' }));
+
+    try {
+      const res = await fetch('/api/admin/slides', { cache: 'no-store' });
+      const data = await res.json().catch(() => null);
+      if (!res.ok) {
+        throw new Error(data?.error || 'Slide load failed');
+      }
+
+      const nextSlides = normalizeSlides(data);
+      setSlides(nextSlides);
+      setInitialSlides(cloneSlides(nextSlides));
+      setSelectedId(nextSlides[0]?._id || null);
+      setApiStatus((prev) => ({
+        ...prev,
+        content: 'ok',
+        updatedAt: new Date().toISOString(),
+      }));
+      setIsDirty(false);
+    } catch (error) {
+      console.error('Slider content load error:', error);
+      setSlides([]);
+      setInitialSlides([]);
+      setSelectedId(null);
+      setApiStatus((prev) => ({
+        ...prev,
+        content: 'error',
+        updatedAt: new Date().toISOString(),
+      }));
+      showToast('Slider sahneleri yüklenemedi.', 'error');
+    } finally {
+      setIsLoading(false);
+    }
+  }, [showToast]);
+
+  const probePublicFeed = useCallback(async () => {
+    setApiStatus((prev) => ({ ...prev, publicFeed: 'loading' }));
+
+    try {
+      const res = await fetch('/api/slides', { cache: 'no-store' });
+      if (!res.ok) {
+        throw new Error('Public slider feed failed');
+      }
+
+      setApiStatus((prev) => ({
+        ...prev,
+        publicFeed: 'ok',
+        updatedAt: new Date().toISOString(),
+      }));
+    } catch (error) {
+      console.error('Public slider probe error:', error);
+      setApiStatus((prev) => ({
+        ...prev,
+        publicFeed: 'error',
+        updatedAt: new Date().toISOString(),
+      }));
+    }
+  }, []);
+
+  const probeUploadService = useCallback(async () => {
+    setApiStatus((prev) => ({ ...prev, upload: 'loading' }));
+
+    try {
+      const res = await fetch('/api/upload', { method: 'GET', cache: 'no-store' });
+      if (!res.ok) {
+        throw new Error('Upload health check failed');
+      }
+
+      setApiStatus((prev) => ({
+        ...prev,
+        upload: 'ok',
+        updatedAt: new Date().toISOString(),
+      }));
+    } catch (error) {
+      console.error('Upload probe error:', error);
+      setApiStatus((prev) => ({
+        ...prev,
+        upload: 'error',
+        updatedAt: new Date().toISOString(),
+      }));
+    }
+  }, []);
 
   useEffect(() => {
     fetchSlides();
-  }, []);
+    probePublicFeed();
+    probeUploadService();
+  }, [fetchSlides, probePublicFeed, probeUploadService]);
 
-  const fetchSlides = async () => {
-    try {
-      const res = await fetch('/api/admin/slides');
-      if (res.ok) {
-        const data = await res.json();
-        setSlides(data);
-        setInitialSlides(JSON.parse(JSON.stringify(data)));
-        if (data.length > 0) setActivePreviewId(data[0]._id);
-      }
-    } catch (e) {
-      console.error(e);
-      showToast("Sahneler yüklenemedi.", "error");
-    } finally {
-      setLoading(false);
+  useEffect(() => {
+    if (slides.length === 0) {
+      setSelectedId(null);
+      return;
     }
+
+    if (!selectedId || !slides.some((slide) => slide._id === selectedId)) {
+      setSelectedId(slides[0]._id);
+    }
+  }, [slides, selectedId]);
+
+  const mutateSlides = (updater: (draft: SlideItem[]) => void) => {
+    setSlides((prev) => {
+      const next = cloneSlides(prev);
+      updater(next);
+      return normalizeOrder(next);
+    });
+    setIsDirty(true);
+  };
+
+  const updateSlide = (id: string, patch: Partial<SlideItem>) => {
+    mutateSlides((draft) => {
+      const target = draft.find((slide) => slide._id === id);
+      if (!target) return;
+      Object.assign(target, patch);
+    });
   };
 
   const addSlide = () => {
-    const newSlide = {
-      title: 'YENİ SAHNE',
-      subtitle: 'ALT BAŞLIK',
-      mediaUrl: '',
-      mediaType: 'image',
-      blur: 0,
-      overlay: 30,
-      order: slides.length,
-      active: true
-    };
-    const newSlides = [...slides, { ...newSlide, _temporary: true, _id: Date.now().toString() }];
-    setSlides(newSlides);
-    setIsDirty(true);
+    const nextSlide = createTemporarySlide(slides.length);
+    mutateSlides((draft) => {
+      draft.push(nextSlide);
+    });
+    setSelectedId(nextSlide._id);
   };
 
-  const updateSlide = (id: string, key: string, value: any) => {
-    setSlides(slides.map(s => s._id === id ? { ...s, [key]: value } : s));
-    setIsDirty(true);
+  const moveSlide = (id: string, direction: -1 | 1) => {
+    mutateSlides((draft) => {
+      const index = draft.findIndex((slide) => slide._id === id);
+      if (index < 0) return;
+      const nextIndex = index + direction;
+      if (nextIndex < 0 || nextIndex >= draft.length) return;
+      const [item] = draft.splice(index, 1);
+      draft.splice(nextIndex, 0, item);
+    });
   };
 
-  const removeSlide = async (id: string, isTemporary?: boolean) => {
+  const removeSlide = async (slide: SlideItem) => {
     const ok = await premiumConfirm({
       title: 'SAHNEYİ SİL',
-      message: 'Bu sahneyi silmek istediğinize emin misiniz? (Değişiklikleri kaydetmeniz gerekecek)',
+      message: 'Bu slider sahnesini silmek istediğinize emin misiniz?',
       confirmText: 'SİL',
-      isDanger: true
+      cancelText: 'VAZGEÇ',
+      isDanger: true,
     });
     if (!ok) return;
 
-    if (isTemporary) {
-      setSlides(slides.filter(s => s._id !== id));
-      setIsDirty(true);
+    if (slide._temporary) {
+      const nextSelection = slides.find((item) => item._id !== slide._id)?._id || null;
+      mutateSlides((draft) => {
+        const index = draft.findIndex((item) => item._id === slide._id);
+        if (index >= 0) draft.splice(index, 1);
+      });
+      setSelectedId((prev) => (prev === slide._id ? nextSelection : prev));
       return;
     }
-    
-    // Non-temporary slides will be marked for deletion in the UI or deleted immediately?
-    // Based on original code, it was deleted immediately via API.
-    // To match "dirty state" pattern, we should strictly delete on "Save", 
-    // but the original code has a separate DELETE endpoint.
-    // I will keep original behavior but mark as dirty if we want bulk save.
-    
+
     try {
-      const res = await fetch(`/api/admin/slides/${id}`, { method: 'DELETE' });
-      if (res.ok) {
-        showToast("Sahne veritabanından silindi.", "success");
-        fetchSlides();
+      const res = await fetch(`/api/admin/slides/${slide._id}`, { method: 'DELETE' });
+      const payload = await res.json().catch(() => null);
+      if (!res.ok) {
+        throw new Error(payload?.error || 'Slide delete failed');
       }
-    } catch (e) {
-      showToast("Silme hatası.", "error");
+
+      showToast('Sahne silindi.', 'success');
+      await fetchSlides();
+    } catch (error) {
+      showToast(error instanceof Error ? error.message : 'Silme işlemi başarısız.', 'error');
     }
   };
 
-  const handleSave = async () => {
-    setIsSaving(true);
+  const uploadFile = async (file: File) => {
+    setApiStatus((prev) => ({ ...prev, upload: 'loading' }));
+
     try {
-      for (const slide of slides) {
-        const method = slide._temporary ? 'POST' : 'PUT';
-        const url = slide._temporary ? '/api/admin/slides' : `/api/admin/slides/${slide._id}`;
-        
-        const { _temporary, _id, ...saveBody } = slide;
-        
-        await fetch(url, {
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('filename', file.name);
+
+      const res = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData,
+      });
+
+      const payload = await res.json().catch(() => null);
+      if (!res.ok) {
+        throw new Error(payload?.details || payload?.error || 'Upload failed');
+      }
+
+      const uploadedUrl = payload?.url || payload?.downloadUrl;
+      if (!uploadedUrl) {
+        throw new Error('Upload URL missing');
+      }
+
+      setApiStatus((prev) => ({
+        ...prev,
+        upload: 'ok',
+        updatedAt: new Date().toISOString(),
+      }));
+      return uploadedUrl as string;
+    } catch (error) {
+      setApiStatus((prev) => ({
+        ...prev,
+        upload: 'error',
+        updatedAt: new Date().toISOString(),
+      }));
+      throw error;
+    }
+  };
+
+  const handleMediaSelect = async (file: File) => {
+    if (!selectedSlide) return;
+
+    try {
+      const url = await uploadFile(file);
+      updateSlide(selectedSlide._id, {
+        mediaUrl: url,
+        mediaType: file.type.startsWith('video/') ? 'video' : 'image',
+      });
+      showToast('Medya yüklendi.', 'success');
+    } catch (error) {
+      showToast(error instanceof Error ? error.message : 'Yükleme başarısız.', 'error');
+    }
+  };
+
+  const saveSlides = async () => {
+    setIsSaving(true);
+
+    try {
+      const orderedSlides = normalizeOrder(slides);
+
+      for (const slide of orderedSlides) {
+        const payload = {
+          title: slide.title,
+          subtitle: slide.subtitle,
+          mediaUrl: slide.mediaUrl,
+          mediaType: slide.mediaType,
+          blur: slide.blur,
+          overlay: slide.overlay,
+          order: slide.order,
+          active: slide.active,
+        };
+
+        const isTemporary = slide._temporary || String(slide._id).startsWith('tmp-');
+        const endpoint = isTemporary ? '/api/admin/slides' : `/api/admin/slides/${slide._id}`;
+        const method = isTemporary ? 'POST' : 'PUT';
+
+        const res = await fetch(endpoint, {
           method,
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(saveBody)
+          body: JSON.stringify(payload),
         });
+
+        const result = await res.json().catch(() => null);
+        if (!res.ok) {
+          throw new Error(result?.error || 'Slide save failed');
+        }
       }
-      showToast("Tüm sahneler başarıyla kaydedildi!", "success");
+
       setIsDirty(false);
-      fetchSlides();
-    } catch (e) {
-      showToast("Kayıt sırasında bir hata oluştu.", "error");
+      showToast('Slider sahneleri kaydedildi.', 'success');
+      await fetchSlides();
+    } catch (error) {
+      console.error('Slider save error:', error);
+      showToast(error instanceof Error ? error.message : 'Kayıt sırasında bir hata oluştu.', 'error');
     } finally {
       setIsSaving(false);
     }
   };
 
   const handleCancel = () => {
-    setSlides(JSON.parse(JSON.stringify(initialSlides)));
+    setSlides(cloneSlides(initialSlides));
+    setSelectedId(initialSlides[0]?._id || null);
     setIsDirty(false);
-    showToast("Değişiklikler geri alındı.", "info");
-  };
-
-  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>, slideId: string) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    try {
-      const res = await fetch(`/api/upload?filename=${file.name}`, { method: 'POST', body: file });
-      const blob = await res.json();
-      
-      const isVideo = file.type.startsWith('video/');
-      setSlides(slides.map(s => s._id === slideId ? { 
-        ...s, 
-        mediaUrl: blob.url, 
-        mediaType: isVideo ? 'video' : 'image' 
-      } : s));
-      setIsDirty(true);
-    } catch (err) {
-      showToast("Yükleme başarısız.", "error");
-    }
+    showToast('Değişiklikler geri alındı.', 'info');
   };
 
   const runMigration = async () => {
     setIsSaving(true);
+
     try {
-      const res = await fetch('/api/admin/migrate/slides');
-      if (res.ok) {
-        showToast("Varsayılan sahneler başarıyla aktarıldı!", "success");
-        fetchSlides();
+      const res = await fetch('/api/admin/migrate/slides', { method: 'GET' });
+      const payload = await res.json().catch(() => null);
+      if (!res.ok) {
+        throw new Error(payload?.error || 'Migration failed');
       }
-    } catch (e) {
-      showToast("Aktarım sırasında bir hata oluştu.", "error");
+
+      showToast('Varsayılan slider sahneleri aktarıldı.', 'success');
+      await fetchSlides();
+      await probePublicFeed();
+    } catch (error) {
+      showToast(error instanceof Error ? error.message : 'Aktarım sırasında bir hata oluştu.', 'error');
     } finally {
       setIsSaving(false);
     }
   };
 
-  if (loading) return <div className="loader-wrap"><Loader2 className="animate-spin" /></div>;
+  if (isLoading) {
+    return (
+      <div className="flex h-[50vh] items-center justify-center text-[color:var(--accent)]">
+        <Loader2 className="h-6 w-6 animate-spin" />
+      </div>
+    );
+  }
 
   return (
-    <div className="slider-manager">
-      <div className="manager-header">
-        <div>
-          <h2>SİNEMATİK MEDYA & SLIDER</h2>
-          <p>Anasayfa snap-scroll geçişlerini, sloganları ve arka plan efektlerini yönetin.</p>
-        </div>
-        <div className="header-actions">
-           <button className="add-btn-outline" onClick={addSlide}><Plus size={18} /> YENİ SAHNE</button>
-           <div style={{ display: 'flex', gap: '1rem' }}>
-              {isDirty && (
-                <button 
-                  className="save-btn" 
-                  style={{ background: 'transparent', border: '1px solid var(--line)', color: '#000', boxShadow: 'none' }}
-                  onClick={handleCancel}
-                >
-                  SIFIRLA
-                </button>
-              )}
-              <button className={`save-btn ${isDirty ? 'dirty-pulse' : ''}`} onClick={handleSave} disabled={isSaving}>
-                  {isSaving ? <Loader2 className="animate-spin" size={18} /> : <Save size={18} />}
-                  {isSaving ? 'KAYDEDİLİYOR...' : (isDirty ? 'KAYDETMEYİ UNUTMAYIN' : 'TÜMÜNÜ KAYDET')}
-              </button>
-           </div>
-        </div>
-      </div>
+    <div className="space-y-6 pb-8">
+      <motion.section
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="overflow-hidden rounded-[2rem] border border-[color:var(--line)] bg-[color:var(--surface)] shadow-[var(--shadow)]"
+      >
+        <div className="flex flex-col gap-6 p-5 sm:p-6 xl:flex-row xl:items-end xl:justify-between">
+          <div className="max-w-3xl space-y-4">
+            <Badge className="border border-[color:var(--line)] bg-[color:var(--surface-muted)] text-[color:var(--text-muted)]">
+              <Sparkles className="mr-2 h-3 w-3" />
+              SİNEMATİK MEDYA & SLIDER
+            </Badge>
+            <div className="space-y-2">
+              <h1 className="text-3xl font-semibold tracking-tight text-[color:var(--text)] sm:text-4xl">
+                Slider sahnelerini yönetin
+              </h1>
+              <p className="max-w-2xl text-sm leading-7 text-[color:var(--text-muted)]">
+                Hero sahneleri, görseller, videolar, efektler ve yayın durumu tek ekrandan düzenlenir.
+                Kontroller light/dark tema ile uyumlu, mobilde de tek sütunda çalışır.
+              </p>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              <Badge variant="outline" className="border-[color:var(--line)] bg-[color:var(--surface-muted)] text-[color:var(--text-muted)]">
+                Toplam {totalSlides} sahne
+              </Badge>
+              <Badge variant="outline" className="border-[color:var(--line)] bg-[color:var(--surface-muted)] text-[color:var(--text-muted)]">
+                Aktif {activeSlides}
+              </Badge>
+              <Badge variant="outline" className="border-[color:var(--line)] bg-[color:var(--surface-muted)] text-[color:var(--text-muted)]">
+                Video {videoSlides}
+              </Badge>
+              <Badge variant="outline" className="border-[color:var(--line)] bg-[color:var(--surface-muted)] text-[color:var(--text-muted)]">
+                Son kontrol: {updatedLabel}
+              </Badge>
+            </div>
+          </div>
 
-      <AdminSaveBar 
-        isVisible={isDirty} 
-        onSave={handleSave} 
-        onCancel={handleCancel}
-        isSaving={isSaving}
-      />
+          <div className="grid gap-3 sm:grid-cols-2 xl:min-w-[470px]">
+            <div className="rounded-2xl border border-[color:var(--line)] bg-[color:var(--surface-muted)] p-4">
+              <p className="text-[0.65rem] uppercase tracking-[0.28em] text-[color:var(--text-muted)]">Admin API</p>
+              <p className="mt-1 text-2xl font-semibold text-[color:var(--text)]">/api/admin/slides</p>
+              <p className="mt-2 text-xs text-[color:var(--text-muted)]">Sahneler bu uç noktadan okunur ve kaydedilir.</p>
+            </div>
+            <div className="rounded-2xl border border-[color:var(--line)] bg-[color:var(--surface-muted)] p-4">
+              <p className="text-[0.65rem] uppercase tracking-[0.28em] text-[color:var(--text-muted)]">Public Feed</p>
+              <p className="mt-1 text-2xl font-semibold text-[color:var(--text)]">/api/slides</p>
+              <p className="mt-2 text-xs text-[color:var(--text-muted)]">Aktif sahneler frontend slider’ında gösterilir.</p>
+            </div>
+            <div className="rounded-2xl border border-[color:var(--line)] bg-[color:var(--surface-muted)] p-4">
+              <p className="text-[0.65rem] uppercase tracking-[0.28em] text-[color:var(--text-muted)]">Upload</p>
+              <p className="mt-1 text-2xl font-semibold text-[color:var(--text)]">{uploadMeta.label}</p>
+              <p className="mt-2 text-xs text-[color:var(--text-muted)]">Görsel ve video yüklemeleri için kullanılır.</p>
+            </div>
+            <div className="rounded-2xl border border-[color:var(--line)] bg-[color:var(--surface-muted)] p-4">
+              <p className="text-[0.65rem] uppercase tracking-[0.28em] text-[color:var(--text-muted)]">Kayıt Durumu</p>
+              <p className="mt-1 text-2xl font-semibold text-[color:var(--text)]">{isDirty ? 'Düzenlendi' : 'Temiz'}</p>
+              <p className="mt-2 text-xs text-[color:var(--text-muted)]">Kaydetmeden çıkarsanız değişiklikler korunmaz.</p>
+            </div>
+          </div>
+        </div>
 
-      <div className="slides-layout">
-        <div className="slides-list">
-          {slides.map((slide, i) => (
-            <div 
-              key={slide._id} 
-              className={`slide-item-sm ${activePreviewId === slide._id ? 'active' : ''}`}
-              onClick={() => setActivePreviewId(slide._id)}
+        <div className="flex flex-wrap gap-2 border-t border-[color:var(--line)] px-5 py-4 sm:px-6">
+          {TAB_ITEMS.map((item) => (
+            <Button
+              key={item.key}
+              type="button"
+              variant={tab === item.key ? 'default' : 'outline'}
+              className={
+                tab === item.key
+                  ? 'bg-[color:var(--accent)] text-[color:var(--text-inverse)] hover:bg-[color:var(--accent-soft)]'
+                  : 'border-[color:var(--line)] bg-[color:var(--surface-muted)] text-[color:var(--text)] hover:bg-[color:var(--surface)]'
+              }
+              onClick={() => setTab(item.key)}
             >
-              <div className="drag-handle"><GripVertical size={16}/></div>
-              <div className="item-thumb">
-                {slide.mediaType === 'image' ? <img src={slide.mediaUrl || '/images/placeholder.jpg'} alt="" /> : <div className="video-thumb"><Video size={16}/></div>}
-              </div>
-              <div className="item-meta">
-                <span className="item-title">{slide.title || 'BAŞLIKSIZ'}</span>
-                <span className="item-sub">{slide.mediaType.toUpperCase()}</span>
-              </div>
-              <button 
-                className="delete-item-btn" 
-                onClick={(e) => { e.stopPropagation(); removeSlide(slide._id, slide._temporary); }}
-              >
-                <Trash2 size={14}/>
-              </button>
-            </div>
+              <item.icon className="mr-2 h-4 w-4" />
+              {item.label}
+            </Button>
           ))}
-          {slides.length === 0 && (
-            <div className="migration-helper admin-card">
-              <ImageIcon size={32} className="icon-gold" />
-              <h4>VERİTABANI BOŞ</h4>
-              <p>Henüz yönetilebilir bir sahne bulunamadı. Web sitesindeki varsayılan sahneleri buraya aktararak başlayabilirsiniz.</p>
-              <button className="migrate-btn" onClick={runMigration} disabled={isSaving}>
-                {isSaving ? <Loader2 className="animate-spin" size={16} /> : <Check size={16} />}
-                VARSAYILANLARI AKTAR
-              </button>
-            </div>
-          )}
         </div>
+      </motion.section>
 
-        <div className="editor-side">
-          {activePreviewId ? (
-            <AnimatePresence mode="wait">
-              {slides.filter(s => s._id === activePreviewId).map(slide => (
-                <motion.div 
-                  key={slide._id}
-                  initial={{ opacity: 0, x: 20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -20 }}
-                  className="slide-editor-card admin-card"
+      <section className="grid gap-6 xl:grid-cols-[minmax(0,1.1fr)_minmax(340px,420px)]">
+        <Card className="border border-[color:var(--line)] bg-[color:var(--surface)] shadow-[var(--shadow)]">
+          <CardHeader className="space-y-4 border-b border-[color:var(--line)]">
+            <div className="flex flex-col gap-3 xl:flex-row xl:items-end xl:justify-between">
+              <div>
+                <CardTitle className="text-lg text-[color:var(--text)]">Sahne listesi</CardTitle>
+                <CardDescription className="text-[color:var(--text-muted)]">
+                  Sıralamayı, yayını ve içeriği buradan yönetin.
+                </CardDescription>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="border-[color:var(--line)] bg-[color:var(--surface-muted)] text-[color:var(--text)]"
+                  onClick={addSlide}
                 >
-                  <div className="editor-top">
-                     <h3>SAHNE AYARLARI</h3>
-                     <div className="badge">{slide.mediaType === 'video' ? <Video size={14}/> : <ImageIcon size={14} />} {slide.mediaType.toUpperCase()}</div>
-                  </div>
-
-                  <div className="visual-preview-container">
-                    <div className="preview-label"><Eye size={12}/> CANLI ÖNİZLEME</div>
-                    <div className="dynamic-preview-box">
-                       {slide.mediaType === 'image' ? (
-                         <div className="preview-bg" style={{ backgroundImage: `url(${slide.mediaUrl || '/images/placeholder.jpg'})`, filter: `blur(${slide.blur}px)` }}></div>
-                       ) : (
-                         <video key={slide.mediaUrl} className="preview-bg" autoPlay muted loop style={{ filter: `blur(${slide.blur}px)` }}><source src={slide.mediaUrl} /></video>
-                       )}
-                       <div className="preview-overlay" style={{ background: `rgba(0,0,0,${slide.overlay / 100})` }}></div>
-                       <div className="preview-content">
-                         <span className="prev-sub">{slide.subtitle}</span>
-                         <span className="prev-title">{slide.title}</span>
-                       </div>
-                    </div>
-                  </div>
-
-                  <div className="editor-grid">
-                    <div className="editor-group">
-                       <label><Type size={14} /> METİN İÇERİKLERİ</label>
-                       <div className="input-stack">
-                         <input type="text" placeholder="Ana Başlık (Örn: TASARIM)" value={slide.title} onChange={e => updateSlide(slide._id, 'title', e.target.value)} />
-                         <input type="text" placeholder="Alt Başlık (Örn: HAYALLERİN MİMARİSİ)" value={slide.subtitle} onChange={e => updateSlide(slide._id, 'subtitle', e.target.value)} />
-                       </div>
-                    </div>
-
-                    <div className="editor-group">
-                       <label><ImageIcon size={14} /> MEDYA DOSYASI (VİDEO/GÖRSEL)</label>
-                       <div className="file-control">
-                         <input 
-                           type="text" 
-                           value={slide.mediaUrl} 
-                           onChange={e => {
-                             const url = e.target.value;
-                             const isVideo = url.toLowerCase().match(/\.(mp4|webm|ogg)$/) !== null;
-                             updateSlide(slide._id, 'mediaUrl', url);
-                             updateSlide(slide._id, 'mediaType', isVideo ? 'video' : 'image');
-                           }}
-                           placeholder="MP4 linki yapıştırın veya dosya yükleyin..." 
-                         />
-                         <button className="upload-mini-btn" onClick={() => document.getElementById(`file-${slide._id}`)?.click()}>
-                           <Upload size={14}/> DOSYA YÜKLE
-                         </button>
-                         <input id={`file-${slide._id}`} type="file" className="hidden" onChange={e => handleFileUpload(e, slide._id)} accept="image/*,video/*" />
-                       </div>
-                       <p className="hint-txt">Cloudinary ile doğrudan yükleme yapabilir veya harici bir MP4/Resim bağlantısı kullanabilirsiniz.</p>
-                    </div>
-
-                    <div className="editor-group">
-                       <label><Sliders size={14} /> SİNEMATİK EFEKTLER</label>
-                       <div className="range-rows">
-                         <div className="range-row">
-                           <div className="range-info">
-                             <span>Arka Plan Fluluğu (Blur)</span>
-                             <strong>{slide.blur}px</strong>
-                           </div>
-                           <input type="range" min="0" max="40" value={slide.blur} onChange={e => updateSlide(slide._id, 'blur', parseInt(e.target.value))} />
-                         </div>
-                         <div className="range-row">
-                           <div className="range-info">
-                             <span>Karanlık Maske (Overlay)</span>
-                             <strong>%{slide.overlay}</strong>
-                           </div>
-                           <input type="range" min="0" max="90" value={slide.overlay} onChange={e => updateSlide(slide._id, 'overlay', parseInt(e.target.value))} />
-                         </div>
-                       </div>
-                    </div>
-                  </div>
-                </motion.div>
-              ))}
-            </AnimatePresence>
-          ) : (
-            <div className="no-selection admin-card">
-              <ImageIcon size={48} />
-              <p>Düzenlemek için soldaki listeden bir sahne seçin veya yeni bir tane ekleyin.</p>
+                  <Plus className="mr-2 h-4 w-4" />
+                  Yeni sahne
+                </Button>
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="border-[color:var(--line)] bg-[color:var(--surface-muted)] text-[color:var(--text)]"
+                  onClick={handleCancel}
+                  disabled={!isDirty}
+                >
+                  <RefreshCw className="mr-2 h-4 w-4" />
+                  Geri al
+                </Button>
+                <Button
+                  type="button"
+                  className="bg-[color:var(--accent)] text-[color:var(--text-inverse)] hover:bg-[color:var(--accent-soft)]"
+                  onClick={saveSlides}
+                  disabled={isSaving || !isDirty}
+                >
+                  {isSaving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Save className="mr-2 h-4 w-4" />}
+                  Kaydet
+                </Button>
+              </div>
             </div>
-          )}
+            <div className="flex items-center gap-2 text-xs text-[color:var(--text-muted)]">
+              <Badge className={contentMeta.className}>
+                <ContentStatusIcon className="mr-2 h-3 w-3" />
+                {contentMeta.label}
+              </Badge>
+              <Badge className={publicFeedMeta.className}>
+                <PublicFeedStatusIcon className="mr-2 h-3 w-3" />
+                Public
+              </Badge>
+              <Badge className={uploadMeta.className}>
+                <UploadStatusIcon className="mr-2 h-3 w-3" />
+                Upload
+              </Badge>
+            </div>
+          </CardHeader>
+
+          <CardContent className="space-y-4 p-5 sm:p-6">
+            {slides.length > 0 ? (
+              <div className="grid gap-3">
+                {slides.map((slide, index) => {
+                  const selected = slide._id === selectedId;
+                  return (
+                    <button
+                      key={slide._id}
+                      type="button"
+                      className={`group flex w-full items-center gap-3 rounded-2xl border p-3 text-left transition-all ${
+                        selected
+                          ? 'border-[color:var(--accent)] bg-[color:var(--surface-muted)] shadow-[0_10px_30px_rgba(0,0,0,0.08)]'
+                          : 'border-[color:var(--line)] bg-[color:var(--surface-muted)] hover:border-[color:var(--accent)]/40 hover:bg-[color:var(--surface)]'
+                      }`}
+                      onClick={() => setSelectedId(slide._id)}
+                    >
+                      <div className="flex h-16 w-24 shrink-0 overflow-hidden rounded-xl border border-[color:var(--line)] bg-[color:var(--surface)]">
+                        {slide.mediaType === 'video' ? (
+                          <video className="h-full w-full object-cover" muted playsInline>
+                            <source src={slide.mediaUrl} />
+                          </video>
+                        ) : (
+                          <img src={slide.mediaUrl || SLIDER_IMAGE_URLS.mimari} alt={slide.title} className="h-full w-full object-cover" />
+                        )}
+                      </div>
+
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-start justify-between gap-3">
+                          <div className="min-w-0">
+                            <p className="truncate text-sm font-semibold text-[color:var(--text)]">{slide.title}</p>
+                            <p className="truncate text-xs text-[color:var(--text-muted)]">{slide.subtitle || 'Alt başlık yok'}</p>
+                          </div>
+                          <Badge className={slide.active ? 'border-emerald-500/20 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300' : 'border-[color:var(--line)] bg-[color:var(--surface)] text-[color:var(--text-muted)]'}>
+                            {slide.active ? 'Aktif' : 'Pasif'}
+                          </Badge>
+                        </div>
+
+                        <div className="mt-2 flex flex-wrap items-center gap-2 text-[0.65rem] uppercase tracking-[0.22em] text-[color:var(--text-muted)]">
+                          <span>Sıra {index + 1}</span>
+                          <span>•</span>
+                          <span>{slide.mediaType}</span>
+                          <span>•</span>
+                          <span>{slide._temporary ? 'Taslak' : 'Kayıtlı'}</span>
+                        </div>
+                      </div>
+
+                      <div className="flex shrink-0 items-center gap-1">
+                        <Button
+                          type="button"
+                          size="icon"
+                          variant="ghost"
+                          className="h-9 w-9 rounded-full text-[color:var(--text-muted)] hover:bg-[color:var(--surface)] hover:text-[color:var(--text)]"
+                          onClick={(event) => {
+                            event.stopPropagation();
+                            moveSlide(slide._id, -1);
+                          }}
+                          disabled={index === 0}
+                        >
+                          <ArrowUp className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          type="button"
+                          size="icon"
+                          variant="ghost"
+                          className="h-9 w-9 rounded-full text-[color:var(--text-muted)] hover:bg-[color:var(--surface)] hover:text-[color:var(--text)]"
+                          onClick={(event) => {
+                            event.stopPropagation();
+                            moveSlide(slide._id, 1);
+                          }}
+                          disabled={index === slides.length - 1}
+                        >
+                          <ArrowDown className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          type="button"
+                          size="icon"
+                          variant="ghost"
+                          className="h-9 w-9 rounded-full text-rose-500 hover:bg-rose-500/10 hover:text-rose-600"
+                          onClick={(event) => {
+                            event.stopPropagation();
+                            removeSlide(slide);
+                          }}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+            ) : (
+              <div className="rounded-[2rem] border border-dashed border-[color:var(--line)] bg-[color:var(--surface-muted)] p-6">
+                <div className="space-y-3 text-center">
+                  <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full border border-[color:var(--line)] bg-[color:var(--surface)] text-[color:var(--accent)]">
+                    <ImageIcon className="h-6 w-6" />
+                  </div>
+                  <div className="space-y-1">
+                    <h3 className="text-base font-semibold text-[color:var(--text)]">Henüz sahne yok</h3>
+                    <p className="text-sm leading-6 text-[color:var(--text-muted)]">
+                      Başlamak için varsayılan slider sahnelerini içeri aktarabilir veya yeni bir sahne oluşturabilirsiniz.
+                    </p>
+                  </div>
+                  <div className="flex flex-col gap-3 sm:flex-row sm:justify-center">
+                    <Button
+                      type="button"
+                      className="bg-[color:var(--accent)] text-[color:var(--text-inverse)] hover:bg-[color:var(--accent-soft)]"
+                      onClick={runMigration}
+                      disabled={isSaving}
+                    >
+                      {isSaving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Database className="mr-2 h-4 w-4" />}
+                      Varsayılanları aktar
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      className="border-[color:var(--line)] bg-[color:var(--surface)] text-[color:var(--text)]"
+                      onClick={addSlide}
+                    >
+                      <Plus className="mr-2 h-4 w-4" />
+                      Boş sahne ekle
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        <div className="space-y-6">
+          <Card className="border border-[color:var(--line)] bg-[color:var(--surface)] shadow-[var(--shadow)]">
+            <CardHeader className="border-b border-[color:var(--line)]">
+              <div className="flex items-start justify-between gap-3">
+                <div>
+                  <CardTitle className="text-lg text-[color:var(--text)]">Canlı Önizleme</CardTitle>
+                  <CardDescription className="text-[color:var(--text-muted)]">
+                    Seçili sahne frontend’de nasıl görünecek, burada kontrol edin.
+                  </CardDescription>
+                </div>
+                <Badge className="border-[color:var(--line)] bg-[color:var(--surface-muted)] text-[color:var(--text-muted)]">
+                  <Eye className="mr-2 h-3 w-3" />
+                  Önizleme
+                </Badge>
+              </div>
+            </CardHeader>
+            <CardContent className="p-5 sm:p-6">
+              {selectedSlide ? (
+                <div className="overflow-hidden rounded-[1.75rem] border border-[color:var(--line)] bg-[color:var(--surface-muted)]">
+                  <div className="relative aspect-[16/10] min-h-[260px] w-full overflow-hidden bg-black">
+                    {selectedSlide.mediaType === 'video' ? (
+                      <video key={selectedSlide.mediaUrl} className="absolute inset-0 h-full w-full object-cover" autoPlay muted loop playsInline>
+                        <source src={selectedSlide.mediaUrl} />
+                      </video>
+                    ) : (
+                      <img
+                        src={selectedSlide.mediaUrl || SLIDER_IMAGE_URLS.mimari}
+                        alt={selectedSlide.title}
+                        className="absolute inset-0 h-full w-full object-cover"
+                      />
+                    )}
+                    <div
+                      className="absolute inset-0"
+                      style={{ background: `rgba(0,0,0,${Math.min(Math.max(selectedSlide.overlay, 0), 100) / 100})` }}
+                    />
+                    <div
+                      className="absolute inset-0"
+                      style={{ backdropFilter: `blur(${Math.min(Math.max(selectedSlide.blur, 0), 50)}px)` }}
+                    />
+                    <div className="relative z-10 flex h-full flex-col items-center justify-center gap-2 p-6 text-center text-white">
+                      <span className="text-[0.65rem] uppercase tracking-[0.45em] text-white/70">Sinematik Slider</span>
+                      <h3 className="max-w-[90%] text-3xl font-semibold uppercase tracking-[0.16em] sm:text-4xl">
+                        {selectedSlide.title}
+                      </h3>
+                      <p className="max-w-[80%] text-xs uppercase tracking-[0.3em] text-white/70">
+                        {selectedSlide.subtitle || 'ALT BAŞLIK YOK'}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <div className="flex min-h-[320px] items-center justify-center rounded-[1.75rem] border border-dashed border-[color:var(--line)] bg-[color:var(--surface-muted)] text-center text-[color:var(--text-muted)]">
+                  <div className="space-y-3 px-6">
+                    <ImageIcon className="mx-auto h-10 w-10" />
+                    <p className="text-sm">Önizleme için bir sahne seçin.</p>
+                  </div>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
+          <Card className="border border-[color:var(--line)] bg-[color:var(--surface)] shadow-[var(--shadow)]">
+            <CardHeader className="border-b border-[color:var(--line)]">
+              <CardTitle className="text-lg text-[color:var(--text)]">
+                {selectedSlide ? selectedSlide.title : 'Sahne ayarları'}
+              </CardTitle>
+              <CardDescription className="text-[color:var(--text-muted)]">
+                {TAB_ITEMS.find((item) => item.key === tab)?.description}
+              </CardDescription>
+            </CardHeader>
+
+            <CardContent className="space-y-5 p-5 sm:p-6">
+              {selectedSlide ? (
+                <>
+                  <div className="flex flex-wrap gap-2">
+                    {TAB_ITEMS.map((item) => (
+                      <Button
+                        key={item.key}
+                        type="button"
+                        variant={tab === item.key ? 'default' : 'outline'}
+                        size="sm"
+                        className={
+                          tab === item.key
+                            ? 'bg-[color:var(--accent)] text-[color:var(--text-inverse)] hover:bg-[color:var(--accent-soft)]'
+                            : 'border-[color:var(--line)] bg-[color:var(--surface-muted)] text-[color:var(--text)] hover:bg-[color:var(--surface)]'
+                        }
+                        onClick={() => setTab(item.key)}
+                      >
+                        <item.icon className="mr-2 h-4 w-4" />
+                        {item.label}
+                      </Button>
+                    ))}
+                  </div>
+
+                  <Separator className="bg-[color:var(--line)]" />
+
+                  <AnimatePresence mode="wait">
+                    {tab === 'genel' && (
+                      <motion.div
+                        key="genel"
+                        initial={{ opacity: 0, y: 8 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -8 }}
+                        className="space-y-4"
+                      >
+                        <div className="grid gap-4">
+                          <div className="space-y-2">
+                            <p className="text-xs font-semibold uppercase tracking-[0.26em] text-[color:var(--text-muted)]">Başlık</p>
+                            <Input
+                              value={selectedSlide.title}
+                              onChange={(event) => updateSlide(selectedSlide._id, { title: event.target.value })}
+                              placeholder="Örn: DESIGN STUDIO"
+                            />
+                          </div>
+
+                          <div className="space-y-2">
+                            <p className="text-xs font-semibold uppercase tracking-[0.26em] text-[color:var(--text-muted)]">Alt başlık</p>
+                            <Textarea
+                              value={selectedSlide.subtitle}
+                              onChange={(event) => updateSlide(selectedSlide._id, { subtitle: event.target.value })}
+                              placeholder="Örn: TASARIMIN GELECEĞİ"
+                              rows={4}
+                            />
+                          </div>
+                        </div>
+
+                        <div className="grid gap-3 sm:grid-cols-2">
+                          <Button
+                            type="button"
+                            variant="outline"
+                            className="border-[color:var(--line)] bg-[color:var(--surface-muted)] text-[color:var(--text)]"
+                            onClick={() => updateSlide(selectedSlide._id, { active: !selectedSlide.active })}
+                          >
+                            {selectedSlide.active ? 'Pasife al' : 'Aktifleştir'}
+                          </Button>
+                          <Button
+                            type="button"
+                            variant="outline"
+                            className="border-[color:var(--line)] bg-[color:var(--surface-muted)] text-[color:var(--text)]"
+                            onClick={() => moveSlide(selectedSlide._id, -1)}
+                          >
+                            <ArrowUp className="mr-2 h-4 w-4" />
+                            Yukarı taşı
+                          </Button>
+                        </div>
+                      </motion.div>
+                    )}
+
+                    {tab === 'medya' && (
+                      <motion.div
+                        key="medya"
+                        initial={{ opacity: 0, y: 8 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -8 }}
+                        className="space-y-4"
+                      >
+                        <div className="space-y-2">
+                          <p className="text-xs font-semibold uppercase tracking-[0.26em] text-[color:var(--text-muted)]">Medya bağlantısı</p>
+                          <Input
+                            value={selectedSlide.mediaUrl}
+                            onChange={(event) => updateSlide(selectedSlide._id, {
+                              mediaUrl: event.target.value,
+                              mediaType: isVideoUrl(event.target.value) ? 'video' : 'image',
+                            })}
+                            placeholder="https://... veya /local/path.png"
+                          />
+                          <p className="text-xs leading-6 text-[color:var(--text-muted)]">
+                            Video için MP4, WebM, MOV veya M4V ekleyebilirsiniz. Görsel yüklemek için sürükle-bırak alanını kullanın.
+                          </p>
+                        </div>
+
+                        <AdminImageDropzone
+                          accept="image/*,video/*"
+                          aspectClassName="aspect-[16/10]"
+                          buttonLabel="Dosya seç"
+                          description="Görseli sürükleyip bırakın veya tıklayıp yükleyin."
+                          emptySubtitle="Slider sahnesi için görsel ya da video seçin."
+                          emptyTitle="Medya yükle"
+                          onFileSelect={handleMediaSelect}
+                          previewAlt={selectedSlide.title}
+                          previewType="auto"
+                          previewUrl={selectedSlide.mediaUrl}
+                        />
+                      </motion.div>
+                    )}
+
+                    {tab === 'efektler' && (
+                      <motion.div
+                        key="efektler"
+                        initial={{ opacity: 0, y: 8 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -8 }}
+                        className="space-y-5"
+                      >
+                        <div className="space-y-3">
+                          <div className="flex items-center justify-between gap-3 text-sm">
+                            <span className="font-medium text-[color:var(--text)]">Blur</span>
+                            <strong className="text-[color:var(--accent)]">{selectedSlide.blur}px</strong>
+                          </div>
+                          <input
+                            type="range"
+                            min="0"
+                            max="40"
+                            value={selectedSlide.blur}
+                            onChange={(event) => updateSlide(selectedSlide._id, { blur: Number(event.target.value) })}
+                            className="h-2 w-full cursor-pointer appearance-none rounded-full bg-[color:var(--surface-muted)] accent-[color:var(--accent)]"
+                          />
+                        </div>
+
+                        <div className="space-y-3">
+                          <div className="flex items-center justify-between gap-3 text-sm">
+                            <span className="font-medium text-[color:var(--text)]">Overlay</span>
+                            <strong className="text-[color:var(--accent)]">%{selectedSlide.overlay}</strong>
+                          </div>
+                          <input
+                            type="range"
+                            min="0"
+                            max="90"
+                            value={selectedSlide.overlay}
+                            onChange={(event) => updateSlide(selectedSlide._id, { overlay: Number(event.target.value) })}
+                            className="h-2 w-full cursor-pointer appearance-none rounded-full bg-[color:var(--surface-muted)] accent-[color:var(--accent)]"
+                          />
+                        </div>
+
+                        <div className="rounded-[1.5rem] border border-[color:var(--line)] bg-[color:var(--surface-muted)] p-4 text-sm text-[color:var(--text-muted)]">
+                          Bu ayarlar anlık önizlemede ve public slider’da kullanılacak.
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </>
+              ) : (
+                <div className="rounded-[1.5rem] border border-dashed border-[color:var(--line)] bg-[color:var(--surface-muted)] p-6 text-center text-[color:var(--text-muted)]">
+                  <p className="text-sm">Düzenlemek için soldan bir sahne seçin.</p>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
+          <Card className="border border-[color:var(--line)] bg-[color:var(--surface)] shadow-[var(--shadow)]">
+            <CardHeader className="border-b border-[color:var(--line)]">
+              <CardTitle className="text-lg text-[color:var(--text)]">API Kontrolleri</CardTitle>
+              <CardDescription className="text-[color:var(--text-muted)]">
+                Slider veri akışını ve upload hattını buradan takip edin.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-3 p-5 sm:p-6">
+              <div className="grid gap-3">
+                <div className="rounded-2xl border border-[color:var(--line)] bg-[color:var(--surface-muted)] p-4">
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="min-w-0">
+                      <p className="text-sm font-semibold text-[color:var(--text)]">Admin slides API</p>
+                      <p className="text-xs leading-6 text-[color:var(--text-muted)]">Sahne listesi, oluşturma, güncelleme ve silme.</p>
+                    </div>
+                    <Badge className={contentMeta.className}>
+                      <ContentStatusIcon className="mr-2 h-3 w-3" />
+                      {contentMeta.label}
+                    </Badge>
+                  </div>
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    <Button asChild size="sm" variant="outline" className="border-[color:var(--line)] bg-[color:var(--surface)] text-[color:var(--text)]">
+                      <Link href="/api/admin/slides" target="_blank" rel="noreferrer">
+                        <Eye className="mr-2 h-4 w-4" />
+                        JSON
+                      </Link>
+                    </Button>
+                  </div>
+                </div>
+
+                <div className="rounded-2xl border border-[color:var(--line)] bg-[color:var(--surface-muted)] p-4">
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="min-w-0">
+                      <p className="text-sm font-semibold text-[color:var(--text)]">Public slider feed</p>
+                      <p className="text-xs leading-6 text-[color:var(--text-muted)]">Aktif sahneler frontend tarafına buradan gider.</p>
+                    </div>
+                    <Badge className={publicFeedMeta.className}>
+                      <PublicFeedStatusIcon className="mr-2 h-3 w-3" />
+                      {publicFeedMeta.label}
+                    </Badge>
+                  </div>
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    <Button asChild size="sm" variant="outline" className="border-[color:var(--line)] bg-[color:var(--surface)] text-[color:var(--text)]">
+                      <Link href="/api/slides" target="_blank" rel="noreferrer">
+                        <Eye className="mr-2 h-4 w-4" />
+                        JSON
+                      </Link>
+                    </Button>
+                  </div>
+                </div>
+
+                <div className="rounded-2xl border border-[color:var(--line)] bg-[color:var(--surface-muted)] p-4">
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="min-w-0">
+                      <p className="text-sm font-semibold text-[color:var(--text)]">Upload servisi</p>
+                      <p className="text-xs leading-6 text-[color:var(--text-muted)]">Medya yükleme hattı ve dosya kontrolü.</p>
+                    </div>
+                    <Badge className={uploadMeta.className}>
+                      <UploadStatusIcon className="mr-2 h-3 w-3" />
+                      {uploadMeta.label}
+                    </Badge>
+                  </div>
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    <Button asChild size="sm" variant="outline" className="border-[color:var(--line)] bg-[color:var(--surface)] text-[color:var(--text)]">
+                      <Link href="/api/upload" target="_blank" rel="noreferrer">
+                        <Upload className="mr-2 h-4 w-4" />
+                        JSON
+                      </Link>
+                    </Button>
+                  </div>
+                </div>
+
+                <div className="rounded-2xl border border-[color:var(--line)] bg-[color:var(--surface-muted)] p-4">
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="min-w-0">
+                      <p className="text-sm font-semibold text-[color:var(--text)]">Varsayılan slider seed</p>
+                      <p className="text-xs leading-6 text-[color:var(--text-muted)]">Veritabanı boşsa başlangıç sahnelerini ekler.</p>
+                    </div>
+                    <Badge className="border-[color:var(--line)] bg-[color:var(--surface)] text-[color:var(--text-muted)]">
+                      <Database className="mr-2 h-3 w-3" />
+                      Aktarım
+                    </Badge>
+                  </div>
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    <Button
+                      type="button"
+                      className="bg-[color:var(--accent)] text-[color:var(--text-inverse)] hover:bg-[color:var(--accent-soft)]"
+                      onClick={runMigration}
+                      disabled={isSaving}
+                    >
+                      {isSaving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Database className="mr-2 h-4 w-4" />}
+                      Varsayılanları aktar
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </div>
-      </div>
-
-      <style jsx>{`
-        .slider-manager { display: flex; flex-direction: column; gap: 2rem; }
-        
-        .manager-header { display: flex; justify-content: space-between; align-items: flex-end; gap: 1.5rem; }
-        @media (max-width: 900px) {
-          .manager-header { flex-direction: column; align-items: stretch; text-align: center; gap: 1rem; }
-          .header-actions { flex-direction: column; width: 100%; }
-          .add-btn-outline, .save-btn { width: 100%; justify-content: center; }
-        }
-        .manager-header h2 { font-family: var(--font-display); font-size: 1.5rem; letter-spacing: 0.1em; color: #000 !important; margin: 0 0 0.5rem 0; font-weight: 700; }
-        .manager-header p { margin: 0; color: #000 !important; opacity: 0.7; font-size: 0.85rem; font-weight: 500; }
-
-        .header-actions { display: flex; gap: 1rem; }
-        .add-btn-outline { background: #fff !important; border: 1px solid #000 !important; color: #000 !important; padding: 0.85rem 1.5rem; border-radius: 4px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 0.75rem; font-size: 0.75rem; }
-
-        .save-btn.dirty-pulse { background: #a68966; box-shadow: 0 0 20px rgba(166,137,102,0.4); animation: pulse-border 2s infinite; }
-        @keyframes pulse-border { 0% { box-shadow: 0 0 0 0 rgba(166,137,102,0.4); } 70% { box-shadow: 0 0 0 10px rgba(166,137,102,0); } 100% { box-shadow: 0 0 0 0 rgba(166,137,102,0); } }
-
-        .save-btn { background: #a68966; color: #000; border: none; padding: 0.85rem 2rem; border-radius: 4px; font-weight: 800; cursor: pointer; display: flex; align-items: center; gap: 0.75rem; font-size: 0.75rem; transition: all 0.3s; box-shadow: 0 10px 20px rgba(166,137,102,0.2); }
-        .save-btn:hover { background: #c5a680; transform: translateY(-2px); }
-
-        .slides-layout { display: grid; grid-template-columns: 320px 1fr; gap: 2rem; align-items: start; }
-        @media (max-width: 1100px) { .slides-layout { grid-template-columns: 1fr; } }
-        
-        /* LIST SIDE */
-        .slides-list { display: flex; flex-direction: column; gap: 0.75rem; }
-        .slide-item-sm { background: var(--surface-muted); border: 1px solid var(--line); padding: 0.75rem; border-radius: 8px; display: flex; align-items: center; gap: 1rem; cursor: pointer; transition: all 0.3s; position: relative; }
-        .slide-item-sm:hover { background: var(--line); }
-        .slide-item-sm.active { background: rgba(166,137,102,0.1); border-color: #a68966; }
-        
-        .drag-handle { color: var(--text-muted); cursor: grab; }
-        .item-thumb { width: 60px; height: 40px; border-radius: 4px; overflow: hidden; background: #000; }
-        .item-thumb img { width: 100%; height: 100%; object-fit: cover; }
-        .video-thumb { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: rgba(255,255,255,0.3); }
-
-        .item-meta { flex: 1; display: flex; flex-direction: column; min-width: 0; }
-        .item-title { font-size: 0.75rem; font-weight: 800; color: #000 !important; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; letter-spacing: 0.05em; }
-        .item-sub { font-size: 0.6rem; color: #000 !important; opacity: 0.6; }
-        
-        .delete-item-btn { position: absolute; right: 0.75rem; background: transparent; border: none; color: rgba(255,77,77,0.3); cursor: pointer; opacity: 0; transition: opacity 0.3s; }
-        .slide-item-sm:hover .delete-item-btn { opacity: 1; }
-        .delete-item-btn:hover { color: #ff4d4d; }
-
-        /* EDITOR SIDE */
-        .slide-editor-card { padding: 3rem; background: #fff !important; border: 1px solid #000 !important; border-radius: 24px; }
-        @media (max-width: 768px) { .slide-editor-card { padding: 1.5rem; border-radius: 12px; } }
-        .editor-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; }
-        .editor-top h3 { margin: 0; font-family: var(--font-display); font-size: 1rem; color: #000 !important; letter-spacing: 0.1em; font-weight: 800; }
-        .badge { background: #000 !important; color: #fff !important; padding: 4px 10px; border-radius: 4px; font-size: 0.6rem; font-weight: 800; display: flex; align-items: center; gap: 0.5rem; }
-
-        .visual-preview-container { margin-bottom: 2.5rem; }
-        .preview-label { font-size: 0.6rem; color: var(--text-muted); letter-spacing: 0.1em; margin-bottom: 0.5rem; font-weight: 800; display: flex; align-items: center; gap: 0.4rem; }
-        .dynamic-preview-box { width: 100%; height: 350px; background: #000; border-radius: 12px; position: relative; overflow: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-        @media (max-width: 600px) { .dynamic-preview-box { height: 200px; } }
-        .preview-bg { position: absolute; inset: -20px; background-size: cover; background-position: center; transition: filter 0.3s; }
-        .preview-overlay { position: absolute; inset: 0; transition: background 0.3s; }
-        .preview-content { position: relative; z-index: 2; text-align: center; padding: 1rem; }
-        .prev-title { display: block; font-family: var(--font-display); font-size: 2.5rem; color: #fff; letter-spacing: 0.15em; font-weight: 200; }
-        @media (max-width: 600px) { .prev-title { font-size: 1.5rem; } }
-        .prev-sub { display: block; font-size: 0.75rem; color: rgba(255,255,255,0.7); letter-spacing: 0.3em; margin-bottom: 0.5rem; }
-        @media (max-width: 600px) { .prev-sub { font-size: 0.6rem; letter-spacing: 0.15em; } }
-
-        .editor-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
-        @media (max-width: 768px) { .editor-grid { grid-template-columns: 1fr; gap: 1.5rem; } }
-        .editor-group { display: flex; flex-direction: column; gap: 1rem; }
-        .editor-group label { display: flex; align-items: center; gap: 0.6rem; font-size: 0.7rem; color: #000 !important; font-weight: 800; letter-spacing: 0.1em; border-bottom: 1px solid #000; padding-bottom: 0.5rem; }
-        
-        .input-stack { display: flex; flex-direction: column; gap: 0.75rem; }
-        .input-stack input { background: #fff !important; border: 1px solid #000 !important; padding: 0.85rem; border-radius: 4px; color: #000 !important; font-family: inherit; font-size: 0.85rem; font-weight: 600; }
-        .input-stack input:focus { border-color: #a68966; outline: none; box-shadow: 0 0 10px rgba(166,137,102,0.2); }
-
-        .file-control { display: flex; gap: 0.5rem; }
-        @media (max-width: 600px) { .file-control { flex-direction: column; } }
-        .file-control input { flex: 1; background: #f9f9f9 !important; border: 1px solid #000 !important; padding: 0.75rem; border-radius: 4px; color: #000 !important; font-size: 0.75rem; font-weight: 500; }
-        .upload-mini-btn { background: #000 !important; color: #fff !important; border: none; padding: 0.85rem 1.25rem; border-radius: 4px; font-size: 0.7rem; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 0.5rem; }
-        @media (max-width: 600px) { .upload-mini-btn { padding: 1rem; } }
-
-        .range-rows { display: flex; flex-direction: column; gap: 1.5rem; }
-        .range-row { display: flex; flex-direction: column; gap: 0.5rem; }
-        .range-info { display: flex; justify-content: space-between; font-size: 0.7rem; color: #000 !important; font-weight: 700; }
-        .range-info strong { color: #a68966; font-weight: 900; }
-        .range-row input[type="range"] { accent-color: #a68966; cursor: pointer; }
-        .hint-txt { font-size: 0.65rem; color: #000 !important; opacity: 0.6; margin-top: 0.5rem; }
-
-        .no-selection { height: 500px; display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--text-muted); opacity: 0.3; gap: 1.5rem; text-align: center; padding: 3rem; }
-        .no-selection p { font-size: 0.9rem; color: var(--text-muted); opacity: 0.7; }
-
-        .loader-wrap { height: 60vh; display: flex; align-items: center; justify-content: center; }
-        .hidden { display: none; }
-
-        .migration-helper { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 1rem; padding: 2.5rem 1.5rem; background: rgba(166,137,102,0.05); border: 1px dashed rgba(166,137,102,0.3); margin-top: 1rem; }
-        .migration-helper h4 { font-size: 0.8rem; letter-spacing: 0.2em; color: #a68966; margin: 0; }
-        .migration-helper p { font-size: 0.75rem; color: var(--text-soft); opacity: 0.6; line-height: 1.6; margin: 0; }
-        .icon-gold { color: #a68966; opacity: 0.6; }
-        .migrate-btn { background: #a68966; color: #000; border: none; padding: 0.75rem 1.25rem; border-radius: 4px; font-size: 0.65rem; font-weight: 800; cursor: pointer; display: flex; align-items: center; gap: 0.5rem; transition: all 0.3s; margin-top: 0.5rem; }
-        .migrate-btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(166,137,102,0.2); }
-        .migrate-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-
-        @media (max-width: 1280px) {
-          .slides-layout { grid-template-columns: 1fr; }
-          .slides-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); }
-        }
-      `}</style>
+      </section>
     </div>
   );
 }
