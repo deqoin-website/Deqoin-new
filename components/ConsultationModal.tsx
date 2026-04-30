@@ -224,10 +224,10 @@ export default function ConsultationModal({ isOpen, onClose }: ConsultationModal
                   RANDEVU TALEBİ
                 </p>
                 <h2 className="mt-4 text-3xl font-thin uppercase tracking-[0.18em] text-white md:text-4xl">
-                  Bilgilerinizi tek adımda paylaşın
+                  Talebinizi iletin
                 </h2>
                 <p className="mt-4 max-w-xl text-sm font-light leading-relaxed tracking-[0.28em] text-zinc-500 uppercase">
-                  Kullanıcıyı yormayan, kompakt ve şık bir form düzeniyle talebinizi doğrudan iletin.
+                  Kısa bilgi bırakın, size hızlıca dönüş yapalım.
                 </p>
               </div>
 
@@ -274,7 +274,7 @@ export default function ConsultationModal({ isOpen, onClose }: ConsultationModal
                   <Input
                     type="text"
                     name="location"
-                    placeholder="Şirket Adı / Şehir (Örn: HMZ Solutions, Nevşehir)"
+                    placeholder="Şirket Adı / Şehir"
                     value={formData.location}
                     onChange={handleInputChange}
                     className="border-0 border-b border-zinc-800 bg-transparent px-0 text-[0.82rem] tracking-[0.22em] placeholder:text-zinc-600"
