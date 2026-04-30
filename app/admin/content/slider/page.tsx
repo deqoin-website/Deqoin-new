@@ -2,7 +2,7 @@
 
 /* eslint-disable @next/next/no-img-element */
 
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { AnimatePresence, motion } from 'framer-motion';
 import {
@@ -134,6 +134,7 @@ export default function SliderConfigPage() {
   const [isDirty, setIsDirty] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
+  const [mediaUploadTargetId, setMediaUploadTargetId] = useState<string | null>(null);
   const [apiStatus, setApiStatus] = useState({
     content: 'loading' as ApiStatus,
     publicFeed: 'loading' as ApiStatus,
@@ -152,6 +153,7 @@ export default function SliderConfigPage() {
   const ContentStatusIcon = contentMeta.icon;
   const PublicFeedStatusIcon = publicFeedMeta.icon;
   const UploadStatusIcon = uploadMeta.icon;
+  const mediaInputRef = useRef<HTMLInputElement>(null);
 
   const fetchSlides = useCallback(async () => {
     setIsLoading(true);
@@ -364,12 +366,18 @@ export default function SliderConfigPage() {
     }
   };
 
-  const handleMediaSelect = async (file: File) => {
-    if (!selectedSlide) return;
+  const openMediaPicker = (slideId: string) => {
+    setMediaUploadTargetId(slideId);
+    mediaInputRef.current?.click();
+  };
+
+  const handleMediaSelect = async (file: File, slideId?: string | null) => {
+    const targetSlideId = slideId || mediaUploadTargetId || selectedSlide?._id || null;
+    if (!targetSlideId) return;
 
     try {
       const url = await uploadFile(file);
-      updateSlide(selectedSlide._id, {
+      updateSlide(targetSlideId, {
         mediaUrl: url,
         mediaType: file.type.startsWith('video/') ? 'video' : 'image',
       });
@@ -461,6 +469,24 @@ export default function SliderConfigPage() {
 
   return (
     <div className="space-y-6 pb-8">
+      <input
+        ref={mediaInputRef}
+        type="file"
+        accept="image/*,video/*"
+        className="hidden"
+        onChange={async (event) => {
+          const file = event.target.files?.[0];
+          if (!file) return;
+
+          try {
+            await handleMediaSelect(file, mediaUploadTargetId);
+          } finally {
+            event.target.value = '';
+            setMediaUploadTargetId(null);
+          }
+        }}
+      />
+
       <motion.section
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
@@ -604,15 +630,22 @@ export default function SliderConfigPage() {
                 {slides.map((slide, index) => {
                   const selected = slide._id === selectedId;
                   return (
-                    <button
+                    <div
                       key={slide._id}
-                      type="button"
+                      role="button"
+                      tabIndex={0}
                       className={`group flex w-full items-center gap-3 rounded-2xl border p-3 text-left transition-all ${
                         selected
                           ? 'border-[color:var(--accent)] bg-[color:var(--surface-muted)] shadow-[0_10px_30px_rgba(0,0,0,0.08)]'
                           : 'border-[color:var(--line)] bg-[color:var(--surface-muted)] hover:border-[color:var(--accent)]/40 hover:bg-[color:var(--surface)]'
                       }`}
                       onClick={() => setSelectedId(slide._id)}
+                      onKeyDown={(event) => {
+                        if (event.key === 'Enter' || event.key === ' ') {
+                          event.preventDefault();
+                          setSelectedId(slide._id);
+                        }
+                      }}
                     >
                       <div className="flex h-16 w-24 shrink-0 overflow-hidden rounded-xl border border-[color:var(--line)] bg-[color:var(--surface)]">
                         {slide.mediaType === 'video' ? (
@@ -645,6 +678,19 @@ export default function SliderConfigPage() {
                       </div>
 
                       <div className="flex shrink-0 items-center gap-1">
+                        <Button
+                          type="button"
+                          variant="outline"
+                          className="h-9 rounded-full border-[color:var(--line)] bg-[color:var(--surface)] px-3 text-[0.7rem] text-[color:var(--text)] hover:bg-[color:var(--surface-muted)]"
+                          onClick={(event) => {
+                            event.stopPropagation();
+                            setSelectedId(slide._id);
+                            openMediaPicker(slide._id);
+                          }}
+                        >
+                          <ImageIcon className="mr-2 h-4 w-4" />
+                          Medya değiştir
+                        </Button>
                         <Button
                           type="button"
                           size="icon"
@@ -684,7 +730,7 @@ export default function SliderConfigPage() {
                           <Trash2 className="h-4 w-4" />
                         </Button>
                       </div>
-                    </button>
+                    </div>
                   );
                 })}
               </div>
@@ -909,6 +955,25 @@ export default function SliderConfigPage() {
                           previewType="auto"
                           previewUrl={selectedSlide.mediaUrl}
                         />
+
+                        <div className="flex flex-wrap gap-3">
+                          <Button
+                            type="button"
+                            className="bg-[color:var(--accent)] text-[color:var(--text-inverse)] hover:bg-[color:var(--accent-soft)]"
+                            onClick={() => openMediaPicker(selectedSlide._id)}
+                          >
+                            <Upload className="mr-2 h-4 w-4" />
+                            Bu sahnenin medya dosyasını değiştir
+                          </Button>
+                          <Button
+                            type="button"
+                            variant="outline"
+                            className="border-[color:var(--line)] bg-[color:var(--surface-muted)] text-[color:var(--text)]"
+                            onClick={() => setTab('genel')}
+                          >
+                            Genel sekmeye dön
+                          </Button>
+                        </div>
                       </motion.div>
                     )}
 
