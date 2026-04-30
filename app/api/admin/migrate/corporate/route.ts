@@ -41,7 +41,7 @@ export async function GET() {
     const updated = await CorporateContent.findOneAndUpdate(
       { page: 'about' },
       { ...initialData, 'metadata.updatedAt': new Date() },
-      { upsert: true, new: true }
+      { upsert: true, returnDocument: 'after' }
     );
     
     return NextResponse.json({ 

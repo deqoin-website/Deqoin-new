@@ -43,11 +43,21 @@ export async function PUT(
     await connectToDatabase();
     const { page } = await params;
     const data = await request.json();
+    const { metadata, ...rest } = data ?? {};
 
     const updated = await CorporateContent.findOneAndUpdate(
       { page },
-      { ...data, page, 'metadata.updatedAt': new Date() },
-      { upsert: true, new: true }
+      {
+        $set: {
+          ...rest,
+          page,
+          metadata: {
+            ...(metadata || {}),
+            updatedAt: new Date(),
+          },
+        },
+      },
+      { upsert: true, returnDocument: 'after', runValidators: true }
     );
 
     return NextResponse.json(updated);
