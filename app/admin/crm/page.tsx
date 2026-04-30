@@ -1,84 +1,340 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import Script from 'next/script';
-import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  Search, 
-  FileText, 
-  MessageCircle, 
-  MoreVertical, 
-  X, 
-  Filter, 
-  Loader2, 
-  Check, 
-  Calendar, 
-  Users, 
-  Clock, 
+import { AnimatePresence, motion } from 'framer-motion';
+import {
   AlertCircle,
-  Archive,
-  CheckCircle2,
-  Trash2,
   ArrowRight,
-  Download
+  Calendar,
+  CheckCircle2,
+  Clock,
+  Download,
+  FileText,
+  Filter,
+  Loader2,
+  Mail,
+  MapPin,
+  MessageCircle,
+  Phone,
+  Printer,
+  Search,
+  Sparkles,
+  Users,
+  X,
 } from 'lucide-react';
 
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+
+type Appointment = {
+  _id: string;
+  name: string;
+  surname: string;
+  email: string;
+  phone: string;
+  city: string;
+  status: string;
+  createdAt: string;
+  interestedDepartment: string;
+  projectDetails?: string;
+};
+
+const STATUS_FILTERS = ['Hepsi', 'Yeni', 'İncelendi', 'İletişime Geçildi', 'Arşivlendi'] as const;
+const SCOPE_FILTERS = [
+  { key: 'daily', label: 'Günlük' },
+  { key: 'weekly', label: 'Haftalık' },
+  { key: 'monthly', label: 'Aylık' },
+  { key: 'all', label: 'Genel' },
+] as const;
+
+const STATUS_STYLES: Record<string, string> = {
+  Yeni: 'border-amber-400/25 bg-amber-400/10 text-amber-100',
+  İncelendi: 'border-sky-400/25 bg-sky-400/10 text-sky-100',
+  'İletişime Geçildi': 'border-emerald-400/25 bg-emerald-400/10 text-emerald-100',
+  Arşivlendi: 'border-white/10 bg-white/5 text-zinc-300',
+};
+
+const formatDate = (value: string, withTime = false) => {
+  const date = new Date(value);
+  return withTime
+    ? date.toLocaleString('tr-TR', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+      })
+    : date.toLocaleDateString('tr-TR', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+      });
+};
+
+const matchesQuery = (lead: Appointment, query: string) => {
+  if (!query.trim()) return true;
+  const text = [
+    lead.name,
+    lead.surname,
+    lead.email,
+    lead.phone,
+    lead.city,
+    lead.interestedDepartment,
+    lead.projectDetails,
+  ]
+    .filter(Boolean)
+    .join(' ')
+    .toLowerCase();
+
+  return text.includes(query.toLowerCase());
+};
+
+const getScopeTitle = (scope: (typeof SCOPE_FILTERS)[number]['key'], filter: string) => {
+  if (scope === 'daily') return 'GÜNLÜK RANDEVU RAPORU';
+  if (scope === 'weekly') return 'HAFTALIK RANDEVU RAPORU';
+  if (scope === 'monthly') return 'AYLIK RANDEVU RAPORU';
+  return filter === 'Hepsi'
+    ? 'GENEL RANDEVU LİSTESİ'
+    : `GENEL RANDEVU LİSTESİ • ${filter.toLocaleUpperCase('tr-TR')}`;
+};
+
+function ReportHeader({
+  title,
+  documentNumber,
+  subtitle,
+}: {
+  title: string;
+  documentNumber: string;
+  subtitle: string;
+}) {
+  return (
+    <header className="grid gap-4 border-b border-zinc-200 pb-5 md:grid-cols-[1fr_auto] md:items-end">
+      <div>
+        <p className="text-[0.65rem] font-semibold uppercase tracking-[0.4em] text-zinc-500">
+          Deqoin Design Studio
+        </p>
+        <h2 className="mt-2 text-2xl font-semibold tracking-tight text-zinc-950">{title}</h2>
+        <p className="mt-2 text-sm leading-6 text-zinc-600">{subtitle}</p>
+      </div>
+      <div className="space-y-1 text-right text-[0.72rem] leading-5 text-zinc-500">
+        <p>
+          <span className="font-semibold text-zinc-900">Doküman No:</span> {documentNumber}
+        </p>
+        <p>
+          <span className="font-semibold text-zinc-900">Rapor Tarihi:</span>{' '}
+          {new Date().toLocaleDateString('tr-TR')}
+        </p>
+      </div>
+    </header>
+  );
+}
+
+function SingleLeadReport({
+  lead,
+  documentNumber,
+}: {
+  lead: Appointment;
+  documentNumber: string;
+}) {
+  return (
+    <div className="space-y-6">
+      <ReportHeader
+        title="MÜŞTERİ TALEP BİLGİ FORMU"
+        subtitle="CRM / Randevu Yönetimi"
+        documentNumber={documentNumber}
+      />
+
+      <div className="flex flex-wrap gap-2">
+        <Badge className={STATUS_STYLES[lead.status] ?? STATUS_STYLES.Arşivlendi}>
+          {lead.status}
+        </Badge>
+        <Badge variant="outline" className="border-zinc-200 bg-zinc-50 text-zinc-600">
+          {lead.interestedDepartment}
+        </Badge>
+        <Badge variant="outline" className="border-zinc-200 bg-zinc-50 text-zinc-600">
+          {lead.city || 'Şehir belirtilmemiş'}
+        </Badge>
+      </div>
+
+      <div className="grid gap-3 md:grid-cols-2">
+        <div className="rounded-2xl border border-zinc-200 bg-zinc-50 p-4">
+          <p className="text-[0.65rem] font-semibold uppercase tracking-[0.3em] text-zinc-500">
+            Ad Soyad
+          </p>
+          <p className="mt-2 text-lg font-semibold text-zinc-950">
+            {lead.name} {lead.surname}
+          </p>
+        </div>
+        <div className="rounded-2xl border border-zinc-200 bg-zinc-50 p-4">
+          <p className="text-[0.65rem] font-semibold uppercase tracking-[0.3em] text-zinc-500">
+            Telefon
+          </p>
+          <p className="mt-2 text-lg font-semibold text-zinc-950">{lead.phone}</p>
+        </div>
+        <div className="rounded-2xl border border-zinc-200 bg-zinc-50 p-4">
+          <p className="text-[0.65rem] font-semibold uppercase tracking-[0.3em] text-zinc-500">
+            E-posta
+          </p>
+          <p className="mt-2 text-lg font-semibold text-zinc-950 break-all">{lead.email}</p>
+        </div>
+        <div className="rounded-2xl border border-zinc-200 bg-zinc-50 p-4">
+          <p className="text-[0.65rem] font-semibold uppercase tracking-[0.3em] text-zinc-500">
+            Talep Tarihi
+          </p>
+          <p className="mt-2 text-lg font-semibold text-zinc-950">{formatDate(lead.createdAt, true)}</p>
+        </div>
+      </div>
+
+      <section className="space-y-3">
+        <h3 className="text-sm font-semibold uppercase tracking-[0.28em] text-zinc-500">
+          Mesaj / Proje Detayı
+        </h3>
+        <div className="rounded-2xl border border-zinc-200 bg-white p-5 text-sm leading-7 text-zinc-700 whitespace-pre-wrap">
+          {lead.projectDetails || 'Bir açıklama eklenmemiş.'}
+        </div>
+      </section>
+
+      <footer className="flex items-center justify-between border-t border-zinc-200 pt-4 text-[0.7rem] uppercase tracking-[0.24em] text-zinc-400">
+        <span>Deqoin Design Studio</span>
+        <span>CRM Randevu Yönetimi</span>
+      </footer>
+    </div>
+  );
+}
+
+function BulkLeadReport({
+  leads,
+  documentNumber,
+  title,
+}: {
+  leads: Appointment[];
+  documentNumber: string;
+  title: string;
+}) {
+  const newCount = leads.filter((lead) => lead.status === 'Yeni').length;
+  const engagedCount = leads.filter(
+    (lead) => lead.status !== 'Yeni' && lead.status !== 'Arşivlendi',
+  ).length;
+
+  return (
+    <div className="space-y-6">
+      <ReportHeader
+        title={title}
+        subtitle="Toplu randevu özet raporu"
+        documentNumber={documentNumber}
+      />
+
+      <div className="grid gap-3 md:grid-cols-3">
+        <div className="rounded-2xl border border-zinc-200 bg-zinc-50 p-4 text-center">
+          <p className="text-[0.65rem] font-semibold uppercase tracking-[0.3em] text-zinc-500">
+            Toplam Kayıt
+          </p>
+          <p className="mt-2 text-3xl font-semibold text-zinc-950">{leads.length}</p>
+        </div>
+        <div className="rounded-2xl border border-zinc-200 bg-zinc-50 p-4 text-center">
+          <p className="text-[0.65rem] font-semibold uppercase tracking-[0.3em] text-zinc-500">
+            Yeni Talepler
+          </p>
+          <p className="mt-2 text-3xl font-semibold text-zinc-950">{newCount}</p>
+        </div>
+        <div className="rounded-2xl border border-zinc-200 bg-zinc-50 p-4 text-center">
+          <p className="text-[0.65rem] font-semibold uppercase tracking-[0.3em] text-zinc-500">
+            İşlemde / Görüşülen
+          </p>
+          <p className="mt-2 text-3xl font-semibold text-zinc-950">{engagedCount}</p>
+        </div>
+      </div>
+
+      <div className="overflow-hidden rounded-2xl border border-zinc-200">
+        <table className="w-full border-collapse text-left text-[0.78rem]">
+          <thead className="bg-zinc-950 text-white">
+            <tr>
+              <th className="px-4 py-3 font-semibold uppercase tracking-[0.18em]">Tarih</th>
+              <th className="px-4 py-3 font-semibold uppercase tracking-[0.18em]">Müşteri</th>
+              <th className="px-4 py-3 font-semibold uppercase tracking-[0.18em]">İletişim</th>
+              <th className="px-4 py-3 font-semibold uppercase tracking-[0.18em]">Birim</th>
+              <th className="px-4 py-3 font-semibold uppercase tracking-[0.18em]">Durum</th>
+            </tr>
+          </thead>
+          <tbody>
+            {leads.length > 0 ? (
+              leads.map((lead) => (
+                <tr key={lead._id} className="border-t border-zinc-200">
+                  <td className="px-4 py-3 align-top">
+                    <div className="font-semibold text-zinc-950">{formatDate(lead.createdAt)}</div>
+                    <div className="text-[0.72rem] text-zinc-500">
+                      {new Date(lead.createdAt).toLocaleTimeString('tr-TR', {
+                        hour: '2-digit',
+                        minute: '2-digit',
+                      })}
+                    </div>
+                  </td>
+                  <td className="px-4 py-3 align-top">
+                    <div className="font-semibold text-zinc-950">
+                      {lead.name} {lead.surname}
+                    </div>
+                    <div className="text-[0.72rem] text-zinc-500">{lead.city || '-'}</div>
+                  </td>
+                  <td className="px-4 py-3 align-top">
+                    <div className="font-medium text-zinc-900">{lead.phone}</div>
+                    <div className="text-[0.72rem] text-zinc-500 break-all">{lead.email}</div>
+                  </td>
+                  <td className="px-4 py-3 align-top">
+                    <div className="inline-flex rounded-full border border-zinc-200 bg-zinc-50 px-3 py-1 text-[0.68rem] font-semibold uppercase tracking-[0.2em] text-zinc-600">
+                      {lead.interestedDepartment}
+                    </div>
+                  </td>
+                  <td className="px-4 py-3 align-top">
+                    <div className="inline-flex rounded-full border border-zinc-200 bg-zinc-50 px-3 py-1 text-[0.68rem] font-semibold uppercase tracking-[0.2em] text-zinc-900">
+                      {lead.status}
+                    </div>
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan={5} className="px-6 py-14 text-center text-sm text-zinc-500">
+                  Seçili zaman aralığında veya kriterlerde herhangi bir randevu kaydı bulunmamaktadır.
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
+
+      <footer className="flex items-center justify-between border-t border-zinc-200 pt-4 text-[0.7rem] uppercase tracking-[0.24em] text-zinc-400">
+        <span>Deqoin Design Studio</span>
+        <span>CRM Randevu Yönetimi</span>
+      </footer>
+    </div>
+  );
+}
+
 export default function CRMPage() {
-  const [appointments, setAppointments] = useState<any[]>([]);
+  const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedLead, setSelectedLead] = useState<any | null>(null);
-  const [filter, setFilter] = useState('Hepsi');
-  const [isBulkPrinting, setIsBulkPrinting] = useState(false);
-  const [activeScope, setActiveScope] = useState<'daily' | 'weekly' | 'monthly' | 'all'>('all');
-  const [bulkReportTitle, setBulkReportTitle] = useState('GENEL RANDEVU LİSTESİ');
-  const [bulkLeads, setBulkLeads] = useState<any[]>([]);
+  const [selectedLead, setSelectedLead] = useState<Appointment | null>(null);
+  const [filter, setFilter] = useState<(typeof STATUS_FILTERS)[number]>('Hepsi');
+  const [query, setQuery] = useState('');
+  const [activeScope, setActiveScope] = useState<(typeof SCOPE_FILTERS)[number]['key']>('all');
+  const [previewMode, setPreviewMode] = useState<null | 'single' | 'bulk'>(null);
   const [libLoaded, setLibLoaded] = useState(false);
-  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
-  const [isBulkMode, setIsBulkMode] = useState(false);
+  const [documentNumber] = useState(() => `DQ-${Math.floor(1000 + Math.random() * 9000)}`);
 
   useEffect(() => {
     fetchAppointments();
   }, []);
 
-  useEffect(() => {
-    // Automatically prepare report data when scope or data changes
-    prepareReportData();
-  }, [activeScope, appointments, filter]);
-
-  const prepareReportData = () => {
-    const now = new Date();
-    let startDate = new Date();
-    let title = '';
-    let data = [];
-
-    if (activeScope === 'daily') {
-      startDate.setHours(0,0,0,0);
-      title = 'GÜNLÜK RANDEVU RAPORU';
-      data = appointments.filter(a => new Date(a.createdAt) >= startDate);
-    } else if (activeScope === 'weekly') {
-      startDate.setDate(now.getDate() - 7);
-      title = 'HAFTALIK RANDEVU RAPORU';
-      data = appointments.filter(a => new Date(a.createdAt) >= startDate);
-    } else if (activeScope === 'monthly') {
-      startDate.setDate(now.getDate() - 30);
-      title = 'AYLIK RANDEVU RAPORU';
-      data = appointments.filter(a => new Date(a.createdAt) >= startDate);
-    } else {
-      title = `GENEL RANDEVU LİSTESİ (${filter.toUpperCase()})`;
-      data = appointments.filter(lead => filter === 'Hepsi' || lead.status === filter);
-    }
-
-    setBulkReportTitle(title);
-    setBulkLeads(data);
-  };
-
   const fetchAppointments = async () => {
     try {
       const res = await fetch('/api/admin/appointments');
       const data = await res.json();
-      setAppointments(data);
-    } catch (e) {
-      console.error(e);
+      setAppointments(Array.isArray(data) ? data : []);
+    } catch (error) {
+      console.error(error);
     } finally {
       setLoading(false);
     }
@@ -89,889 +345,787 @@ export default function CRMPage() {
       const res = await fetch(`/api/admin/appointments/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ status: newStatus })
+        body: JSON.stringify({ status: newStatus }),
       });
-      if (res.ok) fetchAppointments();
-    } catch (e) {
-      console.error(e);
-    }
-  };
 
-  const printLeadAsPDF = (lead: any) => {
-    setIsBulkPrinting(false);
-    setSelectedLead(lead);
-    setTimeout(() => window.print(), 500); 
+      if (res.ok) {
+        setSelectedLead((current) => (current && current._id === id ? { ...current, status: newStatus } : current));
+        fetchAppointments();
+      }
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const openPreview = (mode: 'single' | 'bulk') => {
-    setIsBulkMode(mode === 'bulk');
-    if (mode === 'bulk') {
-      setSelectedLead(null);
-    }
-    setIsBulkPrinting(mode === 'bulk');
-    setIsPreviewOpen(true);
+    if (mode === 'single' && !selectedLead) return;
+    setPreviewMode(mode);
   };
+
+  const closePreview = () => setPreviewMode(null);
 
   const handleDownloadPDF = async () => {
     if (!libLoaded) return;
 
-    // Target the specific preview paper inside the modal
     const element = document.querySelector('.preview-paper');
     if (!element) return;
 
-    let filename = 'Deqoin_Rapor.pdf';
-    if (!isBulkMode && selectedLead) {
-      filename = `Musteri_${selectedLead.name}_${selectedLead.surname}.pdf`;
-    } else {
-      filename = `${bulkReportTitle.replace(/ /g, '_')}_${new Date().toLocaleDateString('tr-TR')}.pdf`;
-    }
-
-    const opt = {
-      margin: 10,
-      filename: filename,
-      image: { type: 'jpeg', quality: 1.0 },
-      html2canvas: { scale: 3, useCORS: true, letterRendering: true, logging: false },
-      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait', precision: 32 }
-    };
+    const reportTitle = getScopeTitle(activeScope, filter);
+    const fileLabel =
+      previewMode === 'bulk'
+        ? reportTitle
+        : selectedLead
+          ? `Musteri_${selectedLead.name}_${selectedLead.surname}`
+          : reportTitle;
 
     try {
       // @ts-ignore
-      await html2pdf().set(opt).from(element).save();
-    } catch (e) {
-      console.error('PDF Download Error:', e);
+      await html2pdf()
+        .set({
+          margin: 10,
+          filename: `${fileLabel.replace(/\s+/g, '_')}.pdf`,
+          image: { type: 'jpeg', quality: 1 },
+          html2canvas: { scale: 3, useCORS: true, letterRendering: true, logging: false },
+          jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait', precision: 32 },
+        })
+        .from(element)
+        .save();
+    } catch (error) {
+      console.error('PDF Download Error:', error);
     }
   };
 
-  const filteredLeads = appointments.filter(lead => filter === 'Hepsi' || lead.status === filter);
-
   const stats = {
     total: appointments.length,
-    new: appointments.filter(l => l.status === 'Yeni').length,
-    inProgress: appointments.filter(l => l.status === 'İletişime Geçildi').length,
-    completed: appointments.filter(l => l.status === 'Arşivlendi').length
+    new: appointments.filter((lead) => lead.status === 'Yeni').length,
+    engaged: appointments.filter((lead) => lead.status === 'İletişime Geçildi').length,
+    archived: appointments.filter((lead) => lead.status === 'Arşivlendi').length,
   };
 
+  const visibleLeads = appointments.filter((lead) => filter === 'Hepsi' || lead.status === filter).filter((lead) => matchesQuery(lead, query));
+
+  useEffect(() => {
+    if (selectedLead && !visibleLeads.some((lead) => lead._id === selectedLead._id)) {
+      setSelectedLead(null);
+    }
+  }, [selectedLead, visibleLeads]);
+
+  const reportLeads = visibleLeads.filter((lead) => {
+    const createdAt = new Date(lead.createdAt);
+    const now = new Date();
+    const start = new Date();
+
+    if (activeScope === 'daily') {
+      start.setHours(0, 0, 0, 0);
+      return createdAt >= start;
+    }
+
+    if (activeScope === 'weekly') {
+      start.setDate(now.getDate() - 7);
+      return createdAt >= start;
+    }
+
+    if (activeScope === 'monthly') {
+      start.setDate(now.getDate() - 30);
+      return createdAt >= start;
+    }
+
+    return true;
+  });
+
+  const reportTitle = getScopeTitle(activeScope, filter);
+  const isPreviewOpen = previewMode !== null;
+  const isBulkPreview = previewMode === 'bulk';
+
   return (
-    <div className="crm-container">
-      {/* STATS AREA */}
-      <div className="crm-stats-grid">
-        <div className="stat-lux-card">
-          <div className="stat-icon-wrap blue"><Users size={20} /></div>
-          <div className="stat-info">
-            <span className="stat-label">TOPLAM TALEP</span>
-            <span className="stat-val">{stats.total}</span>
-          </div>
-        </div>
-        <div className="stat-lux-card">
-          <div className="stat-icon-wrap gold"><Calendar size={20} /></div>
-          <div className="stat-info">
-            <span className="stat-label">YENİ RANDEVULAR</span>
-            <span className="stat-val">{stats.new}</span>
-          </div>
-        </div>
-        <div className="stat-lux-card">
-          <div className="stat-icon-wrap green"><CheckCircle2 size={20} /></div>
-          <div className="stat-info">
-            <span className="stat-label">İLETİŞİME GEÇİLEN</span>
-            <span className="stat-val">{stats.inProgress}</span>
-          </div>
-        </div>
-      </div>
-      
-      {/* Header Actions */}
-      <div className="crm-actions admin-card">
-        <div className="search-box">
-          <Search size={18} />
-          <input type="text" placeholder="İsim, mail veya proje ara..." />
-        </div>
-        <div className="crm-header-btns">
-          <div className="report-ux-wrapper">
-            <div className="scope-picker">
-              <button className={`scope-btn ${activeScope === 'daily' ? 'active' : ''}`} onClick={() => setActiveScope('daily')}>GÜNLÜK</button>
-              <button className={`scope-btn ${activeScope === 'weekly' ? 'active' : ''}`} onClick={() => setActiveScope('weekly')}>HAFTALIK</button>
-              <button className={`scope-btn ${activeScope === 'monthly' ? 'active' : ''}`} onClick={() => setActiveScope('monthly')}>AYLIK</button>
-              <button className={`scope-btn ${activeScope === 'all' ? 'active' : ''}`} onClick={() => setActiveScope('all')}>GENEL</button>
-            </div>
-            <div className="report-actions">
-              <button className="lux-report-btn" onClick={() => openPreview('bulk')} title="Raporu Önizle">
-                <FileText size={16} /> RAPORU GÖR (ÖNİZLE)
-              </button>
-            </div>
-          </div>
-        </div>
-        <div className="filter-group-scroll">
-          <div className="filter-group">
-            {['Hepsi', 'Yeni', 'İncelendi', 'İletişime Geçildi', 'Arşivlendi'].map(f => (
-              <button 
-                key={f} 
-                className={`filter-btn ${filter === f ? 'active' : ''}`}
-                onClick={() => setFilter(f)}
-              >
-                {f}
-              </button>
-            ))}
-          </div>
-        </div>
+    <div className="relative space-y-6 pb-8 text-white">
+      <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
+        <div className="absolute -right-32 top-0 h-80 w-80 rounded-full bg-amber-500/10 blur-3xl" />
+        <div className="absolute left-0 top-1/3 h-72 w-72 rounded-full bg-white/5 blur-3xl" />
       </div>
 
-      {/* Main List */}
-      <div className="crm-content-wrap">
-        {loading ? (
-          <div className="loading-state"><Loader2 className="spinner" size={32} /></div>
-        ) : (
-          <>
-            {/* Desktop Table View */}
-            <div className="desktop-view admin-card desktop-only">
-              <table className="crm-table">
-                <thead>
-                  <tr>
-                    <th>Tarih</th>
-                    <th>Müşteri Bilgisi</th>
-                    <th>İlgili Birim</th>
-                    <th>Durum</th>
-                    <th className="align-right">İşlemler</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {filteredLeads.map((lead, i) => (
-                    <motion.tr 
-                      key={lead._id}
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: i * 0.05 }}
-                      onClick={() => setSelectedLead(lead)}
-                    >
-                      <td className="date-col">
-                        <div className="date-badge">
-                          <Clock size={12} />
-                          {new Date(lead.createdAt).toLocaleDateString('tr-TR')}
-                        </div>
-                      </td>
-                      <td>
-                        <div className="lead-info">
-                          <span className="lead-name">{lead.name} {lead.surname}</span>
-                          <span className="lead-contact">{lead.email}</span>
-                        </div>
-                      </td>
-                      <td><span className="dept-badge">{lead.interestedDepartment}</span></td>
-                      <td>
-                        <div className={`status-badge-premium ${lead.status.toLowerCase().replace(' ', '-')}`}>
-                          {lead.status}
-                        </div>
-                      </td>
-                      <td className="align-right">
-                        <div className="action-buttons">
-                          <a 
-                            href={`https://wa.me/${lead.phone.replace(/[^0-9]/g, '')}`}
-                            target="_blank"  rel="noreferrer"
-                            className="icon-btn wa-btn"
-                            onClick={e => e.stopPropagation()}
-                          >
-                            <MessageCircle size={16} />
-                          </a>
-                          <button className="icon-btn" onClick={(e) => { e.stopPropagation(); setSelectedLead(lead); }}>
-                            <ArrowRight size={16} />
-                          </button>
-                        </div>
-                      </td>
-                    </motion.tr>
-                  ))}
-                </tbody>
-              </table>
+      <motion.div
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.45, ease: 'easeOut' }}
+        className="rounded-[2rem] border border-white/10 bg-white/[0.04] p-5 shadow-[0_30px_90px_rgba(0,0,0,0.28)] backdrop-blur-sm sm:p-7"
+      >
+        <div className="flex flex-col gap-6 xl:flex-row xl:items-end xl:justify-between">
+          <div className="max-w-3xl space-y-4">
+            <Badge variant="secondary" className="border-white/10 bg-white/5 text-zinc-200">
+              <Sparkles className="mr-2 h-3 w-3" />
+              CANLI CRM
+            </Badge>
+            <div>
+              <h1 className="text-3xl font-semibold tracking-tight text-white sm:text-4xl">
+                Randevu CRM
+              </h1>
+              <p className="mt-3 max-w-2xl text-sm leading-7 text-zinc-400">
+                Kayıtları tek ekranda takip edin, durumu hızlıca güncelleyin ve raporları cihazdan bağımsız şekilde indirin. Düzen, mobilde ve farklı ekran yüksekliklerinde kırılmadan çalışacak şekilde yeniden kuruldu.
+              </p>
             </div>
+          </div>
 
-            {/* Mobile View */}
-            <div className="mobile-only">
-              <div className="mobile-card-grid">
-                {filteredLeads.map((lead) => (
-                  <motion.div 
-                    key={lead._id}
-                    className="mobile-lead-card"
-                    whileTap={{ scale: 0.98 }}
-                    onClick={() => setSelectedLead(lead)}
-                  >
-                    <div className="card-header">
-                      <div className="card-id">{new Date(lead.createdAt).toLocaleDateString('tr-TR')}</div>
-                      <div className={`status-badge-premium ${lead.status.toLowerCase().replace(' ', '-')}`}>
-                        {lead.status}
-                      </div>
-                    </div>
-                    <div className="card-body">
-                      <h3>{lead.name} {lead.surname}</h3>
-                      <p className="card-dept">{lead.interestedDepartment} • {lead.city}</p>
-                      <div className="card-meta">
-                        <span>{lead.phone}</span>
-                      </div>
-                    </div>
-                    <div className="card-footer">
-                      <button className="btn-card-action">HIZLI İNCELE</button>
-                    </div>
-                  </motion.div>
-                ))}
+          <div className="grid gap-3 sm:grid-cols-3 xl:min-w-[460px]">
+            <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
+              <div className="flex items-center gap-3">
+                <div className="rounded-2xl bg-amber-400/10 p-3 text-amber-200">
+                  <Users className="h-5 w-5" />
+                </div>
+                <div>
+                  <p className="text-[0.65rem] uppercase tracking-[0.28em] text-zinc-500">
+                    Toplam Talep
+                  </p>
+                  <p className="mt-1 text-2xl font-semibold text-white">{stats.total}</p>
+                </div>
               </div>
             </div>
+            <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
+              <div className="flex items-center gap-3">
+                <div className="rounded-2xl bg-sky-400/10 p-3 text-sky-200">
+                  <Calendar className="h-5 w-5" />
+                </div>
+                <div>
+                  <p className="text-[0.65rem] uppercase tracking-[0.28em] text-zinc-500">
+                    Yeni Randevular
+                  </p>
+                  <p className="mt-1 text-2xl font-semibold text-white">{stats.new}</p>
+                </div>
+              </div>
+            </div>
+            <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
+              <div className="flex items-center gap-3">
+                <div className="rounded-2xl bg-emerald-400/10 p-3 text-emerald-200">
+                  <CheckCircle2 className="h-5 w-5" />
+                </div>
+                <div>
+                  <p className="text-[0.65rem] uppercase tracking-[0.28em] text-zinc-500">
+                    İşleme Alınan
+                  </p>
+                  <p className="mt-1 text-2xl font-semibold text-white">{stats.engaged}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </motion.div>
 
-            {filteredLeads.length === 0 && (
-              <div className="empty-state-lux">
-                <AlertCircle size={48} />
-                <p>Aradığınız kriterlere uygun randevu talebi bulunamadı.</p>
+      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        {[
+          { label: 'Toplam kayıt', value: stats.total, icon: Users, hint: 'Tüm randevular' },
+          { label: 'Yeni', value: stats.new, icon: Calendar, hint: 'Bekleyen talepler' },
+          { label: 'İletişimde', value: stats.engaged, icon: MessageCircle, hint: 'Takip edilen kayıtlar' },
+          { label: 'Arşiv', value: stats.archived, icon: Archive, hint: 'Kapanan talepler' },
+        ].map((item) => {
+          const Icon = item.icon;
+          return (
+            <Card
+              key={item.label}
+              className="border-white/10 bg-white/[0.04] shadow-[0_24px_80px_rgba(0,0,0,0.22)] transition-transform duration-200 hover:-translate-y-0.5"
+            >
+              <CardContent className="flex items-center gap-4 p-5">
+                <div className="rounded-2xl border border-white/10 bg-white/5 p-3 text-amber-200">
+                  <Icon className="h-5 w-5" />
+                </div>
+                <div>
+                  <p className="text-[0.65rem] uppercase tracking-[0.28em] text-zinc-500">
+                    {item.label}
+                  </p>
+                  <p className="mt-1 text-2xl font-semibold text-white">{item.value}</p>
+                  <p className="mt-1 text-xs text-zinc-500">{item.hint}</p>
+                </div>
+              </CardContent>
+            </Card>
+          );
+        })}
+      </div>
+
+      <Card className="border-white/10 bg-white/[0.04] shadow-[0_24px_80px_rgba(0,0,0,0.2)]">
+        <CardContent className="space-y-4 p-5 sm:p-6">
+          <div className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_auto] xl:items-center">
+            <div className="relative">
+              <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-500" />
+              <Input
+                value={query}
+                onChange={(event) => setQuery(event.target.value)}
+                placeholder="İsim, mail, telefon, şehir veya proje ara..."
+                className="h-12 rounded-2xl border border-white/10 bg-white/[0.03] pl-11 text-white placeholder:text-zinc-500"
+              />
+            </div>
+
+            <div className="flex items-center gap-2 overflow-x-auto pb-1">
+              {SCOPE_FILTERS.map((scope) => {
+                const active = activeScope === scope.key;
+                return (
+                  <Button
+                    key={scope.key}
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setActiveScope(scope.key)}
+                    className={[
+                      'shrink-0 rounded-full border transition-colors',
+                      active
+                        ? 'border-amber-400/40 bg-amber-400 text-zinc-950 hover:bg-amber-300'
+                        : 'border-white/10 bg-white/[0.03] text-zinc-300 hover:bg-white/10 hover:text-white',
+                    ].join(' ')}
+                  >
+                    {scope.label}
+                  </Button>
+                );
+              })}
+
+              <Button
+                type="button"
+                onClick={() => openPreview('bulk')}
+                className="shrink-0 rounded-full bg-amber-400 text-zinc-950 hover:bg-amber-300"
+              >
+                <FileText className="mr-2 h-4 w-4" />
+                Rapor Önizle
+              </Button>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2 overflow-x-auto pb-1">
+            <div className="flex items-center gap-2 rounded-full border border-white/10 bg-black/20 px-3 py-2 text-xs text-zinc-400">
+              <Filter className="h-3.5 w-3.5" />
+              Durum
+            </div>
+            {STATUS_FILTERS.map((status) => {
+              const active = filter === status;
+              return (
+                <Button
+                  key={status}
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setFilter(status)}
+                  className={[
+                    'shrink-0 rounded-full border transition-colors',
+                    active
+                      ? 'border-white/5 bg-white text-zinc-950 hover:bg-zinc-100'
+                      : 'border-white/10 bg-white/[0.03] text-zinc-300 hover:bg-white/10 hover:text-white',
+                  ].join(' ')}
+                >
+                  {status}
+                </Button>
+              );
+            })}
+            {(filter !== 'Hepsi' || query.trim()) && (
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                onClick={() => {
+                  setFilter('Hepsi');
+                  setQuery('');
+                }}
+                className="shrink-0 rounded-full text-zinc-400 hover:bg-white/5 hover:text-white"
+              >
+                Temizle
+              </Button>
+            )}
+          </div>
+        </CardContent>
+      </Card>
+
+      <div className="grid gap-6 xl:grid-cols-[minmax(0,1.45fr)_minmax(340px,0.85fr)]">
+        <Card className="border-white/10 bg-white/[0.04] shadow-[0_24px_80px_rgba(0,0,0,0.22)]">
+          <CardHeader className="space-y-2 border-b border-white/10">
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <CardTitle className="text-lg tracking-tight text-white">Kayıt Kuyruğu</CardTitle>
+                <CardDescription className="mt-1 text-zinc-400">
+                  {visibleLeads.length} sonuç {query.trim() ? 'bulundu' : 'listelendi'}.
+                </CardDescription>
+              </div>
+              <Badge variant="outline" className="border-white/10 bg-white/5 text-zinc-200">
+                Canlı Liste
+              </Badge>
+            </div>
+          </CardHeader>
+
+          <CardContent className="space-y-3 p-4 sm:p-5">
+            {loading ? (
+              <div className="flex min-h-[320px] items-center justify-center">
+                <Loader2 className="h-8 w-8 animate-spin text-amber-200" />
+              </div>
+            ) : visibleLeads.length > 0 ? (
+              visibleLeads.map((lead, index) => {
+                const isSelected = selectedLead?._id === lead._id;
+                return (
+                  <motion.article
+                    key={lead._id}
+                    role="button"
+                    tabIndex={0}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: index * 0.04 }}
+                    onClick={() => setSelectedLead(lead)}
+                    onKeyDown={(event) => {
+                      if (event.key === 'Enter' || event.key === ' ') {
+                        event.preventDefault();
+                        setSelectedLead(lead);
+                      }
+                    }}
+                    className={[
+                      'rounded-[1.4rem] border p-4 text-left transition duration-200',
+                      isSelected
+                        ? 'border-amber-400/40 bg-white/[0.06] shadow-[0_18px_50px_rgba(0,0,0,0.18)]'
+                        : 'border-white/10 bg-black/20 hover:border-white/20 hover:bg-white/[0.05]',
+                    ].join(' ')}
+                  >
+                    <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+                      <div className="space-y-3">
+                        <div className="flex flex-wrap items-center gap-2">
+                          <Badge variant="outline" className="border-white/10 bg-white/5 text-zinc-300">
+                            <Clock className="mr-2 h-3 w-3" />
+                            {formatDate(lead.createdAt)}
+                          </Badge>
+                          <Badge className={STATUS_STYLES[lead.status] ?? STATUS_STYLES.Arşivlendi}>
+                            {lead.status}
+                          </Badge>
+                        </div>
+
+                        <div>
+                          <h3 className="text-lg font-semibold text-white">
+                            {lead.name} {lead.surname}
+                          </h3>
+                          <p className="mt-1 text-sm text-zinc-400">{lead.interestedDepartment}</p>
+                        </div>
+
+                        <div className="grid gap-2 sm:grid-cols-3">
+                          <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-3">
+                            <p className="text-[0.62rem] uppercase tracking-[0.24em] text-zinc-500">
+                              Telefon
+                            </p>
+                            <p className="mt-2 flex items-center gap-2 text-sm text-zinc-200">
+                              <Phone className="h-3.5 w-3.5 text-zinc-500" />
+                              {lead.phone}
+                            </p>
+                          </div>
+                          <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-3">
+                            <p className="text-[0.62rem] uppercase tracking-[0.24em] text-zinc-500">
+                              E-posta
+                            </p>
+                            <p className="mt-2 flex items-center gap-2 text-sm text-zinc-200">
+                              <Mail className="h-3.5 w-3.5 text-zinc-500" />
+                              <span className="truncate">{lead.email}</span>
+                            </p>
+                          </div>
+                          <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-3">
+                            <p className="text-[0.62rem] uppercase tracking-[0.24em] text-zinc-500">
+                              Şehir
+                            </p>
+                            <p className="mt-2 flex items-center gap-2 text-sm text-zinc-200">
+                              <MapPin className="h-3.5 w-3.5 text-zinc-500" />
+                              {lead.city || 'Belirtilmemiş'}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="flex shrink-0 flex-col gap-3 lg:items-end">
+                        <div className="flex gap-2">
+                          <Button
+                            asChild
+                            variant="outline"
+                            size="icon"
+                            className="h-11 w-11 rounded-full border-white/10 bg-white/[0.03] text-white hover:bg-emerald-400 hover:text-zinc-950"
+                          >
+                            <a
+                              href={`https://wa.me/${lead.phone.replace(/[^0-9]/g, '')}`}
+                              target="_blank"
+                              rel="noreferrer"
+                              aria-label="WhatsApp ile mesaj gönder"
+                              onClick={(event) => event.stopPropagation()}
+                            >
+                              <MessageCircle className="h-4 w-4" />
+                            </a>
+                          </Button>
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="icon"
+                            className="h-11 w-11 rounded-full border-white/10 bg-white/[0.03] text-white hover:bg-white/10"
+                            onClick={(event) => {
+                              event.stopPropagation();
+                              setSelectedLead(lead);
+                            }}
+                            aria-label="Randevu detayını aç"
+                          >
+                            <ArrowRight className="h-4 w-4" />
+                          </Button>
+                        </div>
+                        <span className="text-xs text-zinc-500">{lead.city || 'Şehir belirtilmemiş'}</span>
+                      </div>
+                    </div>
+                  </motion.article>
+                );
+              })
+            ) : (
+              <div className="flex min-h-[320px] items-center justify-center rounded-[1.4rem] border border-dashed border-white/10 bg-black/20 p-8 text-center">
+                <div className="max-w-sm space-y-3">
+                  <AlertCircle className="mx-auto h-10 w-10 text-amber-200" />
+                  <p className="text-lg font-medium text-white">Eşleşen kayıt bulunamadı</p>
+                  <p className="text-sm leading-7 text-zinc-400">
+                    Arama veya durum filtresini değiştirin. İsterseniz filtreleri tek tıkla sıfırlayabilirsiniz.
+                  </p>
+                  <Button
+                    type="button"
+                    onClick={() => {
+                      setFilter('Hepsi');
+                      setQuery('');
+                    }}
+                    className="rounded-full bg-amber-400 text-zinc-950 hover:bg-amber-300"
+                  >
+                    Filtreleri Sıfırla
+                  </Button>
+                </div>
               </div>
             )}
-          </>
-        )}
+          </CardContent>
+        </Card>
+
+        <Card className="border-white/10 bg-white/[0.04] shadow-[0_24px_80px_rgba(0,0,0,0.22)] xl:sticky xl:top-6 xl:self-start">
+          <CardHeader className="space-y-3 border-b border-white/10">
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <CardTitle className="text-lg tracking-tight text-white">
+                  {selectedLead ? 'Seçili Kayıt' : 'Detay Paneli'}
+                </CardTitle>
+                <CardDescription className="mt-1 text-zinc-400">
+                  {selectedLead
+                    ? 'Kayıt bilgileri, iletişim ve durum işlemleri burada.'
+                    : 'Listeden bir randevu seçin ya da toplu raporu önizleyin.'}
+                </CardDescription>
+              </div>
+              {selectedLead ? (
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => setSelectedLead(null)}
+                  className="h-10 w-10 rounded-full text-zinc-400 hover:bg-white/5 hover:text-white"
+                >
+                  <X className="h-4 w-4" />
+                </Button>
+              ) : (
+                <Badge variant="outline" className="border-white/10 bg-white/5 text-zinc-200">
+                  Hazır
+                </Badge>
+              )}
+            </div>
+          </CardHeader>
+
+          <CardContent className="space-y-5 p-4 sm:p-6">
+            {selectedLead ? (
+              <div className="space-y-5">
+                <div className="rounded-3xl border border-white/10 bg-black/20 p-5">
+                  <div className="flex flex-wrap items-start justify-between gap-3">
+                    <div className="space-y-3">
+                      <Badge variant="outline" className="border-white/10 bg-white/5 text-zinc-300">
+                        {selectedLead.interestedDepartment}
+                      </Badge>
+                      <div>
+                        <h3 className="text-2xl font-semibold tracking-tight text-white">
+                          {selectedLead.name} {selectedLead.surname}
+                        </h3>
+                        <p className="mt-1 text-sm text-zinc-400">{formatDate(selectedLead.createdAt, true)}</p>
+                      </div>
+                    </div>
+                    <Badge className={STATUS_STYLES[selectedLead.status] ?? STATUS_STYLES.Arşivlendi}>
+                      {selectedLead.status}
+                    </Badge>
+                  </div>
+                </div>
+
+                <div className="grid gap-3 sm:grid-cols-2">
+                  <Button
+                    asChild
+                    className="rounded-2xl bg-emerald-400 text-zinc-950 hover:bg-emerald-300"
+                  >
+                    <a
+                      href={`https://wa.me/${selectedLead.phone.replace(/[^0-9]/g, '')}`}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      <MessageCircle className="mr-2 h-4 w-4" />
+                      WhatsApp
+                    </a>
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="rounded-2xl border-white/10 bg-white/[0.03] text-white hover:bg-white/10"
+                    onClick={() => openPreview('single')}
+                  >
+                    <FileText className="mr-2 h-4 w-4" />
+                    Önizle
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="rounded-2xl border-white/10 bg-white/[0.03] text-white hover:bg-white/10"
+                    onClick={() => window.print()}
+                  >
+                    <Printer className="mr-2 h-4 w-4" />
+                    Yazdır
+                  </Button>
+                  <Button
+                    type="button"
+                    onClick={() => openPreview('bulk')}
+                    className="rounded-2xl bg-amber-400 text-zinc-950 hover:bg-amber-300"
+                  >
+                    <Download className="mr-2 h-4 w-4" />
+                    Toplu Rapor
+                  </Button>
+                </div>
+
+                <div className="grid gap-3 sm:grid-cols-2">
+                  <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
+                    <p className="text-[0.62rem] uppercase tracking-[0.24em] text-zinc-500">Telefon</p>
+                    <p className="mt-2 flex items-center gap-2 text-sm text-zinc-200">
+                      <Phone className="h-3.5 w-3.5 text-zinc-500" />
+                      {selectedLead.phone}
+                    </p>
+                  </div>
+                  <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
+                    <p className="text-[0.62rem] uppercase tracking-[0.24em] text-zinc-500">E-posta</p>
+                    <p className="mt-2 flex items-center gap-2 text-sm text-zinc-200">
+                      <Mail className="h-3.5 w-3.5 text-zinc-500" />
+                      <span className="truncate">{selectedLead.email}</span>
+                    </p>
+                  </div>
+                  <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
+                    <p className="text-[0.62rem] uppercase tracking-[0.24em] text-zinc-500">Şehir</p>
+                    <p className="mt-2 flex items-center gap-2 text-sm text-zinc-200">
+                      <MapPin className="h-3.5 w-3.5 text-zinc-500" />
+                      {selectedLead.city || 'Belirtilmemiş'}
+                    </p>
+                  </div>
+                  <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
+                    <p className="text-[0.62rem] uppercase tracking-[0.24em] text-zinc-500">Tarih</p>
+                    <p className="mt-2 flex items-center gap-2 text-sm text-zinc-200">
+                      <Clock className="h-3.5 w-3.5 text-zinc-500" />
+                      {formatDate(selectedLead.createdAt, true)}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="space-y-3">
+                  <p className="text-[0.62rem] font-semibold uppercase tracking-[0.24em] text-zinc-500">
+                    Durum Güncelle
+                  </p>
+                  <div className="grid grid-cols-2 gap-2">
+                    {['Yeni', 'İncelendi', 'İletişime Geçildi', 'Arşivlendi'].map((status) => {
+                      const active = selectedLead.status === status;
+                      return (
+                        <Button
+                          key={status}
+                          type="button"
+                          variant="outline"
+                          onClick={() => handleStatusChange(selectedLead._id, status)}
+                          className={[
+                            'h-auto rounded-2xl px-3 py-3 text-sm transition-colors',
+                            active
+                              ? 'border-amber-400/40 bg-amber-400 text-zinc-950 hover:bg-amber-300'
+                              : 'border-white/10 bg-white/[0.03] text-zinc-300 hover:bg-white/10 hover:text-white',
+                          ].join(' ')}
+                        >
+                          {status}
+                        </Button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                <div className="space-y-3">
+                  <p className="text-[0.62rem] font-semibold uppercase tracking-[0.24em] text-zinc-500">
+                    Mesaj / Proje Detayı
+                  </p>
+                  <div className="max-h-72 overflow-y-auto rounded-2xl border border-white/10 bg-white/[0.03] p-4 text-sm leading-7 text-zinc-300 whitespace-pre-wrap">
+                    {selectedLead.projectDetails || 'Bir açıklama eklenmemiş.'}
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div className="space-y-5">
+                <div className="rounded-3xl border border-white/10 bg-black/20 p-5">
+                  <div className="flex items-start gap-4">
+                    <div className="rounded-2xl bg-amber-400/10 p-3 text-amber-200">
+                      <Sparkles className="h-5 w-5" />
+                    </div>
+                    <div className="space-y-2">
+                      <p className="text-sm font-semibold text-white">Çalışma alanı hazır</p>
+                      <p className="text-sm leading-7 text-zinc-400">
+                        Kayıt seçtiğinizde ayrıntılar burada açılır. Mobilde bu panel listeden sonra akışa devam eder, dar ekranlarda taşma yapmaz.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="grid gap-3 sm:grid-cols-2">
+                  <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
+                    <p className="text-[0.62rem] uppercase tracking-[0.24em] text-zinc-500">Görünür Kayıt</p>
+                    <p className="mt-2 text-2xl font-semibold text-white">{visibleLeads.length}</p>
+                  </div>
+                  <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
+                    <p className="text-[0.62rem] uppercase tracking-[0.24em] text-zinc-500">Rapor Kapsamı</p>
+                    <p className="mt-2 text-2xl font-semibold text-white">{reportLeads.length}</p>
+                  </div>
+                </div>
+
+                <div className="rounded-2xl border border-dashed border-white/10 bg-black/20 p-5">
+                  <p className="text-sm font-medium text-white">Hızlı işlem</p>
+                  <p className="mt-2 text-sm leading-7 text-zinc-400">
+                    Rapor aralığını üstten değiştirin, toplu önizlemeyi açın veya listeden bir kayda tıklayarak detay panelini doldurun.
+                  </p>
+                  <div className="mt-4 flex flex-wrap gap-2">
+                    <Button
+                      type="button"
+                      onClick={() => visibleLeads[0] && setSelectedLead(visibleLeads[0])}
+                      className="rounded-full bg-amber-400 text-zinc-950 hover:bg-amber-300"
+                    >
+                      İlk kaydı aç
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => openPreview('bulk')}
+                      className="rounded-full border-white/10 bg-white/[0.03] text-white hover:bg-white/10"
+                    >
+                      Toplu önizleme
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            )}
+          </CardContent>
+        </Card>
       </div>
 
-      {/* LEAD DETAILS DRAWER */}
-      <AnimatePresence>
-        {selectedLead && (
-          <div className="drawer-overlay" onClick={() => setSelectedLead(null)}>
-            <motion.div 
-              className="drawer-content"
-              initial={{ x: '100%' }}
-              animate={{ x: 0 }}
-              exit={{ x: '100%' }}
-              transition={{ type: "tween", ease: [0.16, 1, 0.3, 1], duration: 0.5 }}
-              onClick={e => e.stopPropagation()}
-            >
-              <div className="drawer-header">
-                <h2>TALEP DETAYLARI</h2>
-                <button onClick={() => setSelectedLead(null)} className="close-btn"><X size={24} /></button>
-              </div>
-              <div className="drawer-body">
-                <div className="detail-hero">
-                  <span className="m-cat-tag">{selectedLead.interestedDepartment}</span>
-                  <h2>{selectedLead.name} {selectedLead.surname}</h2>
-                  <div className={`status-badge-lg ${selectedLead.status.toLowerCase().replace(/ /g, '-')}`}>
-                    {selectedLead.status}
-                  </div>
-                </div>
-
-                <div className="detail-status-edit">
-                  <label>DURUMU GÜNCELLE</label>
-                  <div className="status-options">
-                    {['Yeni', 'İncelendi', 'İletişime Geçildi', 'Arşivlendi'].map(s => (
-                      <button 
-                        key={s}
-                        className={`status-opt-btn ${selectedLead.status === s ? 'active' : ''}`}
-                        onClick={() => handleStatusChange(selectedLead._id, s)}
-                      >
-                        {s}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="detail-grid">
-                  <div className="detail-item">
-                    <label>TELEFON</label>
-                    <p>{selectedLead.phone}</p>
-                  </div>
-                  <div className="detail-item">
-                    <label>E-POSTA</label>
-                    <p>{selectedLead.email}</p>
-                  </div>
-                  <div className="detail-item">
-                    <label>ŞEHİR</label>
-                    <p>{selectedLead.city}</p>
-                  </div>
-                  <div className="detail-item">
-                    <label>TARİH</label>
-                    <p>{new Date(selectedLead.createdAt).toLocaleString('tr-TR')}</p>
-                  </div>
-                </div>
-
-                <div className="detail-message-box">
-                  <label>MESAJ / PROJE DETAYLARI</label>
-                  <div className="message-content">
-                    {selectedLead.projectDetails || "Bir açıklama eklenmemiş."}
-                  </div>
-                </div>
-
-                <div className="drawer-footer-actions">
-                  <a 
-                    href={`https://wa.me/${selectedLead.phone.replace(/[^0-9]/g, '')}`}
-                    target="_blank" rel="noreferrer"
-                    className="lux-action-btn wa"
-                  >
-                    <MessageCircle size={20} /> WHATSAPP MESAJI GÖNDER
-                  </a>
-                  <button className="lux-action-btn pdf" onClick={() => openPreview('single')}>
-                    <FileText size={20} /> FORMU ÖNİZLE & İNDİR
-                  </button>
-                </div>
-              </div>
-            </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
-
-      {/* PREVIEW MODAL */}
       <AnimatePresence>
         {isPreviewOpen && (
-          <div className="preview-overlay" onClick={() => setIsPreviewOpen(false)}>
-            <motion.div 
-              className="preview-container"
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              onClick={e => e.stopPropagation()}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 p-3 backdrop-blur-sm sm:p-6"
+            onClick={closePreview}
+          >
+            <motion.div
+              initial={{ opacity: 0, scale: 0.98, y: 12 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.98, y: 12 }}
+              transition={{ duration: 0.22, ease: 'easeOut' }}
+              onClick={(event) => event.stopPropagation()}
+              className="flex max-h-[calc(100dvh-1.5rem)] w-full max-w-6xl flex-col overflow-hidden rounded-[2rem] border border-white/10 bg-zinc-950 shadow-[0_30px_120px_rgba(0,0,0,0.55)]"
             >
-              <div className="preview-toolbar">
-                <div className="toolbar-left">
-                  <h3>PDF ÖNİZLEME</h3>
-                  <span className="toolbar-badge">A4 KURUMSAL FORMAT</span>
+              <div className="flex flex-col gap-3 border-b border-white/10 px-4 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6">
+                <div>
+                  <p className="text-[0.65rem] font-semibold uppercase tracking-[0.32em] text-zinc-500">
+                    PDF Önizleme
+                  </p>
+                  <h3 className="mt-1 text-lg font-semibold text-white">{reportTitle}</h3>
                 </div>
-                <div className="toolbar-actions">
-                  <button className="tool-btn" onClick={() => window.print()}>
-                    <FileText size={16} /> YAZDIR
-                  </button>
-                  <button className="tool-btn gold" onClick={handleDownloadPDF} disabled={!libLoaded}>
-                    <Download size={16} /> {libLoaded ? 'PDF İNDİR' : 'YÜKLENİYOR...'}
-                  </button>
-                  <button className="tool-btn close" onClick={() => setIsPreviewOpen(false)}>
-                    <X size={20} />
-                  </button>
+                <div className="flex flex-wrap items-center gap-2">
+                  <Badge variant="outline" className="border-white/10 bg-white/5 text-zinc-200">
+                    A4 Kurumsal Format
+                  </Badge>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="rounded-full border-white/10 bg-white/[0.03] text-white hover:bg-white/10"
+                    onClick={() => window.print()}
+                  >
+                    <Printer className="mr-2 h-4 w-4" />
+                    Yazdır
+                  </Button>
+                  <Button
+                    type="button"
+                    className="rounded-full bg-amber-400 text-zinc-950 hover:bg-amber-300"
+                    onClick={handleDownloadPDF}
+                    disabled={!libLoaded}
+                  >
+                    <Download className="mr-2 h-4 w-4" />
+                    {libLoaded ? 'PDF İndir' : 'Yükleniyor...'}
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    onClick={closePreview}
+                    className="h-10 w-10 rounded-full text-zinc-400 hover:bg-white/5 hover:text-white"
+                    aria-label="Önizlemeyi kapat"
+                  >
+                    <X className="h-4 w-4" />
+                  </Button>
                 </div>
               </div>
-              
-              <div className="preview-content-scroll">
-                <div className="preview-paper">
-                    <div className="pdf-header">
-                      <div className="pdf-brand-box">
-                        <h1>Deqoin Design Studio</h1>
-                        <p>ARCHITECTURAL & DESIGN SOLUTIONS</p>
-                      </div>
-                      <div className="pdf-header-divider"></div>
-                      <div className="pdf-meta">
-                        <span><strong>DÖKÜMAN NO:</strong> DQ-{Math.floor(1000 + Math.random() * 9000)}</span>
-                        <span><strong>RAPOR TARİHİ:</strong> {new Date().toLocaleDateString('tr-TR')}</span>
-                        <span><strong>BİRİM:</strong> CRM / RANDEVU YÖNETİMİ</span>
-                      </div>
-                    </div>
 
-                    {isBulkMode ? (
-                      <div className="pdf-bulk-document">
-                        <h2 className="pdf-title">{bulkReportTitle}</h2>
-                        
-                        <div className="pdf-summary-analysis">
-                          <div className="summary-item">
-                            <span className="s-label">TOPLAM KAYIT</span>
-                            <span className="s-val">{bulkLeads.length}</span>
-                          </div>
-                          <div className="summary-item">
-                            <span className="s-label">YENİ TALEPLER</span>
-                            <span className="s-val">{bulkLeads.filter(l => l.status === 'Yeni').length}</span>
-                          </div>
-                          <div className="summary-item">
-                            <span className="s-label">İncelenen / İşlemde</span>
-                            <span className="s-val">{bulkLeads.filter(l => l.status !== 'Yeni' && l.status !== 'Arşivlendi').length}</span>
-                          </div>
-                        </div>
-
-                        <table className="pdf-table">
-                          <thead>
-                            <tr>
-                              <th style={{ width: '15%' }}>TARİH / SAAT</th>
-                              <th style={{ width: '25%' }}>MÜŞTERİ BİLGİSİ</th>
-                              <th style={{ width: '25%' }}>İLETİŞİM BİLGİLERİ</th>
-                              <th style={{ width: '15%' }}>İLGİLİ BİRİM</th>
-                              <th style={{ width: '20%' }}>GÜNCEL DURUM</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {bulkLeads.length > 0 ? bulkLeads.map((lead) => (
-                              <tr key={lead._id}>
-                                <td>
-                                  <span className="pdf-date">{new Date(lead.createdAt).toLocaleDateString('tr-TR')}</span>
-                                  <span className="pdf-time">{new Date(lead.createdAt).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })}</span>
-                                </td>
-                                <td><div className="pdf-txt-bold">{lead.name} {lead.surname}</div><div className="pdf-txt-small">{lead.city}</div></td>
-                                <td><div className="pdf-txt-main">{lead.phone}</div><div className="pdf-txt-small">{lead.email}</div></td>
-                                <td><span className="pdf-dept-tag">{lead.interestedDepartment}</span></td>
-                                <td><div className="pdf-status-pill">{lead.status}</div></td>
-                              </tr>
-                            )) : (
-                              <tr>
-                                <td colSpan={5} style={{ textAlign: 'center', padding: '20mm', color: '#888' }}>
-                                  Seçili zaman aralığında veya kriterlerde herhangi bir randevu kaydı bulunmamaktadır.
-                                </td>
-                              </tr>
-                            )}
-                          </tbody>
-                        </table>
-                      </div>
-                    ) : selectedLead && (
-                      <div className="pdf-document">
-                        <h2 className="pdf-title">MÜŞTERİ TALEP BİLGİ FORMU</h2>
-                        <div className="pdf-form-body">
-                          <div className="pdf-section">
-                            <h3>KİŞİSEL BİLGİLER</h3>
-                            <div className="pdf-data-row"><strong>AD SOYAD:</strong> {selectedLead.name} {selectedLead.surname}</div>
-                            <div className="pdf-data-row"><strong>TELEFON:</strong> {selectedLead.phone}</div>
-                            <div className="pdf-data-row"><strong>E-POSTA:</strong> {selectedLead.email}</div>
-                            <div className="pdf-data-row"><strong>ŞEHİR:</strong> {selectedLead.city}</div>
-                          </div>
-                          <div className="pdf-section">
-                            <h3>TALEB DETAYLARI</h3>
-                            <div className="pdf-data-row"><strong>İLGİLİ BİRİM:</strong> {selectedLead.interestedDepartment}</div>
-                            <div className="pdf-data-row"><strong>DURUM:</strong> {selectedLead.status}</div>
-                            <div className="pdf-data-row"><strong>TALEP TARİHİ:</strong> {new Date(selectedLead.createdAt).toLocaleString('tr-TR')}</div>
-                          </div>
-                          <div className="pdf-section full">
-                            <h3>PROJE AÇIKLAMASI / MESAJ</h3>
-                            <div className="pdf-message-box">
-                              {selectedLead.projectDetails || "Bir açıklama eklenmemiş."}
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    )}
-
-                    <div className="pdf-signature-area">
-                      <div className="sig-box">
-                        <p>HAZIRLAYAN</p>
-                        <div className="sig-line"></div>
-                        <span>Dijital CRM Sistemi</span>
-                      </div>
-                      <div className="sig-box">
-                        <p>ONAY / İMZA</p>
-                        <div className="sig-line"></div>
-                        <span>Deqoin Yönetim</span>
-                      </div>
-                    </div>
-
-                    <div className="pdf-footer">
-                      <p>BU BELGE DEQOIN ARCHITECTURAL STUDIO DİJİTAL SİSTEMLERİ TARAFINDAN OTOMATİK OLARAK OLUŞTURULMUŞTUR.</p>
-                      <div className="pdf-footer-line"></div>
-                      <span>www.deqoin.com • Deqoin Design Studio</span>
-                    </div>
+              <div className="flex-1 overflow-auto bg-black/35 p-3 sm:p-6">
+                <div className="preview-paper mx-auto w-full max-w-[210mm] rounded-[1.5rem] bg-white p-5 text-zinc-900 shadow-2xl sm:p-8">
+                  {isBulkPreview ? (
+                    <BulkLeadReport leads={reportLeads} documentNumber={documentNumber} title={reportTitle} />
+                  ) : selectedLead ? (
+                    <SingleLeadReport lead={selectedLead} documentNumber={documentNumber} />
+                  ) : null}
                 </div>
               </div>
             </motion.div>
-          </div>
+          </motion.div>
         )}
       </AnimatePresence>
 
-      <Script 
-        src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" 
+      <Script
+        src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"
         strategy="afterInteractive"
         onLoad={() => setLibLoaded(true)}
         onError={() => {
-          // Fallback to unpkg if cdnjs fails
-          const s = document.createElement('script');
-          s.src = "https://unpkg.com/html2pdf.js@0.10.1/dist/html2pdf.bundle.min.js";
-          s.onload = () => setLibLoaded(true);
-          document.body.appendChild(s);
+          const script = document.createElement('script');
+          script.src = 'https://unpkg.com/html2pdf.js@0.10.1/dist/html2pdf.bundle.min.js';
+          script.onload = () => setLibLoaded(true);
+          document.body.appendChild(script);
         }}
       />
 
-      {/* PRINT VIEW ENGINE */}
-      <div className="print-view">
-        <div className="pdf-header">
-          <div className="pdf-brand-box">
-            <h1>Deqoin Design Studio</h1>
-            <p>ARCHITECTURAL & DESIGN SOLUTIONS</p>
-          </div>
-          <div className="pdf-header-divider"></div>
-          <div className="pdf-meta">
-            <span><strong>DÖKÜMAN NO:</strong> DQ-{Math.floor(1000 + Math.random() * 9000)}</span>
-            <span><strong>RAPOR TARİHİ:</strong> {new Date().toLocaleDateString('tr-TR')}</span>
-            <span><strong>BİRİM:</strong> CRM / RANDEVU YÖNETİMİ</span>
-          </div>
-        </div>
-
-        {/* SINGLE REPORT */}
-        {selectedLead && !isBulkPrinting && (
-          <div className="pdf-document">
-            <h2 className="pdf-title">MÜŞTERİ TALEP BİLGİ FORMU</h2>
-            <div className="pdf-form-body">
-              <div className="pdf-section">
-                <h3>KİŞİSEL BİLGİLER</h3>
-                <div className="pdf-data-row"><strong>AD SOYAD:</strong> {selectedLead.name} {selectedLead.surname}</div>
-                <div className="pdf-data-row"><strong>TELEFON:</strong> {selectedLead.phone}</div>
-                <div className="pdf-data-row"><strong>E-POSTA:</strong> {selectedLead.email}</div>
-                <div className="pdf-data-row"><strong>ŞEHİR:</strong> {selectedLead.city}</div>
-              </div>
-              <div className="pdf-section">
-                <h3>TALEB DETAYLARI</h3>
-                <div className="pdf-data-row"><strong>İLGİLİ BİRİM:</strong> {selectedLead.interestedDepartment}</div>
-                <div className="pdf-data-row"><strong>DURUM:</strong> {selectedLead.status}</div>
-                <div className="pdf-data-row"><strong>TALEP TARİHİ:</strong> {new Date(selectedLead.createdAt).toLocaleString('tr-TR')}</div>
-              </div>
-              <div className="pdf-section full">
-                <h3>PROJE AÇIKLAMASI / MESAJ</h3>
-                <div className="pdf-message-box">
-                  {selectedLead.projectDetails || "Bir açıklama eklenmemiş."}
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* BULK REPORT */}
-        {isBulkPrinting && (
-          <div className="pdf-bulk-document">
-            <h2 className="pdf-title">{bulkReportTitle}</h2>
-            
-            {/* Summary Analysis */}
-            <div className="pdf-summary-analysis">
-              <div className="summary-item">
-                <span className="s-label">TOPLAM KAYIT</span>
-                <span className="s-val">{bulkLeads.length}</span>
-              </div>
-              <div className="summary-item">
-                <span className="s-label">YENİ TALEPLER</span>
-                <span className="s-val">{bulkLeads.filter(l => l.status === 'Yeni').length}</span>
-              </div>
-              <div className="summary-item">
-                <span className="s-label">İncelenen / İşlemde</span>
-                <span className="s-val">{bulkLeads.filter(l => l.status !== 'Yeni' && l.status !== 'Arşivlendi').length}</span>
-              </div>
-            </div>
-
-            <table className="pdf-table">
-              <thead>
-                <tr>
-                  <th style={{ width: '15%' }}>TARİH / SAAT</th>
-                  <th style={{ width: '25%' }}>MÜŞTERİ BİLGİSİ</th>
-                  <th style={{ width: '25%' }}>İLETİŞİM BİLGİLERİ</th>
-                  <th style={{ width: '15%' }}>İLGİLİ BİRİM</th>
-                  <th style={{ width: '20%' }}>GÜNCEL DURUM</th>
-                </tr>
-              </thead>
-              <tbody>
-                {bulkLeads.length > 0 ? bulkLeads.map((lead) => (
-                  <tr key={lead._id}>
-                    <td>
-                      <span className="pdf-date">{new Date(lead.createdAt).toLocaleDateString('tr-TR')}</span>
-                      <span className="pdf-time">{new Date(lead.createdAt).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })}</span>
-                    </td>
-                    <td><div className="pdf-txt-bold">{lead.name} {lead.surname}</div><div className="pdf-txt-small">{lead.city}</div></td>
-                    <td><div className="pdf-txt-main">{lead.phone}</div><div className="pdf-txt-small">{lead.email}</div></td>
-                    <td><span className="pdf-dept-tag">{lead.interestedDepartment}</span></td>
-                    <td><div className="pdf-status-pill">{lead.status}</div></td>
-                  </tr>
-                )) : (
-                  <tr>
-                    <td colSpan={5} style={{ textAlign: 'center', padding: '20mm', color: '#888' }}>
-                      Seçili zaman aralığında veya kriterlerde herhangi bir randevu kaydı bulunmamaktadır.
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
-
-            <div className="pdf-signature-area">
-              <div className="sig-box">
-                <p>HAZIRLAYAN</p>
-                <div className="sig-line"></div>
-                <span>Dijital CRM Sistemi</span>
-              </div>
-              <div className="sig-box">
-                <p>ONAY / İMZA</p>
-                <div className="sig-line"></div>
-                <span>Deqoin Yönetim</span>
-              </div>
-            </div>
-          </div>
-        )}
-
-        <div className="pdf-footer">
-          <p>BU BELGE DEQOIN ARCHITECTURAL STUDIO DİJİTAL SİSTEMLERİ TARAFINDAN OTOMATİK OLARAK OLUŞTURULMUŞTUR.</p>
-          <div className="pdf-footer-line"></div>
-          <span>www.deqoin.com • Deqoin Design Studio</span>
+      <div className="print-view hidden">
+        <div className="mx-auto w-[210mm] min-h-[297mm] bg-white p-[16mm] text-zinc-900">
+          {previewMode === 'bulk' ? (
+            <BulkLeadReport leads={reportLeads} documentNumber={documentNumber} title={reportTitle} />
+          ) : selectedLead ? (
+            <SingleLeadReport lead={selectedLead} documentNumber={documentNumber} />
+          ) : null}
         </div>
       </div>
 
-      <style jsx>{`
-        .crm-container { display: flex; flex-direction: column; gap: 2rem; }
-        
-        /* STATS */
-        .crm-stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
-        .stat-lux-card { background: var(--surface); border: 1px solid var(--line); padding: 1.5rem; border-radius: 12px; display: flex; align-items: center; gap: 1.25rem; transition: transform 0.3s; box-shadow: var(--shadow); }
-        .stat-lux-card:hover { transform: translateY(-3px); border-color: #a68966; }
-        .stat-icon-wrap { width: 44px; height: 44px; border-radius: 10px; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.03); }
-        .stat-icon-wrap.blue { color: #3b82f6; background: rgba(59,130,246,0.1); }
-        .stat-icon-wrap.gold { color: #a68966; background: rgba(166,137,102,0.1); }
-        .stat-icon-wrap.green { color: #10b981; background: rgba(16,185,129,0.1); }
-        .stat-info { display: flex; flex-direction: column; }
-        .stat-label { font-size: 0.6rem; letter-spacing: 0.15em; color: var(--text-muted); font-weight: 800; opacity: 0.7; }
-        .stat-val { font-size: 1.25rem; font-weight: 300; color: var(--text); font-family: var(--font-display); }
-
-        .crm-actions { display: flex; justify-content: space-between; align-items: center; padding: 1.25rem; }
-        .search-box { display: flex; align-items: center; gap: 1rem; background: var(--background); border: 1px solid var(--line); border-radius: 8px; padding: 0.75rem 1.25rem; width: 350px; }
-        .search-box input { background: transparent; border: none; color: #fff; font-family: inherit; font-size: 0.9rem; flex: 1; outline: none; }
-        
-        /* NEW HEADER BTN */
-        .crm-header-btns { margin-left: auto; }
-        .report-ux-wrapper { display: flex; align-items: center; gap: 1.5rem; background: rgba(0,0,0,0.1); padding: 6px 12px; border-radius: 12px; border: 1px solid var(--line); }
-        
-        .scope-picker { display: flex; align-items: center; gap: 0.25rem; justify-content: flex-start; }
-        .scope-label-mini { font-size: 0.55rem; font-weight: 900; color: var(--text-muted); margin-right: 0.5rem; letter-spacing: 0.1em; }
-        .scope-btn { background: transparent; border: none; color: var(--text-soft); padding: 0.5rem 1rem; border-radius: 6px; font-size: 0.65rem; font-weight: 700; cursor: pointer; transition: all 0.3s; }
-        .scope-btn:hover { color: #fff; background: rgba(255,255,255,0.03); }
-        .scope-btn.active { background: #a68966; color: #fff; }
-
-        .report-actions { display: flex; gap: 0.5rem; border-left: 1px solid var(--line); padding-left: 1.5rem; }
-        .lux-report-btn { background: #a68966; color: #fff; border: none; padding: 0.6rem 1.5rem; border-radius: 8px; font-size: 0.65rem; font-weight: 800; cursor: pointer; display: flex; align-items: center; gap: 0.75rem; transition: all 0.3s; }
-        .lux-report-btn:hover { background: #fff; color: #000; transform: translateY(-2px); }
-
-        /* PREVIEW MODAL STYLES */
-        .preview-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.9); backdrop-filter: blur(15px); z-index: 2000; display: flex; align-items: center; justify-content: center; padding: 2rem; }
-        .preview-container { width: 1000px; height: 95vh; background: var(--surface); border: 1px solid var(--line); border-radius: 16px; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 25px 50px rgba(0,0,0,0.5); }
-        .preview-toolbar { padding: 1.5rem 2rem; border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.03); }
-        .preview-toolbar h3 { margin: 0; font-size: 0.9rem; letter-spacing: 0.2rem; color: #a68966; font-weight: 900; }
-        .toolbar-badge { font-size: 0.55rem; font-weight: 900; color: var(--text-muted); background: rgba(255,255,255,0.05); padding: 3px 8px; border-radius: 4px; margin-left: 1rem; }
-        
-        .toolbar-actions { display: flex; gap: 0.75rem; }
-        .tool-btn { background: var(--surface-muted); color: #fff; border: 1px solid var(--line); padding: 0.6rem 1.25rem; border-radius: 8px; font-size: 0.7rem; font-weight: 800; cursor: pointer; display: flex; align-items: center; gap: 0.5rem; transition: all 0.3s; }
-        .tool-btn:hover { transform: translateY(-2px); border-color: #a68966; }
-        .tool-btn.gold { background: #a68966; border-color: #a68966; }
-        .tool-btn.close { background: rgba(239,68,68,0.1); color: #ef4444; border-color: rgba(239,68,68,0.2); }
-
-        .preview-content-scroll { flex: 1; overflow-y: auto; padding: 3rem; background: rgba(0,0,0,0.2); display: flex; justify-content: center; }
-        .preview-paper { 
-            width: 210mm; min-height: 297mm; background: #fff; color: #000; padding: 15mm; 
-            box-shadow: 0 10px 40px rgba(0,0,0,0.4); border-radius: 2px;
-            display: flex; flex-direction: column;
-        }
-
-        /* PRINT MEDIA (KEEP ORIGINAL FOR WINDOW.PRINT) */
-
-        .filter-group { display: flex; gap: 0.5rem; }
-        .filter-btn { background: var(--surface-muted); border: 1px solid var(--line); color: var(--text-muted); padding: 0.6rem 1.25rem; border-radius: 40px; font-size: 0.65rem; font-weight: 700; cursor: pointer; letter-spacing: 0.05em; transition: all 0.3s; }
-        .filter-btn.active { background: #a68966; color: #000; border-color: #a68966; box-shadow: 0 5px 15px rgba(166,137,102,0.2); }
-
-        /* TABLE */
-        .desktop-view { overflow: hidden; }
-        .crm-table { width: 100%; border-collapse: collapse; }
-        .crm-table th { text-align: left; padding: 1.5rem; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.15em; color: #a68966; border-bottom: 2px solid var(--line); font-weight: 800; }
-        .crm-table td { padding: 1.5rem; border-bottom: 1px solid var(--line); font-size: 0.9rem; vertical-align: middle; }
-        .crm-table tr { cursor: pointer; transition: background 0.3s; }
-        .crm-table tr:hover { background: rgba(166,137,102,0.03); }
-
-        .date-badge { display: flex; align-items: center; gap: 0.5rem; font-size: 0.75rem; color: var(--text-muted); background: var(--surface-muted); padding: 4px 10px; border-radius: 4px; width: fit-content; }
-        .lead-name { font-weight: 600; color: #fff; display: block; font-size: 1rem; }
-        .lead-contact { font-size: 0.75rem; color: var(--text-muted); margin-top: 0.2rem; }
-        .dept-badge { font-size: 0.7rem; font-weight: 800; color: #a68966; background: rgba(166,137,102,0.1); padding: 0.3rem 0.8rem; border-radius: 4px; border: 1px solid rgba(166,137,102,0.1); }
-
-        .status-badge-premium { padding: 0.4rem 1rem; border-radius: 20px; font-size: 0.6rem; font-weight: 900; letter-spacing: 0.1em; display: inline-flex; border: 1px solid transparent; }
-        .status-badge-premium.yeni { background: rgba(166,137,102,0.1); color: #a68966; border-color: rgba(166,137,102,0.3); }
-        .status-badge-premium.incelendi { background: rgba(59,130,246,0.1); color: #3b82f6; border-color: rgba(59,130,246,0.2); }
-        .status-badge-premium.iletisive-gecildi { background: rgba(16,185,129,0.1); color: #10b981; border-color: rgba(16,185,129,0.2); }
-        .status-badge-premium.arsivlendi { background: var(--surface-muted); color: var(--text-soft); border-color: var(--line); }
-
-        .action-buttons { display: flex; gap: 0.5rem; }
-        .icon-btn { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: var(--surface-muted); color: var(--text-muted); border: 1px solid var(--line); cursor: pointer; transition: all 0.3s; }
-        .icon-btn:hover { border-color: #a68966; color: #a68966; }
-        .wa-btn:hover { background: #25d366; color: #fff; border-color: #25d366; }
-
-        /* MOBILE VIEW */
-        .mobile-view { display: none; }
-        
-        /* DRAWER IMPROVED */
-        .drawer-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(10px); z-index: 1000; display: flex; justify-content: flex-end; }
-        .drawer-content { width: 600px; height: 100%; background: var(--surface); border-left: 1px solid var(--line); display: flex; flex-direction: column; }
-        .drawer-header { padding: 2.5rem; border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; align-items: center; }
-        .drawer-header h2 { margin: 0; font-family: var(--font-display); font-size: 1.25rem; letter-spacing: 0.15em; color: #a68966; }
-        .close-btn { background: transparent; border: none; color: #fff; cursor: pointer; width: 44px; height: 44px; border-radius: 50%; background: rgba(255,255,255,0.03); display: flex; align-items: center; justify-content: center; }
-
-        .drawer-body { padding: 2.5rem; display: flex; flex-direction: column; gap: 3rem; overflow-y: auto; }
-        .detail-hero { display: flex; flex-direction: column; gap: 1rem; align-items: flex-start; }
-        .m-cat-tag { font-size: 0.7rem; color: #a68966; letter-spacing: 0.2rem; font-weight: 800; border: 1px solid rgba(166,137,102,0.3); padding: 4px 12px; border-radius: 4px; }
-        .detail-hero h2 { font-size: 2.5rem; font-family: var(--font-display); margin: 0; font-weight: 300; }
-        
-        .status-badge-lg { padding: 0.75rem 2rem; border-radius: 40px; font-size: 0.8rem; font-weight: 900; letter-spacing: 0.1em; display: inline-flex; border: 1px solid rgba(255,255,255,0.1); }
-        .status-badge-lg.yeni { border-color: #a68966; color: #a68966; }
-        .status-badge-lg.iletisive-gecildi { border-color: #10b981; color: #10b981; }
-
-        .detail-status-edit { display: flex; flex-direction: column; gap: 1rem; }
-        .detail-status-edit label { font-size: 0.6rem; letter-spacing: 0.2em; color: var(--text-muted); font-weight: 800; }
-        .status-options { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.75rem; }
-        .status-opt-btn { background: var(--background); border: 1px solid var(--line); color: var(--text-soft); padding: 1rem; border-radius: 8px; font-size: 0.75rem; font-weight: 700; cursor: pointer; transition: all 0.3s; }
-        .status-opt-btn.active { border-color: #a68966; color: #a68966; background: rgba(166,137,102,0.05); }
-
-        .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2.5rem; }
-        .detail-item label { font-size: 0.6rem; color: var(--text-muted); letter-spacing: 0.15em; font-weight: 800; margin-bottom: 0.5rem; display: block; }
-        .detail-item p { margin: 0; font-size: 1.1rem; color: #fff; font-weight: 400; }
-
-        .detail-message-box label { font-size: 0.6rem; color: var(--text-muted); letter-spacing: 0.15em; margin-bottom: 1rem; display: block; font-weight: 800; }
-        .message-content { background: rgba(0,0,0,0.2); border: 1px solid var(--line); padding: 2rem; border-radius: 12px; font-size: 1rem; line-height: 1.8; color: var(--text-soft); }
-
-        .drawer-footer-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
-        .lux-action-btn { padding: 1.25rem; border-radius: 12px; font-weight: 800; font-size: 0.7rem; letter-spacing: 0.1em; display: flex; align-items: center; justify-content: center; gap: 0.75rem; cursor: pointer; border: none; transition: all 0.3s; }
-        .lux-action-btn.wa { background: #25d366; color: #fff; }
-        .lux-action-btn.wa:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(37,211,102,0.2); }
-        .lux-action-btn.pdf { background: #fff; color: #000; }
-        .lux-action-btn.pdf:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(255,255,255,0.1); }
-        .lux-action-btn.download-btn { background: #a68966; color: #fff; }
-        .lux-action-btn.download-btn:hover { background: #fff; color: #000; transform: translateY(-3px); box-shadow: 0 10px 20px rgba(166,137,102,0.3); }
-
-        @media (max-width: 1024px) {
-          .crm-stats-grid { grid-template-columns: 1fr; }
-          .desktop-view { display: none; }
-          .mobile-view { display: block; }
-          .crm-actions { flex-direction: column; gap: 1.5rem; align-items: stretch; }
-          .search-box { width: 100%; }
-          .filter-group-scroll { overflow-x: auto; padding-bottom: 0.5rem; }
-          .filter-group { width: max-content; }
-          
-          .mobile-card-grid { display: flex; flex-direction: column; gap: 1.5rem; }
-          .lead-mobile-card { padding: 1.5rem; display: flex; flex-direction: column; gap: 1rem; }
-          .m-card-header { display: flex; justify-content: space-between; align-items: center; }
-          .m-date { font-size: 0.7rem; color: var(--text-muted); font-weight: 600; }
-          .status-badge-small { font-size: 0.55rem; font-weight: 900; background: rgba(255,255,255,0.05); padding: 4px 10px; border-radius: 4px; color: #a68966; letter-spacing: 0.05em; }
-          .m-card-body h3 { margin: 0; font-size: 1.25rem; font-family: var(--font-display); }
-          .m-card-body p { margin: 0.5rem 0 0 0; font-size: 0.8rem; color: var(--text-muted); }
-          .m-card-footer { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--line); padding-top: 1rem; }
-          .m-contact-info { font-size: 0.8rem; font-weight: 600; color: #a68966; }
-          .m-actions { display: flex; gap: 0.75rem; }
-          .m-action-btn { width: 40px; height: 40px; border-radius: 50%; background: var(--surface-muted); color: var(--text-soft); border: 1px solid var(--line); display: flex; align-items: center; justify-content: center; }
-          .m-action-btn.gold { color: #a68966; border-color: #a68966; }
-          
-          .drawer-content { width: 100vw; }
-          .detail-hero h2 { font-size: 1.75rem; }
-          .detail-grid { grid-template-columns: 1fr; gap: 1.5rem; }
-          .drawer-footer-actions { grid-template-columns: 1fr; }
-        }
-
-        /* PRINT ENGINE STYLES (ENHANCED) */
-        .print-view { display: none; }
-        
+      <style jsx global>{`
         @media print {
-          @page { size: A4; margin: 15mm; }
-          body * { visibility: hidden; pointer-events: none; }
-          .print-view, .print-view * { visibility: visible; }
-          
+          body {
+            background: #fff !important;
+          }
+
+          body * {
+            visibility: hidden !important;
+          }
+
+          .print-view,
+          .print-view * {
+            visibility: visible !important;
+          }
+
           .print-view {
-            position: absolute; left: 0; top: 0; width: 210mm; min-height: 297mm;
-            background: #fff !important; color: #000 !important;
-            display: flex !important; flex-direction: column;
-            padding: 10mm; font-family: sans-serif;
+            display: block !important;
+            position: absolute !important;
+            inset: 0 !important;
+            z-index: 9999 !important;
+            background: #fff !important;
           }
 
-          .pdf-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 0.5pt solid #eee; padding-bottom: 6mm; margin-bottom: 8mm; position: relative; }
-          .pdf-brand-box h1 { margin: 0; font-size: 24pt; letter-spacing: 2px; font-weight: 900; font-family: serif; color: #000; line-height: 1; }
-          .pdf-brand-box p { margin: 2mm 0 0 0; font-size: 8pt; color: #666; letter-spacing: 3px; font-weight: 600; text-transform: uppercase; }
-          
-          /* Force A4 in PDF generation */
-          .preview-paper, .print-view { width: 210mm; min-height: 297mm; background: #fff !important; color: #000 !important; }
-          
-          .pdf-header-divider { position: absolute; bottom: -1px; left: 0; width: 40mm; height: 2px; background: #a68966; }
-          .pdf-meta { display: flex; flex-direction: column; align-items: flex-end; gap: 1.5mm; font-size: 8.5pt; text-align: right; color: #333; }
-          .pdf-meta strong { color: #a68966; margin-right: 2mm; font-weight: 800; }
-          
-          .pdf-title { text-align: center; font-size: 14pt; letter-spacing: 5px; margin: 8mm 0 10mm 0; border: 1px solid #000; padding: 4mm 0; font-weight: 400; text-transform: uppercase; background: #fafafa; }
-          
-          /* Summary Analysis Dashboard */
-          .pdf-summary-analysis { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8mm; margin-bottom: 12mm; page-break-inside: avoid; }
-          .summary-item { border: 1px solid #eee; padding: 6mm 4mm; display: flex; flex-direction: column; align-items: center; background: #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.02); border-top: 3px solid #eee; }
-          .summary-item:first-child { border-top-color: #a68966; }
-          .s-label { font-size: 7.5pt; color: #888; font-weight: 800; letter-spacing: 1.5px; margin-bottom: 3mm; text-transform: uppercase; }
-          .s-val { font-size: 18pt; font-weight: 300; color: #000; font-family: serif; }
-          
-          /* Single Report Perfect Alignment */
-          .pdf-form-body { display: grid; grid-template-columns: 1fr 1fr; gap: 12mm; }
-          .pdf-section { display: flex; flex-direction: column; gap: 3.5mm; margin-bottom: 10mm; page-break-inside: avoid; }
-          .pdf-section.full { grid-column: 1 / -1; }
-          .pdf-section h3 { margin: 0 0 3mm 0; font-size: 9.5pt; border-bottom: 1px solid #a68966; padding-bottom: 1.5mm; color: #a68966; font-weight: 800; letter-spacing: 1px; }
-          .pdf-data-row { font-size: 10.5pt; line-height: 1.6; border-bottom: 1px solid #f9f9f9; padding: 1mm 0; }
-          .pdf-data-row strong { width: 120px; display: inline-block; color: #555; font-size: 9pt; }
-          .pdf-message-box { padding: 8mm; border: 1px solid #eee; background: #fdfdfd; font-size: 10.5pt; line-height: 1.8; white-space: pre-wrap; color: #333; }
-
-          /* Bulk Table Perfection */
-          .pdf-table { width: 100%; border-collapse: collapse; margin-top: 5mm; table-layout: fixed; border: 1px solid #000; }
-          .pdf-table th { background: #000; border: 1px solid #000; padding: 4.5mm 3mm; text-align: left; font-size: 8pt; color: #fff; letter-spacing: 1.5px; font-weight: 800; text-transform: uppercase; }
-          .pdf-table td { border: 1px solid #eee; padding: 4.5mm 3mm; font-size: 9.5pt; vertical-align: middle; line-height: 1.5; overflow: hidden; word-wrap: break-word; }
-          .pdf-table tr:nth-child(even) { background: #fcfcfc; }
-          .pdf-table tr { page-break-inside: avoid; }
-
-          .pdf-date { display: block; font-weight: 700; color: #000; font-size: 9pt; }
-          .pdf-time { display: block; font-size: 7.5pt; color: #a68966; font-weight: 800; }
-          .pdf-txt-bold { font-weight: 700; color: #000; font-size: 10pt; }
-          .pdf-txt-main { color: #333; font-weight: 500; }
-          .pdf-txt-small { font-size: 8pt; color: #888; margin-top: 1mm; }
-          .pdf-dept-tag { font-size: 7pt; font-weight: 900; color: #a68966; text-transform: uppercase; border: 0.5pt solid #a68966; padding: 1mm 2mm; border-radius: 2px; }
-          .pdf-status-pill { font-size: 7.5pt; font-weight: 900; background: #eee; padding: 1.5mm 3mm; border-radius: 40px; display: inline-block; text-transform: uppercase; border: 0.5pt solid #ddd; }
-
-          .pdf-signature-area { margin-top: 25mm; display: flex; justify-content: space-between; padding-top: 10mm; page-break-inside: avoid; }
-          .sig-box { width: 65mm; text-align: center; }
-          .sig-box p { font-size: 8.5pt; font-weight: 800; margin-bottom: 15mm; letter-spacing: 2px; text-transform: uppercase; color: #000; }
-          .sig-line { border-bottom: 1.5pt solid #000; margin-bottom: 4mm; }
-          .sig-box span { font-size: 7.5pt; color: #666; font-weight: 600; }
-
-          .pdf-footer { margin-top: auto; padding-top: 12mm; text-align: center; font-size: 7.5pt; color: #aaa; letter-spacing: 1px; }
-
-        /* RESPONSIVE CSS */
-        /* RESPONSIVE BREAKPOINTS */
-        
-        /* TABLETS & SMALL LAPTOPS (601px - 1024px) */
-        @media (min-width: 601px) and (max-width: 1024px) {
-          .crm-container { padding: 1.5rem !important; }
-          .crm-stats-grid { grid-template-columns: repeat(2, 1fr) !important; gap: 1rem !important; }
-          .desktop-only { display: none !important; }
-          .mobile-only { display: block !important; }
-          .mobile-card-grid { display: grid !important; grid-template-columns: 1fr 1fr !important; gap: 1rem !important; }
-          .drawer-content { width: 70% !important; max-width: 600px !important; }
-          
-          .preview-paper { 
-            transform: scale(0.65) !important; transform-origin: top center !important;
-            margin-bottom: -100mm !important;
+          .print-view .preview-paper {
+            box-shadow: none !important;
           }
-        }
-
-        /* MOBILE (900px and below) */
-        @media (max-width: 900px) {
-          .crm-header { flex-direction: column !important; align-items: stretch !important; gap: 1rem !important; }
-          .crm-header-btns { margin-left: 0 !important; width: 100% !important; }
-          .report-ux-wrapper { flex-direction: column !important; align-items: stretch !important; gap: 1rem !important; padding: 1rem !important; border-radius: 12px !important; width: 100% !important; background: rgba(0,0,0,0.2) !important; display: flex !important; margin-bottom: 0.5rem !important; }
-          
-          .scope-picker { display: grid !important; grid-template-columns: 1fr 1fr !important; gap: 0.5rem !important; width: 100% !important; justify-items: start !important; }
-          .scope-label-mini { display: none !important; }
-          .scope-btn { width: 100% !important; padding: 0.75rem !important; font-size: 0.75rem !important; text-align: center !important; background: rgba(255,255,255,0.05) !important; border: 1px solid var(--line) !important; border-radius: 8px !important; display: block !important; }
-          .scope-btn.active { background: #a68966 !important; border-color: #a68966 !important; color: #fff !important; }
-          
-          .report-actions { border-left: none !important; border-top: 1px solid var(--line) !important; padding-left: 0 !important; padding-top: 1rem !important; margin-top: 0.25rem !important; width: 100% !important; display: flex !important; }
-          .lux-report-btn { width: 100% !important; justify-content: center !important; padding: 1rem !important; font-size: 0.8rem !important; letter-spacing: 1.5px !important; font-weight: 900 !important; }
-
-          .filter-group-scroll { overflow: visible !important; width: 100% !important; }
-          .filter-group { display: flex !important; flex-wrap: wrap !important; gap: 0.5rem !important; width: 100% !important; }
-          .filter-btn { flex: 1 1 calc(50% - 0.5rem) !important; min-width: 120px !important; text-align: center !important; padding: 0.75rem 0.5rem !important; }
-
-          .desktop-only { display: none !important; }
-          .mobile-only { display: block !important; }
-          
-          .mobile-lead-card { background: var(--surface-muted); border: 1px solid var(--line); border-radius: 12px; padding: 1.25rem; margin-bottom: 1rem; cursor: pointer; transition: all 0.3s; }
-          .mobile-lead-card:active { transform: scale(0.98); background: rgba(255,255,255,0.05); }
-          .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
-          .card-id { font-size: 0.65rem; color: var(--text-muted); font-weight: 800; }
-          .card-body h3 { margin: 0 0 0.5rem 0; font-size: 1.1rem; color: #fff; }
-          .card-dept { font-size: 0.75rem; color: #a68966; font-weight: 700; text-transform: uppercase; margin-bottom: 0.75rem; }
-          .card-meta { display: flex; gap: 0.5rem; font-size: 0.75rem; color: var(--text-muted); }
-          .btn-card-action { width: 100%; margin-top: 1.25rem; background: rgba(255,255,255,0.05); border: 1px solid var(--line); color: #fff; padding: 0.75rem; border-radius: 8px; font-size: 0.8rem; font-weight: 700; }
-
-          .sidebar-item { border-radius: 12px; margin-bottom: 1rem; }
-          
-          /* Preview Modal Mobile */
-          .preview-container { width: 100% !important; height: 100vh !important; border-radius: 0 !important; border: none !important; }
-          .preview-content-scroll { padding: 1.5rem 1rem !important; }
-          .preview-paper { 
-            width: 100%; min-width: 210mm; /* Force A4 for render, but scale it down */
-            transform: scale(0.45); transform-origin: top center;
-            margin-bottom: -150mm; /* Offset scale shrink */
-          }
-          .preview-toolbar { padding: 1rem !important; flex-direction: column !important; gap: 1rem !important; }
-          .toolbar-actions { width: 100% !important; display: grid !important; grid-template-columns: 1fr 1fr 44px !important; gap: 0.5rem !important; }
-          .tool-btn { padding: 0.75rem 0.5rem !important; font-size: 0.6rem !important; justify-content: center !important; }
-          
-          .drawer-content { width: 100% !important; }
-        }
-
-        /* VERY SMALL MOBILE */
-        @media (max-width: 600px) {
-          .crm-stats-grid { grid-template-columns: 1fr !important; gap: 0.5rem !important; }
-          .filter-btn { flex: 1 1 100% !important; }
-          .preview-paper { transform: scale(0.35) !important; margin-bottom: -180mm !important; }
         }
       `}</style>
     </div>
