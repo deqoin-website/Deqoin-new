@@ -278,7 +278,15 @@ export default function DepartmentStudio({
           aria-controls="studio-gallery"
           aria-expanded={isMobileDrawerOpen}
           onClick={() => setIsMobileDrawerOpen(true)}
-          style={{ position: "sticky", top: "1rem", zIndex: 40 }}
+          style={{
+            position: "fixed",
+            left: "1rem",
+            right: "1rem",
+            bottom: "1rem",
+            zIndex: 1200,
+            width: "auto",
+            boxShadow: "0 18px 40px rgba(0,0,0,0.45)",
+          }}
         >
           <span className="material-symbols-outlined">tune</span>
           KATEGORİLER
