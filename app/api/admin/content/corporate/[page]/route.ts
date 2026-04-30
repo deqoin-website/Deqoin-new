@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import connectToDatabase from "@/lib/mongodb";
 import CorporateContent from "@/models/CorporateContent";
+import { CURRENT_ABOUT_CONTENT, createAboutDefaultContent, isLegacyAboutContent } from "@/lib/about-content";
 
 export async function GET(
   request: Request,
@@ -14,18 +15,34 @@ export async function GET(
     
     // Provide some default structure if document doesn't exist yet
     if (!content) {
-      return NextResponse.json({
+      const fallback = page === "about" ? createAboutDefaultContent() : {
         page,
         title: "",
         subtitle: "",
         description: "",
-        stats: [
-          { label: "DENEYİM", value: "10+ YIL" },
-          { label: "TESLİM EDİLEN", value: "+240 PROJE" },
-          { label: "UZMAN EKİP", value: "40+ KİŞİ" }
-        ],
-        sections: []
+        stats: [],
+        sections: [],
+      };
+
+      return NextResponse.json({
+        ...fallback,
       });
+    }
+
+    if (page === "about" && isLegacyAboutContent(content)) {
+      const updated = await CorporateContent.findOneAndUpdate(
+        { page: "about" },
+        {
+          ...CURRENT_ABOUT_CONTENT,
+          metadata: {
+            ...(content.metadata || {}),
+            updatedAt: new Date(),
+          },
+        },
+        { upsert: true, returnDocument: "after", runValidators: true }
+      );
+
+      return NextResponse.json(updated);
     }
 
     return NextResponse.json(content);

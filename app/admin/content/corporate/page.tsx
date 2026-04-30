@@ -27,6 +27,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
 import { Textarea } from '@/components/ui/textarea';
+import { createAboutDefaultContent } from '@/lib/about-content';
 import { cn } from '@/lib/utils';
 
 type TabKey = 'main' | 'stats' | 'workflow';
@@ -56,43 +57,15 @@ type CorporateContent = {
   };
 };
 
-const DEFAULT_STATS: CorporateStat[] = [
-  { label: 'DENEYİM', value: '10+ YIL' },
-  { label: 'TESLİM EDİLEN', value: '+240 PROJE' },
-  { label: 'UZMAN EKİP', value: '40+ KİŞİ' },
-];
-
-const DEFAULT_SECTIONS: CorporateSection[] = [
-  {
-    title: 'KEŞİF VE ANALİZ',
-    content: 'Projenin ruhunu ve ihtiyaçlarını anlamak için derinlemesine bir analiz süreci yürütüyoruz.',
-  },
-  {
-    title: 'KONSEPT TASARIM',
-    content: 'Analizlerden yola çıkarak, markanıza veya yaşam tarzınıza özel özgün konseptler geliştiriyoruz.',
-  },
-  {
-    title: 'MİMARİ GELİŞTİRME',
-    content: 'Onaylanan konsepti, teknik disiplinler ve estetik detaylarla harmanlayarak projelendiriyoruz.',
-  },
-  {
-    title: 'UYGULAMA VE TESLİM',
-    content: 'Yüksek kalite standartlarında, anahtar teslim uygulama süreci ile hayallerinizi gerçeğe dönüştürüyoruz.',
-  },
-];
-
 const createDefaultContent = (): CorporateContent => ({
-  page: 'about',
-  title: 'TASARIMDAN ÖTE:\nBÜTÜNSEL BİR DENEYİM',
-  subtitle: 'BİZ KİMİZ',
-  description:
-    'Bizler sadece fiziksel yapılar inşa etmiyor; tüm değerlerinizi ortaya koyan bütünsel bir deneyim kurguluyoruz. Tasarımın sadece estetik bir form değil, yaşam biçimini şekillendiren bir disiplin olduğuna inanıyoruz.',
-  image: '/images/workflow/hakkimizda-home.png',
-  stats: [...DEFAULT_STATS],
-  sections: [...DEFAULT_SECTIONS],
-  metadata: {
-    updatedAt: new Date().toISOString(),
-  },
+  ...(() => {
+    const about = createAboutDefaultContent();
+    return {
+      ...about,
+      stats: about.stats,
+      sections: about.sections,
+    };
+  })(),
 });
 
 const cloneContent = (value: CorporateContent) => JSON.parse(JSON.stringify(value)) as CorporateContent;

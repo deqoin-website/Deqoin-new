@@ -1,37 +1,7 @@
 import { NextResponse } from "next/server";
 import connectToDatabase from "@/lib/mongodb";
 import CorporateContent from "@/models/CorporateContent";
-
-const initialData = {
-  page: 'about',
-  title: "TASARIMDAN ÖTE:\nBÜTÜNSEL BİR DENEYİM",
-  subtitle: "BİZ KİMİZ",
-  description: "Bizler sadece fiziksel yapılar inşa etmiyor; tüm değerlerinizi ortaya koyan bütünsel bir deneyim kurguluyoruz. Tasarımın sadece estetik bir form değil, yaşam biçimini şekillendiren bir disiplin olduğuna inanıyoruz.",
-  image: "/images/workflow/hakkimizda-home.png",
-  stats: [
-    { label: "DENEYİM", value: "10+ YIL" },
-    { label: "TESLİM EDİLEN", value: "+240 PROJE" },
-    { label: "UZMAN EKİP", value: "40+ KİŞİ" }
-  ],
-  sections: [
-    {
-      title: "KEŞİF VE ANALİZ",
-      content: "Projenin ruhunu ve ihtiyaçlarını anlamak için derinlemesine bir analiz süreci yürütüyoruz."
-    },
-    {
-      title: "KONSEPT TASARIM",
-      content: "Analizlerden yola çıkarak, markanıza veya yaşam tarzınıza özel özgün konseptler geliştiriyoruz."
-    },
-    {
-      title: "MİMARİ GELİŞTİRME",
-      content: "Onaylanan konsepti, teknik disiplinler ve estetik detaylarla harmanlayarak projelendiriyoruz."
-    },
-    {
-      title: "UYGULAMA VE TESLİM",
-      content: "Yüksek kalite standartlarında, anahtar teslim uygulama süreci ile hayallerinizi gerçeğe dönüştürüyoruz."
-    }
-  ]
-};
+import { CURRENT_ABOUT_CONTENT } from "@/lib/about-content";
 
 export async function GET() {
   try {
@@ -40,7 +10,10 @@ export async function GET() {
     // Always upsert the initial data for the about page.
     const updated = await CorporateContent.findOneAndUpdate(
       { page: 'about' },
-      { ...initialData, 'metadata.updatedAt': new Date() },
+      {
+        ...CURRENT_ABOUT_CONTENT,
+        metadata: { updatedAt: new Date() },
+      },
       { upsert: true, returnDocument: 'after' }
     );
     

@@ -4,17 +4,12 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion, useReducedMotion } from "framer-motion";
 import { Button } from "@/components/ui/button";
+import { CURRENT_ABOUT_CONTENT } from "@/lib/about-content";
 
 export default function AboutShowcaseSection() {
   const router = useRouter();
   const shouldReduceMotion = useReducedMotion();
-  const [content, setContent] = useState({
-    title: "Sizin hikayeniz, sizin mekanınız.",
-    description:
-      "Biz deqoin'i kurarken tek bir inancımız vardı: Bir ev, sadece dört duvar ve eşyalardan ibaret olamaz. Bu yüzden mimarinin teknik gücünü, sizin kişisel zevklerinizle ve yaşam tarzınızla harmanlıyoruz. Hayatınıza dokunan, içinde kendinizi huzurlu hissedeceğiniz ve yıllara meydan okuyan sıcak yaşam alanları tasarlıyoruz. Kısacası, sizin hikayenizi mekanlara yansıtıyoruz.",
-    image: "/images/about_interior.png",
-    subtitle: "BİZ KİMİZ",
-  });
+  const [content, setContent] = useState(CURRENT_ABOUT_CONTENT);
 
   useEffect(() => {
     let active = true;
@@ -28,10 +23,11 @@ export default function AboutShowcaseSection() {
         if (!active || !data) return;
 
         setContent({
-          title: data.title || content.title,
-          description: data.description || content.description,
-          image: data.image || content.image,
-          subtitle: data.subtitle || content.subtitle,
+          ...CURRENT_ABOUT_CONTENT,
+          title: data.title || CURRENT_ABOUT_CONTENT.title,
+          description: data.description || CURRENT_ABOUT_CONTENT.description,
+          image: data.image || CURRENT_ABOUT_CONTENT.image,
+          subtitle: data.subtitle || CURRENT_ABOUT_CONTENT.subtitle,
         });
       } catch (error) {
         console.error("About content load error:", error);
