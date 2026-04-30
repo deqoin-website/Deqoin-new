@@ -193,9 +193,12 @@ export default function WorkflowAdminPage() {
   }, [searchQuery, activeScopeMode]);
 
   const switchScopeMode = (mode: ScopeMode) => {
-    setActiveScopeMode(mode);
     const pool = mode === "page" ? PAGE_SCOPES : DEPARTMENT_SCOPES;
-    const nextScope = pool.find((scope) => scope.key === selectedScopeKey) || pool[0];
+    const nextScope = pool[0];
+
+    setSearchQuery("");
+    setActiveScopeMode(mode);
+
     if (nextScope && nextScope.key !== selectedScopeKey) {
       setSelectedScopeKey(nextScope.key);
     }
