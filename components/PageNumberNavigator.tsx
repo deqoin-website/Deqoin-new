@@ -29,6 +29,11 @@ export default function PageNumberNavigator({
   useEffect(() => {
     if (validItems.length === 0) return;
 
+    if (typeof IntersectionObserver === "undefined") {
+      setActiveId(validItems[0].id);
+      return;
+    }
+
     const observer = new IntersectionObserver(
       (entries) => {
         const visible = entries.filter((entry) => entry.isIntersecting);

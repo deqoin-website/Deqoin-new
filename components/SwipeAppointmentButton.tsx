@@ -43,12 +43,19 @@ export default function SwipeAppointmentButton({
     if (!trackRef.current) return;
 
     const element = trackRef.current;
-    const observer = new ResizeObserver(() => {
+    const updateWidth = () => {
       setTrackWidth(element.getBoundingClientRect().width);
-    });
+    };
 
+    updateWidth();
+
+    if (typeof ResizeObserver === "undefined") {
+      window.addEventListener("resize", updateWidth);
+      return () => window.removeEventListener("resize", updateWidth);
+    }
+
+    const observer = new ResizeObserver(updateWidth);
     observer.observe(element);
-    setTrackWidth(element.getBoundingClientRect().width);
 
     return () => observer.disconnect();
   }, []);
