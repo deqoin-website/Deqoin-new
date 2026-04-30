@@ -32,7 +32,7 @@ export default function HeroSlider({
 }: HeroSliderProps) {
   const [index, setIndex] = useState(0);
   const [direction, setDirection] = useState(0);
-  const [isIntroReady] = useState(true);
+  const [isCurrentSlideReady, setIsCurrentSlideReady] = useState(false);
   const touchX = useRef<number | null>(null);
   const touchY = useRef<number | null>(null);
   const flipAudioRef = useRef<HTMLAudioElement | null>(null);
@@ -52,6 +52,24 @@ export default function HeroSlider({
 
   useEffect(() => {
     if (slides.length === 0) return;
+
+    setIsCurrentSlideReady(false);
+
+    const activeSlide = slides[index];
+    const activeSrc = activeSlide?.mediaUrl || activeSlide?.image;
+    if (activeSrc && activeSlide?.mediaType !== "video") {
+      const activeImage = new Image();
+      activeImage.decoding = "async";
+      activeImage.fetchPriority = "high";
+      activeImage.src = activeSrc;
+      activeImage.onload = () => setIsCurrentSlideReady(true);
+      activeImage.onerror = () => setIsCurrentSlideReady(true);
+      if (typeof activeImage.decode === "function") {
+        activeImage.decode().then(() => setIsCurrentSlideReady(true)).catch(() => {});
+      }
+    } else {
+      setIsCurrentSlideReady(true);
+    }
 
     const preloadIndexes = [index, index + 1, index + 2, index - 1];
     preloadIndexes.forEach((slideIndex) => {
@@ -131,7 +149,7 @@ export default function HeroSlider({
               loop
               playsInline
               initial={{ opacity: 0, scale: 1.08, x: direction >= 0 ? 40 : -40, filter: "blur(14px) brightness(0.24)" }}
-              animate={{ opacity: isIntroReady ? 1 : 0, scale: 1, x: 0, filter: "blur(0px) brightness(0.4)" }}
+              animate={{ opacity: 1, scale: 1, x: 0, filter: "blur(0px) brightness(0.4)" }}
               exit={{ opacity: 0, scale: 1.08, x: direction >= 0 ? -40 : 40, filter: "blur(16px) brightness(0.18)" }}
               transition={{ duration: slideTransitionDuration, ease: [0.77, 0, 0.175, 1] }}
               style={{ width: '100%', height: '100%', objectFit: 'cover' }}
@@ -149,7 +167,7 @@ export default function HeroSlider({
                 filter: `blur(${Math.max((currentSlide?.blur || 0), 1) + 6}px) brightness(0.28) saturate(0.9)` 
               }}
               animate={{ 
-                opacity: isIntroReady ? 1 : 0, 
+                opacity: 1, 
                 scale: 1, 
                 x: 0, 
                 filter: `blur(${Math.max((currentSlide?.blur ?? 0), 0)}px) brightness(0.46) saturate(0.95)` 
@@ -204,7 +222,9 @@ export default function HeroSlider({
         alignItems: 'center',
         textAlign: 'center',
         gap: '3.5rem',
-        padding: '0 5%'
+        padding: '0 5%',
+        opacity: isCurrentSlideReady ? 1 : 0,
+        transition: 'opacity 180ms ease'
       }}>
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1.5rem' }}>
           <motion.span
@@ -254,7 +274,7 @@ export default function HeroSlider({
         </motion.div>
       </div>
 
-      <div className="hero-meta">
+      <div className="hero-meta" style={{ opacity: isCurrentSlideReady ? 1 : 0, transition: 'opacity 180ms ease' }}>
         <div className="hero-count">
           <span>{String(index + 1).padStart(2, "0")}</span>
           <div />
@@ -264,7 +284,7 @@ export default function HeroSlider({
       </div>
 
       {showScrollHint && (
-        <div className="mimari-hero-scroll-hint">
+        <div className="mimari-hero-scroll-hint" style={{ opacity: isCurrentSlideReady ? 1 : 0, transition: 'opacity 180ms ease' }}>
           <span className="vertical-text">Detayları Gör</span>
           <div className="scroll-line" />
         </div>
