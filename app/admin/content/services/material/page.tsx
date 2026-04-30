@@ -70,6 +70,52 @@ const DEFAULT_MATERIAL_CATEGORIES: CategoryItem[] = materyalKategorileri.map(({ 
   slug,
 }));
 
+const normalizeKey = (value?: string) =>
+  (value || '')
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9-]/g, '');
+
+const mergeMaterialCategories = (items: CategoryItem[]) => {
+  const incoming = Array.isArray(items) ? items : [];
+  const lookup = new Map<string, CategoryItem>();
+
+  incoming.forEach((item) => {
+    const key = normalizeKey(item?.slug || item?.href || item?.title);
+    if (key) {
+      lookup.set(key, item);
+    }
+  });
+
+  const merged = DEFAULT_MATERIAL_CATEGORIES.map((fallback) => {
+    const key = normalizeKey(fallback.slug || fallback.href || fallback.title);
+    const item = lookup.get(key);
+    const source = item || fallback;
+
+    return {
+      ...fallback,
+      ...item,
+      href: item?.href || fallback.href,
+      slug: item?.slug || fallback.slug,
+      image: item?.image || source.image,
+    };
+  });
+
+  const seen = new Set(merged.map((item) => normalizeKey(item.slug || item.href || item.title)));
+  const extras = incoming
+    .filter((item) => {
+      const key = normalizeKey(item?.slug || item?.href || item?.title);
+      return key && !seen.has(key);
+    })
+    .map((item) => ({
+      ...item,
+      image: item?.image || SLIDER_IMAGE_URLS.material,
+    }));
+
+  return [...merged, ...extras];
+};
+
 const TAB_ITEMS: Array<{ key: TabKey; label: string; description: string; icon: typeof FileText }> = [
   { key: 'hero', label: 'Hero', description: 'Başlık ve slider alanı', icon: FileText },
   { key: 'cta', label: 'CTA', description: 'Sonraki adım görseli', icon: Sparkles },
@@ -114,13 +160,13 @@ const normalizeContent = (value: any): PageContent => {
   const categories = sections.find((item: any) => item.id === 'categories') || base.sections[2];
 
   const mappedCategories = Array.isArray(categories?.items) && categories.items.length > 0
-    ? categories.items.map((item: any) => ({
+    ? mergeMaterialCategories(categories.items.map((item: any) => ({
         href: item?.href || `/admin/content/services/material/${item?.slug || 'yeni-kategori'}`,
         title: item?.title || 'Yeni Kategori',
         sideLabel: item?.sideLabel || 'Material Detail',
         image: item?.image || SLIDER_IMAGE_URLS.material,
         slug: item?.slug || 'yeni-kategori',
-      }))
+      })))
     : DEFAULT_MATERIAL_CATEGORIES;
 
   return {

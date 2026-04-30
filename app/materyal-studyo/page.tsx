@@ -14,6 +14,50 @@ const materialImageBySlug = Object.fromEntries(
   materyalKategorileri.map((category) => [category.slug, category.image])
 );
 
+const normalizeKey = (value?: string) =>
+  (value || "")
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9-]/g, "");
+
+const mergeMaterialCategories = (items: any[]) => {
+  const incoming = Array.isArray(items) ? items : [];
+  const lookup = new Map<string, any>();
+
+  incoming.forEach((item) => {
+    const key = normalizeKey(item?.slug || item?.href || item?.title);
+    if (key) {
+      lookup.set(key, item);
+    }
+  });
+
+  const merged = materialCategories.map((fallback) => {
+    const key = normalizeKey(fallback.slug || fallback.title);
+    const item = lookup.get(key);
+    const source = item || fallback;
+    return {
+      ...fallback,
+      ...item,
+      slug: item?.slug || fallback.slug,
+      image: materialImageBySlug[source.slug] || source.image,
+    };
+  });
+
+  const seen = new Set(merged.map((item) => normalizeKey(item.slug || item.title)));
+  const extras = incoming
+    .filter((item) => {
+      const key = normalizeKey(item?.slug || item?.href || item?.title);
+      return key && !seen.has(key);
+    })
+    .map((item) => ({
+      ...item,
+      image: materialImageBySlug[item?.slug] || item?.image,
+    }));
+
+  return [...merged, ...extras];
+};
+
 export default function MateryalStudyo() {
   const [content, setContent] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -57,13 +101,8 @@ export default function MateryalStudyo() {
   const heroSection = content?.sections?.find((s: any) => s.id === "hero");
   const heroBlur = 2;
   const heroOverlay = 30;
-  const categoryItems = (content?.sections?.find((s: any) => s.id === "categories")?.items?.length > 0
-    ? content.sections.find((s: any) => s.id === "categories").items
-    : materialCategories
-  ).map((card: any) => ({
-    ...card,
-    image: materialImageBySlug[card.slug] || card.image,
-  }));
+  const categorySection = content?.sections?.find((s: any) => s.id === "categories");
+  const categoryItems = mergeMaterialCategories(categorySection?.items?.length > 0 ? categorySection.items : materialCategories);
 
   return (
     <main className="site-shell project-detail-shell material-studio-page materyal-studyo-page" style={{ background: "#0a0a0a" }}>
