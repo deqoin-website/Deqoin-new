@@ -1,7 +1,6 @@
 "use client";
 
 import type { CSSProperties, ImgHTMLAttributes } from "react";
-import { CldImage } from "next-cloudinary";
 
 function isCloudinarySource(src: string) {
   return src.includes("res.cloudinary.com") || src.includes("cloudinary.com/image/upload");
@@ -28,20 +27,19 @@ export default function CloudinaryImage({
 }: CloudinaryImageProps) {
   if (!src) return null;
 
-  if (isCloudinarySource(src)) {
-    return (
-      <CldImage
-        src={src}
-        alt={alt}
-        fill
-        sizes={sizes}
-        priority={priority}
-        loading={loading}
-        className={className}
-        style={style}
-      />
-    );
-  }
+  const fetchPriority = priority ? "high" : "auto";
 
-  return <img src={src} alt={alt} loading={loading} className={className} style={style} />;
+  return (
+    <img
+      src={src}
+      alt={alt}
+      loading={loading}
+      className={className}
+      style={style}
+      fetchPriority={fetchPriority}
+      decoding="async"
+      sizes={sizes}
+      data-cloudinary-source={isCloudinarySource(src) ? "true" : "false"}
+    />
+  );
 }
