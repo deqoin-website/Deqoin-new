@@ -73,15 +73,30 @@ const mimariSubCategories = [
     overlay: 30,
     slug: "peyzaj-mimarligi"
   },
+  {
+    href: "/mimari/plan-proje",
+    title: "Plan ve Proje",
+    sideLabel: "Detail & Vision",
+    image: "/images/slider/mimari_slide.png",
+    blur: 0,
+    overlay: 30,
+    slug: "plan-proje",
+  },
 ];
 
-const categoryFallbackByTitle: Record<string, string> = {
+const categoryFallbackByKey: Record<string, string> = {
   muhendislik: "/images/workflow/muhendislik-custom.png",
+  "insaat-muhendisligi": "/images/workflow/muhendislik-custom.png",
   mimarlik: "/images/workflow/mimarlik-custom.png",
   mekanik: "/images/workflow/mekanik-custom.png",
+  "elektrik-elektronik-muhendisligi": "/images/workflow/mekanik-custom.png",
   icmimarlik: "/images/workflow/ic-mimarlik-custom.png",
+  "ic-mimarlik": "/images/workflow/ic-mimarlik-custom.png",
   restorasyon: "/images/workflow/restorasyon-custom.png",
   peyzaj: "/images/workflow/peyzaj-custom.png",
+  "peyzaj-mimarligi": "/images/workflow/peyzaj-custom.png",
+  "plan-proje": "/images/slider/mimari_slide.png",
+  planveproje: "/images/slider/mimari_slide.png",
 };
 
 function normalizeTitle(value?: string) {
@@ -92,9 +107,56 @@ function normalizeTitle(value?: string) {
     .replace(/[^a-z]/g, "");
 }
 
+function normalizeKey(value?: string) {
+  return (value || "")
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9-]/g, "");
+}
+
 function resolveCategoryImage(card: any) {
+  const normalizedSlug = normalizeKey(card?.slug || card?.href);
   const normalizedTitle = normalizeTitle(card?.title);
-  return card?.image || categoryFallbackByTitle[normalizedTitle] || "/images/workflow/mimarlik-custom.png";
+  return card?.image || categoryFallbackByKey[normalizedSlug] || categoryFallbackByKey[normalizedTitle] || "/images/workflow/mimarlik-custom.png";
+}
+
+function mergeCategories(items: any[]) {
+  const incoming = Array.isArray(items) ? items : [];
+  const lookup = new Map<string, any>();
+
+  incoming.forEach((item) => {
+    const key = normalizeKey(item?.slug || item?.href || item?.title);
+    if (key) {
+      lookup.set(key, item);
+    }
+  });
+
+  const merged = mimariSubCategories.map((fallback) => {
+    const key = normalizeKey(fallback.slug || fallback.href || fallback.title);
+    const item = lookup.get(key) || lookup.get(normalizeTitle(fallback.title));
+    const source = item || fallback;
+    return {
+      ...fallback,
+      ...item,
+      href: item?.href || fallback.href,
+      slug: item?.slug || fallback.slug,
+      image: resolveCategoryImage(source),
+    };
+  });
+
+  const seen = new Set(merged.map((item) => normalizeKey(item.slug || item.href || item.title)));
+  const extras = incoming
+    .filter((item) => {
+      const key = normalizeKey(item?.slug || item?.href || item?.title);
+      return key && !seen.has(key);
+    })
+    .map((item) => ({
+      ...item,
+      image: resolveCategoryImage(item),
+    }));
+
+  return [...merged, ...extras];
 }
 
 function withVersion(url?: string, version?: string) {
@@ -132,10 +194,7 @@ export default function MimariPage() {
             });
           }
           if (cats?.items?.length > 0) {
-            setCategories(cats.items.map((item: any) => ({
-              ...item,
-              image: resolveCategoryImage(item),
-            })));
+            setCategories(mergeCategories(cats.items));
           }
         }
       } catch (err) {
