@@ -199,6 +199,7 @@ export default function MaterialProjectShowcase({
 
       <section className="studio-main material-studio-main">
         <ProjectFilterSidebar
+          className="studio-sidebar"
           activeCategory={activeCategory}
           categories={displayCategories.map((category: { label: string; value: string }) => ({
             label: category.label,

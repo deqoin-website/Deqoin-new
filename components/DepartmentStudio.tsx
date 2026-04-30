@@ -413,6 +413,7 @@ export default function DepartmentStudio({
 
       <div id="studio-gallery" className="studio-main">
         <ProjectFilterSidebar
+          className="studio-sidebar"
           activeCategory={activeCategory}
           categories={displayCategories.map((cat) => ({ label: cat.label, value: String(cat.value) }))}
           onCategoryChange={(value) => setActiveCategory(value)}
