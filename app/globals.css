@@ -574,7 +574,7 @@ video {
 
 .topbar-logo {
   height: auto;
-  max-height: 44px;
+  max-height: 40px;
   width: auto;
   object-fit: contain;
   display: block;
@@ -4785,7 +4785,7 @@ video {
   }
   
   .topbar-logo {
-    max-height: 38px;
+    max-height: 34px;
   }
   
   .footer-logo {
