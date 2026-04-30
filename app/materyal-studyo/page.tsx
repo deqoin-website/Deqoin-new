@@ -66,7 +66,7 @@ export default function MateryalStudyo() {
   }));
 
   return (
-    <main className="site-shell project-detail-shell material-studio-page materyal-studyo-page studio-snap-shell" style={{ background: "#0a0a0a" }}>
+    <main className="site-shell project-detail-shell material-studio-page materyal-studyo-page h-screen w-full overflow-y-auto snap-y snap-proximity scroll-smooth scroll-pt-20" style={{ background: "#0a0a0a" }}>
       <HeroSlider 
         slides={(heroSection?.slides?.length > 0 ? heroSection.slides : [materialCategories[0]?.image]).map((img: string) => ({
           title: heroSection?.title || "MATERIAL STUDIO",
@@ -77,12 +77,12 @@ export default function MateryalStudyo() {
         }))} 
         onAppointmentClick={() => setIsConsultationOpen(true)}
         showScrollHint={true}
-        className="snap-section snap-start w-full min-h-screen flex flex-col justify-center relative"
+        className="snap-start w-full min-h-screen flex flex-col justify-center relative"
       />
 
-      <WorkflowSection className="snap-section snap-start w-full min-h-screen flex flex-col justify-center relative" />
+      <WorkflowSection className="snap-start w-full min-h-screen flex flex-col justify-center relative" />
 
-      <section className="services-section material-studio-collection snap-section snap-start w-full min-h-screen flex flex-col justify-center relative" style={{ background: "transparent", paddingTop: "0" }}>
+      <section className="services-section material-studio-collection snap-start w-full min-h-screen flex flex-col justify-center relative" style={{ background: "transparent", paddingTop: "0" }}>
         <div className="material-studio-collection-shell material-studio-collection-inner" style={{ paddingTop: "0" }}>
           <div className="section-heading projects-heading">
             <div>
@@ -107,7 +107,7 @@ export default function MateryalStudyo() {
 
       <NextStepCarouselSection
         currentStudio="materyal-studyo"
-        className="snap-section snap-start w-full min-h-screen flex flex-col justify-center items-center relative px-4 md:px-8 bg-[#080808] text-white border-t border-white/8"
+        className="snap-start w-full min-h-screen flex flex-col justify-center items-center relative px-4 md:px-8 bg-[#080808] text-white border-t border-white/8"
       />
 
       <ConsultationModal
