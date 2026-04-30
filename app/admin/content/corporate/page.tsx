@@ -438,7 +438,7 @@ export default function CorporateAboutAdmin() {
                 <Separator />
                 <div className="flex items-center justify-between gap-4">
                   <span className="font-mono">Yükleme /api/upload</span>
-                  <CloudUpload className="h-4 w-4 text-[color:var(--accent)]" />
+                  <Upload className="h-4 w-4 text-[color:var(--accent)]" />
                 </div>
               </div>
             </div>
