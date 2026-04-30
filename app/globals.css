@@ -534,19 +534,6 @@ video {
   text-decoration: none;
 }
 
-[data-theme='light'] .topbar {
-  background: rgba(255, 252, 247, 0.62);
-  backdrop-filter: blur(18px) saturate(150%);
-  -webkit-backdrop-filter: blur(18px) saturate(150%);
-  border-bottom-color: rgba(20, 20, 20, 0.08);
-}
-
-[data-theme='light'] .topbar.scrolled {
-  background: rgba(255, 252, 247, 0.86);
-  border-bottom-color: rgba(20, 20, 20, 0.08);
-  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.08);
-}
-
 [data-theme='light'] .topbar-links,
 [data-theme='light'] .brand-mark,
 [data-theme='light'] .icon-button,

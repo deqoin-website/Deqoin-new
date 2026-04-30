@@ -10,52 +10,13 @@ import GallerySection from "../components/GallerySection";
 import HomeDepartmentTeamsSection from "../components/HomeDepartmentTeamsSection";
 import Footer from "@/components/Footer";
 import AboutShowcaseSection from "@/components/AboutShowcaseSection";
-import { resolveStudioCardImage } from "@/lib/image-resolvers";
-
-const SERVICE_CARD_IMAGE_BY_TYPE: Record<string, string> = {
-  design: "/images/workflow/design-studio-home.png",
-  material: "/images/workflow/material-studio-home.png",
-  execution: "/images/workflow/execution-studio-home.png",
-};
-
-const DEFAULT_SERVICE_CARDS = [
-  {
-    href: "/mimari",
-    title: "Design Studio",
-    subTitle: "Mimari Tasarım",
-    sideLabel: "Structural Integrity",
-    image: SERVICE_CARD_IMAGE_BY_TYPE.design,
-    studioType: "design",
-    blur: 0,
-    overlay: 30,
-  },
-  {
-    href: "/materyal-studyo",
-    title: "Material Studio",
-    subTitle: "Ürün ve Malzeme",
-    sideLabel: "Aesthetic Soul",
-    image: SERVICE_CARD_IMAGE_BY_TYPE.material,
-    studioType: "material",
-    blur: 0,
-    overlay: 30,
-  },
-  {
-    href: "/uygulama",
-    title: "Execution Studio",
-    subTitle: "Uygulama Hizmetleri",
-    sideLabel: "Precision Craft",
-    image: SERVICE_CARD_IMAGE_BY_TYPE.execution,
-    studioType: "execution",
-    blur: 0,
-    overlay: 30,
-  },
-];
+import { DEFAULT_HOME_SERVICE_CARDS, normalizeHomeServiceCards } from "@/lib/home-services";
 
 export default function Page() {
   const [isConsultationOpen, setIsConsultationOpen] = useState(false);
   const [slides, setSlides] = useState<any[]>([]);
 
-  const [serviceCards, setServiceCards] = useState<any[]>(DEFAULT_SERVICE_CARDS);
+  const [serviceCards, setServiceCards] = useState<any[]>(DEFAULT_HOME_SERVICE_CARDS);
   useEffect(() => {
     const fetchSlides = async () => {
       try {
@@ -90,29 +51,14 @@ export default function Page() {
         if (res.ok) {
           const data = await res.json();
           if (data.length > 0) {
-             const mappedByType = new Map(
-              data.map((card: any) => [
-                card.studioType,
-                {
-                  href: card.studioType === 'design' ? '/mimari' : card.studioType === 'material' ? '/materyal-studyo' : '/uygulama',
-                  title: card.title,
-                  subTitle: card.description,
-                  image: resolveStudioCardImage(card.image, card.studioType) || SERVICE_CARD_IMAGE_BY_TYPE[card.studioType] || SERVICE_CARD_IMAGE_BY_TYPE.execution,
-                  sideLabel: card.studioType === 'design' ? 'Structural Integrity' : card.studioType === 'material' ? 'Aesthetic Soul' : 'Precision Craft',
-                  blur: card.blur || 0,
-                  overlay: card.overlay ?? 30,
-                  studioType: card.studioType,
-                },
-              ]),
-             );
-
-             setServiceCards(
-              DEFAULT_SERVICE_CARDS.map((fallback) => mappedByType.get(fallback.studioType) || fallback),
-             );
+            setServiceCards(normalizeHomeServiceCards(data));
+          } else {
+            setServiceCards(DEFAULT_HOME_SERVICE_CARDS);
           }
         }
       } catch (err) {
         console.error("Failed to fetch studio cards:", err);
+        setServiceCards(DEFAULT_HOME_SERVICE_CARDS);
       }
     };
 
