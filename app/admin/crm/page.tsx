@@ -439,214 +439,215 @@ export default function CRMPage() {
   const isBulkPreview = previewMode === 'bulk';
 
   return (
-    <div className="relative space-y-6 pb-8 text-white">
+    <div className="crm-shell relative">
       <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
         <div className="absolute -right-32 top-0 h-80 w-80 rounded-full bg-amber-500/10 blur-3xl" />
         <div className="absolute left-0 top-1/3 h-72 w-72 rounded-full bg-white/5 blur-3xl" />
       </div>
 
-      <motion.div
-        initial={{ opacity: 0, y: 12 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.45, ease: 'easeOut' }}
-        className="rounded-[2rem] border border-white/10 bg-white/[0.04] p-5 shadow-[0_30px_90px_rgba(0,0,0,0.28)] backdrop-blur-sm sm:p-7"
-      >
-        <div className="flex flex-col gap-6 xl:flex-row xl:items-end xl:justify-between">
-          <div className="max-w-3xl space-y-4">
-            <Badge variant="secondary" className="border-white/10 bg-white/5 text-zinc-200">
-              <Sparkles className="mr-2 h-3 w-3" />
-              CANLI CRM
-            </Badge>
-            <div>
-              <h1 className="text-3xl font-semibold tracking-tight text-white sm:text-4xl">
-                Randevu CRM
-              </h1>
-              <p className="mt-3 max-w-2xl text-sm leading-7 text-zinc-400">
-                Kayıtları tek ekranda takip edin, durumu hızlıca güncelleyin ve raporları cihazdan bağımsız şekilde indirin. Düzen, mobilde ve farklı ekran yüksekliklerinde kırılmadan çalışacak şekilde yeniden kuruldu.
-              </p>
+      <div className="crm-dashboard relative space-y-6 pb-8">
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.45, ease: 'easeOut' }}
+          className="rounded-[2rem] border border-white/10 bg-white/[0.04] p-5 shadow-[0_30px_90px_rgba(0,0,0,0.28)] backdrop-blur-sm sm:p-7"
+        >
+          <div className="flex flex-col gap-6 xl:flex-row xl:items-end xl:justify-between">
+            <div className="max-w-3xl space-y-4">
+              <Badge variant="secondary" className="border-white/10 bg-white/5 text-zinc-200">
+                <Sparkles className="mr-2 h-3 w-3" />
+                CANLI CRM
+              </Badge>
+              <div>
+                <h1 className="text-3xl font-semibold tracking-tight text-white sm:text-4xl">
+                  Randevu CRM
+                </h1>
+                <p className="mt-3 max-w-2xl text-sm leading-7 text-zinc-400">
+                  Kayıtları tek ekranda takip edin, durumu hızlıca güncelleyin ve raporları cihazdan bağımsız şekilde indirin. Düzen, mobilde ve farklı ekran yüksekliklerinde kırılmadan çalışacak şekilde yeniden kuruldu.
+                </p>
+              </div>
             </div>
-          </div>
 
-          <div className="grid gap-3 sm:grid-cols-3 xl:min-w-[460px]">
-            <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
-              <div className="flex items-center gap-3">
-                <div className="rounded-2xl bg-amber-400/10 p-3 text-amber-200">
-                  <Users className="h-5 w-5" />
-                </div>
-                <div>
-                  <p className="text-[0.65rem] uppercase tracking-[0.28em] text-zinc-500">
-                    Toplam Talep
-                  </p>
-                  <p className="mt-1 text-2xl font-semibold text-white">{stats.total}</p>
-                </div>
-              </div>
-            </div>
-            <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
-              <div className="flex items-center gap-3">
-                <div className="rounded-2xl bg-sky-400/10 p-3 text-sky-200">
-                  <Calendar className="h-5 w-5" />
-                </div>
-                <div>
-                  <p className="text-[0.65rem] uppercase tracking-[0.28em] text-zinc-500">
-                    Yeni Randevular
-                  </p>
-                  <p className="mt-1 text-2xl font-semibold text-white">{stats.new}</p>
+            <div className="grid gap-3 sm:grid-cols-3 xl:min-w-[460px]">
+              <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
+                <div className="flex items-center gap-3">
+                  <div className="rounded-2xl bg-amber-400/10 p-3 text-amber-200">
+                    <Users className="h-5 w-5" />
+                  </div>
+                  <div>
+                    <p className="text-[0.65rem] uppercase tracking-[0.28em] text-zinc-500">
+                      Toplam Talep
+                    </p>
+                    <p className="mt-1 text-2xl font-semibold text-white">{stats.total}</p>
+                  </div>
                 </div>
               </div>
-            </div>
-            <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
-              <div className="flex items-center gap-3">
-                <div className="rounded-2xl bg-emerald-400/10 p-3 text-emerald-200">
-                  <CheckCircle2 className="h-5 w-5" />
+              <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
+                <div className="flex items-center gap-3">
+                  <div className="rounded-2xl bg-sky-400/10 p-3 text-sky-200">
+                    <Calendar className="h-5 w-5" />
+                  </div>
+                  <div>
+                    <p className="text-[0.65rem] uppercase tracking-[0.28em] text-zinc-500">
+                      Yeni Randevular
+                    </p>
+                    <p className="mt-1 text-2xl font-semibold text-white">{stats.new}</p>
+                  </div>
                 </div>
-                <div>
-                  <p className="text-[0.65rem] uppercase tracking-[0.28em] text-zinc-500">
-                    İşleme Alınan
-                  </p>
-                  <p className="mt-1 text-2xl font-semibold text-white">{stats.engaged}</p>
+              </div>
+              <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
+                <div className="flex items-center gap-3">
+                  <div className="rounded-2xl bg-emerald-400/10 p-3 text-emerald-200">
+                    <CheckCircle2 className="h-5 w-5" />
+                  </div>
+                  <div>
+                    <p className="text-[0.65rem] uppercase tracking-[0.28em] text-zinc-500">
+                      İşleme Alınan
+                    </p>
+                    <p className="mt-1 text-2xl font-semibold text-white">{stats.engaged}</p>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
+        </motion.div>
+
+        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+          {[
+            { label: 'Toplam kayıt', value: stats.total, icon: Users, hint: 'Tüm randevular' },
+            { label: 'Yeni', value: stats.new, icon: Calendar, hint: 'Bekleyen talepler' },
+            { label: 'İletişimde', value: stats.engaged, icon: MessageCircle, hint: 'Takip edilen kayıtlar' },
+            { label: 'Arşiv', value: stats.archived, icon: Archive, hint: 'Kapanan talepler' },
+          ].map((item) => {
+            const Icon = item.icon;
+            return (
+              <Card
+                key={item.label}
+                className="border-white/10 bg-white/[0.04] shadow-[0_24px_80px_rgba(0,0,0,0.22)] transition-transform duration-200 hover:-translate-y-0.5"
+              >
+                <CardContent className="flex items-center gap-4 p-5">
+                  <div className="rounded-2xl border border-white/10 bg-white/5 p-3 text-amber-200">
+                    <Icon className="h-5 w-5" />
+                  </div>
+                  <div>
+                    <p className="text-[0.65rem] uppercase tracking-[0.28em] text-zinc-500">
+                      {item.label}
+                    </p>
+                    <p className="mt-1 text-2xl font-semibold text-white">{item.value}</p>
+                    <p className="mt-1 text-xs text-zinc-500">{item.hint}</p>
+                  </div>
+                </CardContent>
+              </Card>
+            );
+          })}
         </div>
-      </motion.div>
 
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        {[
-          { label: 'Toplam kayıt', value: stats.total, icon: Users, hint: 'Tüm randevular' },
-          { label: 'Yeni', value: stats.new, icon: Calendar, hint: 'Bekleyen talepler' },
-          { label: 'İletişimde', value: stats.engaged, icon: MessageCircle, hint: 'Takip edilen kayıtlar' },
-          { label: 'Arşiv', value: stats.archived, icon: Archive, hint: 'Kapanan talepler' },
-        ].map((item) => {
-          const Icon = item.icon;
-          return (
-            <Card
-              key={item.label}
-              className="border-white/10 bg-white/[0.04] shadow-[0_24px_80px_rgba(0,0,0,0.22)] transition-transform duration-200 hover:-translate-y-0.5"
-            >
-              <CardContent className="flex items-center gap-4 p-5">
-                <div className="rounded-2xl border border-white/10 bg-white/5 p-3 text-amber-200">
-                  <Icon className="h-5 w-5" />
-                </div>
-                <div>
-                  <p className="text-[0.65rem] uppercase tracking-[0.28em] text-zinc-500">
-                    {item.label}
-                  </p>
-                  <p className="mt-1 text-2xl font-semibold text-white">{item.value}</p>
-                  <p className="mt-1 text-xs text-zinc-500">{item.hint}</p>
-                </div>
-              </CardContent>
-            </Card>
-          );
-        })}
-      </div>
+        <Card className="border-white/10 bg-white/[0.04] shadow-[0_24px_80px_rgba(0,0,0,0.2)]">
+          <CardContent className="space-y-4 p-5 sm:p-6">
+            <div className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_auto] xl:items-center">
+              <div className="relative">
+                <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-500" />
+                <Input
+                  value={query}
+                  onChange={(event) => setQuery(event.target.value)}
+                  placeholder="İsim, mail, telefon, şehir veya proje ara..."
+                  className="h-12 rounded-2xl border border-white/10 bg-white/[0.03] pl-11 text-white placeholder:text-zinc-500"
+                />
+              </div>
 
-      <Card className="border-white/10 bg-white/[0.04] shadow-[0_24px_80px_rgba(0,0,0,0.2)]">
-        <CardContent className="space-y-4 p-5 sm:p-6">
-          <div className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_auto] xl:items-center">
-            <div className="relative">
-              <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-500" />
-              <Input
-                value={query}
-                onChange={(event) => setQuery(event.target.value)}
-                placeholder="İsim, mail, telefon, şehir veya proje ara..."
-                className="h-12 rounded-2xl border border-white/10 bg-white/[0.03] pl-11 text-white placeholder:text-zinc-500"
-              />
+              <div className="flex items-center gap-2 overflow-x-auto pb-1">
+                {SCOPE_FILTERS.map((scope) => {
+                  const active = activeScope === scope.key;
+                  return (
+                    <Button
+                      key={scope.key}
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setActiveScope(scope.key)}
+                      className={[
+                        'shrink-0 rounded-full border transition-colors',
+                        active
+                          ? 'border-amber-400/40 bg-amber-400 text-zinc-950 hover:bg-amber-300'
+                          : 'border-white/10 bg-white/[0.03] text-zinc-300 hover:bg-white/10 hover:text-white',
+                      ].join(' ')}
+                    >
+                      {scope.label}
+                    </Button>
+                  );
+                })}
+
+                <Button
+                  type="button"
+                  onClick={() => openPreview('bulk')}
+                  className="shrink-0 rounded-full bg-amber-400 text-zinc-950 hover:bg-amber-300"
+                >
+                  <FileText className="mr-2 h-4 w-4" />
+                  Rapor Önizle
+                </Button>
+              </div>
             </div>
 
             <div className="flex items-center gap-2 overflow-x-auto pb-1">
-              {SCOPE_FILTERS.map((scope) => {
-                const active = activeScope === scope.key;
+              <div className="flex items-center gap-2 rounded-full border border-white/10 bg-black/20 px-3 py-2 text-xs text-zinc-400">
+                <Filter className="h-3.5 w-3.5" />
+                Durum
+              </div>
+              {STATUS_FILTERS.map((status) => {
+                const active = filter === status;
                 return (
                   <Button
-                    key={scope.key}
+                    key={status}
                     type="button"
                     variant="outline"
                     size="sm"
-                    onClick={() => setActiveScope(scope.key)}
+                    onClick={() => setFilter(status)}
                     className={[
                       'shrink-0 rounded-full border transition-colors',
                       active
-                        ? 'border-amber-400/40 bg-amber-400 text-zinc-950 hover:bg-amber-300'
+                        ? 'border-white/5 bg-white text-zinc-950 hover:bg-zinc-100'
                         : 'border-white/10 bg-white/[0.03] text-zinc-300 hover:bg-white/10 hover:text-white',
                     ].join(' ')}
                   >
-                    {scope.label}
+                    {status}
                   </Button>
                 );
               })}
-
-              <Button
-                type="button"
-                onClick={() => openPreview('bulk')}
-                className="shrink-0 rounded-full bg-amber-400 text-zinc-950 hover:bg-amber-300"
-              >
-                <FileText className="mr-2 h-4 w-4" />
-                Rapor Önizle
-              </Button>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-2 overflow-x-auto pb-1">
-            <div className="flex items-center gap-2 rounded-full border border-white/10 bg-black/20 px-3 py-2 text-xs text-zinc-400">
-              <Filter className="h-3.5 w-3.5" />
-              Durum
-            </div>
-            {STATUS_FILTERS.map((status) => {
-              const active = filter === status;
-              return (
+              {(filter !== 'Hepsi' || query.trim()) && (
                 <Button
-                  key={status}
                   type="button"
-                  variant="outline"
+                  variant="ghost"
                   size="sm"
-                  onClick={() => setFilter(status)}
-                  className={[
-                    'shrink-0 rounded-full border transition-colors',
-                    active
-                      ? 'border-white/5 bg-white text-zinc-950 hover:bg-zinc-100'
-                      : 'border-white/10 bg-white/[0.03] text-zinc-300 hover:bg-white/10 hover:text-white',
-                  ].join(' ')}
+                  onClick={() => {
+                    setFilter('Hepsi');
+                    setQuery('');
+                  }}
+                  className="shrink-0 rounded-full text-zinc-400 hover:bg-white/5 hover:text-white"
                 >
-                  {status}
+                  Temizle
                 </Button>
-              );
-            })}
-            {(filter !== 'Hepsi' || query.trim()) && (
-              <Button
-                type="button"
-                variant="ghost"
-                size="sm"
-                onClick={() => {
-                  setFilter('Hepsi');
-                  setQuery('');
-                }}
-                className="shrink-0 rounded-full text-zinc-400 hover:bg-white/5 hover:text-white"
-              >
-                Temizle
-              </Button>
-            )}
-          </div>
-        </CardContent>
-      </Card>
-
-      <div className="grid gap-6 xl:grid-cols-[minmax(0,1.45fr)_minmax(340px,0.85fr)]">
-        <Card className="border-white/10 bg-white/[0.04] shadow-[0_24px_80px_rgba(0,0,0,0.22)]">
-          <CardHeader className="space-y-2 border-b border-white/10">
-            <div className="flex items-start justify-between gap-4">
-              <div>
-                <CardTitle className="text-lg tracking-tight text-white">Kayıt Kuyruğu</CardTitle>
-                <CardDescription className="mt-1 text-zinc-400">
-                  {visibleLeads.length} sonuç {query.trim() ? 'bulundu' : 'listelendi'}.
-                </CardDescription>
-              </div>
-              <Badge variant="outline" className="border-white/10 bg-white/5 text-zinc-200">
-                Canlı Liste
-              </Badge>
+              )}
             </div>
-          </CardHeader>
+          </CardContent>
+        </Card>
 
-          <CardContent className="space-y-3 p-4 sm:p-5">
+        <div className="grid gap-6 xl:grid-cols-[minmax(0,1.45fr)_minmax(340px,0.85fr)]">
+          <Card className="border-white/10 bg-white/[0.04] shadow-[0_24px_80px_rgba(0,0,0,0.22)]">
+            <CardHeader className="space-y-2 border-b border-white/10">
+              <div className="flex items-start justify-between gap-4">
+                <div>
+                  <CardTitle className="text-lg tracking-tight text-white">Kayıt Kuyruğu</CardTitle>
+                  <CardDescription className="mt-1 text-zinc-400">
+                    {visibleLeads.length} sonuç {query.trim() ? 'bulundu' : 'listelendi'}.
+                  </CardDescription>
+                </div>
+                <Badge variant="outline" className="border-white/10 bg-white/5 text-zinc-200">
+                  Canlı Liste
+                </Badge>
+              </div>
+            </CardHeader>
+
+            <CardContent className="space-y-3 p-4 sm:p-5">
             {loading ? (
               <div className="flex min-h-[320px] items-center justify-center">
                 <Loader2 className="h-8 w-8 animate-spin text-amber-200" />
@@ -1006,6 +1007,8 @@ export default function CRMPage() {
         </Card>
       </div>
 
+      </div>
+
       <AnimatePresence>
         {isPreviewOpen && (
           <motion.div
@@ -1102,6 +1105,84 @@ export default function CRMPage() {
       </div>
 
       <style jsx global>{`
+        .crm-shell {
+          --crm-text: #f8fafc;
+          --crm-ink: #ffffff;
+          --crm-muted: rgba(226, 232, 240, 0.78);
+          --crm-faint: rgba(148, 163, 184, 0.96);
+          --crm-soft: rgba(241, 245, 249, 0.94);
+          --crm-border: rgba(255, 255, 255, 0.1);
+          --crm-surface: rgba(255, 255, 255, 0.04);
+          --crm-surface-strong: rgba(255, 255, 255, 0.07);
+          --crm-surface-hover: rgba(255, 255, 255, 0.08);
+          --crm-panel: rgba(0, 0, 0, 0.2);
+          color: var(--crm-text);
+        }
+
+        [data-theme='light'] .crm-shell {
+          --crm-text: #0f172a;
+          --crm-ink: #0f172a;
+          --crm-muted: #475569;
+          --crm-faint: #64748b;
+          --crm-soft: #334155;
+          --crm-border: rgba(15, 23, 42, 0.08);
+          --crm-surface: rgba(255, 255, 255, 0.82);
+          --crm-surface-strong: rgba(255, 255, 255, 0.94);
+          --crm-surface-hover: rgba(15, 23, 42, 0.04);
+          --crm-panel: rgba(15, 23, 42, 0.05);
+        }
+
+        .crm-dashboard {
+          color: var(--crm-text);
+        }
+
+        .crm-dashboard [class*='text-white'] {
+          color: var(--crm-text) !important;
+        }
+
+        .crm-dashboard [class*='text-zinc-200'],
+        .crm-dashboard [class*='text-zinc-300'] {
+          color: var(--crm-soft) !important;
+        }
+
+        .crm-dashboard [class*='text-zinc-400'] {
+          color: var(--crm-muted) !important;
+        }
+
+        .crm-dashboard [class*='text-zinc-500'] {
+          color: var(--crm-faint) !important;
+        }
+
+        .crm-dashboard [class*='text-zinc-900'],
+        .crm-dashboard [class*='text-zinc-950'] {
+          color: var(--crm-ink) !important;
+        }
+
+        .crm-dashboard [class*='bg-white/'] {
+          background: var(--crm-surface) !important;
+        }
+
+        .crm-dashboard [class*='bg-black/20'],
+        .crm-dashboard [class*='bg-black/35'] {
+          background: var(--crm-panel) !important;
+        }
+
+        .crm-dashboard [class*='border-white/10'],
+        .crm-dashboard [class*='border-white/5'] {
+          border-color: var(--crm-border) !important;
+        }
+
+        .crm-dashboard [class*='hover:bg-white/']:hover,
+        .crm-dashboard [class*='hover:bg-black/']:hover {
+          background: var(--crm-surface-hover) !important;
+        }
+
+        .crm-dashboard [class*='hover:text-white']:hover,
+        .crm-dashboard [class*='hover:text-zinc-950']:hover,
+        .crm-dashboard [class*='hover:text-zinc-900']:hover {
+          color: var(--crm-text) !important;
+        }
+
         @media print {
           body {
             background: #fff !important;
