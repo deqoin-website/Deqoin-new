@@ -128,3 +128,17 @@ export async function POST(request: Request): Promise<NextResponse> {
     );
   }
 }
+
+export async function GET(): Promise<NextResponse> {
+  return NextResponse.json(
+    {
+      status: "ok",
+      service: "upload",
+    },
+    {
+      headers: {
+        "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate",
+      },
+    },
+  );
+}

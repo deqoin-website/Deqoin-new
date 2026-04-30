@@ -352,6 +352,26 @@ export default function DepartmentManagerPage() {
     return uploadedUrl as string;
   };
 
+  const probeUploadService = useCallback(async () => {
+    setApiStatus((prev) => ({ ...prev, upload: 'loading' }));
+
+    try {
+      const res = await fetch('/api/upload', { method: 'GET', cache: 'no-store' });
+      if (!res.ok) {
+        throw new Error('Upload health check failed');
+      }
+
+      setApiStatus((prev) => ({ ...prev, upload: 'ok', updatedAt: new Date().toISOString() }));
+    } catch (error) {
+      console.error('Upload probe error:', error);
+      setApiStatus((prev) => ({ ...prev, upload: 'error', updatedAt: new Date().toISOString() }));
+    }
+  }, []);
+
+  useEffect(() => {
+    probeUploadService();
+  }, [probeUploadService]);
+
   const handleDepartmentSave = async () => {
     setIsSaving(true);
     try {
