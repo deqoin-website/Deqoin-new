@@ -88,7 +88,7 @@ export default function StudioBackButton({
         }
 
         @media (max-width: 1024px) {
-          .studio-back-btn-floating { top: 6rem; left: 1.5rem; gap: 0.75rem; }
+          .studio-back-btn-floating { top: 2.5rem; left: 1rem; gap: 0.75rem; }
           .back-icon-box { width: 44px; height: 44px; }
           .back-text { display: none; }
         }
