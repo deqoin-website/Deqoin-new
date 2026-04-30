@@ -9,28 +9,6 @@ import HomeDepartmentTeamsSection from "../components/HomeDepartmentTeamsSection
 import Footer from "@/components/Footer";
 import AboutShowcaseSection from "@/components/AboutShowcaseSection";
 import { resolveStudioCardImage } from "@/lib/image-resolvers";
-import { SLIDER_IMAGE_URLS } from "@/lib/slider-images";
-
-const DEFAULT_HOME_SLIDES = [
-  {
-    title: "DESIGN STUDIO",
-    motto: "Estetik ve Fonksiyonun Mimari Uyumu",
-    image: SLIDER_IMAGE_URLS.mimari,
-    mediaType: "image",
-  },
-  {
-    title: "MATERIAL STUDIO",
-    motto: "Dokunulabilir Lüks, Zamansız Detaylar",
-    image: SLIDER_IMAGE_URLS.material,
-    mediaType: "image",
-  },
-  {
-    title: "EXECUTION STUDIO",
-    motto: "Hayallerin Kusursuz İnşası",
-    image: SLIDER_IMAGE_URLS.execution,
-    mediaType: "image",
-  },
-] as const;
 
 const SERVICE_CARD_IMAGE_BY_TYPE: Record<string, string> = {
   design: "/images/workflow/design-studio-home.png",
@@ -40,7 +18,7 @@ const SERVICE_CARD_IMAGE_BY_TYPE: Record<string, string> = {
 
 export default function Page() {
   const [isConsultationOpen, setIsConsultationOpen] = useState(false);
-  const [slides, setSlides] = useState<any[]>([...DEFAULT_HOME_SLIDES]);
+  const [slides, setSlides] = useState<any[]>([]);
 
   const [serviceCards, setServiceCards] = useState<any[]>([
     {
@@ -84,12 +62,12 @@ export default function Page() {
               mediaType: s.mediaType || 'image'
             })));
           } else {
-            setSlides([...DEFAULT_HOME_SLIDES]);
+            setSlides([]);
           }
         }
       } catch (err) {
         console.error("Failed to fetch dynamic slides:", err);
-        setSlides([...DEFAULT_HOME_SLIDES]);
+        setSlides([]);
       }
     };
 
