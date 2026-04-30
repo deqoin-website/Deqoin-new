@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 import Lenis from "lenis";
 import Autoplay from "embla-carousel-autoplay";
 
+import CloudinaryImage from "@/components/CloudinaryImage";
 import { teamFilters, teamMembers as fallbackTeamMembers } from "@/data/team";
 import { Button } from "@/components/ui/button";
 import {
@@ -158,7 +159,7 @@ export default function HomeDepartmentTeamsSection({ className }: { className?: 
                     ].join(" ")}
                   >
                     {slideImage ? (
-                      <img
+                      <CloudinaryImage
                         src={slideImage}
                         alt={member.name}
                         loading={index === 0 ? "eager" : "lazy"}

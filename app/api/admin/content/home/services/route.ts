@@ -9,7 +9,7 @@ const DEFAULT_CARDS = [
     title: 'Design Studio', 
     description: 'Mimari Tasarım', 
     icon: 'PenTool', 
-    image: 'https://zzawgisa3efgdxnm.public.blob.vercel-storage.com/design-studio-home.png', 
+    image: '/images/workflow/design-studio-home.png', 
     blur: 0,
     overlay: 30,
     order: 0 
@@ -19,7 +19,7 @@ const DEFAULT_CARDS = [
     title: 'Material Studio', 
     description: 'Ürün ve Malzeme', 
     icon: 'Layers', 
-    image: 'https://zzawgisa3efgdxnm.public.blob.vercel-storage.com/material-studio-home.png', 
+    image: '/images/workflow/material-studio-home.png', 
     blur: 0,
     overlay: 30,
     order: 1 
@@ -29,7 +29,7 @@ const DEFAULT_CARDS = [
     title: 'Execution Studio', 
     description: 'Uygulama Hizmetleri', 
     icon: 'Hammer', 
-    image: 'https://zzawgisa3efgdxnm.public.blob.vercel-storage.com/execution-studio-home.png', 
+    image: '/images/workflow/execution-studio-home.png', 
     blur: 0,
     overlay: 30,
     order: 2 

@@ -2,6 +2,8 @@
 
 import Link from "next/link";
 
+import CloudinaryImage from "@/components/CloudinaryImage";
+
 type StudioVerticalCardProps = {
   href?: string;
   image: string;
@@ -21,7 +23,7 @@ export default function StudioVerticalCard({
 }: StudioVerticalCardProps) {
   const content = (
     <>
-      <img
+      <CloudinaryImage
         src={image}
         alt={title}
         loading="lazy"

@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 
+import CloudinaryImage from "@/components/CloudinaryImage";
 import { Badge } from "@/components/ui/badge";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Card, CardContent } from "@/components/ui/card";
@@ -24,7 +25,7 @@ function JournalCardContent({
     <Card className="bg-transparent border-none shadow-none rounded-none w-full group cursor-pointer flex flex-col gap-6">
       <div className="w-full overflow-hidden rounded-none">
         <AspectRatio ratio={16 / 10}>
-          <img
+          <CloudinaryImage
             src={article.coverImage}
             alt={article.title}
             loading={loading}

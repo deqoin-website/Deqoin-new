@@ -8,11 +8,12 @@ import GallerySection from "../components/GallerySection";
 import HomeDepartmentTeamsSection from "../components/HomeDepartmentTeamsSection";
 import Footer from "@/components/Footer";
 import AboutShowcaseSection from "@/components/AboutShowcaseSection";
+import { resolveStudioCardImage } from "@/lib/image-resolvers";
 
 const SERVICE_CARD_IMAGE_BY_TYPE: Record<string, string> = {
-  design: "https://zzawgisa3efgdxnm.public.blob.vercel-storage.com/design-studio-home.png",
-  material: "https://zzawgisa3efgdxnm.public.blob.vercel-storage.com/material-studio-home.png",
-  execution: "https://zzawgisa3efgdxnm.public.blob.vercel-storage.com/execution-studio-home.png",
+  design: "/images/workflow/design-studio-home.png",
+  material: "/images/workflow/material-studio-home.png",
+  execution: "/images/workflow/execution-studio-home.png",
 };
 
 export default function Page() {
@@ -77,7 +78,7 @@ export default function Page() {
                 href: card.studioType === 'design' ? '/mimari' : card.studioType === 'material' ? '/materyal-studyo' : '/uygulama',
                 title: card.title,
                 subTitle: card.description,
-                image: SERVICE_CARD_IMAGE_BY_TYPE[card.studioType] || SERVICE_CARD_IMAGE_BY_TYPE.execution,
+                image: resolveStudioCardImage(card.image, card.studioType) || SERVICE_CARD_IMAGE_BY_TYPE[card.studioType] || SERVICE_CARD_IMAGE_BY_TYPE.execution,
                 sideLabel: card.studioType === 'design' ? 'Structural Integrity' : card.studioType === 'material' ? 'Aesthetic Soul' : 'Precision Craft',
                 blur: card.blur || 0,
                 overlay: card.overlay ?? 30

@@ -2,6 +2,8 @@
 
 import type { KeyboardEvent } from "react";
 import Link from "next/link";
+
+import CloudinaryImage from "@/components/CloudinaryImage";
 import { cn } from "@/lib/utils";
 
 type ProjectCardProps = {
@@ -27,7 +29,7 @@ export default function ProjectCard({
 }: ProjectCardProps) {
   const content = (
     <>
-      <img
+      <CloudinaryImage
         src={image}
         alt={title}
         loading={loading}

@@ -300,7 +300,7 @@ export default function SliderConfigPage() {
                          </button>
                          <input id={`file-${slide._id}`} type="file" className="hidden" onChange={e => handleFileUpload(e, slide._id)} accept="image/*,video/*" />
                        </div>
-                       <p className="hint-txt">Vercel Blob ile doğrudan yükleme yapabilir veya harici bir MP4/Resim bağlantısı kullanabilirsiniz.</p>
+                       <p className="hint-txt">Cloudinary ile doğrudan yükleme yapabilir veya harici bir MP4/Resim bağlantısı kullanabilirsiniz.</p>
                     </div>
 
                     <div className="editor-group">
