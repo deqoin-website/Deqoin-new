@@ -5,6 +5,7 @@ import Project from "@/models/Project";
 import User from "@/models/User";
 import { projectsData } from "@/data/projects";
 import bcrypt from "bcryptjs";
+import { SLIDER_IMAGE_URLS } from "@/lib/slider-images";
 
 /**
  * MIGRATION API V3 - BYPASSING MONGOOSE CACHE & VALIDATION
@@ -83,21 +84,21 @@ export async function POST() {
         content: {
           slides: [
             {
-              image: "/images/slider/mimari_slide.png",
+              image: SLIDER_IMAGE_URLS.mimari,
               title: "DESIGN STUDIO",
               motto: "Estetik ve Fonksiyonun Mimari Uyumu",
               buttonText: "DESIGN STUDIO İÇİN İLETİŞİM",
               caption: "Design Studio"
             },
             {
-              image: "/images/slider/tasarim_slide.png",
+              image: SLIDER_IMAGE_URLS.material,
               title: "MATERIAL STUDIO",
               motto: "Dokunulabilir Lüks, Zamansız Detaylar",
               buttonText: "MATERIAL STUDIO İÇİN İLETİŞİM",
               caption: "Material Studio"
             },
             {
-              image: "/images/slider/uygulama_slide.png",
+              image: SLIDER_IMAGE_URLS.execution,
               title: "EXECUTION STUDIO",
               motto: "Hayallerin Kusursuz İnşası",
               buttonText: "EXECUTION STUDIO İÇİN İLETİŞİM",
@@ -117,7 +118,10 @@ export async function POST() {
         type: 'hero',
         title: 'DESIGN STUDIO',
         subtitle: 'MİMARİ TASARIMIN GELECEĞİNİ ŞEKİLLENDİRİYORUZ',
-        slides: ['/images/slider/mimari_slide.png', '/images/slider/tasarim_slide.png']
+        slides: [
+          SLIDER_IMAGE_URLS.mimari,
+          SLIDER_IMAGE_URLS.material
+        ]
       },
       {
         id: 'categories',

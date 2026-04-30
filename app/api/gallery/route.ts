@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 
 import connectToDatabase from "@/lib/mongodb";
 import PageContent from "@/models/PageContent";
+import { SLIDER_IMAGE_URLS } from "@/lib/slider-images";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -30,9 +31,9 @@ const DEFAULT_SLIDER = {
   slides: [
     { src: "/images/projects/gallery_1.png", alt: "DEQOIN galeri görseli 1", caption: "01", title: "Residence Lobby", description: "Minimal yüzeyler, dengeli ışık ve sakin bir giriş atmosferi." },
     { src: "/images/projects/gallery_2.png", alt: "DEQOIN galeri görseli 2", caption: "02", title: "Material Study", description: "Doğal dokular, net detaylar ve kontrollü kontrast." },
-    { src: "/images/slider/mimari_slide.png", alt: "DEQOIN galeri görseli 3", caption: "03", title: "Architectural Frame", description: "Mekanı tanımlayan sade çizgiler ve güçlü oranlar." },
-    { src: "/images/slider/tasarim_slide.png", alt: "DEQOIN galeri görseli 4", caption: "04", title: "Design Detail", description: "Yüzey geçişleri ve dingin bir kompozisyon dili." },
-    { src: "/images/slider/uygulama_slide.png", alt: "DEQOIN galeri görseli 5", caption: "05", title: "Execution Layer", description: "Uygulama kalitesi, temiz bitişler ve net sonuçlar." },
+    { src: SLIDER_IMAGE_URLS.mimari, alt: "DEQOIN galeri görseli 3", caption: "03", title: "Architectural Frame", description: "Mekanı tanımlayan sade çizgiler ve güçlü oranlar." },
+    { src: SLIDER_IMAGE_URLS.material, alt: "DEQOIN galeri görseli 4", caption: "04", title: "Design Detail", description: "Yüzey geçişleri ve dingin bir kompozisyon dili." },
+    { src: SLIDER_IMAGE_URLS.execution, alt: "DEQOIN galeri görseli 5", caption: "05", title: "Execution Layer", description: "Uygulama kalitesi, temiz bitişler ve net sonuçlar." },
   ] satisfies SliderAsset[],
 };
 

@@ -12,6 +12,7 @@ import {
   Layout
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { SLIDER_IMAGE_URLS } from '@/lib/slider-images';
 
 export default function HomeEditor() {
   const [slides, setSlides] = useState<any[]>([]);
@@ -33,21 +34,21 @@ export default function HomeEditor() {
         content: {
           slides: [
             {
-              image: "/images/slider/mimari_slide.png",
+              image: SLIDER_IMAGE_URLS.mimari,
               title: "DESIGN STUDIO",
               motto: "Estetik ve Fonksiyonun Mimari Uyumu",
               buttonText: "DESIGN STUDIO İÇİN RANDEVU TALEP EDİNİZ",
               caption: "Design Studio"
             },
             {
-              image: "/images/slider/tasarim_slide.png",
+              image: SLIDER_IMAGE_URLS.material,
               title: "MATERIAL STUDIO",
               motto: "Dokunulabilir Lüks, Zamansız Detaylar",
               buttonText: "MATERIAL STUDIO İÇİN RANDEVU TALEP EDİNİZ",
               caption: "Material Studio"
             },
             {
-              image: "/images/slider/uygulama_slide.png",
+              image: SLIDER_IMAGE_URLS.execution,
               title: "EXECUTION STUDIO",
               motto: "Hayallerin Kusursuz İnşası",
               buttonText: "EXECUTION STUDIO İÇİN RANDEVU TALEP EDİNİZ",

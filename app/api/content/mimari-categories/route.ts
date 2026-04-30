@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import connectToDatabase from "@/lib/mongodb";
 import PageContent from "@/models/PageContent";
+import { SLIDER_IMAGE_URLS } from "@/lib/slider-images";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -84,12 +85,12 @@ function createDefaultSections() {
       subtitle: "MİMARİ TASARIM",
       blur: 0,
       overlay: 30,
-      slides: ["/images/slider/mimari_slide.png"],
+      slides: [SLIDER_IMAGE_URLS.mimari],
     },
     {
       id: "cta",
       type: "cta",
-      image: "/images/slider/mimari_slide.png",
+      image: SLIDER_IMAGE_URLS.mimari,
       blur: 0,
       overlay: 30,
     },

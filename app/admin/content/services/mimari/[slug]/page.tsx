@@ -15,6 +15,7 @@ import {
   Filter
 } from 'lucide-react';
 import Link from 'next/link';
+import { SLIDER_IMAGE_URLS } from '@/lib/slider-images';
 
 export default function ServiceDetailEditor({ params }: { params: Promise<{ slug: string }> }) {
   const resolvedParams = useReact(params);
@@ -47,7 +48,7 @@ export default function ServiceDetailEditor({ params }: { params: Promise<{ slug
           title: slug.charAt(0).toUpperCase() + slug.slice(1),
           sideLabel: 'DETAYLI HİZMET ÇÖZÜMLERİ',
           description: '',
-          image: '/images/slider/mimari_slide.png',
+          image: SLIDER_IMAGE_URLS.mimari,
           mediaType: 'image',
           heroBlur: 0,
           heroOverlay: 30,

@@ -1,3 +1,5 @@
+import { SLIDER_IMAGE_URLS } from "@/lib/slider-images";
+
 export interface MateryalKategori {
   slug: string;
   title: string;
@@ -17,9 +19,9 @@ export const materyalKategorileri: MateryalKategori[] = [
     slug: "mobilya",
     title: "Mobilya",
     sideLabel: "Bespoke Furniture",
-    image: "/images/slider/tasarim_slide.png",
+    image: SLIDER_IMAGE_URLS.material,
     sliderImages: [
-      "/images/slider/tasarim_slide.png",
+      SLIDER_IMAGE_URLS.material,
       "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?q=80&w=2000&auto=format&fit=crop",
       "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?q=80&w=2000&auto=format&fit=crop",
       "https://images.unsplash.com/photo-1524758631624-e2822e304c36?q=80&w=2000&auto=format&fit=crop"
@@ -46,9 +48,9 @@ export const materyalKategorileri: MateryalKategori[] = [
     slug: "aydinlatma",
     title: "Aydınlatma",
     sideLabel: "Light Atmosphere",
-    image: "/images/slider/mimari_slide.png",
+    image: SLIDER_IMAGE_URLS.mimari,
     sliderImages: [
-      "/images/slider/mimari_slide.png",
+      SLIDER_IMAGE_URLS.mimari,
       "https://images.unsplash.com/photo-1517430816045-df4b7de11d1d?q=80&w=2000&auto=format&fit=crop",
       "https://images.unsplash.com/photo-1513506003901-1e6a229e2d15?q=80&w=2000&auto=format&fit=crop",
       "https://images.unsplash.com/photo-1550989460-0adf9ea622e2?q=80&w=2000&auto=format&fit=crop"
@@ -131,9 +133,9 @@ export const materyalKategorileri: MateryalKategori[] = [
     slug: "mikro-cimento",
     title: "Mikro Çimento",
     sideLabel: "Seamless Surface",
-    image: "/images/slider/uygulama_slide.png",
+    image: SLIDER_IMAGE_URLS.execution,
     sliderImages: [
-      "/images/slider/uygulama_slide.png",
+      SLIDER_IMAGE_URLS.execution,
       "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=2000&q=80",
       "https://images.unsplash.com/photo-1540932239986-30128078f3c5?q=80&w=2000&auto=format&fit=crop"
     ],

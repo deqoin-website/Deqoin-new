@@ -13,6 +13,7 @@ import HeroSlider from "./HeroSlider";
 import WorkflowSection, { type WorkflowStep } from "./WorkflowSection";
 import PageNumberNavigator, { type PageNavItem } from "./PageNumberNavigator";
 import { CalendarDays, Compass, Hammer, Layers, PenTool } from "lucide-react";
+import { SLIDER_IMAGE_URLS } from "@/lib/slider-images";
 
 interface DepartmentStudioProps {
   title: string;
@@ -31,11 +32,11 @@ interface DepartmentStudioProps {
 }
 
 const FALLBACK_SLIDES = [
-  "/images/slider/mimari_slide.png",
+  SLIDER_IMAGE_URLS.mimari,
   "/images/projects/gallery_1.png",
-  "/images/slider/tasarim_slide.png",
+  SLIDER_IMAGE_URLS.material,
   "/images/projects/gallery_2.png",
-  "/images/slider/uygulama_slide.png",
+  SLIDER_IMAGE_URLS.execution,
 ];
 
 const DEFAULT_CATEGORIES: { label: string; value: Category | string }[] = [

@@ -19,6 +19,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
+import { SLIDER_IMAGE_URLS } from '@/lib/slider-images';
 
 type SliderImage = {
   src: string;
@@ -45,9 +46,9 @@ const DEFAULT_FORM: SliderForm = {
 const FALLBACK_SLIDES: SliderImage[] = [
   { src: '/images/projects/gallery_1.png', alt: 'DEQOIN slider görseli 1', caption: '01', title: 'Residence Lobby', description: 'Minimal yüzeyler, dengeli ışık ve sakin bir giriş atmosferi.' },
   { src: '/images/projects/gallery_2.png', alt: 'DEQOIN slider görseli 2', caption: '02', title: 'Material Study', description: 'Doğal dokular, net detaylar ve kontrollü kontrast.' },
-  { src: '/images/slider/mimari_slide.png', alt: 'DEQOIN slider görseli 3', caption: '03', title: 'Architectural Frame', description: 'Mekanı tanımlayan sade çizgiler ve güçlü oranlar.' },
-  { src: '/images/slider/tasarim_slide.png', alt: 'DEQOIN slider görseli 4', caption: '04', title: 'Design Detail', description: 'Yüzey geçişleri ve dingin bir kompozisyon dili.' },
-  { src: '/images/slider/uygulama_slide.png', alt: 'DEQOIN slider görseli 5', caption: '05', title: 'Execution Layer', description: 'Uygulama kalitesi, temiz bitişler ve net sonuçlar.' },
+  { src: SLIDER_IMAGE_URLS.mimari, alt: 'DEQOIN slider görseli 3', caption: '03', title: 'Architectural Frame', description: 'Mekanı tanımlayan sade çizgiler ve güçlü oranlar.' },
+  { src: SLIDER_IMAGE_URLS.material, alt: 'DEQOIN slider görseli 4', caption: '04', title: 'Design Detail', description: 'Yüzey geçişleri ve dingin bir kompozisyon dili.' },
+  { src: SLIDER_IMAGE_URLS.execution, alt: 'DEQOIN slider görseli 5', caption: '05', title: 'Execution Layer', description: 'Uygulama kalitesi, temiz bitişler ve net sonuçlar.' },
 ];
 
 function clone<T>(value: T): T {

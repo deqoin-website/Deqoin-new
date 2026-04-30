@@ -1,3 +1,5 @@
+import { SLIDER_IMAGE_URLS } from "@/lib/slider-images";
+
 export interface MimariService {
   slug: string;
   title: string;
@@ -15,7 +17,7 @@ export const mimariServices: MimariService[] = [
     slug: "mimarlik",
     title: "Mimarlık",
     sideLabel: "Structural Form",
-    image: "/images/slider/mimari_slide.png",
+    image: SLIDER_IMAGE_URLS.mimari,
     description: "Bir projenin gerçek değeri, henüz temeli atılmadan önce kağıt üzerindeki o ilk çizgilerle belirlenir. Mimarlık alanında sadece fiziksel bir dış kabuk değil; içinde barınacak hayatın tüm karakterini yansıtan gerçek bir yaşam alanı kurguluyoruz.\n\nVilla, özel konut, ticari alan veya ofis projelerinizde 'inşa etmek' ile 'yaşam alanı kurgulamak' arasındaki farkın mimari zeka olduğunu çok iyi biliyoruz. Projenizin yerleşim planından dış cephe kimliğine kadar tüm detayları; sizin henüz dile getirmediğiniz, belki de farkında dahi olmadığınız ihtiyaçlarınızı öngören bir profesyonellikle şekillendiriyoruz. Aslında neye ihtiyacınız olduğunu biliyor ve size tam olarak bu eksiksiz deneyimi sunuyoruz.\n\nProjenizin ana omurgasını oluşturmak ve size özel vizyonumuzu keşfetmek için randevu talep edebilirsiniz.",
     categories: [
       { label: "TÜM PROJELER", value: "ALL" },

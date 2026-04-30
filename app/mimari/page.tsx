@@ -8,13 +8,14 @@ import Footer from "../../components/Footer";
 import WorkflowSection from "../../components/WorkflowSection";
 import NextStepCarouselSection from "../../components/NextStepCarouselSection";
 import StudioVerticalCard from "../../components/StudioVerticalCard";
+import { SLIDER_IMAGE_URLS } from "@/lib/slider-images";
 
 const heroSlides = [
-  "/images/slider/mimari_slide.png",
+  SLIDER_IMAGE_URLS.mimari,
   "/images/projects/gallery_1.png",
-  "/images/slider/tasarim_slide.png",
+  SLIDER_IMAGE_URLS.material,
   "/images/projects/gallery_2.png",
-  "/images/slider/uygulama_slide.png",
+  SLIDER_IMAGE_URLS.execution,
 ];
 
 const mimariSubCategories = [

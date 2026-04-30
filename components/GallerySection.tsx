@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel";
 import { Separator } from "@/components/ui/separator";
+import { SLIDER_IMAGE_URLS } from "@/lib/slider-images";
 
 type HeroImage = {
   src: string;
@@ -46,21 +47,21 @@ const FALLBACK_HERO: HeroContent = {
       description: "Doğal dokular, net detaylar ve kontrollü kontrast.",
     },
     {
-      src: "/images/slider/mimari_slide.png",
+      src: SLIDER_IMAGE_URLS.mimari,
       alt: "DEQOIN galeri görseli 3",
       caption: "03",
       title: "Architectural Frame",
       description: "Mekanı tanımlayan sade çizgiler ve güçlü oranlar.",
     },
     {
-      src: "/images/slider/tasarim_slide.png",
+      src: SLIDER_IMAGE_URLS.material,
       alt: "DEQOIN galeri görseli 4",
       caption: "04",
       title: "Design Detail",
       description: "Yüzey geçişleri ve dingin bir kompozisyon dili.",
     },
     {
-      src: "/images/slider/uygulama_slide.png",
+      src: SLIDER_IMAGE_URLS.execution,
       alt: "DEQOIN galeri görseli 5",
       caption: "05",
       title: "Execution Layer",

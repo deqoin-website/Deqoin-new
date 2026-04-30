@@ -8,11 +8,12 @@ import HeroSlider from "../../components/HeroSlider";
 import WorkflowMarquee from "../../components/WorkflowMarquee";
 import { useWorkflowContent } from "../../components/useWorkflowContent";
 import StudioVerticalCard from "../../components/StudioVerticalCard";
+import { SLIDER_IMAGE_URLS } from "@/lib/slider-images";
 
 const heroSlides = [
-  "/images/slider/mimari_slide.png",
+  SLIDER_IMAGE_URLS.mimari,
   "/images/projects/gallery_1.png",
-  "/images/slider/tasarim_slide.png",
+  SLIDER_IMAGE_URLS.material,
 ];
 
 const kesifStages = [
@@ -26,7 +27,7 @@ const kesifStages = [
   {
     title: "İhtiyaç Programı",
     sideLabel: "Client Briefing",
-    image: "/images/slider/mimari_slide.png",
+    image: SLIDER_IMAGE_URLS.mimari,
     detail: "Kullanıcı beklentilerinin, yaşam senaryolarının ve fonksiyonel gereksinimlerin detaylandırılması.",
     slug: "ihtiyac-programi"
   },
@@ -93,7 +94,7 @@ export default function KesifPage() {
       {/* ── CTA ── */}
       <section className="mimari-cta-banner">
         <div className="mimari-cta-bg">
-          <img src="/images/slider/mimari_slide.png" alt="CTA" style={{ filter: `blur(2px)` }} />
+          <img src={SLIDER_IMAGE_URLS.mimari} alt="CTA" style={{ filter: `blur(2px)` }} />
         </div>
         <div className="mimari-cta-overlay" style={{ background: `rgba(0,0,0,0.4)` }} />
         <div className="mimari-cta-content">

@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import { useNotification } from '@/components/admin/AdminNotificationProvider';
 import { AdminSaveBar } from '@/components/admin/AdminSaveBar';
+import { SLIDER_IMAGE_URLS } from '@/lib/slider-images';
 
 const DEFAULT_MIMARI_CATEGORIES = [
   {
@@ -97,7 +98,7 @@ export default function MimariEditor() {
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-  const [newService, setNewService] = useState({ title: '', sideLabel: '', slug: '', image: '/images/slider/mimari_slide.png' });
+  const [newService, setNewService] = useState({ title: '', sideLabel: '', slug: '', image: SLIDER_IMAGE_URLS.mimari });
   const [categoryPreviews, setCategoryPreviews] = useState<Record<number, string>>({});
   const [contentVersion, setContentVersion] = useState<string>("");
 
@@ -188,12 +189,12 @@ export default function MimariEditor() {
         subtitle: 'MİMARİ TASARIM',
         blur: 0,
         overlay: 30,
-        slides: ['/images/slider/mimari_slide.png'],
+        slides: [SLIDER_IMAGE_URLS.mimari],
       },
       {
         id: 'cta',
         type: 'cta',
-        image: '/images/slider/mimari_slide.png',
+        image: SLIDER_IMAGE_URLS.mimari,
         blur: 0,
         overlay: 30,
       },
@@ -226,7 +227,7 @@ export default function MimariEditor() {
         safeData.sections.push({
           id: 'cta',
           type: 'cta',
-          image: '/images/slider/mimari_slide.png',
+          image: SLIDER_IMAGE_URLS.mimari,
           blur: 0,
           overlay: 30,
         });
@@ -339,13 +340,13 @@ export default function MimariEditor() {
     
     catSection.items.push({
       ...newService,
-      image: newService.image || '/images/slider/mimari_slide.png'
+      image: newService.image || SLIDER_IMAGE_URLS.mimari
     });
     
     setContent(newContent);
     setIsDirty(true);
     setIsAddModalOpen(false);
-    setNewService({ title: '', sideLabel: '', slug: '', image: '/images/slider/mimari_slide.png' });
+    setNewService({ title: '', sideLabel: '', slug: '', image: SLIDER_IMAGE_URLS.mimari });
   };
 
   const removeService = async (index: number) => {

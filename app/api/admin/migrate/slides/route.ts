@@ -1,12 +1,13 @@
 import { NextResponse } from "next/server";
 import connectToDatabase from "@/lib/mongodb";
 import Slide from "@/models/Slide";
+import { SLIDER_IMAGE_URLS } from "@/lib/slider-images";
 
 const initialSlides = [
   {
     title: "DESIGN STUDIO",
     subtitle: "TASARIM",
-    mediaUrl: "/images/slider/mimari_slide.png",
+    mediaUrl: SLIDER_IMAGE_URLS.mimari,
     mediaType: 'image',
     blur: 0,
     overlay: 30,
@@ -16,7 +17,7 @@ const initialSlides = [
   {
     title: "MATERIAL STUDIO",
     subtitle: "MALZEME",
-    mediaUrl: "/images/slider/tasarim_slide.png",
+    mediaUrl: SLIDER_IMAGE_URLS.material,
     mediaType: 'image',
     blur: 0,
     overlay: 30,
@@ -26,7 +27,7 @@ const initialSlides = [
   {
     title: "EXECUTION STUDIO",
     subtitle: "UYGULAMA",
-    mediaUrl: "/images/slider/uygulama_slide.png",
+    mediaUrl: SLIDER_IMAGE_URLS.execution,
     mediaType: 'image',
     blur: 0,
     overlay: 30,
