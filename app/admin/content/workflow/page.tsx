@@ -1,82 +1,715 @@
 "use client";
 
+/* eslint-disable @next/next/no-img-element */
+
+import { useEffect, useMemo, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import {
+  ArrowDown,
+  ArrowUp,
+  Copy,
+  FileText,
+  Layers3,
+  Loader2,
+  Plus,
+  RefreshCcw,
+  Save,
+  Search,
+  Trash2,
+  Workflow,
+} from "lucide-react";
+
+import { useNotification } from "@/components/admin/AdminNotificationProvider";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Separator } from "@/components/ui/separator";
+import { Textarea } from "@/components/ui/textarea";
+import { mimariServices } from "@/data/mimari-hizmetler";
+import { materyalKategorileri } from "@/data/materyal-studyo";
+import { uygulamaBirimleri } from "@/data/uygulama-birimleri";
+import {
+  DEFAULT_WORKFLOW_STEPS,
+  DEFAULT_WORKFLOW_TITLE,
+  WorkflowContentDraft,
+  WorkflowProcessItem,
+  departmentProcessFromWorkflow,
+  normalizeWorkflowSteps,
+  pageWorkflowSectionFromDraft,
+  workflowDraftFromPageContent,
+  workflowDraftFromProcess,
+} from "@/lib/workflow-content";
+import { cn } from "@/lib/utils";
+
+type WorkflowScope = {
+  key: string;
+  kind: "page" | "department";
+  label: string;
+  description: string;
+  route: string;
+  group: string;
+};
+
+type LoadedScope = {
+  raw: any;
+  draft: WorkflowContentDraft;
+};
+
+const PAGE_SCOPES: WorkflowScope[] = [
+  {
+    key: "page:kesif",
+    kind: "page",
+    label: "Keşif",
+    description: "Keşif ve analiz sayfasının workflow bloğu.",
+    route: "/kesif",
+    group: "Ana Sayfa Akışları",
+  },
+  {
+    key: "page:mimari",
+    kind: "page",
+    label: "Mimari",
+    description: "Mimari ana sayfasındaki workflow bloğu.",
+    route: "/mimari",
+    group: "Ana Sayfa Akışları",
+  },
+  {
+    key: "page:material",
+    kind: "page",
+    label: "Materyal",
+    description: "Materyal ana sayfasındaki workflow bloğu.",
+    route: "/materyal-studyo",
+    group: "Ana Sayfa Akışları",
+  },
+  {
+    key: "page:execution",
+    kind: "page",
+    label: "Uygulama",
+    description: "Uygulama ana sayfasındaki workflow bloğu.",
+    route: "/uygulama",
+    group: "Ana Sayfa Akışları",
+  },
+];
+
+const mapDepartments = (
+  items: Array<{ slug: string; title: string; sideLabel?: string }>,
+  group: string,
+  routePrefix: string,
+): WorkflowScope[] =>
+  items.map((item) => ({
+    key: `department:${item.slug}`,
+    kind: "department",
+    label: item.title,
+    description: item.sideLabel ? `${item.sideLabel} workflow'u.` : `${item.title} detay workflow'u.`,
+    route: `${routePrefix}/${item.slug}`,
+    group,
+  }));
+
+const DEPARTMENT_SCOPES: WorkflowScope[] = [
+  ...mapDepartments(mimariServices as Array<{ slug: string; title: string; sideLabel?: string }>, "Mimari Detaylar", "/mimari"),
+  ...mapDepartments(materyalKategorileri as Array<{ slug: string; title: string; sideLabel?: string }>, "Materyal Detaylar", "/materyal-studyo"),
+  ...mapDepartments(uygulamaBirimleri as Array<{ slug: string; title: string; sideLabel?: string }>, "Uygulama Detaylar", "/uygulama"),
+];
+
+const ALL_SCOPES = [...PAGE_SCOPES, ...DEPARTMENT_SCOPES];
+
+const cloneDraft = (value: WorkflowContentDraft): WorkflowContentDraft => ({
+  title: value.title,
+  steps: value.steps.map((step) => ({ ...step })),
+});
+
+const createDefaultDraft = (scope: WorkflowScope): WorkflowContentDraft => {
+  if (scope.kind === "page") {
+    return workflowDraftFromPageContent(
+      { title: scope.label, sections: [] },
+      scope.key === "page:kesif" ? DEFAULT_WORKFLOW_TITLE : `${scope.label.toUpperCase()} AKIŞI`,
+      DEFAULT_WORKFLOW_STEPS,
+    );
+  }
+
+  return workflowDraftFromProcess(
+    [],
+    `${scope.label.toUpperCase()} AKIŞI`,
+    DEFAULT_WORKFLOW_STEPS,
+  );
+};
+
 export default function WorkflowAdminPage() {
-  return (
-    <div className="workflow-reset-admin">
-      <div className="workflow-reset-admin__header">
-        <div>
-          <h2>İŞ AKIŞ SÜRECİ</h2>
-          <p>
-            Bu alan tamamen sıfırlandı. Eski veri girişleri, kayıtlı içerikler ve yönetim
-            katmanları kaldırıldı.
-          </p>
+  const { showToast } = useNotification();
+  const [selectedScopeKey, setSelectedScopeKey] = useState(PAGE_SCOPES[0].key);
+  const [workflow, setWorkflow] = useState<WorkflowContentDraft>(createDefaultDraft(PAGE_SCOPES[0]));
+  const [rawContent, setRawContent] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isScopeLoading, setIsScopeLoading] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+  const [isDirty, setIsDirty] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [apiError, setApiError] = useState<string | null>(null);
+
+  const selectedScope = useMemo(
+    () => ALL_SCOPES.find((scope) => scope.key === selectedScopeKey) || PAGE_SCOPES[0],
+    [selectedScopeKey],
+  );
+
+  const groupedScopes = useMemo(() => {
+    const term = searchQuery.trim().toLowerCase();
+    const matches = (scope: WorkflowScope) =>
+      !term ||
+      `${scope.label} ${scope.description} ${scope.route}`.toLowerCase().includes(term);
+
+    const byGroup = new Map<string, WorkflowScope[]>();
+    ALL_SCOPES.forEach((scope) => {
+      if (!matches(scope)) return;
+      const current = byGroup.get(scope.group) || [];
+      current.push(scope);
+      byGroup.set(scope.group, current);
+    });
+
+    return Array.from(byGroup.entries()).map(([title, scopes]) => ({ title, scopes }));
+  }, [searchQuery]);
+
+  const loadScope = async (scope: WorkflowScope) => {
+    setIsScopeLoading(true);
+    setApiError(null);
+
+    try {
+      if (scope.kind === "page") {
+        const pageKey = scope.key.replace("page:", "");
+        const res = await fetch(`/api/content?page=${pageKey}`, { cache: "no-store" });
+        if (!res.ok) {
+          throw new Error(`GET /api/content?page=${pageKey} failed with ${res.status}`);
+        }
+
+        const data = await res.json();
+        const draft = workflowDraftFromPageContent(
+          data,
+          scope.key === "page:kesif" ? DEFAULT_WORKFLOW_TITLE : `${scope.label.toUpperCase()} AKIŞI`,
+          DEFAULT_WORKFLOW_STEPS,
+        );
+
+        setRawContent(data);
+        setWorkflow(cloneDraft(draft));
+      } else {
+        const slug = scope.key.replace("department:", "");
+        const res = await fetch(`/api/departments/${slug}`, { cache: "no-store" });
+        if (!res.ok) {
+          throw new Error(`GET /api/departments/${slug} failed with ${res.status}`);
+        }
+
+        const data = await res.json();
+        const draft = workflowDraftFromProcess(
+          data?.process || [],
+          `${(data?.title || scope.label).toString().toUpperCase()} AKIŞI`,
+          DEFAULT_WORKFLOW_STEPS,
+        );
+
+        setRawContent(data);
+        setWorkflow(cloneDraft(draft));
+      }
+
+      setIsDirty(false);
+    } catch (error) {
+      console.error("Workflow load error:", error);
+      const fallback = createDefaultDraft(scope);
+      setRawContent(null);
+      setWorkflow(cloneDraft(fallback));
+      setApiError("Seçili workflow içeriği yüklenemedi. Varsayılan veriler gösteriliyor.");
+      showToast("Workflow içeriği yüklenemedi.", "error");
+    } finally {
+      setIsLoading(false);
+      setIsScopeLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    void loadScope(selectedScope);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedScope.key]);
+
+  const updateTitle = (value: string) => {
+    setWorkflow((current) => ({ ...current, title: value }));
+    setIsDirty(true);
+  };
+
+  const updateStep = (index: number, field: keyof WorkflowProcessItem, value: string) => {
+    setWorkflow((current) => {
+      const steps = [...current.steps];
+      steps[index] = {
+        ...steps[index],
+        [field]: value,
+      };
+      return { ...current, steps };
+    });
+    setIsDirty(true);
+  };
+
+  const addStep = () => {
+    setWorkflow((current) => ({
+      ...current,
+      steps: [...current.steps, { title: "Yeni Adım", description: "Adım açıklaması" }],
+    }));
+    setIsDirty(true);
+  };
+
+  const removeStep = (index: number) => {
+    setWorkflow((current) => ({
+      ...current,
+      steps: current.steps.filter((_, itemIndex) => itemIndex !== index),
+    }));
+    setIsDirty(true);
+  };
+
+  const moveStep = (index: number, direction: "up" | "down") => {
+    setWorkflow((current) => {
+      const steps = [...current.steps];
+      const target = direction === "up" ? index - 1 : index + 1;
+
+      if (target < 0 || target >= steps.length) return current;
+
+      [steps[index], steps[target]] = [steps[target], steps[index]];
+      return { ...current, steps };
+    });
+    setIsDirty(true);
+  };
+
+  const resetToDefault = () => {
+    const fallback = createDefaultDraft(selectedScope);
+    setWorkflow(fallback);
+    setIsDirty(true);
+  };
+
+  const handleSave = async () => {
+    setIsSaving(true);
+    setApiError(null);
+
+    try {
+      if (selectedScope.kind === "page") {
+        const pageKey = selectedScope.key.replace("page:", "");
+        const nextContent = JSON.parse(
+          JSON.stringify(
+            rawContent?.sections ? rawContent : { page: pageKey, sections: [] },
+          ),
+        );
+
+        nextContent.page = pageKey;
+        nextContent.title = rawContent?.title || selectedScope.label;
+        nextContent.sections = Array.isArray(nextContent.sections) ? nextContent.sections : [];
+
+        const workflowSection = pageWorkflowSectionFromDraft(workflow);
+        const workflowIndex = nextContent.sections.findIndex(
+          (section: any) => section?.id === "workflow" || section?.type === "workflow",
+        );
+
+        if (workflowIndex >= 0) {
+          nextContent.sections[workflowIndex] = {
+            ...nextContent.sections[workflowIndex],
+            ...workflowSection,
+          };
+        } else {
+          nextContent.sections.push(workflowSection);
+        }
+
+        const res = await fetch("/api/content", {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(nextContent),
+        });
+
+        if (!res.ok) {
+          throw new Error(`PUT /api/content failed with ${res.status}`);
+        }
+
+        const data = await res.json();
+        const draft = workflowDraftFromPageContent(
+          data,
+          selectedScope.key === "page:kesif" ? DEFAULT_WORKFLOW_TITLE : `${selectedScope.label.toUpperCase()} AKIŞI`,
+          DEFAULT_WORKFLOW_STEPS,
+        );
+
+        setRawContent(data);
+        setWorkflow(cloneDraft(draft));
+      } else {
+        const slug = selectedScope.key.replace("department:", "");
+        const payload = {
+          ...(rawContent || {}),
+          process: departmentProcessFromWorkflow(workflow),
+        };
+
+        const res = await fetch(`/api/admin/departments/${slug}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+
+        if (!res.ok) {
+          throw new Error(`PUT /api/admin/departments/${slug} failed with ${res.status}`);
+        }
+
+        const data = await res.json();
+        const draft = workflowDraftFromProcess(
+          data?.process || [],
+          `${(data?.title || selectedScope.label).toString().toUpperCase()} AKIŞI`,
+          DEFAULT_WORKFLOW_STEPS,
+        );
+
+        setRawContent(data);
+        setWorkflow(cloneDraft(draft));
+      }
+
+      setIsDirty(false);
+      showToast("Workflow başarıyla güncellendi.", "success");
+    } catch (error) {
+      console.error("Workflow save error:", error);
+      setApiError("Kaydetme sırasında bir API hatası oluştu.");
+      showToast("Workflow kaydedilemedi.", "error");
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const saveDisabled = isLoading || isScopeLoading || isSaving || !isDirty;
+
+  if (isLoading) {
+    return (
+      <div className="flex min-h-[60vh] items-center justify-center text-[color:var(--text-muted)]">
+        <div className="flex items-center gap-3 rounded-full border border-white/10 bg-white/5 px-5 py-3 text-sm">
+          <Loader2 className="h-4 w-4 animate-spin text-[color:var(--accent)]" />
+          Workflow içerikleri yükleniyor
         </div>
       </div>
+    );
+  }
 
-      <div className="workflow-reset-admin__panel">
-        <span className="workflow-reset-admin__badge">RESET TEMPLATE</span>
+  return (
+    <div className="relative overflow-hidden">
+      <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_top_left,_rgba(166,137,102,0.14),_transparent_25%),radial-gradient(circle_at_top_right,_rgba(255,255,255,0.06),_transparent_28%),linear-gradient(180deg,_rgba(8,8,10,0.98),_rgba(11,12,16,0.96))]" />
+      <div className="absolute inset-x-0 top-0 -z-10 h-72 bg-[radial-gradient(circle_at_center,_rgba(166,137,102,0.12),_transparent_60%)] blur-3xl" />
+
+      <div className="mx-auto flex w-full max-w-7xl flex-col gap-6 px-4 py-6 md:px-8 md:py-8">
+        <Card className="border-white/10 bg-white/[0.04]">
+          <CardHeader className="space-y-5">
+            <div className="flex flex-wrap items-center gap-2">
+              <Badge>İş Akışları</Badge>
+              <Badge variant={isDirty ? "default" : "secondary"}>{isDirty ? "Kaydedilmemiş değişiklik" : "Senkronize"}</Badge>
+              <Badge variant={apiError ? "outline" : "secondary"}>{apiError ? "API uyarısı" : "API bağlantısı aktif"}</Badge>
+            </div>
+
+            <div className="grid gap-5 lg:grid-cols-[minmax(0,1.5fr)_minmax(320px,0.8fr)] lg:items-end">
+              <div className="space-y-3">
+                <CardTitle className="text-3xl tracking-[0.08em] text-zinc-50 md:text-5xl">
+                  Workflow editörü
+                </CardTitle>
+                <CardDescription className="max-w-3xl text-base text-zinc-400">
+                  Ana sayfa workflow bloklarını ve her departmanın detay akışını ayrı ayrı düzenleyin.
+                  Aynı şablonu koruyup istediğiniz zaman tekil sayfaları özelleştirebilirsiniz.
+                </CardDescription>
+              </div>
+
+              <div className="grid gap-3 rounded-3xl border border-white/10 bg-black/20 p-4 text-xs uppercase tracking-[0.22em] text-zinc-400">
+                <div className="flex items-center justify-between gap-4">
+                  <span className="font-mono">{selectedScope.kind === "page" ? "PAGE" : "DEPARTMENT"} / {selectedScope.route}</span>
+                  <FileText className="h-4 w-4 text-[color:var(--accent)]" />
+                </div>
+                <Separator />
+                <div className="flex items-center justify-between gap-4">
+                  <span className="font-mono">{selectedScope.label}</span>
+                  <Workflow className="h-4 w-4 text-emerald-400" />
+                </div>
+              </div>
+            </div>
+          </CardHeader>
+        </Card>
+
+        {apiError && (
+          <Card className="border-amber-400/20 bg-amber-400/5">
+            <CardContent className="flex items-start gap-3 p-5">
+              <div className="mt-0.5 rounded-full border border-amber-400/20 bg-amber-400/10 p-2 text-amber-300">
+                <Layers3 className="h-4 w-4" />
+              </div>
+              <div className="space-y-1">
+                <p className="text-sm font-medium text-zinc-100">API uyarısı</p>
+                <p className="text-sm text-zinc-400">{apiError}</p>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
+        <div className="grid gap-6 xl:grid-cols-[minmax(280px,0.72fr)_minmax(0,1.28fr)]">
+          <Card className="border-white/10 bg-white/[0.04] xl:sticky xl:top-6 xl:h-fit">
+            <CardHeader className="space-y-4">
+              <div className="flex items-center justify-between gap-3">
+                <div>
+                  <CardTitle className="text-xl tracking-[0.06em]">Akış seçici</CardTitle>
+                  <CardDescription>Sayfa ve detay workflow hedefini seçin.</CardDescription>
+                </div>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={() => void loadScope(selectedScope)}
+                  className="border-white/10 bg-white/[0.03]"
+                >
+                  <RefreshCcw className={cn("h-4 w-4", isScopeLoading && "animate-spin")} />
+                </Button>
+              </div>
+
+              <div className="relative">
+                <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-500" />
+                <Input
+                  value={searchQuery}
+                  onChange={(event) => setSearchQuery(event.target.value)}
+                  placeholder="Workflow ara..."
+                  className="h-12 border-white/10 bg-black/20 pl-9 text-zinc-100 placeholder:text-zinc-500"
+                />
+              </div>
+            </CardHeader>
+
+            <CardContent className="space-y-5">
+              {groupedScopes.map((group) => (
+                <div key={group.title} className="space-y-3">
+                  <div className="flex items-center gap-2 text-[0.68rem] uppercase tracking-[0.32em] text-[color:var(--accent)]">
+                    <span>{group.title}</span>
+                    <Separator className="flex-1 bg-white/10" />
+                  </div>
+
+                  <div className="space-y-2">
+                    {group.scopes.map((scope) => {
+                      const active = scope.key === selectedScope.key;
+
+                      return (
+                        <button
+                          key={scope.key}
+                          type="button"
+                          onClick={() => setSelectedScopeKey(scope.key)}
+                          className={cn(
+                            "flex w-full flex-col gap-2 rounded-2xl border px-4 py-3 text-left transition-all",
+                            active
+                              ? "border-[color:var(--accent)] bg-[color:rgba(166,137,102,0.12)] text-zinc-50"
+                              : "border-white/10 bg-white/[0.03] text-zinc-300 hover:border-white/20 hover:bg-white/[0.05]",
+                          )}
+                        >
+                          <div className="flex items-center justify-between gap-3">
+                            <span className="text-sm font-semibold tracking-[0.06em]">{scope.label}</span>
+                            <Badge variant={scope.kind === "page" ? "secondary" : "outline"}>
+                              {scope.kind === "page" ? "PAGE" : "DETAIL"}
+                            </Badge>
+                          </div>
+                          <p className="text-xs leading-5 text-zinc-500">{scope.description}</p>
+                          <span className="text-[0.62rem] uppercase tracking-[0.24em] text-zinc-500">
+                            {scope.route}
+                          </span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              ))}
+            </CardContent>
+          </Card>
+
+          <div className="space-y-6">
+            <Card className="border-white/10 bg-white/[0.04]">
+              <CardHeader className="space-y-4">
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                  <div>
+                    <CardTitle className="text-2xl tracking-[0.06em]">{selectedScope.label}</CardTitle>
+                    <CardDescription className="max-w-2xl">{selectedScope.description}</CardDescription>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    <Button onClick={resetToDefault} variant="outline" className="border-white/10 bg-white/[0.03]">
+                      <Copy className="mr-2 h-4 w-4" />
+                      Varsayılanı Yükle
+                    </Button>
+                    <Button
+                      onClick={() => setWorkflow((current) => cloneDraft({ ...current, steps: normalizeWorkflowSteps(current.steps) }))}
+                      variant="outline"
+                      className="border-white/10 bg-white/[0.03]"
+                    >
+                      <RefreshCcw className="mr-2 h-4 w-4" />
+                      Temizle
+                    </Button>
+                    <Button
+                      onClick={handleSave}
+                      disabled={saveDisabled}
+                      className="bg-[color:var(--accent)] text-black hover:bg-[color:var(--accent)]/90"
+                    >
+                      {isSaving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Save className="mr-2 h-4 w-4" />}
+                      Kaydet
+                    </Button>
+                  </div>
+                </div>
+              </CardHeader>
+
+              <CardContent className="space-y-5">
+                <div className="space-y-2">
+                  <label className="text-xs font-semibold uppercase tracking-[0.22em] text-zinc-400">
+                    Workflow başlığı
+                  </label>
+                  <Input
+                    value={workflow.title}
+                    onChange={(event) => updateTitle(event.target.value)}
+                    placeholder="İŞ AKIŞI"
+                    className="border-white/10 bg-black/20 text-zinc-100 placeholder:text-zinc-500"
+                  />
+                </div>
+
+                <div className="flex items-center justify-between gap-3">
+                  <div className="space-y-1">
+                    <p className="text-xs uppercase tracking-[0.22em] text-zinc-500">Adım listesi</p>
+                    <p className="text-sm text-zinc-400">
+                      Sıralama, başlık ve açıklama bu sayfadan yönetilir.
+                    </p>
+                  </div>
+                  <Button
+                    onClick={addStep}
+                    className="bg-[color:var(--accent)] text-black hover:bg-[color:var(--accent)]/90"
+                  >
+                    <Plus className="mr-2 h-4 w-4" />
+                    Adım ekle
+                  </Button>
+                </div>
+
+                <div className="space-y-4">
+                  <AnimatePresence initial={false}>
+                    {workflow.steps.map((step, index) => (
+                      <motion.div
+                        key={`${step.title}-${index}`}
+                        layout
+                        initial={{ opacity: 0, y: 12 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -12 }}
+                        className="rounded-3xl border border-white/10 bg-black/20 p-4"
+                      >
+                        <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+                          <Badge variant="secondary">Adım {String(index + 1).padStart(2, "0")}</Badge>
+                          <div className="flex items-center gap-2">
+                            <Button
+                              type="button"
+                              size="icon"
+                              variant="ghost"
+                              disabled={index === 0}
+                              onClick={() => moveStep(index, "up")}
+                              className="h-8 w-8 text-zinc-400 hover:bg-white/5 hover:text-zinc-100"
+                            >
+                              <ArrowUp className="h-4 w-4" />
+                            </Button>
+                            <Button
+                              type="button"
+                              size="icon"
+                              variant="ghost"
+                              disabled={index === workflow.steps.length - 1}
+                              onClick={() => moveStep(index, "down")}
+                              className="h-8 w-8 text-zinc-400 hover:bg-white/5 hover:text-zinc-100"
+                            >
+                              <ArrowDown className="h-4 w-4" />
+                            </Button>
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              onClick={() => removeStep(index)}
+                              className="h-8 px-3 text-zinc-400 hover:bg-white/5 hover:text-red-300"
+                            >
+                              <Trash2 className="mr-2 h-4 w-4" />
+                              Sil
+                            </Button>
+                          </div>
+                        </div>
+
+                        <div className="grid gap-4 md:grid-cols-2">
+                          <div className="space-y-2">
+                            <label className="text-xs font-semibold uppercase tracking-[0.22em] text-zinc-400">
+                              Başlık
+                            </label>
+                            <Input
+                              value={step.title}
+                              onChange={(event) => updateStep(index, "title", event.target.value)}
+                              placeholder="Randevu"
+                              className="border-white/10 bg-black/20 text-zinc-100 placeholder:text-zinc-500"
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <label className="text-xs font-semibold uppercase tracking-[0.22em] text-zinc-400">
+                              Açıklama
+                            </label>
+                            <Textarea
+                              value={step.description}
+                              onChange={(event) => updateStep(index, "description", event.target.value)}
+                              placeholder="Kısa açıklama..."
+                              className="min-h-[120px] border-white/10 bg-black/20 text-zinc-100 placeholder:text-zinc-500"
+                            />
+                          </div>
+                        </div>
+                      </motion.div>
+                    ))}
+                  </AnimatePresence>
+                </div>
+              </CardContent>
+            </Card>
+
+            <div className="grid gap-6 xl:grid-cols-[minmax(0,1.1fr)_minmax(320px,0.9fr)]">
+              <Card className="border-white/10 bg-white/[0.04]">
+                <CardHeader>
+                  <CardTitle className="text-lg tracking-[0.06em]">Önizleme</CardTitle>
+                  <CardDescription>
+                    Kaydetmeden önce workflow düzenini ve okunabilirliği kontrol edin.
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  {workflow.steps.map((step, index) => (
+                    <div
+                      key={`preview-${step.title}-${index}`}
+                      className="rounded-2xl border border-white/10 bg-black/20 p-4"
+                    >
+                      <div className="flex items-center justify-between gap-3">
+                        <Badge variant="secondary">Adım {String(index + 1).padStart(2, "0")}</Badge>
+                        <span className="text-[0.62rem] uppercase tracking-[0.24em] text-zinc-500">
+                          {selectedScope.kind === "page" ? "PAGE" : "DETAIL"}
+                        </span>
+                      </div>
+                      <h4 className="mt-3 text-base font-semibold tracking-[0.06em] text-zinc-50">
+                        {step.title || "Başlıksız adım"}
+                      </h4>
+                      <p className="mt-2 text-sm leading-7 text-zinc-400">
+                        {step.description || "Açıklama girilmedi."}
+                      </p>
+                    </div>
+                  ))}
+                </CardContent>
+              </Card>
+
+              <Card className="border-white/10 bg-white/[0.04]">
+                <CardHeader>
+                  <CardTitle className="text-lg tracking-[0.06em]">Kayıt özeti</CardTitle>
+                  <CardDescription>Seçili workflow'un son durumunu burada kontrol edin.</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="rounded-2xl border border-white/10 bg-black/20 p-4 text-sm">
+                    <div className="flex items-center justify-between gap-3">
+                      <span className="text-zinc-500">Hedef</span>
+                      <span className="text-zinc-100">{selectedScope.route}</span>
+                    </div>
+                    <Separator className="my-3 bg-white/10" />
+                    <div className="flex items-center justify-between gap-3">
+                      <span className="text-zinc-500">Adım sayısı</span>
+                      <span className="text-zinc-100">{workflow.steps.length}</span>
+                    </div>
+                    <Separator className="my-3 bg-white/10" />
+                    <div className="flex items-center justify-between gap-3">
+                      <span className="text-zinc-500">Durum</span>
+                      <span className={isDirty ? "text-amber-300" : "text-emerald-300"}>
+                        {isDirty ? "Taslak" : "Yayına hazır"}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="rounded-2xl border border-dashed border-white/10 bg-white/[0.02] p-4 text-sm text-zinc-500">
+                    Aynı workflow şablonunu koruyup sadece seçili sayfa veya departman için değişiklik yapabilirsiniz.
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        </div>
       </div>
-
-      <style jsx>{`
-        .workflow-reset-admin {
-          display: flex;
-          flex-direction: column;
-          gap: 2rem;
-          max-width: 960px;
-        }
-
-        .workflow-reset-admin__header {
-          display: flex;
-          flex-direction: column;
-          gap: 0.75rem;
-        }
-
-        .workflow-reset-admin__header h2 {
-          margin: 0;
-          color: var(--text);
-          letter-spacing: 0.18em;
-          font-size: 1.35rem;
-        }
-
-        .workflow-reset-admin__header p {
-          margin: 0;
-          max-width: 42rem;
-          color: var(--text-muted);
-          line-height: 1.7;
-        }
-
-        .workflow-reset-admin__panel {
-          min-height: 320px;
-          border-radius: 20px;
-          border: 1px dashed rgba(166, 137, 102, 0.32);
-          background:
-            linear-gradient(135deg, rgba(166, 137, 102, 0.08), rgba(255, 255, 255, 0.01)),
-            repeating-linear-gradient(
-              0deg,
-              rgba(255, 255, 255, 0.03),
-              rgba(255, 255, 255, 0.03) 1px,
-              transparent 1px,
-              transparent 32px
-            );
-          position: relative;
-        }
-
-        .workflow-reset-admin__badge {
-          position: absolute;
-          top: 1.5rem;
-          left: 1.5rem;
-          display: inline-flex;
-          align-items: center;
-          justify-content: center;
-          padding: 0.45rem 0.7rem;
-          border-radius: 999px;
-          border: 1px solid rgba(166, 137, 102, 0.28);
-          color: #a68966;
-          font-size: 0.65rem;
-          font-weight: 800;
-          letter-spacing: 0.18em;
-        }
-      `}</style>
     </div>
   );
 }

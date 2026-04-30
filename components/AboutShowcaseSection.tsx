@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion, useReducedMotion } from "framer-motion";
 import { Button } from "@/components/ui/button";
@@ -7,6 +8,43 @@ import { Button } from "@/components/ui/button";
 export default function AboutShowcaseSection() {
   const router = useRouter();
   const shouldReduceMotion = useReducedMotion();
+  const [content, setContent] = useState({
+    title: "Sizin hikayeniz, sizin mekanınız.",
+    description:
+      "Biz deqoin'i kurarken tek bir inancımız vardı: Bir ev, sadece dört duvar ve eşyalardan ibaret olamaz. Bu yüzden mimarinin teknik gücünü, sizin kişisel zevklerinizle ve yaşam tarzınızla harmanlıyoruz. Hayatınıza dokunan, içinde kendinizi huzurlu hissedeceğiniz ve yıllara meydan okuyan sıcak yaşam alanları tasarlıyoruz. Kısacası, sizin hikayenizi mekanlara yansıtıyoruz.",
+    image: "/images/about_interior.png",
+    subtitle: "BİZ KİMİZ",
+  });
+
+  useEffect(() => {
+    let active = true;
+
+    const fetchContent = async () => {
+      try {
+        const res = await fetch("/api/admin/content/corporate/about", { cache: "no-store" });
+        if (!res.ok) return;
+
+        const data = await res.json();
+        if (!active || !data) return;
+
+        setContent({
+          title: data.title || content.title,
+          description: data.description || content.description,
+          image: data.image || content.image,
+          subtitle: data.subtitle || content.subtitle,
+        });
+      } catch (error) {
+        console.error("About content load error:", error);
+      }
+    };
+
+    void fetchContent();
+
+    return () => {
+      active = false;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <section className="w-full h-screen snap-center snap-always flex items-center justify-center overflow-hidden bg-zinc-950 text-white">
@@ -22,22 +60,22 @@ export default function AboutShowcaseSection() {
           }}
           className="order-1 flex flex-col justify-center lg:pr-8"
         >
+          <p className="mb-4 text-xs uppercase tracking-[0.35em] text-zinc-500">
+            {content.subtitle}
+          </p>
+
           <h2
             className="text-6xl md:text-8xl font-thin text-white tracking-tight mb-6"
             style={{ fontFamily: "var(--font-smooch), sans-serif" }}
           >
-            Sizin hikayeniz, sizin mekanınız.
+            {content.title}
           </h2>
 
           <p
             className="text-xl md:text-2xl text-zinc-400 font-light leading-relaxed mb-8"
             style={{ fontFamily: "var(--font-smooch), sans-serif" }}
           >
-            Biz deqoin'i kurarken tek bir inancımız vardı: Bir ev, sadece dört duvar ve eşyalardan
-            ibaret olamaz. Bu yüzden mimarinin teknik gücünü, sizin kişisel zevklerinizle ve yaşam
-            tarzınızla harmanlıyoruz. Hayatınıza dokunan, içinde kendinizi huzurlu hissedeceğiniz ve
-            yıllara meydan okuyan sıcak yaşam alanları tasarlıyoruz. Kısacası, sizin hikayenizi
-            mekanlara yansıtıyoruz.
+            {content.description}
           </p>
 
           <div>
@@ -65,7 +103,7 @@ export default function AboutShowcaseSection() {
         >
           <div className="relative w-full h-[50vh] md:h-[70vh] rounded-2xl overflow-hidden">
             <img
-              src="/images/about_interior.png"
+              src={content.image}
               alt="deqoin atölye ve kütüphane iç mekanı"
               className="object-cover w-full h-full"
             />

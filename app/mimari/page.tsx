@@ -9,6 +9,12 @@ import WorkflowSection from "../../components/WorkflowSection";
 import NextStepCarouselSection from "../../components/NextStepCarouselSection";
 import StudioVerticalCard from "../../components/StudioVerticalCard";
 import { SLIDER_IMAGE_URLS } from "@/lib/slider-images";
+import {
+  DEFAULT_WORKFLOW_STEPS,
+  DEFAULT_WORKFLOW_TITLE,
+  workflowDraftFromPageContent,
+  workflowStepsForSection,
+} from "@/lib/workflow-content";
 
 const heroSlides = [
   SLIDER_IMAGE_URLS.mimari,
@@ -173,6 +179,10 @@ export default function MimariPage() {
   const [contentVersion, setContentVersion] = useState<string>("");
   const [pageInfo, setPageInfo] = useState({ title: 'DESIGN STUDIO', subtitle: 'MİMARİ TASARIMIN GELECEĞİNİ ŞEKİLLENDİRİYORUZ' });
   const [heroVisual, setHeroVisual] = useState({ blur: 2, overlay: 30 });
+  const [workflow, setWorkflow] = useState({
+    title: DEFAULT_WORKFLOW_TITLE,
+    steps: workflowStepsForSection(DEFAULT_WORKFLOW_STEPS),
+  });
   useEffect(() => {
     const fetchContent = async () => {
       try {
@@ -184,6 +194,7 @@ export default function MimariPage() {
         if (data.sections) {
           const hero = data.sections.find((s: any) => s.id === 'hero');
           const cats = data.sections.find((s: any) => s.id === 'categories');
+          const workflowSection = workflowDraftFromPageContent(data, DEFAULT_WORKFLOW_TITLE, DEFAULT_WORKFLOW_STEPS);
           
           if (hero) {
             if (hero.slides?.length > 0) setSlides(hero.slides);
@@ -195,6 +206,12 @@ export default function MimariPage() {
           }
           if (cats?.items?.length > 0) {
             setCategories(mergeCategories(cats.items));
+          }
+          if (workflowSection.steps.length > 0) {
+            setWorkflow({
+              title: workflowSection.title,
+              steps: workflowStepsForSection(workflowSection.steps, DEFAULT_WORKFLOW_STEPS),
+            });
           }
         }
       } catch (err) {
@@ -227,7 +244,7 @@ export default function MimariPage() {
         showScrollHint={true}
       />
 
-      <WorkflowSection className="snap-section" />
+      <WorkflowSection className="snap-section" title={workflow.title} steps={workflow.steps} />
 
       <section className="services-section snap-section gallery-snap-point" style={{ background: "transparent", paddingTop: "6rem", minHeight: "100svh" }}>
         

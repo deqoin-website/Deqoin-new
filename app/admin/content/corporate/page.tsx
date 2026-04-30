@@ -10,7 +10,6 @@ import {
   CheckCircle2,
   FileText,
   Image as ImageIcon,
-  Layers3,
   Loader2,
   Plus,
   RefreshCcw,
@@ -161,7 +160,6 @@ const TAB_ITEMS: Array<{
 }> = [
   { key: 'main', label: 'Ana İçerik', description: 'Başlık, açıklama ve görsel', icon: FileText },
   { key: 'stats', label: 'İstatistikler', description: 'Sayısal veriler ve etiketler', icon: BarChart3 },
-  { key: 'workflow', label: 'İş Akışı', description: 'Adımlar ve görsel blokları', icon: Layers3 },
 ];
 
 export default function CorporateAboutAdmin() {
@@ -203,7 +201,7 @@ export default function CorporateAboutAdmin() {
       setData(fallback);
       setInitialData(cloneContent(fallback));
       setApiError('İçerik API bağlantısı okunamadı. Varsayılan verilerle devam ediliyor.');
-      showToast('Kurumsal içerik yüklenemedi.', 'error');
+      showToast('Hakkımızda içeriği yüklenemedi.', 'error');
     } finally {
       setLoading(false);
     }
@@ -241,7 +239,7 @@ export default function CorporateAboutAdmin() {
       setInitialData(cloneContent(json));
       setIsDirty(false);
       setLastSync(json.metadata?.updatedAt || new Date().toISOString());
-      showToast('Kurumsal içerik başarıyla güncellendi.', 'success');
+      showToast('Hakkımızda içeriği başarıyla güncellendi.', 'success');
     } catch (error) {
       console.error('Corporate content save error:', error);
       setApiError('Kaydetme sırasında bir API hatası oluştu.');
@@ -392,7 +390,7 @@ export default function CorporateAboutAdmin() {
       <div className="flex min-h-[60vh] items-center justify-center text-[color:var(--text-muted)]">
         <div className="flex items-center gap-3 rounded-full border border-white/10 bg-white/5 px-5 py-3 text-sm">
           <Loader2 className="h-4 w-4 animate-spin text-[color:var(--accent)]" />
-          Kurumsal içerik yükleniyor
+          Hakkımızda içeriği yükleniyor
         </div>
       </div>
     );
@@ -407,7 +405,7 @@ export default function CorporateAboutAdmin() {
         <Card className="border-white/10 bg-white/[0.04]">
           <CardHeader className="space-y-5">
             <div className="flex flex-wrap items-center gap-2">
-              <Badge>Kurumsal Felsefe</Badge>
+              <Badge>Hakkımızda</Badge>
               <Badge variant={isDirty ? 'default' : 'secondary'}>{isDirty ? 'Kaydedilmemiş değişiklik' : 'Senkronize'}</Badge>
               <Badge variant={apiError ? 'outline' : 'secondary'}>{apiError ? 'API uyarısı' : 'API bağlantısı aktif'}</Badge>
               <Badge variant="outline">{data.stats.length} istatistik</Badge>
@@ -417,10 +415,10 @@ export default function CorporateAboutAdmin() {
             <div className="grid gap-5 lg:grid-cols-[minmax(0,1.5fr)_minmax(320px,0.8fr)] lg:items-end">
               <div className="space-y-3">
                 <CardTitle className="text-3xl tracking-[0.08em] text-zinc-50 md:text-5xl">
-                  Kurumsal sayfa editörü
+                  Hakkımızda sayfa editörü
                 </CardTitle>
                 <CardDescription className="max-w-3xl text-base text-zinc-400">
-                  `/admin/content/corporate` sayfasındaki ana başlık, görsel, istatistikler ve iş akışı içeriklerini
+                  `/admin/content/corporate` sayfasındaki Hakkımızda başlığı, görsel, istatistikler ve içerik akışını
                   tek panelden yönetin. Kaydetme, yükleme ve API durumlarını doğrudan burada kontrol edin.
                 </CardDescription>
               </div>
@@ -524,7 +522,7 @@ export default function CorporateAboutAdmin() {
                   </div>
                 </div>
 
-                <div className="grid gap-2 rounded-3xl border border-white/10 bg-black/20 p-2 md:grid-cols-3">
+                <div className="grid gap-2 rounded-3xl border border-white/10 bg-black/20 p-2 md:grid-cols-2">
                   {TAB_ITEMS.map((tab) => {
                     const Icon = tab.icon;
                     const active = activeTab === tab.key;
@@ -616,7 +614,7 @@ export default function CorporateAboutAdmin() {
                               className="group relative flex min-h-[320px] cursor-pointer flex-col overflow-hidden rounded-3xl border border-dashed border-white/15 bg-black/20 transition-colors hover:border-[color:var(--accent)]"
                             >
                               {data.image ? (
-                                <img src={data.image} alt="Kurumsal kapak görseli" className="h-full w-full object-cover" />
+                                <img src={data.image} alt="Hakkımızda kapak görseli" className="h-full w-full object-cover" />
                               ) : (
                                 <div className="flex flex-1 flex-col items-center justify-center gap-4 p-8 text-center">
                                   <div className="rounded-full border border-white/10 bg-white/5 p-4 text-[color:var(--accent)]">
@@ -654,7 +652,7 @@ export default function CorporateAboutAdmin() {
                               <Textarea
                                 value={data.description}
                                 onChange={(event) => updateField('description', event.target.value)}
-                                placeholder="Kurumsal açıklama metni..."
+                                placeholder="Hakkımızda açıklama metni..."
                                 className="min-h-[180px]"
                               />
                             </div>
@@ -979,7 +977,7 @@ export default function CorporateAboutAdmin() {
               <CardContent className="space-y-5">
                 <div className="overflow-hidden rounded-3xl border border-white/10 bg-black/30">
                   {data.image ? (
-                    <img src={data.image} alt="Kurumsal önizleme" className="h-56 w-full object-cover" />
+                    <img src={data.image} alt="Hakkımızda önizleme" className="h-56 w-full object-cover" />
                   ) : (
                     <div className="flex h-56 items-center justify-center text-sm text-zinc-500">
                       Kapak görseli bekleniyor

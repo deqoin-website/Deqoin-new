@@ -8,6 +8,12 @@ import StudioVerticalCard from "../../components/StudioVerticalCard";
 import HeroSlider from "../../components/HeroSlider";
 import WorkflowSection from "../../components/WorkflowSection";
 import NextStepCarouselSection from "../../components/NextStepCarouselSection";
+import {
+  DEFAULT_WORKFLOW_STEPS,
+  DEFAULT_WORKFLOW_TITLE,
+  workflowDraftFromPageContent,
+  workflowStepsForSection,
+} from "@/lib/workflow-content";
 
 const executionCategories = uygulamaBirimleri.filter((item) =>
   [
@@ -25,6 +31,10 @@ export default function UygulamaPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [isConsultationOpen, setIsConsultationOpen] = useState(false);
   const heroRef = useRef<HTMLDivElement>(null);
+  const [workflow, setWorkflow] = useState({
+    title: DEFAULT_WORKFLOW_TITLE,
+    steps: workflowStepsForSection(DEFAULT_WORKFLOW_STEPS),
+  });
 
   useEffect(() => {
     const fetchContent = async () => {
@@ -33,6 +43,11 @@ export default function UygulamaPage() {
         const data = await res.json();
         if (data && data.sections) {
           setContent(data);
+          const workflowSection = workflowDraftFromPageContent(data, DEFAULT_WORKFLOW_TITLE, DEFAULT_WORKFLOW_STEPS);
+          setWorkflow({
+            title: workflowSection.title,
+            steps: workflowStepsForSection(workflowSection.steps, DEFAULT_WORKFLOW_STEPS),
+          });
         }
       } catch (err) {
         console.error("Failed to fetch execution content:", err);
@@ -81,7 +96,7 @@ export default function UygulamaPage() {
         showScrollHint={true}
       />
 
-      <WorkflowSection className="snap-section" />
+      <WorkflowSection className="snap-section" title={workflow.title} steps={workflow.steps} />
 
       {/* MANİFESTO */}
 

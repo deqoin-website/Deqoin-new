@@ -70,6 +70,7 @@ export default function ExecutionDetail({ params }: { params: Promise<ServicePar
           categories={categories}
           focusAreas={focusAreas}
           products={products}
+          workflowProcess={content?.process || []}
           workflowType="execution"
         />
         <NextStepCarouselSection currentStudio="uygulama" />

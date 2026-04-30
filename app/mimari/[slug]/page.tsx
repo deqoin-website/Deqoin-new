@@ -74,6 +74,7 @@ export default function MimariDetail({ params }: { params: Promise<ServiceParams
           categories={categories}
           focusAreas={focusAreas}
           products={products}
+          workflowProcess={content?.process || []}
           workflowType="design"
         />
         <NextStepCarouselSection currentStudio="mimari" />

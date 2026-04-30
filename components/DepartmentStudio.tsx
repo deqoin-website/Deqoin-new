@@ -14,6 +14,7 @@ import WorkflowSection, { type WorkflowStep } from "./WorkflowSection";
 import PageNumberNavigator, { type PageNavItem } from "./PageNumberNavigator";
 import { CalendarDays, Compass, Hammer, Layers, PenTool } from "lucide-react";
 import { SLIDER_IMAGE_URLS } from "@/lib/slider-images";
+import { workflowStepsForSection } from "@/lib/workflow-content";
 
 interface DepartmentStudioProps {
   title: string;
@@ -29,6 +30,7 @@ interface DepartmentStudioProps {
   focusAreas?: { title: string; icon: string; desc: string }[];
   products?: { title: string; image: string; category?: string; desc: string; price?: string; link?: string }[];
   workflowType?: 'design' | 'material' | 'execution';
+  workflowProcess?: { title: string; desc: string }[];
 }
 
 const FALLBACK_SLIDES = [
@@ -161,7 +163,8 @@ export default function DepartmentStudio({
   categories,
   focusAreas,
   products,
-  workflowType = 'design'
+  workflowType = 'design',
+  workflowProcess,
 }: DepartmentStudioProps) {
   const displayCategories = categories || DEFAULT_CATEGORIES;
   const [searchQuery, setSearchQuery] = useState("");
@@ -170,7 +173,18 @@ export default function DepartmentStudio({
   const [isMobileDrawerOpen, setIsMobileDrawerOpen] = useState(false);
   const [activeProjectSlug, setActiveProjectSlug] = useState<string | null>(null);
   const [activeProductCategory, setActiveProductCategory] = useState<string>("ALL");
-  const workflowSteps = WORKFLOW_VARIANTS[workflowType];
+  const workflowSteps = useMemo(() => {
+    if (Array.isArray(workflowProcess) && workflowProcess.length > 0) {
+      return workflowStepsForSection(
+        workflowProcess.map((step) => ({
+          title: step.title,
+          description: step.desc,
+        })),
+      );
+    }
+
+    return WORKFLOW_VARIANTS[workflowType];
+  }, [workflowProcess, workflowType]);
   
   const heroSlides = images && images.length > 0 ? images : [heroImage, ...FALLBACK_SLIDES.filter(img => img !== heroImage)];
 

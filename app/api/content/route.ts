@@ -63,6 +63,7 @@ export async function POST(request: Request) {
     await connectToDatabase();
     const data = await request.json();
     const page = data.page;
+    const title = data.title;
     const sections = stripMongoFields(data.sections || []);
 
     if (!page) {
@@ -73,6 +74,7 @@ export async function POST(request: Request) {
     await PageContent.collection.deleteMany({ page });
     const inserted = await PageContent.collection.insertOne({
       page,
+      title,
       sections,
       metadata: { updatedAt: now },
       createdAt: now,
@@ -88,5 +90,40 @@ export async function POST(request: Request) {
   } catch (error) {
     console.error("Failed to save content:", error);
     return NextResponse.json({ error: "Failed to save content" }, { status: 500 });
+  }
+}
+
+export async function PUT(request: Request) {
+  try {
+    await connectToDatabase();
+    const data = await request.json();
+    const page = data.page;
+    const title = data.title;
+    const sections = stripMongoFields(data.sections || []);
+
+    if (!page) {
+      return NextResponse.json({ error: "Page is required" }, { status: 400 });
+    }
+
+    const now = new Date();
+    await PageContent.collection.deleteMany({ page });
+    const inserted = await PageContent.collection.insertOne({
+      page,
+      title,
+      sections,
+      metadata: { updatedAt: now },
+      createdAt: now,
+      updatedAt: now,
+    });
+
+    const updatedContent = await PageContent.collection.findOne({ _id: inserted.insertedId });
+    return NextResponse.json(updatedContent, {
+      headers: {
+        "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate",
+      },
+    });
+  } catch (error) {
+    console.error("Failed to update content:", error);
+    return NextResponse.json({ error: "Failed to update content" }, { status: 500 });
   }
 }

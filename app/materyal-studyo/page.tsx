@@ -8,6 +8,12 @@ import WorkflowSection from "../../components/WorkflowSection";
 import NextStepCarouselSection from "../../components/NextStepCarouselSection";
 import StudioVerticalCard from "../../components/StudioVerticalCard";
 import { materyalKategorileri } from "../../data/materyal-studyo";
+import {
+  DEFAULT_WORKFLOW_STEPS,
+  DEFAULT_WORKFLOW_TITLE,
+  workflowDraftFromPageContent,
+  workflowStepsForSection,
+} from "@/lib/workflow-content";
 
 const materialCategories = materyalKategorileri;
 const materialImageBySlug = Object.fromEntries(
@@ -63,13 +69,24 @@ export default function MateryalStudyo() {
   const [isLoading, setIsLoading] = useState(true);
   const [isConsultationOpen, setIsConsultationOpen] = useState(false);
   const heroRef = useRef<HTMLDivElement>(null);
+  const [workflow, setWorkflow] = useState({
+    title: DEFAULT_WORKFLOW_TITLE,
+    steps: workflowStepsForSection(DEFAULT_WORKFLOW_STEPS),
+  });
 
   useEffect(() => {
     const fetchContent = async () => {
       try {
         const res = await fetch(`/api/content?page=material&ts=${Date.now()}`, { cache: "no-store" });
         const data = await res.json();
-        if (data && data.sections) setContent(data);
+        if (data && data.sections) {
+          setContent(data);
+          const workflowSection = workflowDraftFromPageContent(data, DEFAULT_WORKFLOW_TITLE, DEFAULT_WORKFLOW_STEPS);
+          setWorkflow({
+            title: workflowSection.title,
+            steps: workflowStepsForSection(workflowSection.steps, DEFAULT_WORKFLOW_STEPS),
+          });
+        }
       } catch (err) {
         console.error("Failed to fetch material studio content:", err);
       } finally {
@@ -118,7 +135,7 @@ export default function MateryalStudyo() {
         showScrollHint={true}
       />
 
-      <WorkflowSection className="snap-section" />
+      <WorkflowSection className="snap-section" title={workflow.title} steps={workflow.steps} />
 
       <section className="services-section material-studio-collection" style={{ background: "transparent", paddingTop: "0" }}>
         <div className="material-studio-collection-shell material-studio-collection-inner" style={{ paddingTop: "0" }}>

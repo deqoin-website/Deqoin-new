@@ -37,7 +37,7 @@ export async function GET() {
   try {
     await connectToDatabase();
     
-    // Always upsert the initial data for 'about' page to ensure workflow is there
+    // Always upsert the initial data for the about page.
     const updated = await CorporateContent.findOneAndUpdate(
       { page: 'about' },
       { ...initialData, 'metadata.updatedAt': new Date() },
@@ -46,7 +46,7 @@ export async function GET() {
     
     return NextResponse.json({ 
       success: true, 
-      message: "About/Workflow data migrated successfully", 
+      message: "About data migrated successfully", 
       data: updated 
     });
   } catch (error: any) {

@@ -70,6 +70,7 @@ export default function MaterialDetail({ params }: { params: Promise<ServicePara
           categories={categories}
           focusAreas={focusAreas}
           products={products}
+          workflowProcess={content?.process || []}
           workflowType="material"
         />
         <NextStepCarouselSection currentStudio="materyal-studyo" />
