@@ -150,6 +150,7 @@ export default function WorkflowAdminPage() {
   const [isDirty, setIsDirty] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [apiError, setApiError] = useState<string | null>(null);
+  const [expandedStepIndex, setExpandedStepIndex] = useState<number | null>(0);
 
   const selectedScope = useMemo(
     () => ALL_SCOPES.find((scope) => scope.key === selectedScopeKey) || PAGE_SCOPES[0],
@@ -202,6 +203,7 @@ export default function WorkflowAdminPage() {
 
         setRawContent(data);
         setWorkflow(cloneDraft(draft));
+        setExpandedStepIndex(0);
       } else {
         const slug = scope.key.replace("department:", "");
         const res = await fetch(`/api/departments/${slug}`, { cache: "no-store" });
@@ -218,6 +220,7 @@ export default function WorkflowAdminPage() {
 
         setRawContent(data);
         setWorkflow(cloneDraft(draft));
+        setExpandedStepIndex(0);
       }
 
       setIsDirty(false);
@@ -226,6 +229,7 @@ export default function WorkflowAdminPage() {
       const fallback = createDefaultDraft(scope);
       setRawContent(null);
       setWorkflow(cloneDraft(fallback));
+      setExpandedStepIndex(0);
       setApiError("Seçili workflow içeriği yüklenemedi. Varsayılan veriler gösteriliyor.");
       showToast("Workflow içeriği yüklenemedi.", "error");
     } finally {
@@ -257,10 +261,12 @@ export default function WorkflowAdminPage() {
   };
 
   const addStep = () => {
+    const nextIndex = workflow.steps.length;
     setWorkflow((current) => ({
       ...current,
       steps: [...current.steps, { title: "Yeni Adım", description: "Adım açıklaması", icon: "Sparkles" }],
     }));
+    setExpandedStepIndex(nextIndex);
     setIsDirty(true);
   };
 
@@ -288,6 +294,7 @@ export default function WorkflowAdminPage() {
   const resetToDefault = () => {
     const fallback = createDefaultDraft(selectedScope);
     setWorkflow(fallback);
+    setExpandedStepIndex(0);
     setIsDirty(true);
   };
 
@@ -569,16 +576,34 @@ export default function WorkflowAdminPage() {
                   <div className="space-y-1">
                     <p className="text-xs uppercase tracking-[0.22em] text-zinc-500">Adım listesi</p>
                     <p className="text-sm text-zinc-400">
-                      Sıralama, başlık ve açıklama bu sayfadan yönetilir.
+                      Her adımı tek tek açarak düzenleyin, geri kalanını kompakt özet halinde bırakın.
                     </p>
                   </div>
-                  <Button
-                    onClick={addStep}
-                    className="bg-[color:var(--accent)] text-black hover:bg-[color:var(--accent)]/90"
-                  >
-                    <Plus className="mr-2 h-4 w-4" />
-                    Adım ekle
-                  </Button>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => setExpandedStepIndex(null)}
+                      className="border-white/10 bg-white/[0.03]"
+                    >
+                      Tümünü daralt
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => setExpandedStepIndex(0)}
+                      className="border-white/10 bg-white/[0.03]"
+                    >
+                      İlkini aç
+                    </Button>
+                    <Button
+                      onClick={addStep}
+                      className="bg-[color:var(--accent)] text-black hover:bg-[color:var(--accent)]/90"
+                    >
+                      <Plus className="mr-2 h-4 w-4" />
+                      Adım ekle
+                    </Button>
+                  </div>
                 </div>
 
                 <div className="space-y-4">
@@ -586,6 +611,7 @@ export default function WorkflowAdminPage() {
                     {workflow.steps.map((step, index) => {
                       const StepIcon = resolveWorkflowIconComponent(step.icon, index);
                       const isKnownIcon = WORKFLOW_ICON_OPTIONS.some((option) => option.key === step.icon);
+                      const isExpanded = expandedStepIndex === index;
 
                       return (
                         <motion.div
@@ -594,11 +620,27 @@ export default function WorkflowAdminPage() {
                           initial={{ opacity: 0, y: 12 }}
                           animate={{ opacity: 1, y: 0 }}
                           exit={{ opacity: 0, y: -12 }}
-                          className="rounded-3xl border border-white/10 bg-black/20 p-4"
+                          className={cn(
+                            "rounded-3xl border p-4 transition-all",
+                            isExpanded
+                              ? "border-[color:var(--accent)] bg-[color:rgba(166,137,102,0.08)]"
+                              : "border-white/10 bg-black/20 hover:border-white/20",
+                          )}
                         >
                           <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-                            <Badge variant="secondary">Adım {String(index + 1).padStart(2, "0")}</Badge>
                             <div className="flex items-center gap-2">
+                              <Badge variant="secondary">Adım {String(index + 1).padStart(2, "0")}</Badge>
+                              <Badge variant="outline">{step.icon || "CalendarDays"}</Badge>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <Button
+                                type="button"
+                                variant="outline"
+                                onClick={() => setExpandedStepIndex(isExpanded ? null : index)}
+                                className="h-8 border-white/10 bg-white/[0.03] px-3 text-xs"
+                              >
+                                {isExpanded ? "Daralt" : "Düzenle"}
+                              </Button>
                               <Button
                                 type="button"
                                 size="icon"
@@ -624,79 +666,112 @@ export default function WorkflowAdminPage() {
                                 variant="ghost"
                                 onClick={() => removeStep(index)}
                                 className="h-8 px-3 text-zinc-400 hover:bg-white/5 hover:text-red-300"
-                              >
-                                <Trash2 className="mr-2 h-4 w-4" />
-                                Sil
-                              </Button>
+                                >
+                                  <Trash2 className="mr-2 h-4 w-4" />
+                                  Sil
+                                </Button>
+                              </div>
                             </div>
-                          </div>
 
-                          <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(320px,0.9fr)]">
-                            <div className="grid gap-4 md:grid-cols-2">
-                              <div className="space-y-2">
-                                <label className="text-xs font-semibold uppercase tracking-[0.22em] text-zinc-400">
-                                  Başlık
-                                </label>
+                          {!isExpanded ? (
+                            <div className="grid gap-3 rounded-2xl border border-white/10 bg-white/[0.03] p-4 md:grid-cols-[minmax(0,1fr)_240px]">
+                              <div className="min-w-0 space-y-2">
+                                <h4 className="text-base font-semibold tracking-[0.06em] text-zinc-50">
+                                  {step.title || "Başlıksız adım"}
+                                </h4>
+                                <p className="line-clamp-2 text-sm leading-6 text-zinc-400">
+                                  {step.description || "Açıklama girilmedi."}
+                                </p>
+                              </div>
+
+                              <div className="flex items-center justify-between gap-3 rounded-2xl border border-white/10 bg-black/30 px-4 py-3">
+                                <div className="flex items-center gap-3">
+                                  <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-white/10 bg-white/[0.04] text-[color:var(--accent)]">
+                                    <StepIcon className="h-5 w-5" />
+                                  </div>
+                                  <div className="space-y-1">
+                                    <p className="text-xs uppercase tracking-[0.2em] text-zinc-500">İkon</p>
+                                    <p className="text-sm text-zinc-200">{step.icon || "CalendarDays"}</p>
+                                  </div>
+                                </div>
+                                <Button
+                                  type="button"
+                                  variant="ghost"
+                                  onClick={() => setExpandedStepIndex(index)}
+                                  className="h-8 px-3 text-zinc-300 hover:bg-white/5 hover:text-zinc-50"
+                                >
+                                  Aç
+                                </Button>
+                              </div>
+                            </div>
+                          ) : (
+                            <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(320px,0.9fr)]">
+                              <div className="grid gap-4 md:grid-cols-2">
+                                <div className="space-y-2">
+                                  <label className="text-xs font-semibold uppercase tracking-[0.22em] text-zinc-400">
+                                    Başlık
+                                  </label>
+                                  <Input
+                                    value={step.title}
+                                    onChange={(event) => updateStep(index, "title", event.target.value)}
+                                    placeholder="Randevu"
+                                    className="border-white/10 bg-black/20 text-zinc-100 placeholder:text-zinc-500"
+                                  />
+                                </div>
+                                <div className="space-y-2">
+                                  <label className="text-xs font-semibold uppercase tracking-[0.22em] text-zinc-400">
+                                    Açıklama
+                                  </label>
+                                  <Textarea
+                                    value={step.description}
+                                    onChange={(event) => updateStep(index, "description", event.target.value)}
+                                    placeholder="Kısa açıklama..."
+                                    className="min-h-[120px] border-white/10 bg-black/20 text-zinc-100 placeholder:text-zinc-500"
+                                  />
+                                </div>
+                              </div>
+
+                              <div className="space-y-3 rounded-2xl border border-white/10 bg-white/[0.03] p-4">
+                                <div className="flex items-center gap-2 text-xs uppercase tracking-[0.22em] text-zinc-400">
+                                  <Settings2 className="h-4 w-4 text-[color:var(--accent)]" />
+                                  İkon
+                                </div>
+
+                                <div className="flex items-center gap-3">
+                                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-white/10 bg-black/30 text-[color:var(--accent)]">
+                                    <StepIcon className="h-6 w-6" />
+                                  </div>
+
+                                  <div className="min-w-0 flex-1 space-y-2">
+                                    <Select
+                                      value={isKnownIcon ? step.icon : ""}
+                                      onChange={(event) => updateStep(index, "icon", event.target.value)}
+                                      className="border-white/10 bg-black/20 text-zinc-100"
+                                    >
+                                      <option value="" disabled>
+                                        Hazır ikon seç
+                                      </option>
+                                      {WORKFLOW_ICON_OPTIONS.map((option) => (
+                                        <option key={option.key} value={option.key}>
+                                          {option.label} - {option.description}
+                                        </option>
+                                      ))}
+                                    </Select>
+                                    <p className="text-[11px] leading-5 text-zinc-500">
+                                      Lucide export adını yazabilir veya üstteki listeden seçim yapabilirsiniz.
+                                    </p>
+                                  </div>
+                                </div>
+
                                 <Input
-                                  value={step.title}
-                                  onChange={(event) => updateStep(index, "title", event.target.value)}
-                                  placeholder="Randevu"
+                                  value={step.icon}
+                                  onChange={(event) => updateStep(index, "icon", event.target.value)}
+                                  placeholder="CalendarDays"
                                   className="border-white/10 bg-black/20 text-zinc-100 placeholder:text-zinc-500"
                                 />
                               </div>
-                              <div className="space-y-2">
-                                <label className="text-xs font-semibold uppercase tracking-[0.22em] text-zinc-400">
-                                  Açıklama
-                                </label>
-                                <Textarea
-                                  value={step.description}
-                                  onChange={(event) => updateStep(index, "description", event.target.value)}
-                                  placeholder="Kısa açıklama..."
-                                  className="min-h-[120px] border-white/10 bg-black/20 text-zinc-100 placeholder:text-zinc-500"
-                                />
-                              </div>
                             </div>
-
-                            <div className="space-y-3 rounded-2xl border border-white/10 bg-white/[0.03] p-4">
-                              <div className="flex items-center gap-2 text-xs uppercase tracking-[0.22em] text-zinc-400">
-                                <Settings2 className="h-4 w-4 text-[color:var(--accent)]" />
-                                İkon
-                              </div>
-
-                              <div className="flex items-center gap-3">
-                                <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-white/10 bg-black/30 text-[color:var(--accent)]">
-                                  <StepIcon className="h-6 w-6" />
-                                </div>
-
-                                <div className="min-w-0 flex-1 space-y-2">
-                                  <Select
-                                    value={isKnownIcon ? step.icon : ""}
-                                    onChange={(event) => updateStep(index, "icon", event.target.value)}
-                                    className="border-white/10 bg-black/20 text-zinc-100"
-                                  >
-                                    <option value="" disabled>
-                                      Hazır ikon seç
-                                    </option>
-                                    {WORKFLOW_ICON_OPTIONS.map((option) => (
-                                      <option key={option.key} value={option.key}>
-                                        {option.label} - {option.description}
-                                      </option>
-                                    ))}
-                                  </Select>
-                                  <p className="text-[11px] leading-5 text-zinc-500">
-                                    Lucide export adını yazabilir veya üstteki listeden seçim yapabilirsiniz.
-                                  </p>
-                                </div>
-                              </div>
-
-                              <Input
-                                value={step.icon}
-                                onChange={(event) => updateStep(index, "icon", event.target.value)}
-                                placeholder="CalendarDays"
-                                className="border-white/10 bg-black/20 text-zinc-100 placeholder:text-zinc-500"
-                              />
-                            </div>
-                          </div>
+                          )}
                         </motion.div>
                       );
                     })}
