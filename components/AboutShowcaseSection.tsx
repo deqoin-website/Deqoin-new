@@ -36,8 +36,26 @@ export default function AboutShowcaseSection() {
 
     void fetchContent();
 
+    const interval = window.setInterval(() => {
+      if (!document.hidden) {
+        void fetchContent();
+      }
+    }, 15000);
+
+    const handleFocus = () => {
+      if (!document.hidden) {
+        void fetchContent();
+      }
+    };
+
+    window.addEventListener("focus", handleFocus);
+    document.addEventListener("visibilitychange", handleFocus);
+
     return () => {
       active = false;
+      window.clearInterval(interval);
+      window.removeEventListener("focus", handleFocus);
+      document.removeEventListener("visibilitychange", handleFocus);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

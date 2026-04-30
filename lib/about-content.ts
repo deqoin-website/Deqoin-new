@@ -23,6 +23,27 @@ export type AboutContent = {
   };
 };
 
+export const normalizeAboutStat = (value: unknown, fallback: AboutStat): AboutStat => {
+  if (!value || typeof value !== "object") return { ...fallback };
+
+  const candidate = value as Partial<AboutStat>;
+  return {
+    label: candidate.label?.toString() || fallback.label,
+    value: candidate.value?.toString() || fallback.value,
+  };
+};
+
+export const normalizeAboutSection = (value: unknown, fallback: AboutSection): AboutSection => {
+  if (!value || typeof value !== "object") return { ...fallback };
+
+  const candidate = value as Partial<AboutSection>;
+  return {
+    title: candidate.title?.toString() || fallback.title,
+    content: candidate.content?.toString() || fallback.content,
+    image: candidate.image?.toString() || "",
+  };
+};
+
 export const CURRENT_ABOUT_CONTENT: AboutContent = {
   page: "about",
   title: "Sizin hikayeniz, sizin mekanınız.",
@@ -95,6 +116,34 @@ export const createAboutDefaultContent = (): AboutContent => ({
     updatedAt: new Date().toISOString(),
   },
 });
+
+export const normalizeAboutContent = (value: unknown): AboutContent => {
+  const fallback = createAboutDefaultContent();
+  if (!value || typeof value !== "object") return fallback;
+
+  const candidate = value as Partial<AboutContent>;
+  const statsSource = Array.isArray(candidate.stats) && candidate.stats.length > 0 ? candidate.stats : fallback.stats;
+  const sectionsSource =
+    Array.isArray(candidate.sections) && candidate.sections.length > 0 ? candidate.sections : fallback.sections;
+
+  return {
+    page: "about",
+    title: candidate.title?.toString() || fallback.title,
+    subtitle: candidate.subtitle?.toString() || fallback.subtitle,
+    description: candidate.description?.toString() || fallback.description,
+    image: candidate.image?.toString() || fallback.image,
+    stats: statsSource.map((item, index) => normalizeAboutStat(item, fallback.stats[index] || fallback.stats[0])),
+    sections: sectionsSource.map((item, index) =>
+      normalizeAboutSection(item, fallback.sections[index] || fallback.sections[0]),
+    ),
+    metadata: candidate.metadata
+      ? {
+          lastUpdatedBy: candidate.metadata.lastUpdatedBy?.toString(),
+          updatedAt: candidate.metadata.updatedAt?.toString(),
+        }
+      : fallback.metadata,
+  };
+};
 
 export const isLegacyAboutContent = (value: unknown) => {
   if (!value || typeof value !== "object") return false;

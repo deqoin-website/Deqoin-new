@@ -2,12 +2,14 @@
 
 /* eslint-disable @next/next/no-img-element */
 
-import { useEffect, useMemo, useState, type ChangeEvent, type DragEvent } from 'react';
+import { useCallback, useEffect, useMemo, useState, type ChangeEvent, type DragEvent } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import {
   AlertTriangle,
-  BarChart3,
+  ArrowDown,
+  ArrowUp,
   CheckCircle2,
+  Clock3,
   FileText,
   Image as ImageIcon,
   Loader2,
@@ -15,6 +17,7 @@ import {
   RefreshCcw,
   Save,
   ShieldCheck,
+  Sparkles,
   Trash2,
   Upload,
 } from 'lucide-react';
@@ -27,93 +30,19 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
 import { Textarea } from '@/components/ui/textarea';
-import { createAboutDefaultContent } from '@/lib/about-content';
+import {
+  CURRENT_ABOUT_CONTENT,
+  createAboutDefaultContent,
+  normalizeAboutContent,
+  type AboutContent,
+  type AboutSection,
+  type AboutStat,
+} from '@/lib/about-content';
 import { cn } from '@/lib/utils';
 
-type TabKey = 'main' | 'stats' | 'workflow';
+const DEFAULT_SYNC_INTERVAL_MS = 15000;
 
-type CorporateStat = {
-  label: string;
-  value: string;
-};
-
-type CorporateSection = {
-  title: string;
-  content: string;
-  image?: string;
-};
-
-type CorporateContent = {
-  page: 'about';
-  title: string;
-  subtitle: string;
-  description: string;
-  image: string;
-  stats: CorporateStat[];
-  sections: CorporateSection[];
-  metadata?: {
-    lastUpdatedBy?: string;
-    updatedAt?: string;
-  };
-};
-
-const createDefaultContent = (): CorporateContent => ({
-  ...(() => {
-    const about = createAboutDefaultContent();
-    return {
-      ...about,
-      stats: about.stats,
-      sections: about.sections,
-    };
-  })(),
-});
-
-const cloneContent = (value: CorporateContent) => JSON.parse(JSON.stringify(value)) as CorporateContent;
-
-const normalizeStat = (value: unknown, fallback: CorporateStat): CorporateStat => {
-  if (!value || typeof value !== 'object') return { ...fallback };
-  const candidate = value as Partial<CorporateStat>;
-  return {
-    label: candidate.label?.toString() ?? fallback.label,
-    value: candidate.value?.toString() ?? fallback.value,
-  };
-};
-
-const normalizeSection = (value: unknown, fallback: CorporateSection): CorporateSection => {
-  if (!value || typeof value !== 'object') return { ...fallback };
-  const candidate = value as Partial<CorporateSection>;
-  return {
-    title: candidate.title?.toString() ?? fallback.title,
-    content: candidate.content?.toString() ?? fallback.content,
-    image: candidate.image?.toString() ?? '',
-  };
-};
-
-const normalizeContent = (value: unknown): CorporateContent => {
-  const fallback = createDefaultContent();
-  if (!value || typeof value !== 'object') return fallback;
-
-  const candidate = value as Partial<CorporateContent>;
-  const statsSource = Array.isArray(candidate.stats) && candidate.stats.length > 0 ? candidate.stats : fallback.stats;
-  const sectionsSource =
-    Array.isArray(candidate.sections) && candidate.sections.length > 0 ? candidate.sections : fallback.sections;
-
-  return {
-    page: 'about',
-    title: candidate.title?.toString() ?? fallback.title,
-    subtitle: candidate.subtitle?.toString() ?? fallback.subtitle,
-    description: candidate.description?.toString() ?? fallback.description,
-    image: candidate.image?.toString() ?? fallback.image,
-    stats: statsSource.map((item, index) => normalizeStat(item, fallback.stats[index] || fallback.stats[0])),
-    sections: sectionsSource.map((item, index) => normalizeSection(item, fallback.sections[index] || fallback.sections[0])),
-    metadata: candidate.metadata
-      ? {
-          lastUpdatedBy: candidate.metadata.lastUpdatedBy?.toString(),
-          updatedAt: candidate.metadata.updatedAt?.toString(),
-        }
-      : fallback.metadata,
-  };
-};
+const cloneContent = (value: AboutContent) => JSON.parse(JSON.stringify(value)) as AboutContent;
 
 const formatDate = (value?: string) => {
   if (!value) return 'Kayıt yok';
@@ -125,25 +54,19 @@ const formatDate = (value?: string) => {
   }).format(parsed);
 };
 
-const TAB_ITEMS: Array<{
-  key: TabKey;
-  label: string;
-  description: string;
-  icon: typeof FileText;
-}> = [
-  { key: 'main', label: 'Ana İçerik', description: 'Başlık, açıklama ve görsel', icon: FileText },
-  { key: 'stats', label: 'İstatistikler', description: 'Sayısal veriler ve etiketler', icon: BarChart3 },
-];
+const createPreviewContent = (data: AboutContent) => ({
+  ...CURRENT_ABOUT_CONTENT,
+  ...data,
+});
 
 export default function CorporateAboutAdmin() {
   const { showToast } = useNotification();
-  const [data, setData] = useState<CorporateContent>(createDefaultContent());
-  const [initialData, setInitialData] = useState<CorporateContent>(createDefaultContent());
-  const [isDirty, setIsDirty] = useState(false);
+  const [data, setData] = useState<AboutContent>(createAboutDefaultContent());
+  const [initialData, setInitialData] = useState<AboutContent>(createAboutDefaultContent());
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
-  const [activeTab, setActiveTab] = useState<TabKey>('main');
+  const [isDirty, setIsDirty] = useState(false);
   const [apiError, setApiError] = useState<string | null>(null);
   const [lastSync, setLastSync] = useState<string | null>(null);
   const [uploadTarget, setUploadTarget] = useState<string | null>(null);
@@ -153,89 +76,78 @@ export default function CorporateAboutAdmin() {
     [data.metadata?.updatedAt, initialData.metadata?.updatedAt, lastSync],
   );
 
-  const loadContent = async () => {
-    setLoading(true);
-    setApiError(null);
-
-    try {
-      const res = await fetch('/api/admin/content/corporate/about', { cache: 'no-store' });
-      if (!res.ok) {
-        throw new Error(`GET /api/admin/content/corporate/about failed with ${res.status}`);
+  const loadContent = useCallback(
+    async (silent = false) => {
+      if (!silent) {
+        setLoading(true);
       }
 
-      const json = normalizeContent(await res.json());
-      setData(json);
-      setInitialData(cloneContent(json));
-      setLastSync(json.metadata?.updatedAt || new Date().toISOString());
-      setIsDirty(false);
-    } catch (error) {
-      console.error('Corporate content load error:', error);
-      const fallback = createDefaultContent();
-      setData(fallback);
-      setInitialData(cloneContent(fallback));
-      setApiError('İçerik API bağlantısı okunamadı. Varsayılan verilerle devam ediliyor.');
-      showToast('Hakkımızda içeriği yüklenemedi.', 'error');
-    } finally {
-      setLoading(false);
-    }
-  };
+      setApiError(null);
+
+      try {
+        const res = await fetch('/api/admin/content/corporate/about', { cache: 'no-store' });
+        if (!res.ok) {
+          throw new Error(`GET /api/admin/content/corporate/about failed with ${res.status}`);
+        }
+
+        const json = normalizeAboutContent(await res.json());
+        setData(json);
+        setInitialData(cloneContent(json));
+        setLastSync(json.metadata?.updatedAt || new Date().toISOString());
+        setIsDirty(false);
+      } catch (error) {
+        console.error('Corporate content load error:', error);
+        const fallback = createAboutDefaultContent();
+        setData(fallback);
+        setInitialData(cloneContent(fallback));
+        setApiError('İçerik API bağlantısı okunamadı. Varsayılan verilerle devam ediliyor.');
+        if (!silent) {
+          showToast('Hakkımızda içeriği yüklenemedi.', 'error');
+        }
+      } finally {
+        if (!silent) {
+          setLoading(false);
+        }
+      }
+    },
+    [showToast],
+  );
 
   useEffect(() => {
     void loadContent();
-  }, []);
+  }, [loadContent]);
 
-  const updateData = (next: CorporateContent) => {
+  useEffect(() => {
+    const refresh = () => {
+      if (!isDirty && !saving) {
+        void loadContent(true);
+      }
+    };
+
+    const interval = window.setInterval(refresh, DEFAULT_SYNC_INTERVAL_MS);
+    window.addEventListener('focus', refresh);
+    document.addEventListener('visibilitychange', refresh);
+
+    return () => {
+      window.clearInterval(interval);
+      window.removeEventListener('focus', refresh);
+      document.removeEventListener('visibilitychange', refresh);
+    };
+  }, [isDirty, loadContent, saving]);
+
+  const updateData = (next: AboutContent) => {
     setData(next);
     setIsDirty(true);
   };
 
-  const handleSave = async () => {
-    const payload = normalizeContent(data);
-    setSaving(true);
-    setApiError(null);
-
-    try {
-      const res = await fetch('/api/admin/content/corporate/about', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(payload),
-      });
-
-      if (!res.ok) {
-        throw new Error(`PUT /api/admin/content/corporate/about failed with ${res.status}`);
-      }
-
-      const json = normalizeContent(await res.json());
-      setData(json);
-      setInitialData(cloneContent(json));
-      setIsDirty(false);
-      setLastSync(json.metadata?.updatedAt || new Date().toISOString());
-      showToast('Hakkımızda içeriği başarıyla güncellendi.', 'success');
-    } catch (error) {
-      console.error('Corporate content save error:', error);
-      setApiError('Kaydetme sırasında bir API hatası oluştu.');
-      showToast('Güncelleme sırasında hata oluştu.', 'error');
-    } finally {
-      setSaving(false);
-    }
-  };
-
-  const handleCancel = () => {
-    setData(cloneContent(initialData));
-    setIsDirty(false);
-    showToast('Değişiklikler geri alındı.', 'info');
-  };
-
-  const updateField = (field: keyof Pick<CorporateContent, 'title' | 'subtitle' | 'description' | 'image'>, value: string) => {
+  const updateField = (field: keyof Pick<AboutContent, 'title' | 'subtitle' | 'description' | 'image'>, value: string) => {
     updateData({
       ...data,
       [field]: value,
     });
   };
 
-  const updateStat = (index: number, field: keyof CorporateStat, value: string) => {
+  const updateStat = (index: number, field: keyof AboutStat, value: string) => {
     const nextStats = [...data.stats];
     nextStats[index] = {
       ...nextStats[index],
@@ -261,14 +173,7 @@ export default function CorporateAboutAdmin() {
     });
   };
 
-  const addWorkflowStep = () => {
-    updateData({
-      ...data,
-      sections: [...data.sections, { title: 'YENİ ADIM', content: '', image: '' }],
-    });
-  };
-
-  const updateWorkflowStep = (index: number, field: keyof CorporateSection, value: string) => {
+  const updateSection = (index: number, field: keyof AboutSection, value: string) => {
     const nextSections = [...data.sections];
     nextSections[index] = {
       ...nextSections[index],
@@ -280,16 +185,82 @@ export default function CorporateAboutAdmin() {
     });
   };
 
-  const removeWorkflowStep = (index: number) => {
+  const addSection = () => {
+    updateData({
+      ...data,
+      sections: [...data.sections, { title: 'YENİ BLOK', content: '', image: '' }],
+    });
+  };
+
+  const removeSection = (index: number) => {
     updateData({
       ...data,
       sections: data.sections.filter((_, sectionIndex) => sectionIndex !== index),
     });
   };
 
+  const moveSection = (index: number, direction: 'up' | 'down') => {
+    const nextSections = [...data.sections];
+    const target = direction === 'up' ? index - 1 : index + 1;
+
+    if (target < 0 || target >= nextSections.length) return;
+
+    [nextSections[index], nextSections[target]] = [nextSections[target], nextSections[index]];
+    updateData({
+      ...data,
+      sections: nextSections,
+    });
+  };
+
+  const saveAbout = async () => {
+    setSaving(true);
+    setApiError(null);
+
+    try {
+      const payload = normalizeAboutContent(data);
+      const res = await fetch('/api/admin/content/corporate/about', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      });
+
+      if (!res.ok) {
+        throw new Error(`PUT /api/admin/content/corporate/about failed with ${res.status}`);
+      }
+
+      const json = normalizeAboutContent(await res.json());
+      setData(json);
+      setInitialData(cloneContent(json));
+      setIsDirty(false);
+      setLastSync(json.metadata?.updatedAt || new Date().toISOString());
+      showToast('Hakkımızda içeriği başarıyla güncellendi.', 'success');
+    } catch (error) {
+      console.error('Corporate content save error:', error);
+      setApiError('Kaydetme sırasında bir API hatası oluştu.');
+      showToast('Güncelleme sırasında hata oluştu.', 'error');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleCancel = () => {
+    setData(cloneContent(initialData));
+    setIsDirty(false);
+    showToast('Değişiklikler geri alındı.', 'info');
+  };
+
+  const resetToDefaults = () => {
+    const fallback = createAboutDefaultContent();
+    setData(fallback);
+    setIsDirty(true);
+    showToast('Varsayılan Hakkımızda içeriği yüklendi.', 'info');
+  };
+
   const uploadFile = async (file: File, target: 'cover' | { index: number }) => {
     setIsUploading(true);
-    setUploadTarget(typeof target === 'string' ? 'kapak görseli' : `iş akışı ${target.index + 1}`);
+    setUploadTarget(typeof target === 'string' ? 'kapak görseli' : `alt blok ${target.index + 1}`);
 
     try {
       const res = await fetch(`/api/upload?filename=${encodeURIComponent(file.name)}`, {
@@ -309,20 +280,9 @@ export default function CorporateAboutAdmin() {
       }
 
       if (target === 'cover') {
-        updateData({
-          ...data,
-          image: url,
-        });
+        updateField('image', url);
       } else {
-        const nextSections = [...data.sections];
-        nextSections[target.index] = {
-          ...nextSections[target.index],
-          image: url,
-        };
-        updateData({
-          ...data,
-          sections: nextSections,
-        });
+        updateSection(target.index, 'image', url);
       }
 
       showToast('Görsel başarıyla yüklendi.', 'success');
@@ -342,7 +302,7 @@ export default function CorporateAboutAdmin() {
     await uploadFile(file, 'cover');
   };
 
-  const handleWorkflowUpload = async (event: ChangeEvent<HTMLInputElement>, index: number) => {
+  const handleSectionUpload = async (event: ChangeEvent<HTMLInputElement>, index: number) => {
     const file = event.target.files?.[0];
     event.target.value = '';
     if (!file) return;
@@ -357,6 +317,7 @@ export default function CorporateAboutAdmin() {
   };
 
   const saveDisabled = loading || saving || !isDirty;
+  const preview = createPreviewContent(data);
 
   if (loading) {
     return (
@@ -382,17 +343,17 @@ export default function CorporateAboutAdmin() {
               <Badge variant={isDirty ? 'default' : 'secondary'}>{isDirty ? 'Kaydedilmemiş değişiklik' : 'Senkronize'}</Badge>
               <Badge variant={apiError ? 'outline' : 'secondary'}>{apiError ? 'API uyarısı' : 'API bağlantısı aktif'}</Badge>
               <Badge variant="outline">{data.stats.length} istatistik</Badge>
-              <Badge variant="outline">{data.sections.length} adım</Badge>
+              <Badge variant="outline">{data.sections.length} blok</Badge>
             </div>
 
-            <div className="grid gap-5 lg:grid-cols-[minmax(0,1.5fr)_minmax(320px,0.8fr)] lg:items-end">
+            <div className="grid gap-5 lg:grid-cols-[minmax(0,1.55fr)_minmax(320px,0.75fr)] lg:items-end">
               <div className="space-y-3">
                 <CardTitle className="text-3xl tracking-[0.08em] text-zinc-50 md:text-5xl">
                   Hakkımızda sayfa editörü
                 </CardTitle>
                 <CardDescription className="max-w-3xl text-base text-zinc-400">
-                  `/admin/content/corporate` sayfasındaki Hakkımızda başlığı, görsel, istatistikler ve içerik akışını
-                  tek panelden yönetin. Kaydetme, yükleme ve API durumlarını doğrudan burada kontrol edin.
+                  Ana sayfadaki Hakkımızda bloğunu ve bu sayfanın destekleyici bloklarını tek panelden yönetin.
+                  Değişiklikler canlı önizlemede görünür, kaydedildikten sonra ana sayfaya da yansır.
                 </CardDescription>
               </div>
 
@@ -416,578 +377,507 @@ export default function CorporateAboutAdmin() {
           </CardHeader>
         </Card>
 
-        <div className="grid gap-6 xl:grid-cols-[minmax(0,1.35fr)_minmax(320px,0.85fr)]">
-          <div className="space-y-6">
-            <div className="grid gap-4 md:grid-cols-3">
-              <Card className="border-white/10 bg-white/[0.04]">
-                <CardHeader className="pb-3">
-                  <CardDescription>Son senkronizasyon</CardDescription>
-                  <CardTitle className="text-xl tracking-[0.06em]">
-                    {formatDate(syncTimestamp || undefined)}
-                  </CardTitle>
-                </CardHeader>
-              </Card>
-              <Card className="border-white/10 bg-white/[0.04]">
-                <CardHeader className="pb-3">
-                  <CardDescription>Aktif durum</CardDescription>
-                  <CardTitle className="text-xl tracking-[0.06em]">
-                    {saving ? 'Kaydediliyor' : isDirty ? 'Düzenleniyor' : 'Hazır'}
-                  </CardTitle>
-                </CardHeader>
-              </Card>
-              <Card className="border-white/10 bg-white/[0.04]">
-                <CardHeader className="pb-3">
-                  <CardDescription>Yükleme</CardDescription>
-                  <CardTitle className="text-xl tracking-[0.06em]">
-                    {isUploading ? uploadTarget || 'Yükleniyor' : 'Beklemede'}
-                  </CardTitle>
-                </CardHeader>
-              </Card>
-            </div>
+        {apiError && (
+          <Card className="border-amber-400/20 bg-amber-400/5">
+            <CardContent className="flex flex-col gap-4 p-5 md:flex-row md:items-center md:justify-between">
+              <div className="flex items-start gap-3">
+                <div className="mt-0.5 rounded-full border border-amber-400/20 bg-amber-400/10 p-2 text-amber-300">
+                  <AlertTriangle className="h-4 w-4" />
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-zinc-100">API uyarısı</p>
+                  <p className="text-sm text-zinc-400">{apiError}</p>
+                </div>
+              </div>
+              <Button variant="outline" onClick={() => void loadContent()} className="border-white/10 bg-white/[0.03]">
+                <RefreshCcw className="mr-2 h-4 w-4" />
+                Yeniden dene
+              </Button>
+            </CardContent>
+          </Card>
+        )}
 
-            {apiError && (
-              <Card className="border-amber-400/20 bg-amber-400/5">
-                <CardContent className="flex flex-col gap-4 p-5 md:flex-row md:items-center md:justify-between">
-                  <div className="flex items-start gap-3">
-                    <div className="mt-0.5 rounded-full border border-amber-400/20 bg-amber-400/10 p-2 text-amber-300">
-                      <AlertTriangle className="h-4 w-4" />
+        <div className="grid gap-6 xl:grid-cols-[minmax(0,1.05fr)_minmax(360px,0.95fr)]">
+          <Card className="sticky top-6 border-white/10 bg-white/[0.04]">
+            <CardHeader className="space-y-3">
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <div>
+                  <CardTitle className="text-2xl tracking-[0.06em]">Ana sayfa önizlemesi</CardTitle>
+                  <CardDescription>
+                    Ana sayfadaki Hakkımızda bölümünün birebir düzenini burada görürsünüz.
+                  </CardDescription>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  <Badge variant="secondary">Canlı mirror</Badge>
+                  <Badge variant="outline">{formatDate(syncTimestamp || undefined)}</Badge>
+                </div>
+              </div>
+            </CardHeader>
+
+            <CardContent className="space-y-6">
+              <motion.div
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="grid gap-6 lg:grid-cols-2 lg:items-center"
+              >
+                <div className="space-y-4">
+                  <p className="text-xs uppercase tracking-[0.35em] text-zinc-500">
+                    {preview.subtitle}
+                  </p>
+                  <h2 className="text-4xl font-thin tracking-tight text-zinc-50 md:text-6xl" style={{ fontFamily: 'var(--font-smooch), sans-serif' }}>
+                    {preview.title}
+                  </h2>
+                  <p className="max-w-xl text-base leading-8 text-zinc-400 md:text-xl" style={{ fontFamily: 'var(--font-smooch), sans-serif' }}>
+                    {preview.description}
+                  </p>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <Badge variant="secondary">Ana sayfa ile aynı kaynak</Badge>
+                    <Badge variant="outline">Editörden güncellenir</Badge>
+                  </div>
+                </div>
+
+                <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-black/30">
+                  {preview.image ? (
+                    <img src={preview.image} alt="Hakkımızda kapak önizleme" className="h-[320px] w-full object-cover" />
+                  ) : (
+                    <div className="flex h-[320px] items-center justify-center text-sm text-zinc-500">
+                      Kapak görseli bekleniyor
                     </div>
-                    <div>
-                      <p className="text-sm font-medium text-zinc-100">API uyarısı</p>
-                      <p className="text-sm text-zinc-400">{apiError}</p>
+                  )}
+                  <div className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent p-4">
+                    <div className="flex items-center justify-between gap-3 text-xs text-zinc-200">
+                      <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-black/30 px-3 py-1">
+                        <ShieldCheck className="h-3.5 w-3.5" />
+                        Ana sayfa görseli
+                      </span>
+                      <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-black/30 px-3 py-1">
+                        <Sparkles className="h-3.5 w-3.5" />
+                        Canlı önizleme
+                      </span>
                     </div>
                   </div>
-                  <Button variant="outline" onClick={() => void loadContent()} className="border-white/10 bg-white/[0.03]">
-                    <RefreshCcw className="mr-2 h-4 w-4" />
-                    Yeniden dene
-                  </Button>
-                </CardContent>
-              </Card>
-            )}
+                </div>
+              </motion.div>
 
+              <Separator />
+
+              <div className="grid gap-3 md:grid-cols-3">
+                {preview.stats.map((stat, index) => (
+                  <div key={`preview-stat-${index}`} className="rounded-3xl border border-white/10 bg-black/20 p-5">
+                    <p className="text-xs uppercase tracking-[0.2em] text-zinc-500">{stat.label}</p>
+                    <p className="mt-3 text-2xl font-semibold tracking-[0.08em] text-zinc-50">{stat.value}</p>
+                  </div>
+                ))}
+              </div>
+
+              <Separator />
+
+              <div className="grid gap-3">
+                {preview.sections.map((section, index) => (
+                  <div
+                    key={`preview-section-${index}`}
+                    className="grid gap-4 rounded-3xl border border-white/10 bg-black/20 p-4 md:grid-cols-[140px_minmax(0,1fr)]"
+                  >
+                    <div className="overflow-hidden rounded-2xl border border-white/10 bg-white/[0.03]">
+                      {section.image ? (
+                        <img src={section.image} alt={section.title} className="h-28 w-full object-cover" />
+                      ) : (
+                        <div className="flex h-28 items-center justify-center text-xs uppercase tracking-[0.18em] text-zinc-600">
+                          Görsel yok
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="space-y-2">
+                      <Badge variant="secondary">Blok {String(index + 1).padStart(2, '0')}</Badge>
+                      <h4 className="text-lg font-semibold tracking-[0.06em] text-zinc-50">{section.title}</h4>
+                      <p className="text-sm leading-7 text-zinc-400">{section.content}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+
+          <div className="space-y-6">
             <Card className="border-white/10 bg-white/[0.04]">
               <CardHeader className="space-y-4">
                 <div className="flex flex-wrap items-center justify-between gap-3">
                   <div>
-                    <CardTitle className="text-2xl tracking-[0.06em]">Düzenleme alanı</CardTitle>
-                    <CardDescription className="max-w-2xl">
-                      Alanları güncelleyin, görsel yükleyin ve değişiklikleri kaydetmeden önce önizlemeyi kontrol edin.
+                    <CardTitle className="text-2xl tracking-[0.06em]">Ana içerik</CardTitle>
+                    <CardDescription>
+                      Ana sayfadaki Hakkımızda bölümünü etkileyen alanları düzenleyin.
                     </CardDescription>
                   </div>
                   <div className="flex flex-wrap gap-2">
+                    <Button variant="outline" onClick={resetToDefaults} className="border-white/10 bg-white/[0.03]">
+                      Varsayılan
+                    </Button>
+                    <Button variant="outline" onClick={() => void loadContent()} className="border-white/10 bg-white/[0.03]">
+                      <RefreshCcw className="mr-2 h-4 w-4" />
+                      Senkronize et
+                    </Button>
                     <Button
-                      onClick={handleSave}
+                      onClick={saveAbout}
                       disabled={saveDisabled}
                       className="bg-[color:var(--accent)] text-black hover:bg-[color:var(--accent)]/90"
                     >
                       {saving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Save className="mr-2 h-4 w-4" />}
                       Kaydet
                     </Button>
-                    <Button
-                      variant="outline"
-                      onClick={handleCancel}
-                      disabled={!isDirty || saving}
-                      className="border-white/10 bg-white/[0.03]"
-                    >
-                      <RefreshCcw className="mr-2 h-4 w-4" />
-                      Sıfırla
-                    </Button>
                   </div>
                 </div>
-
-                <div className="grid gap-2 rounded-3xl border border-white/10 bg-black/20 p-2 md:grid-cols-2">
-                  {TAB_ITEMS.map((tab) => {
-                    const Icon = tab.icon;
-                    const active = activeTab === tab.key;
-
-                    return (
-                      <button
-                        key={tab.key}
-                        type="button"
-                        onClick={() => setActiveTab(tab.key)}
-                        className={cn(
-                          'flex flex-col gap-1 rounded-2xl px-4 py-3 text-left transition-all',
-                          active
-                            ? 'bg-[color:var(--accent)] text-black shadow-[0_12px_35px_rgba(166,137,102,0.25)]'
-                            : 'bg-transparent text-zinc-300 hover:bg-white/[0.04] hover:text-zinc-50',
-                        )}
-                      >
-                        <span className="flex items-center gap-2 text-sm font-semibold tracking-[0.08em]">
-                          <Icon className="h-4 w-4" />
-                          {tab.label}
-                        </span>
-                        <span className={cn('text-xs tracking-normal', active ? 'text-black/70' : 'text-zinc-500')}>
-                          {tab.description}
-                        </span>
-                      </button>
-                    );
-                  })}
-                </div>
               </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-2">
+                  <label className="text-xs font-semibold uppercase tracking-[0.2em] text-zinc-400">
+                    Üst etiket
+                  </label>
+                  <Input
+                    value={data.subtitle}
+                    onChange={(event) => updateField('subtitle', event.target.value)}
+                    placeholder="BİZ KİMİZ"
+                    className="border-white/10 bg-black/20 text-zinc-100 placeholder:text-zinc-500"
+                  />
+                </div>
 
-              <CardContent className="pt-0">
-                <AnimatePresence mode="wait">
-                  {activeTab === 'main' && (
-                    <motion.div
-                      key="main"
-                      initial={{ opacity: 0, y: 16 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -16 }}
-                      className="grid gap-6"
-                    >
-                      <Card className="border-white/10 bg-white/[0.03]">
-                        <CardHeader>
-                          <CardTitle className="text-lg tracking-[0.06em]">Sayfa başlıkları</CardTitle>
-                          <CardDescription>Üst başlık ve ana başlık metinlerini düzenleyin.</CardDescription>
-                        </CardHeader>
-                        <CardContent className="space-y-4">
-                          <div className="space-y-2">
-                            <label className="text-xs font-semibold uppercase tracking-[0.2em] text-zinc-400">
-                              Üst başlık
-                            </label>
-                            <Input
-                              value={data.subtitle}
-                              onChange={(event) => updateField('subtitle', event.target.value)}
-                              placeholder="BİZ KİMİZ"
-                            />
-                          </div>
+                <div className="space-y-2">
+                  <label className="text-xs font-semibold uppercase tracking-[0.2em] text-zinc-400">
+                    Ana başlık
+                  </label>
+                  <Textarea
+                    value={data.title}
+                    onChange={(event) => updateField('title', event.target.value)}
+                    placeholder="Sizin hikayeniz, sizin mekanınız."
+                    className="min-h-[120px] border-white/10 bg-black/20 text-zinc-100 placeholder:text-zinc-500"
+                  />
+                  <p className="text-xs text-zinc-500">
+                    Satır kırmak isterseniz yeni satır kullanın; ana sayfada aynı şekilde görünür.
+                  </p>
+                </div>
 
-                          <div className="space-y-2">
-                            <label className="text-xs font-semibold uppercase tracking-[0.2em] text-zinc-400">
-                              Ana başlık
-                            </label>
-                            <Textarea
-                              value={data.title}
-                              onChange={(event) => updateField('title', event.target.value)}
-                              placeholder="TASARIMDAN ÖTE: BÜTÜNSEL BİR DENEYİM"
-                              className="min-h-[120px]"
-                            />
-                            <p className="text-xs text-zinc-500">
-                              Satır kırımı için yeni satır kullanın. Başlık doğrudan front-end'de aynı düzenle gösterilir.
-                            </p>
-                          </div>
-                        </CardContent>
-                      </Card>
+                <div className="space-y-2">
+                  <label className="text-xs font-semibold uppercase tracking-[0.2em] text-zinc-400">
+                    Açıklama metni
+                  </label>
+                  <Textarea
+                    value={data.description}
+                    onChange={(event) => updateField('description', event.target.value)}
+                    placeholder="Hakkımızda açıklama metni..."
+                    className="min-h-[180px] border-white/10 bg-black/20 text-zinc-100 placeholder:text-zinc-500"
+                  />
+                </div>
 
-                      <div className="grid gap-6 lg:grid-cols-[minmax(0,1.1fr)_minmax(320px,0.9fr)]">
-                        <Card className="border-white/10 bg-white/[0.03]">
-                          <CardHeader>
-                            <CardTitle className="text-lg tracking-[0.06em]">Kapak görseli</CardTitle>
-                            <CardDescription>
-                              Dosya yükleyin ya da sürükleyip bırakın. Yükleme doğrudan `api/upload` üzerinden gider.
-                            </CardDescription>
-                          </CardHeader>
-                          <CardContent className="space-y-4">
-                            <div
-                              role="button"
-                              tabIndex={0}
-                              onClick={() => document.getElementById('corporate-cover-input')?.click()}
-                              onDragOver={(event) => event.preventDefault()}
-                              onDrop={handleDrop}
-                              className="group relative flex min-h-[320px] cursor-pointer flex-col overflow-hidden rounded-3xl border border-dashed border-white/15 bg-black/20 transition-colors hover:border-[color:var(--accent)]"
-                            >
-                              {data.image ? (
-                                <img src={data.image} alt="Hakkımızda kapak görseli" className="h-full w-full object-cover" />
-                              ) : (
-                                <div className="flex flex-1 flex-col items-center justify-center gap-4 p-8 text-center">
-                                  <div className="rounded-full border border-white/10 bg-white/5 p-4 text-[color:var(--accent)]">
-                                    <ImageIcon className="h-6 w-6" />
-                                  </div>
-                                  <div className="space-y-1">
-                                    <p className="text-sm font-medium text-zinc-100">Kapak görseli ekle</p>
-                                    <p className="text-xs text-zinc-500">
-                                      PNG, JPG veya WEBP dosyası yükleyin. Görsel alanı tam genişlikte gösterilir.
-                                    </p>
-                                  </div>
-                                </div>
-                              )}
-
-                              <div className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 via-black/25 to-transparent p-4">
-                                <div className="flex items-center justify-between gap-3 text-xs text-zinc-200">
-                                  <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-black/30 px-3 py-1">
-                                    <ShieldCheck className="h-3.5 w-3.5" />
-                                    API üzerinden yüklenir
-                                  </span>
-                                  <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-black/30 px-3 py-1">
-                                    <Upload className="h-3.5 w-3.5" />
-                                    Sürükle bırak destekli
-                                  </span>
-                                </div>
-                              </div>
-                            </div>
-
-                            <input id="corporate-cover-input" type="file" accept="image/*" className="hidden" onChange={handleCoverUpload} />
-
-                            <div className="space-y-2">
-                              <label className="text-xs font-semibold uppercase tracking-[0.2em] text-zinc-400">
-                                Açıklama metni
-                              </label>
-                              <Textarea
-                                value={data.description}
-                                onChange={(event) => updateField('description', event.target.value)}
-                                placeholder="Hakkımızda açıklama metni..."
-                                className="min-h-[180px]"
-                              />
-                            </div>
-                          </CardContent>
-                        </Card>
-
-                        <Card className="border-white/10 bg-white/[0.03]">
-                          <CardHeader>
-                            <CardTitle className="text-lg tracking-[0.06em]">Canlı özet</CardTitle>
-                            <CardDescription>Kaydetmeden önce sayfanın görünümünü burada kontrol edin.</CardDescription>
-                          </CardHeader>
-                          <CardContent className="space-y-5">
-                            <div className="overflow-hidden rounded-3xl border border-white/10 bg-black/30">
-                              {data.image ? (
-                                <img src={data.image} alt="Kapak önizleme" className="h-56 w-full object-cover" />
-                              ) : (
-                                <div className="flex h-56 items-center justify-center text-sm text-zinc-500">
-                                  Görsel önizleme bekleniyor
-                                </div>
-                              )}
-                            </div>
-
-                            <div className="space-y-2">
-                              <p className="text-xs uppercase tracking-[0.2em] text-[color:var(--accent)]">{data.subtitle}</p>
-                              <h3 className="whitespace-pre-line text-xl font-semibold tracking-[0.06em] text-zinc-50">
-                                {data.title}
-                              </h3>
-                              <p className="text-sm leading-7 text-zinc-400">{data.description}</p>
-                            </div>
-
-                            <Separator />
-
-                            <div className="grid gap-3">
-                              {data.metadata?.lastUpdatedBy && (
-                                <div className="flex items-center justify-between rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm">
-                                  <span className="text-zinc-500">Son düzenleyen</span>
-                                  <span className="text-zinc-100">{data.metadata.lastUpdatedBy}</span>
-                                </div>
-                              )}
-                              <div className="flex items-center justify-between rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm">
-                                <span className="text-zinc-500">Son kaydı</span>
-                                <span className="text-zinc-100">{formatDate(syncTimestamp || undefined)}</span>
-                              </div>
-                              <div className="flex items-center justify-between rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm">
-                                <span className="text-zinc-500">Durum</span>
-                                <span className={isDirty ? 'text-amber-300' : 'text-emerald-300'}>
-                                  {isDirty ? 'Yayına hazır değil' : 'Yayına hazır'}
-                                </span>
-                              </div>
-                            </div>
-                          </CardContent>
-                        </Card>
+                <div className="grid gap-4 lg:grid-cols-[minmax(0,1.2fr)_minmax(240px,0.8fr)]">
+                  <div
+                    role="button"
+                    tabIndex={0}
+                    onClick={() => document.getElementById('corporate-cover-input')?.click()}
+                    onDragOver={(event) => event.preventDefault()}
+                    onDrop={handleDrop}
+                    className="group relative flex min-h-[280px] cursor-pointer flex-col overflow-hidden rounded-3xl border border-dashed border-white/15 bg-black/20 transition-colors hover:border-[color:var(--accent)]"
+                  >
+                    {data.image ? (
+                      <img src={data.image} alt="Hakkımızda kapak görseli" className="h-full w-full object-cover" />
+                    ) : (
+                      <div className="flex flex-1 flex-col items-center justify-center gap-4 p-8 text-center">
+                        <div className="rounded-full border border-white/10 bg-white/5 p-4 text-[color:var(--accent)]">
+                          <ImageIcon className="h-6 w-6" />
+                        </div>
+                        <div className="space-y-1">
+                          <p className="text-sm font-medium text-zinc-100">Kapak görseli ekle</p>
+                          <p className="text-xs text-zinc-500">
+                            PNG, JPG veya WEBP yükleyin. Görsel ana sayfada da kullanılacak.
+                          </p>
+                        </div>
                       </div>
-                    </motion.div>
-                  )}
+                    )}
 
-                  {activeTab === 'stats' && (
-                    <motion.div
-                      key="stats"
-                      initial={{ opacity: 0, y: 16 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -16 }}
-                      className="space-y-4"
-                    >
-                      <Card className="border-white/10 bg-white/[0.03]">
-                        <CardHeader className="flex-row items-center justify-between gap-4 space-y-0">
-                          <div>
-                            <CardTitle className="text-lg tracking-[0.06em]">Sayısal veriler</CardTitle>
-                            <CardDescription>
-                              İstatistik kartlarının etiket ve değer alanlarını buradan güncelleyin.
-                            </CardDescription>
-                          </div>
-                          <Button
-                            type="button"
-                            variant="outline"
-                            onClick={addStat}
-                            className="border-white/10 bg-white/[0.03]"
-                          >
-                            <Plus className="mr-2 h-4 w-4" />
-                            İstatistik ekle
-                          </Button>
-                        </CardHeader>
-
-                        <CardContent className="space-y-4">
-                          {data.stats.length === 0 && (
-                            <div className="rounded-3xl border border-dashed border-white/10 bg-black/20 p-8 text-center text-sm text-zinc-500">
-                              Henüz istatistik yok. Yeni bir kart ekleyebilirsiniz.
-                            </div>
-                          )}
-
-                          <div className="grid gap-4">
-                            {data.stats.map((stat, index) => (
-                              <div key={`${stat.label}-${index}`} className="rounded-3xl border border-white/10 bg-black/20 p-4">
-                                <div className="mb-4 flex items-center justify-between gap-3">
-                                  <Badge variant="secondary">İstatistik {String(index + 1).padStart(2, '0')}</Badge>
-                                  <Button
-                                    type="button"
-                                    variant="ghost"
-                                    onClick={() => removeStat(index)}
-                                    className="h-9 px-3 text-zinc-400 hover:bg-white/5 hover:text-red-300"
-                                  >
-                                    <Trash2 className="mr-2 h-4 w-4" />
-                                    Sil
-                                  </Button>
-                                </div>
-
-                                <div className="grid gap-4 md:grid-cols-2">
-                                  <div className="space-y-2">
-                                    <label className="text-xs font-semibold uppercase tracking-[0.2em] text-zinc-400">
-                                      Etiket
-                                    </label>
-                                    <Input
-                                      value={stat.label}
-                                      onChange={(event) => updateStat(index, 'label', event.target.value)}
-                                      placeholder="DENEYİM"
-                                    />
-                                  </div>
-                                  <div className="space-y-2">
-                                    <label className="text-xs font-semibold uppercase tracking-[0.2em] text-zinc-400">
-                                      Değer
-                                    </label>
-                                    <Input
-                                      value={stat.value}
-                                      onChange={(event) => updateStat(index, 'value', event.target.value)}
-                                      placeholder="10+ YIL"
-                                    />
-                                  </div>
-                                </div>
-                              </div>
-                            ))}
-                          </div>
-                        </CardContent>
-                      </Card>
-
-                      <Card className="border-white/10 bg-white/[0.03]">
-                        <CardHeader>
-                          <CardTitle className="text-lg tracking-[0.06em]">Önizleme</CardTitle>
-                          <CardDescription>İstatistiklerin front-end düzenine yakın görünümünü kontrol edin.</CardDescription>
-                        </CardHeader>
-                        <CardContent>
-                          <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
-                            {data.stats.map((stat, index) => (
-                              <div
-                                key={`preview-${index}`}
-                                className="rounded-3xl border border-white/10 bg-black/20 p-5"
-                              >
-                                <p className="text-xs uppercase tracking-[0.2em] text-zinc-500">{stat.label}</p>
-                                <p className="mt-3 text-2xl font-semibold tracking-[0.08em] text-zinc-50">{stat.value}</p>
-                              </div>
-                            ))}
-                          </div>
-                        </CardContent>
-                      </Card>
-                    </motion.div>
-                  )}
-
-                  {activeTab === 'workflow' && (
-                    <motion.div
-                      key="workflow"
-                      initial={{ opacity: 0, y: 16 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -16 }}
-                      className="space-y-4"
-                    >
-                      <Card className="border-white/10 bg-white/[0.03]">
-                        <CardHeader className="flex-row items-center justify-between gap-4 space-y-0">
-                          <div>
-                            <CardTitle className="text-lg tracking-[0.06em]">İş akışı adımları</CardTitle>
-                            <CardDescription>
-                              Her adım için başlık, açıklama ve isteğe bağlı görsel yükleyin.
-                            </CardDescription>
-                          </div>
-                          <Button
-                            type="button"
-                            onClick={addWorkflowStep}
-                            className="bg-[color:var(--accent)] text-black hover:bg-[color:var(--accent)]/90"
-                          >
-                            <Plus className="mr-2 h-4 w-4" />
-                            Adım ekle
-                          </Button>
-                        </CardHeader>
-
-                        <CardContent className="space-y-4">
-                          {data.sections.length === 0 && (
-                            <div className="rounded-3xl border border-dashed border-white/10 bg-black/20 p-8 text-center text-sm text-zinc-500">
-                              Henüz iş akışı adımı yok. Yeni bir adım ekleyebilirsiniz.
-                            </div>
-                          )}
-
-                          <div className="grid gap-4">
-                            {data.sections.map((section, index) => (
-                              <div
-                                key={`${section.title}-${index}`}
-                                className="grid gap-4 rounded-3xl border border-white/10 bg-black/20 p-4 lg:grid-cols-[180px_minmax(0,1fr)]"
-                              >
-                                <div className="flex flex-col gap-3">
-                                  <div className="flex items-center justify-between gap-3">
-                                    <Badge variant="secondary">
-                                      Adım {String(index + 1).padStart(2, '0')}
-                                    </Badge>
-                                    <Button
-                                      type="button"
-                                      variant="ghost"
-                                      onClick={() => removeWorkflowStep(index)}
-                                      className="h-9 px-3 text-zinc-400 hover:bg-white/5 hover:text-red-300"
-                                    >
-                                      <Trash2 className="mr-2 h-4 w-4" />
-                                      Sil
-                                    </Button>
-                                  </div>
-
-                                  <label
-                                    htmlFor={`corporate-workflow-image-${index}`}
-                                    className="group flex min-h-[220px] cursor-pointer items-center justify-center overflow-hidden rounded-3xl border border-dashed border-white/15 bg-white/[0.02] text-center transition-colors hover:border-[color:var(--accent)]"
-                                  >
-                                    {section.image ? (
-                                      <img
-                                        src={section.image}
-                                        alt={`İş akışı ${index + 1}`}
-                                        className="h-full w-full object-cover"
-                                      />
-                                    ) : (
-                                      <div className="space-y-3 p-5 text-zinc-500">
-                                        <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full border border-white/10 bg-white/5 text-[color:var(--accent)]">
-                                          <Upload className="h-5 w-5" />
-                                        </div>
-                                        <div>
-                                          <p className="text-sm font-medium text-zinc-100">Görsel ekle</p>
-                                          <p className="mt-1 text-xs leading-5">
-                                            Adım kartını destekleyen görsel alanı.
-                                          </p>
-                                        </div>
-                                      </div>
-                                    )}
-                                  </label>
-                                  <input
-                                    id={`corporate-workflow-image-${index}`}
-                                    type="file"
-                                    accept="image/*"
-                                    className="hidden"
-                                    onChange={(event) => void handleWorkflowUpload(event, index)}
-                                  />
-                                </div>
-
-                                <div className="space-y-4">
-                                  <div className="space-y-2">
-                                    <label className="text-xs font-semibold uppercase tracking-[0.2em] text-zinc-400">
-                                      Adım başlığı
-                                    </label>
-                                    <Input
-                                      value={section.title}
-                                      onChange={(event) => updateWorkflowStep(index, 'title', event.target.value)}
-                                      placeholder="Adım başlığı"
-                                    />
-                                  </div>
-
-                                  <div className="space-y-2">
-                                    <label className="text-xs font-semibold uppercase tracking-[0.2em] text-zinc-400">
-                                      Açıklama
-                                    </label>
-                                    <Textarea
-                                      value={section.content}
-                                      onChange={(event) => updateWorkflowStep(index, 'content', event.target.value)}
-                                      placeholder="Kısa açıklama..."
-                                      className="min-h-[120px]"
-                                    />
-                                  </div>
-                                </div>
-                              </div>
-                            ))}
-                          </div>
-                        </CardContent>
-                      </Card>
-
-                      <Card className="border-white/10 bg-white/[0.03]">
-                        <CardHeader>
-                          <CardTitle className="text-lg tracking-[0.06em]">İş akışı önizlemesi</CardTitle>
-                          <CardDescription>Adım sırasını, görselleri ve içerik tonunu burada kontrol edin.</CardDescription>
-                        </CardHeader>
-                        <CardContent className="grid gap-4">
-                          {data.sections.map((section, index) => (
-                            <div
-                              key={`workflow-preview-${index}`}
-                              className="grid gap-4 rounded-3xl border border-white/10 bg-black/20 p-4 md:grid-cols-[120px_minmax(0,1fr)]"
-                            >
-                              <div className="overflow-hidden rounded-2xl border border-white/10 bg-white/[0.03]">
-                                {section.image ? (
-                                  <img src={section.image} alt={section.title} className="h-32 w-full object-cover" />
-                                ) : (
-                                  <div className="flex h-32 items-center justify-center text-xs uppercase tracking-[0.18em] text-zinc-600">
-                                    Görsel yok
-                                  </div>
-                                )}
-                              </div>
-
-                              <div className="space-y-2">
-                                <Badge variant="secondary">Adım {String(index + 1).padStart(2, '0')}</Badge>
-                                <h4 className="text-lg font-semibold tracking-[0.06em] text-zinc-50">{section.title}</h4>
-                                <p className="text-sm leading-7 text-zinc-400">{section.content}</p>
-                              </div>
-                            </div>
-                          ))}
-                        </CardContent>
-                      </Card>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </CardContent>
-            </Card>
-          </div>
-
-          <div className="space-y-6">
-            <Card className="sticky top-6 border-white/10 bg-white/[0.04]">
-              <CardHeader className="space-y-3">
-                <div className="flex items-center gap-2">
-                  <Badge>Canlı Önizleme</Badge>
-                  <Badge variant={isDirty ? 'default' : 'secondary'}>{isDirty ? 'Taslak' : 'Yayın durumu'}</Badge>
-                </div>
-                <CardTitle className="text-2xl tracking-[0.08em]">{data.subtitle}</CardTitle>
-                <CardDescription className="whitespace-pre-line text-base text-zinc-400">{data.title}</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-5">
-                <div className="overflow-hidden rounded-3xl border border-white/10 bg-black/30">
-                  {data.image ? (
-                    <img src={data.image} alt="Hakkımızda önizleme" className="h-56 w-full object-cover" />
-                  ) : (
-                    <div className="flex h-56 items-center justify-center text-sm text-zinc-500">
-                      Kapak görseli bekleniyor
+                    <div className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 via-black/25 to-transparent p-4">
+                      <div className="flex items-center justify-between gap-3 text-xs text-zinc-200">
+                        <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-black/30 px-3 py-1">
+                          <ShieldCheck className="h-3.5 w-3.5" />
+                          API üzerinden yüklenir
+                        </span>
+                        <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-black/30 px-3 py-1">
+                          <Upload className="h-3.5 w-3.5" />
+                          Sürükle bırak destekli
+                        </span>
+                      </div>
                     </div>
-                  )}
-                </div>
-
-                <div className="space-y-3">
-                  <p className="text-xs uppercase tracking-[0.2em] text-[color:var(--accent)]">{data.subtitle}</p>
-                  <p className="whitespace-pre-line text-sm leading-7 text-zinc-300">{data.description}</p>
-                </div>
-
-                <Separator />
-
-                <div className="grid gap-3">
-                  <div className="flex items-center justify-between rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm">
-                    <span className="text-zinc-500">İstatistikler</span>
-                    <span className="text-zinc-100">{data.stats.length}</span>
                   </div>
-                  <div className="flex items-center justify-between rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm">
-                    <span className="text-zinc-500">İş akışı adımları</span>
-                    <span className="text-zinc-100">{data.sections.length}</span>
-                  </div>
-                  <div className="flex items-center justify-between rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm">
-                    <span className="text-zinc-500">API durumu</span>
-                    <span className={apiError ? 'text-amber-300' : 'text-emerald-300'}>
-                      {apiError ? 'Kontrol gerekli' : 'Bağlı'}
-                    </span>
+
+                  <div className="space-y-4">
+                    <input
+                      id="corporate-cover-input"
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={handleCoverUpload}
+                    />
+
+                    <div className="rounded-3xl border border-white/10 bg-black/20 p-4 text-sm text-zinc-300">
+                      <div className="flex items-center gap-2 text-zinc-100">
+                        <Clock3 className="h-4 w-4 text-[color:var(--accent)]" />
+                        Son senkronizasyon
+                      </div>
+                      <div className="mt-2 text-zinc-400">{formatDate(syncTimestamp || undefined)}</div>
+                    </div>
+
+                    <div className="rounded-3xl border border-white/10 bg-black/20 p-4 text-sm text-zinc-300">
+                      <div className="flex items-center gap-2 text-zinc-100">
+                        <Sparkles className="h-4 w-4 text-[color:var(--accent)]" />
+                        Yayın durumu
+                      </div>
+                      <div className={cn('mt-2 font-medium', isDirty ? 'text-amber-300' : 'text-emerald-300')}>
+                        {isDirty ? 'Taslak değişiklikler var' : 'Ana sayfa ile senkronize'}
+                      </div>
+                    </div>
+
+                    <div className="rounded-3xl border border-white/10 bg-black/20 p-4 text-sm text-zinc-300">
+                      <div className="flex items-center gap-2 text-zinc-100">
+                        <FileText className="h-4 w-4 text-[color:var(--accent)]" />
+                        API bağlantısı
+                      </div>
+                      <div className="mt-2 text-zinc-400">
+                        GET, PUT ve upload akışları bu panel üzerinden doğrulanır.
+                      </div>
+                    </div>
                   </div>
                 </div>
               </CardContent>
             </Card>
 
             <Card className="border-white/10 bg-white/[0.04]">
+              <CardHeader className="flex-row items-center justify-between gap-4 space-y-0">
+                <div>
+                  <CardTitle className="text-xl tracking-[0.06em]">İstatistikler</CardTitle>
+                  <CardDescription>Bu kartlar ana sayfadaki editlenebilir Hakkımızda verisinin parçasıdır.</CardDescription>
+                </div>
+                <Button type="button" variant="outline" onClick={addStat} className="border-white/10 bg-white/[0.03]">
+                  <Plus className="mr-2 h-4 w-4" />
+                  İstatistik ekle
+                </Button>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                {data.stats.length === 0 && (
+                  <div className="rounded-3xl border border-dashed border-white/10 bg-black/20 p-8 text-center text-sm text-zinc-500">
+                    Henüz istatistik yok. Yeni bir kart ekleyebilirsiniz.
+                  </div>
+                )}
+
+                <div className="grid gap-4">
+                  {data.stats.map((stat, index) => (
+                    <div key={`${stat.label}-${index}`} className="rounded-3xl border border-white/10 bg-black/20 p-4">
+                      <div className="mb-4 flex items-center justify-between gap-3">
+                        <Badge variant="secondary">İstatistik {String(index + 1).padStart(2, '0')}</Badge>
+                        <div className="flex items-center gap-2">
+                          <Button
+                            type="button"
+                            size="icon"
+                            variant="ghost"
+                            disabled={index === 0}
+                            onClick={() => {
+                              const next = [...data.stats];
+                              if (index > 0) {
+                                [next[index - 1], next[index]] = [next[index], next[index - 1]];
+                                updateData({ ...data, stats: next });
+                              }
+                            }}
+                            className="h-8 w-8 text-zinc-400 hover:bg-white/5 hover:text-zinc-100"
+                          >
+                            <ArrowUp className="h-4 w-4" />
+                          </Button>
+                          <Button
+                            type="button"
+                            size="icon"
+                            variant="ghost"
+                            disabled={index === data.stats.length - 1}
+                            onClick={() => {
+                              const next = [...data.stats];
+                              if (index < next.length - 1) {
+                                [next[index + 1], next[index]] = [next[index], next[index + 1]];
+                                updateData({ ...data, stats: next });
+                              }
+                            }}
+                            className="h-8 w-8 text-zinc-400 hover:bg-white/5 hover:text-zinc-100"
+                          >
+                            <ArrowDown className="h-4 w-4" />
+                          </Button>
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            onClick={() => removeStat(index)}
+                            className="h-8 px-3 text-zinc-400 hover:bg-white/5 hover:text-red-300"
+                          >
+                            <Trash2 className="mr-2 h-4 w-4" />
+                            Sil
+                          </Button>
+                        </div>
+                      </div>
+
+                      <div className="grid gap-4 md:grid-cols-2">
+                        <div className="space-y-2">
+                          <label className="text-xs font-semibold uppercase tracking-[0.2em] text-zinc-400">
+                            Etiket
+                          </label>
+                          <Input
+                            value={stat.label}
+                            onChange={(event) => updateStat(index, 'label', event.target.value)}
+                            placeholder="DENEYİM"
+                            className="border-white/10 bg-black/20 text-zinc-100 placeholder:text-zinc-500"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <label className="text-xs font-semibold uppercase tracking-[0.2em] text-zinc-400">
+                            Değer
+                          </label>
+                          <Input
+                            value={stat.value}
+                            onChange={(event) => updateStat(index, 'value', event.target.value)}
+                            placeholder="10+ YIL"
+                            className="border-white/10 bg-black/20 text-zinc-100 placeholder:text-zinc-500"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="border-white/10 bg-white/[0.04]">
+              <CardHeader className="flex-row items-center justify-between gap-4 space-y-0">
+                <div>
+                  <CardTitle className="text-xl tracking-[0.06em]">Destek blokları</CardTitle>
+                  <CardDescription>Hakkımızda sayfasındaki alt açıklama bloklarını düzenleyin.</CardDescription>
+                </div>
+                <Button type="button" onClick={addSection} className="bg-[color:var(--accent)] text-black hover:bg-[color:var(--accent)]/90">
+                  <Plus className="mr-2 h-4 w-4" />
+                  Blok ekle
+                </Button>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                {data.sections.length === 0 && (
+                  <div className="rounded-3xl border border-dashed border-white/10 bg-black/20 p-8 text-center text-sm text-zinc-500">
+                    Henüz destek blokları yok. Yeni bir blok ekleyebilirsiniz.
+                  </div>
+                )}
+
+                <AnimatePresence initial={false}>
+                  {data.sections.map((section, index) => (
+                    <motion.div
+                      key={`${section.title}-${index}`}
+                      layout
+                      initial={{ opacity: 0, y: 12 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -12 }}
+                      className="grid gap-4 rounded-3xl border border-white/10 bg-black/20 p-4 lg:grid-cols-[200px_minmax(0,1fr)]"
+                    >
+                      <div className="flex flex-col gap-3">
+                        <div className="flex items-center justify-between gap-3">
+                          <Badge variant="secondary">Blok {String(index + 1).padStart(2, '0')}</Badge>
+                          <div className="flex items-center gap-2">
+                            <Button
+                              type="button"
+                              size="icon"
+                              variant="ghost"
+                              disabled={index === 0}
+                              onClick={() => moveSection(index, 'up')}
+                              className="h-8 w-8 text-zinc-400 hover:bg-white/5 hover:text-zinc-100"
+                            >
+                              <ArrowUp className="h-4 w-4" />
+                            </Button>
+                            <Button
+                              type="button"
+                              size="icon"
+                              variant="ghost"
+                              disabled={index === data.sections.length - 1}
+                              onClick={() => moveSection(index, 'down')}
+                              className="h-8 w-8 text-zinc-400 hover:bg-white/5 hover:text-zinc-100"
+                            >
+                              <ArrowDown className="h-4 w-4" />
+                            </Button>
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              onClick={() => removeSection(index)}
+                              className="h-8 px-3 text-zinc-400 hover:bg-white/5 hover:text-red-300"
+                            >
+                              <Trash2 className="mr-2 h-4 w-4" />
+                              Sil
+                            </Button>
+                          </div>
+                        </div>
+
+                        <label
+                          htmlFor={`corporate-section-image-${index}`}
+                          className="group flex min-h-[180px] cursor-pointer items-center justify-center overflow-hidden rounded-3xl border border-dashed border-white/15 bg-white/[0.02] text-center transition-colors hover:border-[color:var(--accent)]"
+                        >
+                          {section.image ? (
+                            <img
+                              src={section.image}
+                              alt={`Destek blok ${index + 1}`}
+                              className="h-full w-full object-cover"
+                            />
+                          ) : (
+                            <div className="space-y-3 p-5 text-zinc-500">
+                              <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full border border-white/10 bg-white/5 text-[color:var(--accent)]">
+                                <Upload className="h-5 w-5" />
+                              </div>
+                              <div>
+                                <p className="text-sm font-medium text-zinc-100">Görsel ekle</p>
+                                <p className="mt-1 text-xs leading-5">
+                                  Blok görseli opsiyoneldir.
+                                </p>
+                              </div>
+                            </div>
+                          )}
+                        </label>
+                        <input
+                          id={`corporate-section-image-${index}`}
+                          type="file"
+                          accept="image/*"
+                          className="hidden"
+                          onChange={(event) => void handleSectionUpload(event, index)}
+                        />
+                      </div>
+
+                      <div className="space-y-4">
+                        <div className="space-y-2">
+                          <label className="text-xs font-semibold uppercase tracking-[0.2em] text-zinc-400">
+                            Blok başlığı
+                          </label>
+                          <Input
+                            value={section.title}
+                            onChange={(event) => updateSection(index, 'title', event.target.value)}
+                            placeholder="KEŞİF VE ANALİZ"
+                            className="border-white/10 bg-black/20 text-zinc-100 placeholder:text-zinc-500"
+                          />
+                        </div>
+
+                        <div className="space-y-2">
+                          <label className="text-xs font-semibold uppercase tracking-[0.2em] text-zinc-400">
+                            İçerik
+                          </label>
+                          <Textarea
+                            value={section.content}
+                            onChange={(event) => updateSection(index, 'content', event.target.value)}
+                            placeholder="Kısa açıklama..."
+                            className="min-h-[140px] border-white/10 bg-black/20 text-zinc-100 placeholder:text-zinc-500"
+                          />
+                        </div>
+                      </div>
+                    </motion.div>
+                  ))}
+                </AnimatePresence>
+              </CardContent>
+            </Card>
+
+            <Card className="border-white/10 bg-white/[0.04]">
               <CardHeader>
                 <CardTitle className="text-lg tracking-[0.06em]">Kontrol listesi</CardTitle>
-                <CardDescription>Bu ekrandaki kritik akışlar doğrudan doğrulandı.</CardDescription>
+                <CardDescription>Bu ekrandaki kritik akışlar doğrudan doğrulanır.</CardDescription>
               </CardHeader>
               <CardContent className="space-y-3">
                 <div className="flex items-center gap-3 rounded-2xl border border-white/10 bg-black/20 px-4 py-3 text-sm text-zinc-300">
@@ -1000,7 +890,7 @@ export default function CorporateAboutAdmin() {
                 </div>
                 <div className="flex items-center gap-3 rounded-2xl border border-white/10 bg-black/20 px-4 py-3 text-sm text-zinc-300">
                   <CheckCircle2 className="h-4 w-4 text-emerald-400" />
-                  Kapak ve adım görselleri `api/upload` ile yükleniyor.
+                  Görseller `api/upload` ile yükleniyor.
                 </div>
               </CardContent>
             </Card>
@@ -1008,7 +898,7 @@ export default function CorporateAboutAdmin() {
         </div>
       </div>
 
-      <AdminSaveBar isVisible={isDirty} onSave={handleSave} onCancel={handleCancel} isSaving={saving} />
+      <AdminSaveBar isVisible={isDirty} onSave={saveAbout} onCancel={handleCancel} isSaving={saving} />
     </div>
   );
 }
