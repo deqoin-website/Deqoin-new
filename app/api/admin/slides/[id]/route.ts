@@ -11,7 +11,7 @@ export async function PUT(
     const { id } = await params;
     const body = await request.json();
 
-    const updated = await Slide.findByIdAndUpdate(id, body, { new: true });
+    const updated = await Slide.findByIdAndUpdate(id, body, { returnDocument: "after" });
     if (!updated) return NextResponse.json({ error: "Slide not found" }, { status: 404 });
 
     return NextResponse.json(updated);
