@@ -28,6 +28,7 @@ export default function CloudinaryImage({
   if (!src) return null;
 
   const fetchPriority = priority ? "high" : "auto";
+  const decoding = priority ? "sync" : "async";
 
   return (
     <img
@@ -37,7 +38,7 @@ export default function CloudinaryImage({
       className={className}
       style={style}
       fetchPriority={fetchPriority}
-      decoding="async"
+      decoding={decoding}
       sizes={sizes}
       data-cloudinary-source={isCloudinarySource(src) ? "true" : "false"}
     />

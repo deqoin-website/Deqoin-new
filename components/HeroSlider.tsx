@@ -28,7 +28,7 @@ export default function HeroSlider({
   onAppointmentClick,
   showScrollHint = false,
   autoplayDelay = 6000,
-  slideTransitionDuration = 1.2,
+  slideTransitionDuration = 0.3,
 }: HeroSliderProps) {
   const [index, setIndex] = useState(0);
   const [direction, setDirection] = useState(0);
@@ -119,6 +119,8 @@ export default function HeroSlider({
 
   const currentSlide = slides[index];
   const currentSlideSrc = currentSlide?.image || currentSlide?.mediaUrl || "";
+  const effectiveSlideTransitionDuration = Math.min(slideTransitionDuration, 0.3);
+  const shouldAnimateHeroEntrance = !(index === 0 && direction === 0);
 
   const heroProgressStyle: React.CSSProperties = {
     position: "absolute",
@@ -139,7 +141,7 @@ export default function HeroSlider({
       style={{ height: '100vh', minHeight: '100vh', position: 'relative', overflow: 'hidden', boxSizing: 'border-box' }}
     >
       <div className="hero-slide active" style={{ backgroundColor: "#000", position: 'absolute', inset: 0 }}>
-        <AnimatePresence mode="wait" initial={false}>
+        <AnimatePresence mode="sync" initial={false}>
           {currentSlide?.mediaType === "video" ? (
             <motion.video
               key={currentSlide?.mediaUrl || index}
@@ -148,10 +150,10 @@ export default function HeroSlider({
               muted
               loop
               playsInline
-              initial={{ opacity: 0, scale: 1.08, x: direction >= 0 ? 40 : -40, filter: "blur(14px) brightness(0.24)" }}
+              initial={shouldAnimateHeroEntrance ? { opacity: 0, scale: 1.08, x: direction >= 0 ? 40 : -40, filter: "blur(14px) brightness(0.24)" } : false}
               animate={{ opacity: 1, scale: 1, x: 0, filter: "blur(0px) brightness(0.4)" }}
               exit={{ opacity: 0, scale: 1.08, x: direction >= 0 ? -40 : 40, filter: "blur(16px) brightness(0.18)" }}
-              transition={{ duration: slideTransitionDuration, ease: [0.77, 0, 0.175, 1] }}
+              transition={{ duration: effectiveSlideTransitionDuration, ease: [0.77, 0, 0.175, 1] }}
               style={{ width: '100%', height: '100%', objectFit: 'cover' }}
             >
               <source src={currentSlide?.mediaUrl} />
@@ -160,12 +162,12 @@ export default function HeroSlider({
             <motion.div
               key={currentSlide?.image || currentSlide?.mediaUrl || index}
               className="hero-slide-media"
-              initial={{ 
-                opacity: 0, 
-                scale: 1.12, 
-                x: direction >= 0 ? 40 : -40, 
-                filter: `blur(${Math.max((currentSlide?.blur || 0), 1) + 6}px) brightness(0.28) saturate(0.9)` 
-              }}
+              initial={shouldAnimateHeroEntrance ? {
+                opacity: 0,
+                scale: 1.12,
+                x: direction >= 0 ? 40 : -40,
+                filter: `blur(${Math.max((currentSlide?.blur || 0), 1) + 6}px) brightness(0.28) saturate(0.9)`
+              } : false}
               animate={{ 
                 opacity: 1, 
                 scale: 1, 
@@ -178,7 +180,7 @@ export default function HeroSlider({
                 x: direction >= 0 ? -40 : 40, 
                 filter: `blur(${Math.max((currentSlide?.blur || 0), 1) + 8}px) brightness(0.2) saturate(0.85)` 
               }}
-              transition={{ duration: slideTransitionDuration, ease: [0.77, 0, 0.175, 1] }}
+              transition={{ duration: effectiveSlideTransitionDuration, ease: [0.77, 0, 0.175, 1] }}
               style={{
                 width: '100%',
                 height: '100%',
@@ -190,8 +192,8 @@ export default function HeroSlider({
                 <CloudinaryImage
                   src={currentSlideSrc}
                   alt={currentSlide?.title || "Hero visual"}
-                  priority={index === 0}
-                  loading={index === 0 ? "eager" : "lazy"}
+                  priority
+                  loading="eager"
                   sizes="100vw"
                   className="hero-slide-media"
                   style={{
@@ -228,9 +230,9 @@ export default function HeroSlider({
       }}>
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1.5rem' }}>
           <motion.span
-            initial={{ opacity: 0, y: 20 }}
+            initial={shouldAnimateHeroEntrance ? { opacity: 0, y: 20 } : false}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5, duration: 0.8 }}
+            transition={{ delay: shouldAnimateHeroEntrance ? 0.05 : 0, duration: 0.18 }}
             className="hero-studio-label"
             style={{
               fontFamily: "var(--font-smooch), sans-serif",
@@ -245,9 +247,9 @@ export default function HeroSlider({
             {currentSlide?.motto}
           </motion.span>
           <motion.h1
-            initial={{ opacity: 0, y: 30 }}
+            initial={shouldAnimateHeroEntrance ? { opacity: 0, y: 30 } : false}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.7, duration: 0.8 }}
+            transition={{ delay: shouldAnimateHeroEntrance ? 0.08 : 0, duration: 0.2 }}
             style={{ 
               fontFamily: "var(--font-smooch), sans-serif", 
               fontSize: "clamp(3.5rem, 15vw, 11.5rem)", 
@@ -266,9 +268,9 @@ export default function HeroSlider({
         </div>
         
         <motion.div
-           initial={{ opacity: 0, scale: 0.9 }}
+           initial={shouldAnimateHeroEntrance ? { opacity: 0, scale: 0.9 } : false}
            animate={{ opacity: 1, scale: 1 }}
-           transition={{ delay: 0.9, duration: 0.8 }}
+           transition={{ delay: shouldAnimateHeroEntrance ? 0.12 : 0, duration: 0.18 }}
         >
           <SwipeAppointmentButton onActivate={onAppointmentClick} />
         </motion.div>

@@ -106,7 +106,7 @@ export default function Page() {
         slides={slides} 
         onAppointmentClick={() => setIsConsultationOpen(true)} 
         autoplayDelay={18000}
-        slideTransitionDuration={2.25}
+        slideTransitionDuration={0.3}
       />
 
         <WorkflowSection className="snap-section homepage-workflow-section" />
