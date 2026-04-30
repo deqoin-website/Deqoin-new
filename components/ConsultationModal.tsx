@@ -226,9 +226,6 @@ export default function ConsultationModal({ isOpen, onClose }: ConsultationModal
                 <h2 className="mt-4 text-3xl font-thin uppercase tracking-[0.18em] text-white md:text-4xl">
                   Talebinizi iletin
                 </h2>
-                <p className="mt-4 max-w-xl text-sm font-light leading-relaxed tracking-[0.28em] text-zinc-500 uppercase">
-                  Kısa bilgi bırakın, size hızlıca dönüş yapalım.
-                </p>
               </div>
 
               <form className="flex flex-1 flex-col" onSubmit={handleSubmit}>
