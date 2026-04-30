@@ -101,10 +101,11 @@ function readSliderHero(pageDoc: any) {
 }
 
 async function ensureHomePage() {
-  const pageDoc = await PageContent.findOne({ page: "home" });
+  const pageDoc = await PageContent.collection.findOne({ page: "home" });
   if (pageDoc) return pageDoc;
 
-  return PageContent.create({
+  const now = new Date();
+  const doc = {
     page: "home",
     sections: [
       {
@@ -116,8 +117,13 @@ async function ensureHomePage() {
         slides: DEFAULT_SLIDER.slides,
       },
     ],
-    metadata: { updatedAt: new Date() },
-  });
+    metadata: { updatedAt: now },
+    createdAt: now,
+    updatedAt: now,
+  };
+
+  const inserted = await PageContent.collection.insertOne(doc);
+  return PageContent.collection.findOne({ _id: inserted.insertedId });
 }
 
 export async function GET() {
@@ -151,7 +157,7 @@ export async function POST(request: Request) {
     const slides = normalizeAssets(body.slides ?? body.images ?? body.gallery);
 
     const pageDoc = await ensureHomePage();
-    const sections = Array.isArray(pageDoc.sections) ? [...pageDoc.sections] : [];
+    const sections = Array.isArray(pageDoc?.sections) ? [...pageDoc.sections] : [];
     const nextSection = {
       id: "sliderHero",
       type: "sliderHero",
@@ -168,15 +174,29 @@ export async function POST(request: Request) {
       sections.push(nextSection);
     }
 
-    pageDoc.sections = sections;
-    pageDoc.metadata = {
-      ...(pageDoc.metadata || {}),
-      updatedAt: new Date(),
+    const now = new Date();
+    const nextDocument = {
+      ...(pageDoc || {}),
+      page: "home",
+      sections,
+      metadata: {
+        ...(pageDoc?.metadata || {}),
+        updatedAt: now,
+      },
+      updatedAt: now,
+      createdAt: pageDoc?.createdAt || now,
     };
-    await pageDoc.save();
+
+    if (pageDoc?._id) {
+      await PageContent.collection.replaceOne({ _id: pageDoc._id }, nextDocument, { upsert: true });
+    } else {
+      await PageContent.collection.insertOne(nextDocument);
+    }
+
+    const updatedContent = await PageContent.collection.findOne({ page: "home" });
 
     return NextResponse.json(
-      { sliderHero: readSliderHero(pageDoc) },
+      { sliderHero: readSliderHero(updatedContent) },
       {
         headers: {
           "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate",
