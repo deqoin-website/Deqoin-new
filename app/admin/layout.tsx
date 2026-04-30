@@ -256,25 +256,47 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             </div>
           </div>
 
-          <div className="px-4 pt-4">
-            <div className="rounded-3xl border border-[color:var(--line)] bg-[color:var(--surface-muted)] p-4">
-              <div className={visibleLabels ? 'space-y-1' : 'space-y-1 text-center'}>
-                <p className="text-[0.65rem] uppercase tracking-[0.28em] text-[color:var(--text-muted)]">
-                  Yönetim Merkezi
-                </p>
-                <p className="text-sm font-medium text-[color:var(--text)]">
-                  {activeEntry?.item?.name ?? 'Dashboard'}
-                </p>
-                <p className="text-xs text-[color:var(--text-muted)]">
-                  {activeEntry?.group ?? 'OVERVIEW'}
-                </p>
-              </div>
+          <div className="px-3 pt-4">
+            <div className="space-y-2 rounded-[1.5rem] border border-[color:var(--line)] bg-[color:var(--surface-muted)] p-3">
+              {menuGroups[0].items.map((item) => {
+                const isActive = pathname === item.path;
+
+                return (
+                  <Button
+                    key={item.name}
+                    asChild
+                    variant="ghost"
+                    className={[
+                      navLinkClass,
+                      'justify-start text-[color:var(--text-muted)] hover:bg-[color:var(--surface)] hover:text-[color:var(--text)]',
+                      isActive ? 'bg-[color:var(--surface)] text-[color:var(--text)]' : '',
+                    ].join(' ')}
+                  >
+                    <Link href={item.path} onClick={() => setIsMobileMenuOpen(false)}>
+                      <item.icon size={18} className="shrink-0" />
+                      {visibleLabels && (
+                        <>
+                          <span className="truncate">{item.name}</span>
+                          {isActive && (
+                            <Badge
+                              variant="outline"
+                              className="ml-auto border-[color:var(--line)] bg-[color:var(--surface)] text-[0.58rem] uppercase tracking-[0.28em] text-[color:var(--accent)]"
+                            >
+                              Ana
+                            </Badge>
+                          )}
+                        </>
+                      )}
+                    </Link>
+                  </Button>
+                );
+              })}
             </div>
           </div>
 
-          <nav className="flex-1 overflow-y-auto px-3 py-4">
-            <div className="space-y-5">
-              {menuGroups.map((group) => (
+          <nav className="flex-1 overflow-y-auto px-3 py-3">
+            <div className="space-y-4">
+              {menuGroups.slice(1).map((group) => (
                 <div key={group.group} className="space-y-2">
                   {visibleLabels && (
                     <p className="px-3 text-[0.62rem] font-semibold uppercase tracking-[0.34em] text-[color:var(--text-muted)]">
