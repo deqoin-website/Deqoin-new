@@ -200,7 +200,7 @@ export default function DepartmentManagerPage() {
   }>({
     department: 'loading',
     projects: 'loading',
-    upload: 'idle',
+    upload: 'loading',
   });
 
   const loadDepartment = useCallback(async () => {

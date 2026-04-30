@@ -169,7 +169,7 @@ export default function MaterialDetailEditor() {
   const [theme, setTheme] = useState<'dark' | 'light'>('dark');
   const [apiStatus, setApiStatus] = useState({
     department: 'loading' as ProbeStatus,
-    upload: 'idle' as ProbeStatus,
+    upload: 'loading' as ProbeStatus,
     updatedAt: '',
   });
 
@@ -187,21 +187,21 @@ export default function MaterialDetailEditor() {
       const next = normalizeDepartment(data, slug);
       setDepartment(next);
       setInitialDepartment(cloneDepartment(next));
-      setApiStatus({
+      setApiStatus((prev) => ({
         department: 'ok',
-        upload: 'idle',
+        upload: prev.upload,
         updatedAt: new Date().toISOString(),
-      });
+      }));
     } catch (error) {
       console.error('Department load error:', error);
       const fallback = makeSeed(slug);
       setDepartment(fallback);
       setInitialDepartment(cloneDepartment(fallback));
-      setApiStatus({
+      setApiStatus((prev) => ({
         department: 'error',
-        upload: 'idle',
+        upload: prev.upload,
         updatedAt: new Date().toISOString(),
-      });
+      }));
       showToast('Materyal kartı yüklenemedi.', 'error');
     } finally {
       setIsLoading(false);

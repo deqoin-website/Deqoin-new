@@ -196,7 +196,7 @@ export default function MaterialEditor() {
   const [theme, setTheme] = useState<'dark' | 'light'>('dark');
   const [apiStatus, setApiStatus] = useState({
     content: 'loading' as 'idle' | 'loading' | 'ok' | 'error',
-    upload: 'idle' as 'idle' | 'loading' | 'ok' | 'error',
+    upload: 'loading' as 'idle' | 'loading' | 'ok' | 'error',
     updatedAt: '',
   });
 
@@ -214,21 +214,21 @@ export default function MaterialEditor() {
       const nextContent = normalizeContent(data || createDefaultContent());
       setContent(nextContent);
       setInitialContent(cloneContent(nextContent));
-      setApiStatus({
+      setApiStatus((prev) => ({
         content: 'ok',
-        upload: 'idle',
+        upload: prev.upload,
         updatedAt: new Date().toISOString(),
-      });
+      }));
     } catch (error) {
       console.error('Material content load error:', error);
       const fallback = createDefaultContent();
       setContent(fallback);
       setInitialContent(cloneContent(fallback));
-      setApiStatus({
+      setApiStatus((prev) => ({
         content: 'error',
-        upload: 'idle',
+        upload: prev.upload,
         updatedAt: new Date().toISOString(),
-      });
+      }));
       showToast('Materyal içerik yüklenemedi.', 'error');
     } finally {
       setIsLoading(false);
