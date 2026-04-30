@@ -58,10 +58,14 @@ export async function PUT(
     const { slug } = await params;
     const body = await request.json();
 
-    const updatedDoc = await Department.findOneAndUpdate({ slug }, body, { 
-      new: true, 
-      upsert: true // Eğer bu slug'a sahip bir kayıt yoksa yeni yaratır. "upsert" CMS geçişlerinde hayat kurtarır.
-    });
+    const updatedDoc = await Department.findOneAndUpdate(
+      { slug },
+      body,
+      {
+        upsert: true,
+        returnDocument: 'after', // Ensure we get the updated document back without deprecated `new: true`.
+      }
+    );
     
     return NextResponse.json(updatedDoc);
   } catch (error) {

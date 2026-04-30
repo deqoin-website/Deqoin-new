@@ -1,260 +1,288 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { 
-  Upload, 
-  Save, 
-  Plus, 
-  Trash2, 
-  Loader2,
+/* eslint-disable @next/next/no-img-element */
+
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import Link from 'next/link';
+import { AnimatePresence, motion } from 'framer-motion';
+import {
+  BadgeCheck,
+  CheckCircle2,
+  ChevronRight,
+  CloudUpload,
+  Eye,
+  FileText,
+  FolderKanban,
+  Globe2,
   Image as ImageIcon,
-  Layout,
-  ExternalLink,
-  PlusCircle,
-  X
+  Loader2,
+  Plus,
+  RefreshCw,
+  Save,
+  Sparkles,
+  Trash2,
+  Upload,
+  X,
 } from 'lucide-react';
+
 import { useNotification } from '@/components/admin/AdminNotificationProvider';
-import { AdminSaveBar } from '@/components/admin/AdminSaveBar';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Separator } from '@/components/ui/separator';
+import { Textarea } from '@/components/ui/textarea';
+import { Badge } from '@/components/ui/badge';
 import { SLIDER_IMAGE_URLS } from '@/lib/slider-images';
 
-const DEFAULT_MIMARI_CATEGORIES = [
+type TabKey = 'hero' | 'cta' | 'departmanlar';
+
+type CategoryItem = {
+  href: string;
+  title: string;
+  sideLabel: string;
+  image: string;
+  slug: string;
+};
+
+type ContentSection = {
+  id: string;
+  type: string;
+  title?: string;
+  subtitle?: string;
+  blur?: number;
+  overlay?: number;
+  image?: string;
+  slides?: string[];
+  items?: CategoryItem[];
+};
+
+type PageContent = {
+  page: string;
+  sections: ContentSection[];
+  metadata?: { updatedAt?: string };
+};
+
+const DEFAULT_MIMARI_CATEGORIES: CategoryItem[] = [
   {
-    href: "/mimari/insaat-muhendisligi",
-    title: "Mühendislik",
-    sideLabel: "Structural Strength",
-    image: "/images/workflow/muhendislik-custom.png",
-    slug: "insaat-muhendisligi",
+    href: '/mimari/insaat-muhendisligi',
+    title: 'Mühendislik',
+    sideLabel: 'Structural Strength',
+    image: '/images/workflow/muhendislik-custom.png',
+    slug: 'insaat-muhendisligi',
   },
   {
-    href: "/mimari/mimarlik",
-    title: "Mimarlık",
-    sideLabel: "Structural Form",
-    image: "/images/workflow/mimarlik-custom.png",
-    slug: "mimarlik",
+    href: '/mimari/mimarlik',
+    title: 'Mimarlık',
+    sideLabel: 'Structural Form',
+    image: '/images/workflow/mimarlik-custom.png',
+    slug: 'mimarlik',
   },
   {
-    href: "/mimari/elektrik-elektronik-muhendisligi",
-    title: "Mekanik",
-    sideLabel: "Power & Logic",
-    image: "/images/workflow/mekanik-custom.png",
-    slug: "elektrik-elektronik-muhendisligi",
+    href: '/mimari/elektrik-elektronik-muhendisligi',
+    title: 'Mekanik',
+    sideLabel: 'Power & Logic',
+    image: '/images/workflow/mekanik-custom.png',
+    slug: 'elektrik-elektronik-muhendisligi',
   },
   {
-    href: "/mimari/ic-mimarlik",
-    title: "İç Mimarlık",
-    sideLabel: "Interior Essence",
-    image: "/images/workflow/ic-mimarlik-custom.png",
-    slug: "ic-mimarlik",
+    href: '/mimari/ic-mimarlik',
+    title: 'İç Mimarlık',
+    sideLabel: 'Interior Essence',
+    image: '/images/workflow/ic-mimarlik-custom.png',
+    slug: 'ic-mimarlik',
   },
   {
-    href: "/mimari/restorasyon",
-    title: "Restorasyon",
-    sideLabel: "Heritage Revival",
-    image: "/images/workflow/restorasyon-custom.png",
-    slug: "restorasyon",
+    href: '/mimari/restorasyon',
+    title: 'Restorasyon',
+    sideLabel: 'Heritage Revival',
+    image: '/images/workflow/restorasyon-custom.png',
+    slug: 'restorasyon',
   },
   {
-    href: "/mimari/peyzaj-mimarligi",
-    title: "Peyzaj",
-    sideLabel: "Natural Canvas",
-    image: "/images/workflow/peyzaj-custom.png",
-    slug: "peyzaj-mimarligi",
+    href: '/mimari/peyzaj-mimarligi',
+    title: 'Peyzaj',
+    sideLabel: 'Natural Canvas',
+    image: '/images/workflow/peyzaj-custom.png',
+    slug: 'peyzaj-mimarligi',
   },
 ];
 
-const categoryFallbackByTitle: Record<string, string> = {
-  muhendislik: "/images/workflow/muhendislik-custom.png",
-  mimarlik: "/images/workflow/mimarlik-custom.png",
-  mekanik: "/images/workflow/mekanik-custom.png",
-  icmimarlik: "/images/workflow/ic-mimarlik-custom.png",
-  restorasyon: "/images/workflow/restorasyon-custom.png",
-  peyzaj: "/images/workflow/peyzaj-custom.png",
+const TAB_ITEMS: Array<{ key: TabKey; label: string; description: string; icon: typeof FileText }> = [
+  { key: 'hero', label: 'Hero', description: 'Başlık ve slider alanı', icon: FileText },
+  { key: 'cta', label: 'CTA', description: 'Bir sonraki adım alanı', icon: Sparkles },
+  { key: 'departmanlar', label: 'Departmanlar', description: 'Hizmet alanı kartları', icon: FolderKanban },
+];
+
+const cloneContent = (value: PageContent) => JSON.parse(JSON.stringify(value)) as PageContent;
+
+const createDefaultContent = (): PageContent => ({
+  page: 'mimari',
+  sections: [
+    {
+      id: 'hero',
+      type: 'hero',
+      title: 'DESIGN STUDIO',
+      subtitle: 'MİMARİ TASARIM',
+      blur: 0,
+      overlay: 30,
+      slides: [SLIDER_IMAGE_URLS.mimari],
+    },
+    {
+      id: 'cta',
+      type: 'cta',
+      image: SLIDER_IMAGE_URLS.mimari,
+      blur: 0,
+      overlay: 30,
+    },
+    {
+      id: 'categories',
+      type: 'categories',
+      items: DEFAULT_MIMARI_CATEGORIES,
+    },
+  ],
+});
+
+const normalizeContent = (value: any): PageContent => {
+  const base = createDefaultContent();
+  const sections = Array.isArray(value?.sections) ? value.sections : [];
+
+  const hero = sections.find((item: any) => item.id === 'hero') || base.sections[0];
+  const cta = sections.find((item: any) => item.id === 'cta') || base.sections[1];
+  const categories = sections.find((item: any) => item.id === 'categories') || base.sections[2];
+
+  return {
+    page: value?.page || 'mimari',
+    metadata: value?.metadata,
+    sections: [
+      {
+        ...base.sections[0],
+        ...hero,
+        slides: Array.isArray(hero?.slides) && hero.slides.length > 0 ? hero.slides : base.sections[0].slides,
+      },
+      {
+        ...base.sections[1],
+        ...cta,
+      },
+      {
+        ...base.sections[2],
+        ...categories,
+        items: Array.isArray(categories?.items) && categories.items.length > 0 ? categories.items : DEFAULT_MIMARI_CATEGORIES,
+      },
+    ],
+  };
 };
 
-function normalizeTitle(value?: string) {
-  return (value || "")
-    .toLowerCase()
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .replace(/[^a-z]/g, "");
-}
+const probeMeta = (status: 'idle' | 'loading' | 'ok' | 'error') => {
+  if (status === 'ok') {
+    return {
+      label: 'Çalışıyor',
+      className: 'border-emerald-500/20 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300',
+      icon: CheckCircle2,
+    };
+  }
 
-function resolveCategoryImage(item: any, preview?: string) {
-  const normalizedTitle = normalizeTitle(item?.title);
-  return preview || item?.image || categoryFallbackByTitle[normalizedTitle] || "/images/workflow/mimarlik-custom.png";
-}
+  if (status === 'error') {
+    return {
+      label: 'Hata',
+      className: 'border-rose-500/20 bg-rose-500/10 text-rose-700 dark:text-rose-300',
+      icon: BadgeCheck,
+    };
+  }
 
-function withVersion(url?: string, version?: string) {
-  if (!url) return "";
-  if (!version) return url;
-  return `${url}${url.includes("?") ? "&" : "?"}v=${encodeURIComponent(version)}`;
-}
+  if (status === 'loading') {
+    return {
+      label: 'Kontrol',
+      className: 'border-amber-500/20 bg-amber-500/10 text-amber-700 dark:text-amber-300',
+      icon: Loader2,
+    };
+  }
+
+  return {
+    label: 'Hazır',
+    className: 'border-[color:var(--line)] bg-[color:var(--surface-muted)] text-[color:var(--text-muted)]',
+    icon: BadgeCheck,
+  };
+};
 
 export default function MimariEditor() {
   const { showToast, confirm: premiumConfirm } = useNotification();
-  const [content, setContent] = useState<any>(null);
-  const [initialContent, setInitialContent] = useState<any>(null);
+  const [activeTab, setActiveTab] = useState<TabKey>('hero');
+  const [content, setContent] = useState<PageContent>(createDefaultContent());
+  const [initialContent, setInitialContent] = useState<PageContent>(createDefaultContent());
   const [isDirty, setIsDirty] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [newService, setNewService] = useState({ title: '', sideLabel: '', slug: '', image: SLIDER_IMAGE_URLS.mimari });
-  const [categoryPreviews, setCategoryPreviews] = useState<Record<number, string>>({});
-  const [contentVersion, setContentVersion] = useState<string>("");
-
-  useEffect(() => {
-    fetchContent();
-  }, []);
-
-  const cloneContent = (value: any) => JSON.parse(JSON.stringify(value));
-
-  const persistContent = async (nextContent: any) => {
-    const payload = {
-      page: nextContent?.page || 'mimari',
-      sections: nextContent?.sections || [],
-    };
-    const res = await fetch('/api/content', {
-      method: 'POST',
-      cache: 'no-store',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
-    });
-
-    if (!res.ok) {
-      let details = 'Content save failed';
-      try {
-        const errorBody = await res.json();
-        details = errorBody?.details || errorBody?.error || errorBody?.message || details;
-        console.error('[mimari/content-save] failed', {
-          status: res.status,
-          details,
-          errorBody,
-        });
-      } catch (parseErr) {
-        console.error('[mimari/content-save] failed to parse error body', {
-          status: res.status,
-          parseErr,
-        });
-      }
-      throw new Error(details);
-    }
-
-    const refreshed = await res.json();
-    if (refreshed?.metadata?.updatedAt) {
-      setContentVersion(String(refreshed.metadata.updatedAt));
-    }
-    setContent(refreshed);
-    setInitialContent(cloneContent(refreshed));
-    setIsDirty(false);
-    return refreshed;
-  };
-
-  const persistCategoriesSection = async (items: any[]) => {
-    const res = await fetch('/api/content/mimari-categories', {
-      method: 'POST',
-      cache: 'no-store',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ items }),
-    });
-
-    if (!res.ok) {
-      let details = 'Categories save failed';
-      try {
-        const errorBody = await res.json();
-        details = errorBody?.details || errorBody?.error || errorBody?.message || details;
-        console.error('[mimari/categories-save] failed', { status: res.status, details, errorBody });
-      } catch (parseErr) {
-        console.error('[mimari/categories-save] failed to parse error body', { status: res.status, parseErr });
-      }
-      throw new Error(details);
-    }
-
-    const refreshed = await res.json();
-    if (refreshed?.metadata?.updatedAt) {
-      setContentVersion(String(refreshed.metadata.updatedAt));
-    }
-    setContent(refreshed);
-    setInitialContent(cloneContent(refreshed));
-    setIsDirty(false);
-    return refreshed;
-  };
-
-  const createDefaultContent = () => ({
-    page: 'mimari',
-    sections: [
-      {
-        id: 'hero',
-        type: 'hero',
-        title: 'DESIGN STUDIO',
-        subtitle: 'MİMARİ TASARIM',
-        blur: 0,
-        overlay: 30,
-        slides: [SLIDER_IMAGE_URLS.mimari],
-      },
-      {
-        id: 'cta',
-        type: 'cta',
-        image: SLIDER_IMAGE_URLS.mimari,
-        blur: 0,
-        overlay: 30,
-      },
-      {
-        id: 'categories',
-        type: 'categories',
-        items: DEFAULT_MIMARI_CATEGORIES,
-      },
-    ],
+  const [theme, setTheme] = useState<'dark' | 'light'>('dark');
+  const [apiStatus, setApiStatus] = useState({
+    content: 'loading' as 'idle' | 'loading' | 'ok' | 'error',
+    upload: 'idle' as 'idle' | 'loading' | 'ok' | 'error',
+    updatedAt: '',
   });
 
-  const fetchContent = async () => {
+  const fetchContent = useCallback(async () => {
+    setIsLoading(true);
+    setApiStatus((prev) => ({ ...prev, content: 'loading' }));
+
     try {
-      const res = await fetch(`/api/content?page=mimari&ts=${Date.now()}`, { cache: 'no-store' });
-      const data = await res.json();
-      if (data?.metadata?.updatedAt) {
-        setContentVersion(String(data.metadata.updatedAt));
+      const res = await fetch('/api/content?page=mimari', { cache: 'no-store' });
+      const data = await res.json().catch(() => null);
+      if (!res.ok) {
+        throw new Error(data?.error || 'Content load failed');
       }
-      const safeData = data && Array.isArray(data.sections) && data.sections.length > 0
-        ? data
-        : createDefaultContent();
-      const heroSection = safeData.sections.find((s: any) => s.id === 'hero');
-      if (heroSection) {
-        if (heroSection.blur === undefined) heroSection.blur = 0;
-        if (heroSection.overlay === undefined) heroSection.overlay = 30;
-        if (!heroSection.slides) heroSection.slides = [];
-      }
-      const hasCtaSection = safeData.sections.some((s: any) => s.id === 'cta');
-      if (!hasCtaSection) {
-        safeData.sections.push({
-          id: 'cta',
-          type: 'cta',
-          image: SLIDER_IMAGE_URLS.mimari,
-          blur: 0,
-          overlay: 30,
-        });
-      }
-      const categorySection = safeData.sections.find((s: any) => s.id === 'categories');
-      if (categorySection) {
-        if (!Array.isArray(categorySection.items) || categorySection.items.length === 0) {
-          categorySection.items = DEFAULT_MIMARI_CATEGORIES;
-        }
-      }
-      setContent(safeData);
-      setInitialContent(cloneContent(safeData));
-    } catch (err) {
-      console.error(err);
-      showToast("İçerik yüklenemedi.", "error");
+
+      const nextContent = normalizeContent(data || createDefaultContent());
+      setContent(nextContent);
+      setInitialContent(cloneContent(nextContent));
+      setApiStatus({
+        content: 'ok',
+        upload: 'idle',
+        updatedAt: new Date().toISOString(),
+      });
+    } catch (error) {
+      console.error('Mimari content load error:', error);
       const fallback = createDefaultContent();
-      setContentVersion(String(Date.now()));
       setContent(fallback);
       setInitialContent(cloneContent(fallback));
+      setApiStatus({
+        content: 'error',
+        upload: 'idle',
+        updatedAt: new Date().toISOString(),
+      });
+      showToast('Mimari içerik yüklenemedi.', 'error');
     } finally {
       setIsLoading(false);
     }
+  }, [showToast]);
+
+  useEffect(() => {
+    fetchContent();
+  }, [fetchContent]);
+
+  useEffect(() => {
+    const syncTheme = () => {
+      setTheme(document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark');
+    };
+
+    syncTheme();
+    const observer = new MutationObserver(syncTheme);
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+
+    return () => observer.disconnect();
+  }, []);
+
+  const mutateContent = (updater: (draft: PageContent) => void) => {
+    setContent((prev) => {
+      const next = cloneContent(prev);
+      updater(next);
+      return next;
+    });
+    setIsDirty(true);
   };
 
-  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>, sectionId: string, index?: number, isCategory?: boolean) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
+  const uploadFile = async (file: File) => {
+    setApiStatus((prev) => ({ ...prev, upload: 'loading' }));
 
     try {
       const formData = new FormData();
@@ -263,554 +291,819 @@ export default function MimariEditor() {
 
       const res = await fetch('/api/upload', {
         method: 'POST',
-        body: formData
+        body: formData,
       });
-      if (!res.ok) {
-        let details = 'Upload failed';
-        try {
-          const errorBody = await res.json();
-          details = errorBody?.details || errorBody?.error || errorBody?.message || details;
-          console.error('[mimari/upload] failed', {
-            status: res.status,
-            details,
-            errorBody,
-            sectionId,
-            index,
-            isCategory,
-            filename: file.name,
-          });
-        } catch (parseErr) {
-          console.error('[mimari/upload] failed to parse error body', {
-            status: res.status,
-            parseErr,
-            sectionId,
-            index,
-            isCategory,
-            filename: file.name,
-          });
-        }
-        throw new Error(details);
-      }
-      const blob = await res.json();
-      const uploadedUrl = blob?.url || blob?.downloadUrl;
-      if (!uploadedUrl) throw new Error('Upload URL missing');
 
-      const newContent = cloneContent(content || createDefaultContent());
-      const section = newContent.sections.find((s: any) => s.id === sectionId);
-      
-      if (isCategory && index !== undefined) {
-        if (!section.items[index]) section.items[index] = {};
-        section.items[index].image = uploadedUrl;
-        setCategoryPreviews(prev => ({ ...prev, [index]: uploadedUrl }));
-        await persistCategoriesSection(section.items);
-        showToast("Görsel yüklendi ve kaydedildi.", "success");
-        e.target.value = "";
-        return;
-      } else if (index !== undefined) {
-        section.slides[index] = uploadedUrl;
-      } else if (section.image !== undefined) {
-        section.image = uploadedUrl;
-      } else if (section.slides) {
-        section.slides.push(uploadedUrl);
+      const payload = await res.json().catch(() => null);
+      if (!res.ok) {
+        throw new Error(payload?.details || payload?.error || 'Upload failed');
       }
-      setContent(newContent);
-      const saved = await persistContent(newContent);
-      if (saved) {
-        setContent(saved);
-        setInitialContent(cloneContent(saved));
+
+      const uploadedUrl = payload?.url || payload?.downloadUrl;
+      if (!uploadedUrl) {
+        throw new Error('Upload URL missing');
       }
-      showToast("Görsel yüklendi ve kaydedildi.", "success");
-    } catch (err) {
-      console.error('[mimari/upload] unexpected error', err);
-      showToast(`Görsel yüklenemedi: ${err instanceof Error ? err.message : 'Bilinmeyen hata'}`, "error");
-    } finally {
-      e.target.value = "";
+
+      setApiStatus((prev) => ({ ...prev, upload: 'ok', updatedAt: new Date().toISOString() }));
+      return uploadedUrl as string;
+    } catch (error) {
+      setApiStatus((prev) => ({ ...prev, upload: 'error', updatedAt: new Date().toISOString() }));
+      throw error;
     }
   };
 
-  const openCategoryImagePicker = (index: number) => {
-    document.getElementById(`cat-up-${index}`)?.click();
-  };
-
-  const addService = async () => {
-    if (!newService.title || !newService.slug) return showToast("Başlık ve Slug zorunludur.", "error");
-    
-    const newContent = cloneContent(content || createDefaultContent());
-    const catSection = newContent.sections.find((s: any) => s.id === 'categories');
-    
-    catSection.items.push({
-      ...newService,
-      image: newService.image || SLIDER_IMAGE_URLS.mimari
-    });
-    
-    setContent(newContent);
-    setIsDirty(true);
-    setIsAddModalOpen(false);
-    setNewService({ title: '', sideLabel: '', slug: '', image: SLIDER_IMAGE_URLS.mimari });
-  };
-
-  const removeService = async (index: number) => {
-    const ok = await premiumConfirm({
-      title: 'HİZMET SİLME',
-      message: 'Bu hizmet alanını silmek istediğinize emin misiniz?',
-      confirmText: 'SİL',
-      isDanger: true
-    });
-    if (!ok) return;
-    const newContent = cloneContent(content || createDefaultContent());
-    const catSection = newContent.sections.find((s: any) => s.id === 'categories');
-    catSection.items.splice(index, 1);
-    setContent(newContent);
-    setIsDirty(true);
-  };
-
-  const saveContent = async () => {
+  const saveContent = async (nextContent = content) => {
     setIsSaving(true);
     try {
-      const saved = await persistContent(content);
-      if (saved) {
-        setContent(saved);
-        setInitialContent(cloneContent(saved));
+      const res = await fetch('/api/content', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          page: 'mimari',
+          sections: nextContent.sections,
+        }),
+      });
+
+      const refreshed = await res.json().catch(() => null);
+      if (!res.ok) {
+        throw new Error(refreshed?.details || refreshed?.error || 'Content save failed');
       }
-      showToast("Değişiklikler başarıyla kaydedildi!", "success");
-    } catch (err) {
-      console.error('[mimari/save] failed', err);
-      showToast(`Bağlantı hatası: ${err instanceof Error ? err.message : 'Bilinmeyen hata'}`, "error");
+
+      const normalized = normalizeContent(refreshed || nextContent);
+      setContent(normalized);
+      setInitialContent(cloneContent(normalized));
+      setIsDirty(false);
+      setApiStatus((prev) => ({ ...prev, content: 'ok', updatedAt: new Date().toISOString() }));
+      showToast('Mimari içerik kaydedildi.', 'success');
+    } catch (error) {
+      console.error('Mimari content save error:', error);
+      showToast(error instanceof Error ? error.message : 'İçerik kaydedilemedi.', 'error');
     } finally {
       setIsSaving(false);
     }
   };
 
   const handleCancel = () => {
-    setContent(JSON.parse(JSON.stringify(initialContent)));
-    setCategoryPreviews({});
+    setContent(cloneContent(initialContent));
     setIsDirty(false);
-    showToast("Değişiklikler geri alındı.", "info");
+    showToast('Değişiklikler geri alındı.', 'info');
   };
 
-  const updateCategoryImageValue = (index: number, value: string) => {
-    const nextContent = cloneContent(content || createDefaultContent());
-    const categorySection = nextContent.sections.find((s: any) => s.id === 'categories');
-    if (!categorySection?.items?.[index]) return;
-    categorySection.items[index].image = value;
-    setCategoryPreviews(prev => ({ ...prev, [index]: value }));
-    setContent(nextContent);
-    setIsDirty(true);
+  const heroSection = content.sections.find((section) => section.id === 'hero');
+  const ctaSection = content.sections.find((section) => section.id === 'cta');
+  const categorySection = content.sections.find((section) => section.id === 'categories');
+  const categoryItems = Array.isArray(categorySection?.items) ? categorySection.items : DEFAULT_MIMARI_CATEGORIES;
+  const updatedLabel = apiStatus.updatedAt ? new Date(apiStatus.updatedAt).toLocaleDateString('tr-TR') : 'Henüz yok';
+
+  const addCategory = () => {
+    mutateContent((draft) => {
+      const categories = draft.sections.find((section) => section.id === 'categories');
+      categories?.items?.push({
+        href: '/mimari/yeni-departman',
+        title: 'Yeni Departman',
+        sideLabel: 'New Studio',
+        image: SLIDER_IMAGE_URLS.mimari,
+        slug: 'yeni-departman',
+      });
+    });
   };
 
-  const persistCategoryImageValue = async (index: number, value: string) => {
-    const nextContent = cloneContent(content || createDefaultContent());
-    const categorySection = nextContent.sections.find((s: any) => s.id === 'categories');
-    if (!categorySection?.items?.[index]) return;
-    categorySection.items[index].image = value;
-    setCategoryPreviews(prev => ({ ...prev, [index]: value }));
-    setContent(nextContent);
-    await persistCategoriesSection(categorySection.items);
-    showToast("Kart görseli güncellendi.", "success");
-    console.log('[mimari/category-image] saved', { index, value });
+  const removeCategory = async (index: number) => {
+    const ok = await premiumConfirm({
+      title: 'DEPARTMANI SİL',
+      message: 'Bu hizmet alanını silmek istediğinize emin misiniz?',
+      confirmText: 'SİL',
+      cancelText: 'VAZGEÇ',
+      isDanger: true,
+    });
+    if (!ok) return;
+
+    mutateContent((draft) => {
+      const categories = draft.sections.find((section) => section.id === 'categories');
+      categories?.items?.splice(index, 1);
+    });
   };
 
-  if (isLoading) return <div className="loader-wrap"><Loader2 className="animate-spin" /></div>;
-  if (!content) return <div className="loader-wrap">Veri yüklenemedi.</div>;
+  const openCategoryDetail = (item: CategoryItem) => `/admin/content/services/mimari/${item.slug}`;
 
-  const heroSection = content.sections?.find((s: any) => s.id === 'hero');
-  const catSection = content.sections?.find((s: any) => s.id === 'categories');
-  const ctaSection = content.sections?.find((s: any) => s.id === 'cta');
-  const categoryItems = Array.isArray(catSection?.items) && catSection.items.length > 0 ? catSection.items : DEFAULT_MIMARI_CATEGORIES;
+  const apiCards = [
+    {
+      title: 'Sayfa içeriği',
+      href: '/api/content?page=mimari',
+      status: apiStatus.content,
+      note: 'Hero, CTA ve kategoriler bu kayıt üzerinden okunup yazılır.',
+    },
+    {
+      title: 'Upload servisi',
+      href: '/api/upload',
+      status: apiStatus.upload,
+      note: 'Slider, CTA ve departman görselleri için kullanılır.',
+    },
+    {
+      title: 'Kategori kaynağı',
+      href: '/api/content/mimari-categories',
+      status: 'ok' as const,
+      note: 'Aynı alanın ayrı kategori upsert uç noktası.',
+    },
+  ];
+
+  if (isLoading) {
+    return (
+      <div className="flex h-[50vh] items-center justify-center text-[color:var(--accent)]">
+        <Loader2 className="h-6 w-6 animate-spin" />
+      </div>
+    );
+  }
 
   return (
-    <div className="editor-container">
-      <div className="editor-header">
-        <div className="header-info">
-          <h1>Mimari Stüdyo Yönetimi</h1>
-          <p>Tüm hizmet alanlarını ve ana girişi buradan yönetin.</p>
+    <div className="space-y-6 pb-8">
+      <motion.section
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="overflow-hidden rounded-[2rem] border border-[color:var(--line)] bg-[color:var(--surface)] shadow-[var(--shadow)]"
+      >
+        <div className="flex flex-col gap-6 p-5 sm:p-6 xl:flex-row xl:items-end xl:justify-between">
+          <div className="max-w-3xl space-y-4">
+            <Badge className="border border-[color:var(--line)] bg-[color:var(--surface-muted)] text-[color:var(--text-muted)]">
+              <Sparkles className="mr-2 h-3 w-3" />
+              MİMARİ GENEL AYARLARI
+            </Badge>
+            <div className="space-y-2">
+              <h1 className="text-3xl font-semibold tracking-tight text-[color:var(--text)] sm:text-4xl">
+                Mimari stüdyo girişini yönetin
+              </h1>
+              <p className="max-w-2xl text-sm leading-7 text-[color:var(--text-muted)]">
+                Hero, CTA ve departman kartları aynı ekranda düzenlenir. Görsel yüklemeleri otomatik
+                kaydedilir ve ekran light/dark tema ile uyumlu çalışır.
+              </p>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              <Badge variant="outline" className="border-[color:var(--line)] bg-[color:var(--surface-muted)] text-[color:var(--text-muted)]">
+                {content.page}
+              </Badge>
+              <Badge variant="outline" className="border-[color:var(--line)] bg-[color:var(--surface-muted)] text-[color:var(--text-muted)]">
+                Son güncelleme: {updatedLabel}
+              </Badge>
+              <Badge variant="outline" className="border-[color:var(--line)] bg-[color:var(--surface-muted)] text-[color:var(--text-muted)]">
+                Tema: {theme === 'light' ? 'Aydınlık' : 'Karanlık'}
+              </Badge>
+            </div>
+          </div>
+
+          <div className="grid gap-3 sm:grid-cols-2 xl:min-w-[470px]">
+            <div className="rounded-2xl border border-[color:var(--line)] bg-[color:var(--surface-muted)] p-4">
+              <p className="text-[0.65rem] uppercase tracking-[0.28em] text-[color:var(--text-muted)]">Hero</p>
+              <p className="mt-1 text-2xl font-semibold text-[color:var(--text)]">{heroSection?.slides?.length || 0}</p>
+              <p className="mt-2 text-xs text-[color:var(--text-muted)]">Slider görseli</p>
+            </div>
+            <div className="rounded-2xl border border-[color:var(--line)] bg-[color:var(--surface-muted)] p-4">
+              <p className="text-[0.65rem] uppercase tracking-[0.28em] text-[color:var(--text-muted)]">Departman</p>
+              <p className="mt-1 text-2xl font-semibold text-[color:var(--text)]">{categoryItems.length}</p>
+              <p className="mt-2 text-xs text-[color:var(--text-muted)]">Yönetilen kartlar</p>
+            </div>
+            <div className="rounded-2xl border border-[color:var(--line)] bg-[color:var(--surface-muted)] p-4">
+              <p className="text-[0.65rem] uppercase tracking-[0.28em] text-[color:var(--text-muted)]">CTA</p>
+              <p className="mt-1 text-2xl font-semibold text-[color:var(--text)]">{ctaSection?.image ? '1' : '0'}</p>
+              <p className="mt-2 text-xs text-[color:var(--text-muted)]">Bir sonraki adım alanı</p>
+            </div>
+            <div className="rounded-2xl border border-[color:var(--line)] bg-[color:var(--surface-muted)] p-4">
+              <p className="text-[0.65rem] uppercase tracking-[0.28em] text-[color:var(--text-muted)]">API</p>
+              <p className="mt-1 text-2xl font-semibold text-[color:var(--text)]">
+                {apiStatus.content === 'ok' ? 'Hazır' : 'Kontrol'}
+              </p>
+              <p className="mt-2 text-xs text-[color:var(--text-muted)]">Content + upload uçları aktif</p>
+            </div>
+          </div>
         </div>
-        <div style={{ display: 'flex', gap: '1rem' }}>
-          {isDirty && (
-            <button 
-              className="save-btn" 
-              style={{ background: 'transparent', border: '1px solid var(--line)', color: 'var(--text-muted)' }}
-              onClick={handleCancel}
+
+        <div className="flex flex-wrap gap-2 border-t border-[color:var(--line)] px-5 py-4 sm:px-6">
+          {TAB_ITEMS.map((tab) => (
+            <Button
+              key={tab.key}
+              type="button"
+              variant={activeTab === tab.key ? 'default' : 'outline'}
+              className={
+                activeTab === tab.key
+                  ? 'bg-[color:var(--accent)] text-[color:var(--text-inverse)] hover:bg-[color:var(--accent-soft)]'
+                  : 'border-[color:var(--line)] bg-[color:var(--surface-muted)] text-[color:var(--text)] hover:bg-[color:var(--surface)]'
+              }
+              onClick={() => setActiveTab(tab.key)}
             >
-              SIFIRLA
-            </button>
-          )}
-          <button className={`save-btn ${isDirty ? 'dirty-pulse' : ''}`} onClick={saveContent} disabled={isSaving}>
-            {isSaving ? <Loader2 className="animate-spin" size={18} /> : <Save size={18} />}
-            <span>{isDirty ? 'KAYDETMEYİ UNUTMAYIN' : 'DEĞİŞİKLİKLERİ KAYDET'}</span>
-          </button>
+              <tab.icon className="mr-2 h-4 w-4" />
+              {tab.label}
+            </Button>
+          ))}
         </div>
-      </div>
+      </motion.section>
 
-      <AdminSaveBar 
-        isVisible={isDirty} 
-        onSave={saveContent} 
-        onCancel={handleCancel}
-        isSaving={isSaving}
-      />
+      <section className="grid gap-6 xl:grid-cols-[minmax(0,1.2fr)_360px]">
+        <Card className="border border-[color:var(--line)] bg-[color:var(--surface)] shadow-[var(--shadow)]">
+          <CardHeader className="border-b border-[color:var(--line)]">
+            <div className="flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
+              <div>
+                <CardTitle className="text-lg text-[color:var(--text)]">
+                  {TAB_ITEMS.find((item) => item.key === activeTab)?.label} Paneli
+                </CardTitle>
+                <CardDescription className="text-[color:var(--text-muted)]">
+                  {TAB_ITEMS.find((item) => item.key === activeTab)?.description}
+                </CardDescription>
+              </div>
+              <div className="flex gap-2">
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="border-[color:var(--line)] bg-[color:var(--surface-muted)] text-[color:var(--text)]"
+                  onClick={fetchContent}
+                >
+                  <RefreshCw className="mr-2 h-4 w-4" />
+                  Yenile
+                </Button>
+                <Button
+                  type="button"
+                  className="bg-[color:var(--accent)] text-[color:var(--text-inverse)] hover:bg-[color:var(--accent-soft)]"
+                  onClick={() => saveContent(content)}
+                  disabled={isSaving}
+                >
+                  {isSaving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Save className="mr-2 h-4 w-4" />}
+                  Kaydet
+                </Button>
+              </div>
+            </div>
+          </CardHeader>
 
-      <div className="editor-sections">
-        {/* HERO SECTION */}
-        <section className="section-card">
-          <div className="section-title">
-            <Layout size={20} />
-            <h2>Ana Giriş (Hero Slider)</h2>
-          </div>
-          <div className="form-grid">
-            <div className="input-group">
-              <label>Büyük Başlık</label>
-              <input 
-                type="text" 
-                value={heroSection?.title || ''} 
-                onChange={e => {
-                  const nc = {...content};
-                  nc.sections.find((s:any)=>s.id==='hero').title = e.target.value;
-                  setContent(nc);
-                  setIsDirty(true);
-                }} 
-              />
-            </div>
-            <div className="input-group">
-              <label>Alt Slogan</label>
-              <input 
-                type="text" 
-                value={heroSection?.subtitle || ''} 
-                onChange={e => {
-                  const nc = {...content};
-                  nc.sections.find((s:any)=>s.id==='hero').subtitle = e.target.value;
-                  setContent(nc);
-                  setIsDirty(true);
-                }} 
-              />
-            </div>
-            <div className="input-group">
-              <label>Hero Blur Oranı</label>
-              <div className="range-row">
-                <div className="range-meta">
-                  <span>Blur</span>
-                  <strong>{heroSection?.blur ?? 0}px</strong>
-                </div>
-                <input 
-                  type="range"
-                  min="0"
-                  max="40"
-                  value={heroSection?.blur ?? 0}
-                  onChange={e => {
-                    const nc = {...content};
-                    nc.sections.find((s:any)=>s.id==='hero').blur = Number(e.target.value);
-                    setContent(nc);
-                    setIsDirty(true);
-                  }} 
-                />
-              </div>
-            </div>
-            <div className="input-group">
-              <label>Hero Koyu Katman (%)</label>
-              <div className="range-row">
-                <div className="range-meta">
-                  <span>Katman</span>
-                  <strong>%{heroSection?.overlay ?? 30}</strong>
-                </div>
-                <input 
-                  type="range"
-                  min="0"
-                  max="90"
-                  value={heroSection?.overlay ?? 30}
-                  onChange={e => {
-                    const nc = {...content};
-                    nc.sections.find((s:any)=>s.id==='hero').overlay = Number(e.target.value);
-                    setContent(nc);
-                    setIsDirty(true);
-                  }} 
-                />
-              </div>
-            </div>
-          </div>
-          <div className="slides-grid">
-            {heroSection?.slides?.map((slide: string, idx: number) => (
-              <div key={idx} className="slide-item">
-                <img src={slide} alt="Slide" />
-                <button className="delete-slide" onClick={() => {
-                  const nc = {...content};
-                  nc.sections.find((s:any)=>s.id==='hero').slides.splice(idx,1);
-                  setContent(nc);
-                  setIsDirty(true);
-                }}><Trash2 size={12} /></button>
-              </div>
-            ))}
-            <label className="add-slide-btn">
-              <Plus size={20} />
-              <input type="file" className="hidden" onChange={e => handleImageUpload(e, 'hero')} />
-            </label>
-          </div>
-        </section>
+          <CardContent className="space-y-6 p-5 sm:p-6">
+            {activeTab === 'hero' && (
+              <div className="grid gap-6 xl:grid-cols-[340px_minmax(0,1fr)]">
+                <Card className="border border-[color:var(--line)] bg-[color:var(--surface-muted)] shadow-none">
+                  <CardHeader className="pb-4">
+                    <CardTitle className="text-base text-[color:var(--text)]">Hero Görseli</CardTitle>
+                    <CardDescription className="text-[color:var(--text-muted)]">
+                      Slide görselini değiştirin.
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <label className="group relative flex aspect-[4/3] cursor-pointer items-center justify-center overflow-hidden rounded-[1.5rem] border-2 border-dashed border-[color:var(--line)] bg-[color:var(--surface)]">
+                      {heroSection?.slides?.[0] ? (
+                        <img src={heroSection.slides[0]} alt="Hero" className="h-full w-full object-cover" />
+                      ) : (
+                        <div className="flex flex-col items-center gap-3 p-6 text-center text-[color:var(--text-muted)]">
+                          <Upload className="h-7 w-7 text-[color:var(--accent)]" />
+                          <p className="text-sm font-medium text-[color:var(--text)]">Hero görseli ekleyin</p>
+                        </div>
+                      )}
+                      <input
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        onChange={async (event) => {
+                          const file = event.target.files?.[0];
+                          if (!file) return;
+                          try {
+                            const url = await uploadFile(file);
+                            const nextContent = cloneContent(content);
+                            const hero = nextContent.sections.find((section) => section.id === 'hero');
+                            if (hero) hero.slides = [url];
+                            setContent(nextContent);
+                            setIsDirty(true);
+                            await saveContent(nextContent);
+                            showToast('Hero görseli güncellendi.', 'success');
+                          } catch (error) {
+                            showToast(error instanceof Error ? error.message : 'Yükleme başarısız.', 'error');
+                          } finally {
+                            event.target.value = '';
+                          }
+                        }}
+                      />
+                    </label>
+                    <div className="grid grid-cols-2 gap-3">
+                      <Badge variant="outline" className="border-[color:var(--line)] bg-[color:var(--surface)] text-[color:var(--text-muted)]">
+                        Blur: {heroSection?.blur || 0}px
+                      </Badge>
+                      <Badge variant="outline" className="border-[color:var(--line)] bg-[color:var(--surface)] text-[color:var(--text-muted)]">
+                        Overlay: %{heroSection?.overlay || 30}
+                      </Badge>
+                    </div>
+                  </CardContent>
+                </Card>
 
-        <section className="section-card">
-          <div className="section-title">
-            <ImageIcon size={20} />
-            <h2>CTA Alanı (Bir Sonraki Adım)</h2>
-          </div>
-          <div className="form-grid">
-            <div className="input-group">
-              <label>CTA Blur Oranı</label>
-              <div className="range-row">
-                <div className="range-meta">
-                  <span>Blur</span>
-                  <strong>{ctaSection?.blur ?? 0}px</strong>
+                <div className="grid gap-4">
+                  <div className="grid gap-4 lg:grid-cols-2">
+                    <div className="space-y-2">
+                      <label className="text-xs font-medium uppercase tracking-[0.24em] text-[color:var(--text-muted)]">Başlık</label>
+                      <Input
+                        value={heroSection?.title || ''}
+                        onChange={(event) =>
+                          mutateContent((draft) => {
+                            const hero = draft.sections.find((section) => section.id === 'hero');
+                            if (hero) hero.title = event.target.value;
+                          })
+                        }
+                        className="h-12 rounded-2xl border-[color:var(--line)] bg-[color:var(--surface-muted)] text-[color:var(--text)]"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-xs font-medium uppercase tracking-[0.24em] text-[color:var(--text-muted)]">Alt Slogan</label>
+                      <Input
+                        value={heroSection?.subtitle || ''}
+                        onChange={(event) =>
+                          mutateContent((draft) => {
+                            const hero = draft.sections.find((section) => section.id === 'hero');
+                            if (hero) hero.subtitle = event.target.value;
+                          })
+                        }
+                        className="h-12 rounded-2xl border-[color:var(--line)] bg-[color:var(--surface-muted)] text-[color:var(--text)]"
+                      />
+                    </div>
+                  </div>
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    <div className="space-y-2">
+                      <label className="text-xs font-medium uppercase tracking-[0.24em] text-[color:var(--text-muted)]">Blur</label>
+                      <Input
+                        type="range"
+                        min={0}
+                        max={60}
+                        value={heroSection?.blur || 0}
+                        onChange={(event) =>
+                          mutateContent((draft) => {
+                            const hero = draft.sections.find((section) => section.id === 'hero');
+                            if (hero) hero.blur = Number(event.target.value);
+                          })
+                        }
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-xs font-medium uppercase tracking-[0.24em] text-[color:var(--text-muted)]">Overlay</label>
+                      <Input
+                        type="range"
+                        min={0}
+                        max={100}
+                        value={heroSection?.overlay || 30}
+                        onChange={(event) =>
+                          mutateContent((draft) => {
+                            const hero = draft.sections.find((section) => section.id === 'hero');
+                            if (hero) hero.overlay = Number(event.target.value);
+                          })
+                        }
+                      />
+                    </div>
+                  </div>
+
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <p className="text-sm font-medium text-[color:var(--text)]">Hero Slider</p>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        className="border-[color:var(--line)] bg-[color:var(--surface-muted)] text-[color:var(--text)]"
+                        onClick={() => document.getElementById('mimari-hero-add')?.click()}
+                      >
+                        <Plus className="mr-2 h-4 w-4" />
+                        Görsel Ekle
+                      </Button>
+                    </div>
+                    <input
+                      id="mimari-hero-add"
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={async (event) => {
+                          const file = event.target.files?.[0];
+                          if (!file) return;
+                          try {
+                            const url = await uploadFile(file);
+                            const nextContent = cloneContent(content);
+                            const hero = nextContent.sections.find((section) => section.id === 'hero');
+                            if (hero) {
+                              hero.slides = hero.slides || [];
+                              hero.slides.push(url);
+                            }
+                            setContent(nextContent);
+                            setIsDirty(true);
+                            await saveContent(nextContent);
+                            showToast('Hero görseli eklendi.', 'success');
+                          } catch (error) {
+                          showToast(error instanceof Error ? error.message : 'Yükleme başarısız.', 'error');
+                        } finally {
+                          event.target.value = '';
+                        }
+                      }}
+                    />
+                    <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+                      {(heroSection?.slides || []).map((slide, index) => (
+                        <Card key={`${slide}-${index}`} className="overflow-hidden border border-[color:var(--line)] bg-[color:var(--surface-muted)] shadow-none">
+                          <div className="aspect-[16/10]">
+                            <img src={slide} alt={`Slide ${index + 1}`} className="h-full w-full object-cover" />
+                          </div>
+                          <CardContent className="flex items-center justify-between gap-2 p-4">
+                            <span className="text-sm text-[color:var(--text-muted)]">Slide {index + 1}</span>
+                            <Button
+                              type="button"
+                              variant="outline"
+                              size="icon"
+                              className="h-10 w-10 border-rose-500/20 bg-rose-500/10 text-rose-700 hover:bg-rose-500 hover:text-white dark:text-rose-300"
+                              onClick={() =>
+                                mutateContent((draft) => {
+                                  const hero = draft.sections.find((section) => section.id === 'hero');
+                                  if (!hero?.slides) return;
+                                  hero.slides.splice(index, 1);
+                                })
+                              }
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </CardContent>
+                        </Card>
+                      ))}
+                    </div>
+                  </div>
                 </div>
-                <input
-                  type="range"
-                  min="0"
-                  max="40"
-                  value={ctaSection?.blur ?? 0}
-                  onChange={e => {
-                    const nc = { ...content };
-                    nc.sections.find((s:any) => s.id === 'cta').blur = Number(e.target.value);
-                    setContent(nc);
-                    setIsDirty(true);
-                  }}
-                />
-              </div>
-            </div>
-            <div className="input-group">
-              <label>CTA Koyu Katman (%)</label>
-              <div className="range-row">
-                <div className="range-meta">
-                  <span>Katman</span>
-                  <strong>%{ctaSection?.overlay ?? 30}</strong>
-                </div>
-                <input
-                  type="range"
-                  min="0"
-                  max="90"
-                  value={ctaSection?.overlay ?? 30}
-                  onChange={e => {
-                    const nc = { ...content };
-                    nc.sections.find((s:any) => s.id === 'cta').overlay = Number(e.target.value);
-                    setContent(nc);
-                    setIsDirty(true);
-                  }}
-                />
-              </div>
-            </div>
-          </div>
-          <div className="slides-grid">
-            {ctaSection?.image && (
-              <div className="slide-item">
-                <img src={ctaSection.image} alt="CTA görseli" />
-                <button className="delete-slide" onClick={() => {
-                  const nc = { ...content };
-                  nc.sections.find((s:any) => s.id === 'cta').image = '';
-                  setContent(nc);
-                  setIsDirty(true);
-                }}><Trash2 size={12} /></button>
               </div>
             )}
-            <label className="add-slide-btn">
-              <Upload size={20} />
-              <input type="file" className="hidden" onChange={e => handleImageUpload(e, 'cta')} />
-            </label>
-          </div>
-        </section>
 
-        {/* CATEGORIES SECTION */}
-        <section className="section-card">
-          <div className="section-title section-title-split">
-            <div className="section-title-copy">
-              <span className="section-eyebrow">MİMARİ STÜDYO</span>
-              <div className="section-title-row">
-                <ExternalLink size={20} />
-                <h2>Hizmet Alanları (Departmanlar)</h2>
+            {activeTab === 'cta' && (
+              <div className="grid gap-6 xl:grid-cols-[340px_minmax(0,1fr)]">
+                <Card className="border border-[color:var(--line)] bg-[color:var(--surface-muted)] shadow-none">
+                  <CardHeader className="pb-4">
+                    <CardTitle className="text-base text-[color:var(--text)]">CTA Görseli</CardTitle>
+                    <CardDescription className="text-[color:var(--text-muted)]">
+                      Sonraki adım alanının kapak görseli.
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <label className="group relative flex aspect-[4/3] cursor-pointer items-center justify-center overflow-hidden rounded-[1.5rem] border-2 border-dashed border-[color:var(--line)] bg-[color:var(--surface)]">
+                      {ctaSection?.image ? (
+                        <img src={ctaSection.image} alt="CTA" className="h-full w-full object-cover" />
+                      ) : (
+                        <div className="flex flex-col items-center gap-3 p-6 text-center text-[color:var(--text-muted)]">
+                          <Globe2 className="h-7 w-7 text-[color:var(--accent)]" />
+                          <p className="text-sm font-medium text-[color:var(--text)]">CTA görseli ekleyin</p>
+                        </div>
+                      )}
+                      <input
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        onChange={async (event) => {
+                          const file = event.target.files?.[0];
+                          if (!file) return;
+                          try {
+                            const url = await uploadFile(file);
+                            const nextContent = cloneContent(content);
+                            const cta = nextContent.sections.find((section) => section.id === 'cta');
+                            if (cta) cta.image = url;
+                            setContent(nextContent);
+                            setIsDirty(true);
+                            await saveContent(nextContent);
+                            showToast('CTA görseli güncellendi.', 'success');
+                          } catch (error) {
+                            showToast(error instanceof Error ? error.message : 'Yükleme başarısız.', 'error');
+                          } finally {
+                            event.target.value = '';
+                          }
+                        }}
+                      />
+                    </label>
+                  </CardContent>
+                </Card>
+
+                <div className="grid gap-4">
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    <div className="space-y-2">
+                      <label className="text-xs font-medium uppercase tracking-[0.24em] text-[color:var(--text-muted)]">CTA Blur</label>
+                      <Input
+                        type="range"
+                        min={0}
+                        max={60}
+                        value={ctaSection?.blur || 0}
+                        onChange={(event) =>
+                          mutateContent((draft) => {
+                            const cta = draft.sections.find((section) => section.id === 'cta');
+                            if (cta) cta.blur = Number(event.target.value);
+                          })
+                        }
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-xs font-medium uppercase tracking-[0.24em] text-[color:var(--text-muted)]">CTA Overlay</label>
+                      <Input
+                        type="range"
+                        min={0}
+                        max={100}
+                        value={ctaSection?.overlay || 30}
+                        onChange={(event) =>
+                          mutateContent((draft) => {
+                            const cta = draft.sections.find((section) => section.id === 'cta');
+                            if (cta) cta.overlay = Number(event.target.value);
+                          })
+                        }
+                      />
+                    </div>
+                  </div>
+
+                  <Card className="border border-[color:var(--line)] bg-[color:var(--surface-muted)] shadow-none">
+                    <CardHeader className="pb-4">
+                      <CardTitle className="text-base text-[color:var(--text)]">CTA Durumu</CardTitle>
+                      <CardDescription className="text-[color:var(--text-muted)]">
+                        Görsel ve katman ayarları tek bakışta.
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent className="grid gap-3 sm:grid-cols-2">
+                      <Badge variant="outline" className="border-[color:var(--line)] bg-[color:var(--surface)] text-[color:var(--text-muted)]">
+                        Blur: {ctaSection?.blur || 0}px
+                      </Badge>
+                      <Badge variant="outline" className="border-[color:var(--line)] bg-[color:var(--surface)] text-[color:var(--text-muted)]">
+                        Overlay: %{ctaSection?.overlay || 30}
+                      </Badge>
+                    </CardContent>
+                  </Card>
+                </div>
               </div>
-            </div>
-            <button className="add-area-btn" onClick={() => setIsAddModalOpen(true)}>
-              <PlusCircle size={18} />
-              <span>YENİ DEPARTMAN EKLE</span>
-            </button>
-          </div>
+            )}
 
-          <div className="category-grid">
-            {categoryItems.map((item: any, idx: number) => (
-              <div key={idx} className="category-item-card">
-              <div className="cat-image-column">
-                <div className="cat-image" onClick={() => openCategoryImagePicker(idx)}>
-                    {resolveCategoryImage(item, categoryPreviews[idx]) ? (
-                      <img src={withVersion(resolveCategoryImage(item, categoryPreviews[idx]), contentVersion)} alt={item.title} />
-                    ) : (
-                      <div className="cat-image-empty">Gorsel Yok</div>
-                    )}
-                    <div className="cat-overlay"><Upload size={16} /></div>
-                    <input id={`cat-up-${idx}`} type="file" className="hidden" accept="image/*" onChange={e => handleImageUpload(e, 'categories', idx, true)} />
+            {activeTab === 'departmanlar' && (
+              <div className="space-y-4">
+                <div className="flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
+                  <div>
+                    <h3 className="text-base font-semibold text-[color:var(--text)]">Hizmet Alanları</h3>
+                    <p className="text-sm text-[color:var(--text-muted)]">
+                      Departman kartlarını düzenleyin ve detay sayfalarına gidin.
+                    </p>
                   </div>
-                  <button type="button" className="cat-image-btn" onClick={() => openCategoryImagePicker(idx)}>
-                    <Upload size={14} />
-                    GÖRSELİ DEĞİŞTİR
-                  </button>
-                  <div className="cat-image-filename">
-                    {resolveCategoryImage(item, categoryPreviews[idx]) ? "Önizleme aktif" : "Görsel bekleniyor"}
+                  <div className="flex gap-2">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      className="border-[color:var(--line)] bg-[color:var(--surface-muted)] text-[color:var(--text)]"
+                      onClick={addCategory}
+                    >
+                      <Plus className="mr-2 h-4 w-4" />
+                      Departman Ekle
+                    </Button>
+                    <Button asChild className="bg-[color:var(--accent)] text-[color:var(--text-inverse)] hover:bg-[color:var(--accent-soft)]">
+                      <Link href="/admin/studios/mimarlik">
+                        <FolderKanban className="mr-2 h-4 w-4" />
+                        Mimari Stüdyo
+                      </Link>
+                    </Button>
                   </div>
-                  <input
-                    type="text"
-                    className="cat-image-url"
-                    value={resolveCategoryImage(item, categoryPreviews[idx]) || ''}
-                    placeholder="Görsel URL"
-                    onChange={e => updateCategoryImageValue(idx, e.target.value)}
-                    onBlur={async e => {
-                      const value = e.target.value.trim();
-                      if (!value || value === (initialContent?.sections?.find((s: any) => s.id === 'categories')?.items?.[idx]?.image || '')) {
-                        return;
-                      }
-                      try {
-                        await persistCategoryImageValue(idx, value);
-                      } catch {
-                        showToast("Kart görseli kaydedilemedi.", "error");
-                      }
-                    }}
-                    onKeyDown={async e => {
-                      if (e.key !== 'Enter') return;
-                      e.preventDefault();
-                      const value = (e.currentTarget.value || '').trim();
-                      if (!value) return;
-                      try {
-                        await persistCategoryImageValue(idx, value);
-                      } catch {
-                        showToast("Kart görseli kaydedilemedi.", "error");
-                      }
-                    }}
+                </div>
+
+                <div className="grid gap-4 md:grid-cols-2 2xl:grid-cols-3">
+                  {categoryItems.map((item, index) => (
+                    <Card key={`${item.slug}-${index}`} className="overflow-hidden border border-[color:var(--line)] bg-[color:var(--surface-muted)] shadow-[0_20px_60px_rgba(0,0,0,0.12)]">
+                      <div className="aspect-[16/10] bg-[color:var(--surface)]">
+                        <img src={item.image} alt={item.title} className="h-full w-full object-cover" />
+                      </div>
+                      <CardContent className="space-y-4 p-4">
+                        <div className="space-y-2">
+                          <Input
+                            value={item.title}
+                            onChange={(event) =>
+                              mutateContent((draft) => {
+                                const categories = draft.sections.find((section) => section.id === 'categories');
+                                if (!categories?.items?.[index]) return;
+                                categories.items[index].title = event.target.value;
+                              })
+                            }
+                            className="h-11 rounded-2xl border-[color:var(--line)] bg-[color:var(--surface)] text-[color:var(--text)]"
+                          />
+                          <Input
+                            value={item.sideLabel}
+                            onChange={(event) =>
+                              mutateContent((draft) => {
+                                const categories = draft.sections.find((section) => section.id === 'categories');
+                                if (!categories?.items?.[index]) return;
+                                categories.items[index].sideLabel = event.target.value;
+                              })
+                            }
+                            className="h-11 rounded-2xl border-[color:var(--line)] bg-[color:var(--surface)] text-[color:var(--text)]"
+                          />
+                          <Input
+                            value={item.slug}
+                            onChange={(event) =>
+                              mutateContent((draft) => {
+                                const categories = draft.sections.find((section) => section.id === 'categories');
+                                if (!categories?.items?.[index]) return;
+                                categories.items[index].slug = event.target.value;
+                                categories.items[index].href = `/mimari/${event.target.value}`;
+                              })
+                            }
+                            className="h-11 rounded-2xl border-[color:var(--line)] bg-[color:var(--surface)] text-[color:var(--text)]"
+                          />
+                        </div>
+                        <div className="flex items-center justify-between gap-2">
+                          <Button
+                            asChild
+                            variant="outline"
+                            className="border-[color:var(--line)] bg-[color:var(--surface)] text-[color:var(--text)]"
+                          >
+                            <Link href={openCategoryDetail(item)}>
+                              <Eye className="mr-2 h-4 w-4" />
+                              Detaya Git
+                            </Link>
+                          </Button>
+                          <Button
+                            type="button"
+                            variant="outline"
+                            className="border-rose-500/20 bg-rose-500/10 text-rose-700 hover:bg-rose-500 hover:text-white dark:text-rose-300"
+                            onClick={() => removeCategory(index)}
+                          >
+                            <Trash2 className="mr-2 h-4 w-4" />
+                            Sil
+                          </Button>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                  {categoryItems.length === 0 && (
+                    <div className="rounded-[1.5rem] border border-dashed border-[color:var(--line)] bg-[color:var(--surface-muted)] p-8 text-center text-sm text-[color:var(--text-muted)] md:col-span-2 2xl:col-span-3">
+                      Henüz departman kartı yok.
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        <aside className="space-y-6 xl:sticky xl:top-6 xl:self-start">
+          <Card className="border border-[color:var(--line)] bg-[color:var(--surface)] shadow-[var(--shadow)]">
+            <CardHeader className="border-b border-[color:var(--line)]">
+              <CardTitle className="text-lg text-[color:var(--text)]">API Bağlantıları</CardTitle>
+              <CardDescription className="text-[color:var(--text-muted)]">
+                Mimari içerik, upload ve kategori uçları.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-3 p-5 sm:p-6">
+              {apiCards.map((item) => {
+                const meta = probeMeta(item.status);
+                const Icon = meta.icon;
+                return (
+                  <div key={item.href} className="rounded-2xl border border-[color:var(--line)] bg-[color:var(--surface-muted)] p-4">
+                    <div className="flex items-start justify-between gap-4">
+                      <div className="space-y-1">
+                        <div className="flex items-center gap-2">
+                          <p className="text-sm font-semibold text-[color:var(--text)]">{item.title}</p>
+                          <Badge className={`border ${meta.className} px-2 py-0.5 text-[0.65rem] uppercase tracking-[0.24em]`}>
+                            <Icon className={`mr-1 h-3 w-3 ${item.status === 'loading' ? 'animate-spin' : ''}`} />
+                            {meta.label}
+                          </Badge>
+                        </div>
+                        <p className="text-xs leading-5 text-[color:var(--text-muted)]">{item.note}</p>
+                      </div>
+                      <ChevronRight className="mt-1 h-4 w-4 text-[color:var(--text-muted)]" />
+                    </div>
+                    <p className="mt-3 text-[0.65rem] uppercase tracking-[0.24em] text-[color:var(--text-muted)]">
+                      {item.href}
+                    </p>
+                  </div>
+                );
+              })}
+            </CardContent>
+          </Card>
+
+          <Card className="border border-[color:var(--line)] bg-[color:var(--surface)] shadow-[var(--shadow)]">
+            <CardHeader className="border-b border-[color:var(--line)]">
+              <CardTitle className="text-lg text-[color:var(--text)]">Hızlı İşlem</CardTitle>
+              <CardDescription className="text-[color:var(--text-muted)]">
+                Değişiklikleri yayınlayın veya geri alın.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-3 p-5 sm:p-6">
+              <Button
+                type="button"
+                className="w-full bg-[color:var(--accent)] text-[color:var(--text-inverse)] hover:bg-[color:var(--accent-soft)]"
+                onClick={() => saveContent(content)}
+                disabled={isSaving}
+              >
+                {isSaving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <CloudUpload className="mr-2 h-4 w-4" />}
+                Değişiklikleri Kaydet
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                className="w-full border-[color:var(--line)] bg-[color:var(--surface-muted)] text-[color:var(--text)]"
+                onClick={handleCancel}
+                disabled={!isDirty}
+              >
+                Vazgeç
+              </Button>
+              <Separator className="bg-[color:var(--line)]" />
+              <Button
+                type="button"
+                variant="outline"
+                className="w-full border-[color:var(--line)] bg-[color:var(--surface)] text-[color:var(--text)]"
+                onClick={fetchContent}
+              >
+                <RefreshCw className="mr-2 h-4 w-4" />
+                Yeniden Yükle
+              </Button>
+            </CardContent>
+          </Card>
+
+          <Card className="border border-[color:var(--line)] bg-[color:var(--surface)] shadow-[var(--shadow)]">
+            <CardHeader className="border-b border-[color:var(--line)]">
+              <CardTitle className="text-lg text-[color:var(--text)]">Yeni Departman</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3 p-5 sm:p-6">
+              <Button
+                type="button"
+                className="w-full bg-[color:var(--accent)] text-[color:var(--text-inverse)] hover:bg-[color:var(--accent-soft)]"
+                onClick={() => setIsAddModalOpen(true)}
+              >
+                <Plus className="mr-2 h-4 w-4" />
+                Kart Ekle
+              </Button>
+            </CardContent>
+          </Card>
+        </aside>
+      </section>
+
+      <AnimatePresence>
+        {isAddModalOpen && (
+          <div className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/70 p-2 backdrop-blur-md sm:p-4" onClick={() => setIsAddModalOpen(false)}>
+            <motion.div
+              initial={{ opacity: 0, y: 24, scale: 0.98 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 24, scale: 0.98 }}
+              transition={{ type: 'spring', damping: 24, stiffness: 220 }}
+              className="mt-2 w-full max-w-2xl overflow-hidden rounded-[2rem] border border-[color:var(--line)] bg-[color:var(--surface)] shadow-[0_35px_100px_rgba(0,0,0,0.45)] sm:mt-0"
+              onClick={(event) => event.stopPropagation()}
+            >
+              <div className="flex items-start justify-between gap-4 border-b border-[color:var(--line)] bg-[color:var(--surface-muted)] px-5 py-4 sm:px-6">
+                <div>
+                  <p className="text-[0.65rem] uppercase tracking-[0.32em] text-[color:var(--text-muted)]">Yeni Departman</p>
+                  <h2 className="text-xl font-semibold tracking-tight text-[color:var(--text)]">Kart ekle</h2>
+                </div>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="icon"
+                  className="h-10 w-10 border-[color:var(--line)] bg-[color:var(--surface)] text-[color:var(--text)]"
+                  onClick={() => setIsAddModalOpen(false)}
+                >
+                  <X className="h-4 w-4" />
+                </Button>
+              </div>
+
+              <div className="space-y-4 p-5 sm:p-6">
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <Input
+                    value={newService.title}
+                    onChange={(event) => setNewService((prev) => ({ ...prev, title: event.target.value }))}
+                    className="h-12 rounded-2xl border-[color:var(--line)] bg-[color:var(--surface-muted)] text-[color:var(--text)]"
+                    placeholder="Departman adı"
+                  />
+                  <Input
+                    value={newService.sideLabel}
+                    onChange={(event) => setNewService((prev) => ({ ...prev, sideLabel: event.target.value }))}
+                    className="h-12 rounded-2xl border-[color:var(--line)] bg-[color:var(--surface-muted)] text-[color:var(--text)]"
+                    placeholder="Yan etiket"
                   />
                 </div>
-                <div className="cat-info">
-                  <input className="cat-title-input" value={item.title} onChange={e => {
-                    const nc = {...content};
-                    nc.sections.find((s:any)=>s.id==='categories').items[idx].title = e.target.value;
-                    setContent(nc);
-                    setIsDirty(true);
-                  }} />
-                  <input className="cat-label-input" value={item.sideLabel} onChange={e => {
-                    const nc = {...content};
-                    nc.sections.find((s:any)=>s.id==='categories').items[idx].sideLabel = e.target.value;
-                    setContent(nc);
-                    setIsDirty(true);
-                  }} />
-                  <div className="cat-actions">
-                    <a href={`/admin/content/services/mimari/${item.slug}`} className="detail-edit-link">
-                       <ImageIcon size={14} /> <span>DETAYLAR</span>
-                    </a>
-                    <button className="delete-area-btn" onClick={() => removeService(idx)}><Trash2 size={14} /></button>
-                  </div>
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <Input
+                    value={newService.slug}
+                    onChange={(event) => setNewService((prev) => ({ ...prev, slug: event.target.value }))}
+                    className="h-12 rounded-2xl border-[color:var(--line)] bg-[color:var(--surface-muted)] text-[color:var(--text)]"
+                    placeholder="slug"
+                  />
+                  <Input
+                    value={newService.image}
+                    onChange={(event) => setNewService((prev) => ({ ...prev, image: event.target.value }))}
+                    className="h-12 rounded-2xl border-[color:var(--line)] bg-[color:var(--surface-muted)] text-[color:var(--text)]"
+                    placeholder="Görsel URL"
+                  />
                 </div>
+                <Button
+                  type="button"
+                  className="w-full bg-[color:var(--accent)] text-[color:var(--text-inverse)] hover:bg-[color:var(--accent-soft)]"
+                  onClick={() => {
+                    if (!newService.title || !newService.slug) {
+                      showToast('Başlık ve slug zorunludur.', 'error');
+                      return;
+                    }
+                    mutateContent((draft) => {
+                      const categories = draft.sections.find((section) => section.id === 'categories');
+                      categories?.items?.push({
+                        href: `/mimari/${newService.slug}`,
+                        title: newService.title,
+                        sideLabel: newService.sideLabel,
+                        image: newService.image || SLIDER_IMAGE_URLS.mimari,
+                        slug: newService.slug,
+                      });
+                    });
+                    setIsAddModalOpen(false);
+                    setNewService({ title: '', sideLabel: '', slug: '', image: SLIDER_IMAGE_URLS.mimari });
+                  }}
+                >
+                  Kartı Ekle
+                </Button>
               </div>
-            ))}
+            </motion.div>
           </div>
-        </section>
-      </div>
-
-      {isAddModalOpen && (
-        <div className="modal-overlay">
-          <div className="modal-content">
-            <div className="modal-header">
-              <h3>Yeni Departman Ekle</h3>
-              <button onClick={() => setIsAddModalOpen(false)}><X /></button>
-            </div>
-            <div className="modal-body">
-              <div className="input-group">
-                <label>Departman Adı (Örn: Restorasyon)</label>
-                <input type="text" value={newService.title} onChange={e => setNewService({...newService, title: e.target.value})} />
-              </div>
-              <div className="input-group">
-                <label>Yan Etiket (Örn: Heritage Revival)</label>
-                <input type="text" value={newService.sideLabel} onChange={e => setNewService({...newService, sideLabel: e.target.value})} />
-              </div>
-              <div className="input-group">
-                <label>URL Slug (Örn: restorasyon)</label>
-                <input type="text" value={newService.slug} onChange={e => setNewService({...newService, slug: e.target.value})} />
-              </div>
-              <div className="input-group">
-                <label>Görsel URL</label>
-                <input type="text" value={newService.image} onChange={e => setNewService({...newService, image: e.target.value})} />
-              </div>
-              <button className="save-btn" style={{ width: '100%', marginTop: '1rem' }} onClick={addService}>EKLE</button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      <style jsx>{`
-        .editor-container { display: flex; flex-direction: column; gap: 3rem; padding-bottom: 5rem; }
-        .editor-header { display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 1px solid var(--line); padding-bottom: 2rem; }
-        .header-info h1 { font-family: var(--font-display), sans-serif; font-size: 1.5rem; letter-spacing: 0.1em; color: var(--text); }
-        .header-info p { font-size: 0.9rem; color: var(--text-soft); opacity: 0.7; margin-top: 0.5rem; }
-
-        .save-btn.dirty-pulse { background: #a68966; box-shadow: 0 0 20px rgba(166,137,102,0.4); animation: pulse-border 2s infinite; }
-        @keyframes pulse-border { 0% { box-shadow: 0 0 0 0 rgba(166,137,102,0.4); } 70% { box-shadow: 0 0 0 10px rgba(166,137,102,0); } 100% { box-shadow: 0 0 0 0 rgba(166,137,102,0); } }
-
-        .save-btn { background: #a68966; color: #080808; border: none; padding: 1rem 2.5rem; display: flex; align-items: center; gap: 1rem; font-family: var(--font-display), sans-serif; font-weight: 700; font-size: 0.75rem; letter-spacing: 0.2em; cursor: pointer; transition: 0.3s; }
-        .save-btn:hover { background: #c2a785; transform: translateY(-2px); }
-
-        .editor-sections { display: flex; flex-direction: column; gap: 2.5rem; }
-        .section-card { background: var(--surface); padding: 2.5rem; border: 1px solid var(--line); }
-        .section-title { display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem; }
-        .section-title-split { justify-content: space-between; align-items: flex-end; gap: 2rem; }
-        .section-title-copy { display: flex; flex-direction: column; gap: 0.6rem; min-width: 0; }
-        .section-eyebrow { font-size: 0.62rem; letter-spacing: 0.24em; text-transform: uppercase; color: #a68966; font-weight: 800; }
-        .section-title-row { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
-        .section-title h2 { font-family: var(--font-display), sans-serif; font-size: 1.05rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--text); margin: 0; }
-
-        .add-area-btn { background: rgba(166,137,102,0.1); border: 1px solid #a68966; color: #a68966; padding: 0.6rem 1.2rem; display: flex; align-items: center; gap: 0.8rem; font-size: 0.65rem; font-weight: 800; cursor: pointer; transition: 0.3s; }
-        .add-area-btn:hover { background: #a68966; color: #000; }
-
-        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 2rem; }
-        .input-group { display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 1rem; }
-        .input-group label { font-size: 0.7rem; color: var(--text-muted); opacity: 0.8; letter-spacing: 0.1em; text-transform: uppercase; }
-        .input-group input { background: var(--background); border: 1px solid var(--line); padding: 1rem; color: var(--text); font-size: 0.9rem; }
-        .range-row { display: flex; flex-direction: column; gap: 0.75rem; padding: 1rem; border: 1px solid var(--line); background: var(--background); }
-        .range-meta { display: flex; align-items: center; justify-content: space-between; font-size: 0.72rem; color: var(--text-muted); letter-spacing: 0.12em; text-transform: uppercase; }
-        .range-meta strong { color: var(--text); font-size: 0.9rem; letter-spacing: 0.04em; }
-        .range-row input[type="range"] { width: 100%; accent-color: #a68966; cursor: pointer; padding: 0; border: none; background: transparent; }
-
-        .category-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1.5rem; }
-        .category-item-card { background: var(--surface-muted); border: 1px solid var(--line); padding: 1.25rem; display: flex; gap: 1.25rem; align-items: flex-start; }
-        .cat-image-column { width: 180px; display: flex; flex-direction: column; gap: 0.6rem; flex-shrink: 0; }
-        .cat-image { width: 100%; aspect-ratio: 1; position: relative; cursor: pointer; border: 1px solid rgba(255,255,255,0.1); overflow: hidden; background: #111; }
-        .cat-image img { width: 100%; height: 100%; object-fit: cover; }
-        .cat-image-empty { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: rgba(255,255,255,0.45); font-size: 0.75rem; letter-spacing: 0.18em; text-transform: uppercase; }
-        .cat-overlay { position: absolute; inset: 0; background: rgba(166,137,102,0.8); display: flex; align-items: center; justify-content: center; opacity: 0; transition: 0.3s; color: #000; }
-        .cat-image:hover .cat-overlay { opacity: 1; }
-        .cat-image-btn { width: 100%; display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; background: rgba(166,137,102,0.1); border: 1px solid rgba(166,137,102,0.35); color: #a68966; padding: 0.65rem 0.8rem; font-size: 0.62rem; font-weight: 800; letter-spacing: 0.14em; cursor: pointer; transition: 0.25s ease; }
-        .cat-image-btn:hover { background: rgba(166,137,102,0.18); transform: translateY(-1px); }
-        .cat-image-filename { font-size: 0.64rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); opacity: 0.75; }
-        .cat-image-url { width: 100%; background: var(--background); border: 1px solid var(--line); color: var(--text); padding: 0.7rem 0.8rem; font-size: 0.8rem; }
-
-        .cat-info { flex: 1; display: flex; flex-direction: column; gap: 0.5rem; }
-        .cat-title-input { background: transparent; border: none; border-bottom: 1px solid var(--line); color: var(--text); font-size: 1rem; font-weight: 600; padding: 0.3rem 0; width: 100%; }
-        .cat-label-input { background: transparent; border: none; color: #a68966; font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; width: 100%; }
-        
-        .cat-actions { display: flex; gap: 0.5rem; margin-top: auto; }
-        .detail-edit-link { flex: 1; display: flex; align-items: center; justify-content: center; gap: 0.5rem; background: var(--surface); border: 1px solid var(--line); color: var(--text); text-decoration: none; padding: 0.5rem; font-size: 0.65rem; font-weight: 700; transition: 0.3s; }
-        .detail-edit-link:hover { background: var(--accent); color: #000; border-color: var(--accent); }
-        .delete-area-btn { background: rgba(255,68,68,0.1); border: 1px solid rgba(255,68,68,0.3); color: #ff4444; width: 35px; height: 35px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.3s; }
-        .delete-area-btn:hover { background: #ff4444; color: #fff; }
-
-        .slides-grid { display: flex; flex-wrap: wrap; gap: 1rem; }
-        .slide-item { width: 150px; aspect-ratio: 16/9; position: relative; border: 1px solid rgba(255,255,255,0.1); }
-        .slide-item img { width: 100%; height: 100%; object-fit: cover; }
-        .delete-slide { position: absolute; top: -5px; right: -5px; background: #ff4444; color: #fff; border: none; width: 18px; height: 18px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-        .add-slide-btn { width: 150px; aspect-ratio: 16/9; border: 1px dashed rgba(166,137,102,0.4); display: flex; align-items: center; justify-content: center; color: #a68966; cursor: pointer; }
-
-        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(5px); display: flex; align-items: center; justify-content: center; z-index: 1000; }
-        .modal-content { background: var(--surface); width: 100%; max-width: 450px; padding: 2rem; border: 1px solid var(--line); border-radius: 12px; }
-        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; border-bottom: 1px solid var(--line); padding-bottom: 1rem; }
-        .modal-header h3 { font-family: var(--font-display), sans-serif; font-size: 1.1rem; letter-spacing: 0.1em; color: var(--text); }
-        .modal-header button { background: transparent; border: none; color: var(--text); cursor: pointer; opacity: 0.5; }
-
-        .loader-wrap { height: 400px; display: flex; align-items: center; justify-content: center; color: #a68966; }
-        .hidden { display: none; }
-        @media (max-width: 860px) {
-          .section-title-split { flex-direction: column; align-items: flex-start; }
-          .add-area-btn { width: 100%; justify-content: center; }
-          .cat-image-column { width: 100%; }
-        }
-      `}</style>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

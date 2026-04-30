@@ -1,354 +1,929 @@
 'use client';
 
-import { useState, useEffect, use as useReact } from 'react';
-import {
-  Upload,
-  Save,
-  Plus,
-  Trash2,
-  Loader2,
-  ChevronLeft,
-  ImageIcon,
-  FileText,
-  Workflow,
-  Target,
-  Filter
-} from 'lucide-react';
+/* eslint-disable @next/next/no-img-element */
+
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
+import { useParams } from 'next/navigation';
+import { AnimatePresence, motion } from 'framer-motion';
+import {
+  ArrowLeft,
+  BadgeCheck,
+  CheckCircle2,
+  CloudUpload,
+  Eye,
+  FolderKanban,
+  Image as ImageIcon,
+  Loader2,
+  Plus,
+  RefreshCw,
+  Save,
+  Sparkles,
+  Target,
+  Trash2,
+  Upload,
+  Wrench,
+} from 'lucide-react';
+
+import { useNotification } from '@/components/admin/AdminNotificationProvider';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Separator } from '@/components/ui/separator';
+import { Textarea } from '@/components/ui/textarea';
 import { SLIDER_IMAGE_URLS } from '@/lib/slider-images';
 
-export default function ServiceDetailEditor({ params }: { params: Promise<{ slug: string }> }) {
-  const resolvedParams = useReact(params);
-  const { slug } = resolvedParams;
+type TabKey = 'genel' | 'hero' | 'surec' | 'odak' | 'kategoriler';
 
-  const [content, setContent] = useState<any>(null);
+type DepartmentState = {
+  slug: string;
+  title: string;
+  sideLabel: string;
+  description: string;
+  image: string;
+  mediaType: 'image' | 'video';
+  heroBlur: number;
+  heroOverlay: number;
+  sliderImages: string[];
+  process: { title: string; desc: string }[];
+  focusAreas: { title: string; icon: string; desc: string }[];
+  categories: { label: string; value: string }[];
+};
+
+type ProbeStatus = 'idle' | 'loading' | 'ok' | 'error';
+
+const TAB_ITEMS: Array<{ key: TabKey; label: string; description: string; icon: typeof Wrench }> = [
+  { key: 'genel', label: 'Genel', description: 'Temel künye ve kapak görseli', icon: Wrench },
+  { key: 'hero', label: 'Hero', description: 'Hero katmanı ve slider', icon: ImageIcon },
+  { key: 'surec', label: 'Süreç', description: 'Process adımları', icon: Wrench },
+  { key: 'odak', label: 'Odak', description: 'Odak alanları ve ikonlar', icon: Target },
+  { key: 'kategoriler', label: 'Kategoriler', description: 'Kategori etiketleri', icon: FolderKanban },
+];
+
+const cloneDepartment = (value: DepartmentState) => JSON.parse(JSON.stringify(value)) as DepartmentState;
+
+const makeSeed = (slug: string): DepartmentState => ({
+  slug,
+  title: slug.replace(/-/g, ' ').replace(/\b\w/g, (char) => char.toUpperCase()),
+  sideLabel: 'Studio Yönetimi',
+  description: 'Bu departman için içerik henüz tanımlanmadı.',
+  image: '',
+  mediaType: 'image',
+  heroBlur: 0,
+  heroOverlay: 30,
+  sliderImages: [],
+  process: [],
+  focusAreas: [],
+  categories: [{ label: 'TÜM PROJELER', value: 'ALL' }],
+});
+
+const normalizeDepartment = (value: any, slug: string): DepartmentState => {
+  const seed = makeSeed(slug);
+  return {
+    slug: value?.slug || slug,
+    title: value?.title || seed.title,
+    sideLabel: value?.sideLabel || seed.sideLabel,
+    description: value?.description || '',
+    image: value?.image || '',
+    mediaType: value?.mediaType === 'video' ? 'video' : 'image',
+    heroBlur: Number(value?.heroBlur || 0),
+    heroOverlay: Number(value?.heroOverlay || 30),
+    sliderImages: Array.isArray(value?.sliderImages) ? value.sliderImages.filter(Boolean) : [],
+    process: Array.isArray(value?.process)
+      ? value.process.map((item: any) => ({ title: item?.title || '', desc: item?.desc || '' }))
+      : [],
+    focusAreas: Array.isArray(value?.focusAreas)
+      ? value.focusAreas.map((item: any) => ({ title: item?.title || '', icon: item?.icon || '', desc: item?.desc || '' }))
+      : [],
+    categories: Array.isArray(value?.categories) && value.categories.length > 0
+      ? value.categories.map((item: any) => ({ label: item?.label || '', value: item?.value || '' }))
+      : seed.categories,
+  };
+};
+
+const probeMeta = (status: ProbeStatus) => {
+  if (status === 'ok') {
+    return {
+      label: 'Çalışıyor',
+      className: 'border-emerald-500/20 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300',
+      icon: CheckCircle2,
+    };
+  }
+
+  if (status === 'error') {
+    return {
+      label: 'Hata',
+      className: 'border-rose-500/20 bg-rose-500/10 text-rose-700 dark:text-rose-300',
+      icon: BadgeCheck,
+    };
+  }
+
+  if (status === 'loading') {
+    return {
+      label: 'Kontrol',
+      className: 'border-amber-500/20 bg-amber-500/10 text-amber-700 dark:text-amber-300',
+      icon: Loader2,
+    };
+  }
+
+  return {
+    label: 'Hazır',
+    className: 'border-[color:var(--line)] bg-[color:var(--surface-muted)] text-[color:var(--text-muted)]',
+    icon: BadgeCheck,
+  };
+};
+
+const formatDate = (value?: string) => {
+  if (!value) return 'Tarih yok';
+  return new Date(value).toLocaleDateString('tr-TR', {
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric',
+  });
+};
+
+export default function ServiceDetailEditor() {
+  const params = useParams();
+  const rawSlug = params?.slug;
+  const slug = Array.isArray(rawSlug) ? rawSlug[0] : rawSlug || 'mimarlik';
+  const { showToast } = useNotification();
+
+  const [department, setDepartment] = useState<DepartmentState>(() => makeSeed(slug));
+  const [initialDepartment, setInitialDepartment] = useState<DepartmentState>(() => makeSeed(slug));
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
+  const [isDirty, setIsDirty] = useState(false);
+  const [activeTab, setActiveTab] = useState<TabKey>('genel');
+  const [theme, setTheme] = useState<'dark' | 'light'>('dark');
+  const [apiStatus, setApiStatus] = useState({
+    department: 'loading' as ProbeStatus,
+    upload: 'idle' as ProbeStatus,
+    updatedAt: '',
+  });
 
-  useEffect(() => {
-    fetchContent();
-  }, [slug]);
+  const loadDepartment = useCallback(async () => {
+    setIsLoading(true);
+    setApiStatus((prev) => ({ ...prev, department: 'loading' }));
 
-  const fetchContent = async () => {
     try {
-      const res = await fetch(`/api/admin/departments/${slug}`);
-      const data = await res.json();
-
-      if (data && !data.error) {
-        if (!data.process) data.process = [];
-        if (!data.focusAreas) data.focusAreas = [];
-        if (!data.categories) data.categories = [{ label: 'TÜM PROJELER', value: 'ALL' }];
-        if (!data.sliderImages) data.sliderImages = [];
-        if (data.heroBlur === undefined) data.heroBlur = 0;
-        if (data.heroOverlay === undefined) data.heroOverlay = 30;
-        setContent(data);
-      } else {
-        setContent({
-          slug,
-          title: slug.charAt(0).toUpperCase() + slug.slice(1),
-          sideLabel: 'DETAYLI HİZMET ÇÖZÜMLERİ',
-          description: '',
-          image: SLIDER_IMAGE_URLS.mimari,
-          mediaType: 'image',
-          heroBlur: 0,
-          heroOverlay: 30,
-          sliderImages: [],
-          process: [],
-          focusAreas: [],
-          categories: [{ label: 'TÜM PROJELER', value: 'ALL' }]
-        });
+      const res = await fetch(`/api/admin/departments/${slug}`, { cache: 'no-store' });
+      const data = await res.json().catch(() => null);
+      if (!res.ok || !data || data.error) {
+        throw new Error(data?.error || 'Department load failed');
       }
-    } catch (err) {
-      console.error(err);
+
+      const next = normalizeDepartment(data, slug);
+      setDepartment(next);
+      setInitialDepartment(cloneDepartment(next));
+      setApiStatus({
+        department: 'ok',
+        upload: 'idle',
+        updatedAt: new Date().toISOString(),
+      });
+    } catch (error) {
+      console.error('Department load error:', error);
+      const fallback = makeSeed(slug);
+      setDepartment(fallback);
+      setInitialDepartment(cloneDepartment(fallback));
+      setApiStatus({
+        department: 'error',
+        upload: 'idle',
+        updatedAt: new Date().toISOString(),
+      });
+      showToast('Departman verisi yüklenemedi.', 'error');
     } finally {
       setIsLoading(false);
     }
+  }, [showToast, slug]);
+
+  useEffect(() => {
+    loadDepartment();
+  }, [loadDepartment]);
+
+  useEffect(() => {
+    const syncTheme = () => {
+      setTheme(document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark');
+    };
+
+    syncTheme();
+    const observer = new MutationObserver(syncTheme);
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+
+    return () => observer.disconnect();
+  }, []);
+
+  const mutateDepartment = (updater: (draft: DepartmentState) => void) => {
+    setDepartment((prev) => {
+      const next = cloneDepartment(prev);
+      updater(next);
+      return next;
+    });
+    setIsDirty(true);
   };
 
-  const handleImageUpload = async (
-    e: React.ChangeEvent<HTMLInputElement>,
-    target: 'hero' | 'slider',
-    index?: number,
-  ) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
+  const uploadFile = async (file: File) => {
+    setApiStatus((prev) => ({ ...prev, upload: 'loading' }));
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('filename', file.name);
 
-    try {
-      const res = await fetch(`/api/upload?filename=${file.name}`, {
-        method: 'POST',
-        body: file
-      });
-      const blob = await res.json();
+    const res = await fetch('/api/upload', {
+      method: 'POST',
+      body: formData,
+    });
 
-      const newContent = { ...content };
-      if (target === 'hero') {
-        newContent.image = blob.url;
-      } else if (index !== undefined) {
-        newContent.sliderImages[index] = blob.url;
-      } else {
-        newContent.sliderImages.push(blob.url);
-      }
-      setContent(newContent);
-    } catch (err) {
-      alert('Görsel yüklenemedi.');
+    const payload = await res.json().catch(() => null);
+    if (!res.ok) {
+      setApiStatus((prev) => ({ ...prev, upload: 'error', updatedAt: new Date().toISOString() }));
+      throw new Error(payload?.details || payload?.error || 'Upload failed');
     }
+
+    const uploadedUrl = payload?.url || payload?.downloadUrl;
+    if (!uploadedUrl) {
+      setApiStatus((prev) => ({ ...prev, upload: 'error', updatedAt: new Date().toISOString() }));
+      throw new Error('Upload URL missing');
+    }
+
+    setApiStatus((prev) => ({ ...prev, upload: 'ok', updatedAt: new Date().toISOString() }));
+    return uploadedUrl as string;
   };
 
-  const saveContent = async () => {
+  const saveDepartment = async (nextDepartment = department) => {
     setIsSaving(true);
     try {
-      await fetch(`/api/admin/departments/${slug}`, {
+      const res = await fetch(`/api/admin/departments/${slug}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(content)
+        body: JSON.stringify({ ...nextDepartment, slug }),
       });
-      alert('Hizmet başarıyla güncellendi!');
-    } catch (err) {
-      alert('Kaydedilemedi.');
+      const payload = await res.json().catch(() => null);
+      if (!res.ok) {
+        throw new Error(payload?.error || 'Save failed');
+      }
+
+      const next = normalizeDepartment(payload || nextDepartment, slug);
+      setDepartment(next);
+      setInitialDepartment(cloneDepartment(next));
+      setIsDirty(false);
+      setApiStatus((prev) => ({ ...prev, department: 'ok', updatedAt: new Date().toISOString() }));
+      showToast('Departman kaydedildi.', 'success');
+    } catch (error) {
+      console.error('Department save error:', error);
+      showToast(error instanceof Error ? error.message : 'Kayıt başarısız.', 'error');
     } finally {
       setIsSaving(false);
     }
   };
 
-  if (isLoading) return <div className="loader-wrap"><Loader2 className="animate-spin" /></div>;
-  if (!content) return <div className="loader-wrap">Veri yok.</div>;
+  const handleCancel = () => {
+    setDepartment(cloneDepartment(initialDepartment));
+    setIsDirty(false);
+    showToast('Değişiklikler geri alındı.', 'info');
+  };
 
-  const detail = content;
+  const currentHero = department.image;
+  const updatedLabel = apiStatus.updatedAt ? formatDate(apiStatus.updatedAt) : 'Henüz yok';
+
+  const apiCards = [
+    {
+      title: 'Departman API',
+      href: `/api/admin/departments/${slug}`,
+      status: apiStatus.department,
+      note: 'Başlık, açıklama, süreç ve kategori kartlarını okur/yazar.',
+    },
+    {
+      title: 'Upload servisi',
+      href: '/api/upload',
+      status: apiStatus.upload,
+      note: 'Hero görseli ve slider içerikleri için kullanılır.',
+    },
+  ];
+
+  if (isLoading) {
+    return (
+      <div className="flex h-[50vh] items-center justify-center text-[color:var(--accent)]">
+        <Loader2 className="h-6 w-6 animate-spin" />
+      </div>
+    );
+  }
 
   return (
-    <div className="editor-container">
-      <div className="editor-header">
-        <Link href="/admin/content/services/mimari" className="back-link">
-          <ChevronLeft size={20} />
-          <span>Mimari Stüdyo'ya Dön</span>
-        </Link>
-        <div className="header-info">
-          <h1>{detail.title} Yönetimi</h1>
-          <p>Tüm içeriği, süreçleri ve teknik detayları buradan yönetin.</p>
+    <div className="space-y-6 pb-8">
+      <motion.section
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="overflow-hidden rounded-[2rem] border border-[color:var(--line)] bg-[color:var(--surface)] shadow-[var(--shadow)]"
+      >
+        <div className="flex flex-col gap-6 p-5 sm:p-6 xl:flex-row xl:items-end xl:justify-between">
+          <div className="max-w-3xl space-y-4">
+            <Badge className="border border-[color:var(--line)] bg-[color:var(--surface-muted)] text-[color:var(--text-muted)]">
+              <Sparkles className="mr-2 h-3 w-3" />
+              DETAYLI HİZMET EDİTÖRÜ
+            </Badge>
+            <div className="space-y-2">
+              <h1 className="text-3xl font-semibold tracking-tight text-[color:var(--text)] sm:text-4xl">
+                {department.title}
+              </h1>
+              <p className="max-w-2xl text-sm leading-7 text-[color:var(--text-muted)]">
+                Bu departmanın tüm yayın katmanlarını tek ekranda düzenleyin. Hero, süreç, odak ve
+                kategori yapısı modern bir yönetim kabuğu içinde toplandı.
+              </p>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              <Badge variant="outline" className="border-[color:var(--line)] bg-[color:var(--surface-muted)] text-[color:var(--text-muted)]">
+                Slug: {slug}
+              </Badge>
+              <Badge variant="outline" className="border-[color:var(--line)] bg-[color:var(--surface-muted)] text-[color:var(--text-muted)]">
+                Tema: {theme === 'light' ? 'Aydınlık' : 'Karanlık'}
+              </Badge>
+              <Badge variant="outline" className="border-[color:var(--line)] bg-[color:var(--surface-muted)] text-[color:var(--text-muted)]">
+                Son güncelleme: {updatedLabel}
+              </Badge>
+            </div>
+          </div>
+
+          <div className="grid gap-3 sm:grid-cols-2 xl:min-w-[470px]">
+            <div className="rounded-2xl border border-[color:var(--line)] bg-[color:var(--surface-muted)] p-4">
+              <p className="text-[0.65rem] uppercase tracking-[0.28em] text-[color:var(--text-muted)]">Hero</p>
+              <p className="mt-1 text-2xl font-semibold text-[color:var(--text)]">{department.sliderImages.length}</p>
+              <p className="mt-2 text-xs text-[color:var(--text-muted)]">Slider görseli</p>
+            </div>
+            <div className="rounded-2xl border border-[color:var(--line)] bg-[color:var(--surface-muted)] p-4">
+              <p className="text-[0.65rem] uppercase tracking-[0.28em] text-[color:var(--text-muted)]">Süreç</p>
+              <p className="mt-1 text-2xl font-semibold text-[color:var(--text)]">{department.process.length}</p>
+              <p className="mt-2 text-xs text-[color:var(--text-muted)]">Adım sayısı</p>
+            </div>
+            <div className="rounded-2xl border border-[color:var(--line)] bg-[color:var(--surface-muted)] p-4">
+              <p className="text-[0.65rem] uppercase tracking-[0.28em] text-[color:var(--text-muted)]">Odak</p>
+              <p className="mt-1 text-2xl font-semibold text-[color:var(--text)]">{department.focusAreas.length}</p>
+              <p className="mt-2 text-xs text-[color:var(--text-muted)]">Odak alanı</p>
+            </div>
+            <div className="rounded-2xl border border-[color:var(--line)] bg-[color:var(--surface-muted)] p-4">
+              <p className="text-[0.65rem] uppercase tracking-[0.28em] text-[color:var(--text-muted)]">API</p>
+              <p className="mt-1 text-2xl font-semibold text-[color:var(--text)]">
+                {apiStatus.department === 'ok' ? 'Hazır' : 'Kontrol'}
+              </p>
+              <p className="mt-2 text-xs text-[color:var(--text-muted)]">Departman ve upload uçları takip ediliyor</p>
+            </div>
+          </div>
         </div>
-        <button className="save-btn" onClick={saveContent} disabled={isSaving}>
-          {isSaving ? <Loader2 className="animate-spin" size={18} /> : <Save size={18} />}
-          <span>KAYDET</span>
-        </button>
-      </div>
 
-      <div className="editor-sections">
-        <section className="section-card">
-          <div className="section-title">
-            <FileText size={20} />
-            <h2>SİNEMATİK MEDYA & SLIDER</h2>
-          </div>
-          <div className="hero-edit-area">
-            <div className="hero-preview" onClick={() => document.getElementById('h-up')?.click()}>
-              <img src={detail.image} alt="Hero" />
-              <div className="hero-overlay"><Upload /></div>
-              <input id="h-up" type="file" className="hidden" onChange={e => handleImageUpload(e, 'hero')} />
+        <div className="flex flex-wrap gap-2 border-t border-[color:var(--line)] px-5 py-4 sm:px-6">
+          {TAB_ITEMS.map((tab) => (
+            <Button
+              key={tab.key}
+              type="button"
+              variant={activeTab === tab.key ? 'default' : 'outline'}
+              className={
+                activeTab === tab.key
+                  ? 'bg-[color:var(--accent)] text-[color:var(--text-inverse)] hover:bg-[color:var(--accent-soft)]'
+                  : 'border-[color:var(--line)] bg-[color:var(--surface-muted)] text-[color:var(--text)] hover:bg-[color:var(--surface)]'
+              }
+              onClick={() => setActiveTab(tab.key)}
+            >
+              <tab.icon className="mr-2 h-4 w-4" />
+              {tab.label}
+            </Button>
+          ))}
+        </div>
+      </motion.section>
+
+      <section className="grid gap-6 xl:grid-cols-[minmax(0,1.2fr)_360px]">
+        <Card className="border border-[color:var(--line)] bg-[color:var(--surface)] shadow-[var(--shadow)]">
+          <CardHeader className="border-b border-[color:var(--line)]">
+            <div className="flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
+              <div>
+                <CardTitle className="text-lg text-[color:var(--text)]">
+                  {TAB_ITEMS.find((item) => item.key === activeTab)?.label} Paneli
+                </CardTitle>
+                <CardDescription className="text-[color:var(--text-muted)]">
+                  {TAB_ITEMS.find((item) => item.key === activeTab)?.description}
+                </CardDescription>
+              </div>
+              <div className="flex gap-2">
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="border-[color:var(--line)] bg-[color:var(--surface-muted)] text-[color:var(--text)]"
+                  onClick={loadDepartment}
+                >
+                  <RefreshCw className="mr-2 h-4 w-4" />
+                  Yenile
+                </Button>
+                <Button
+                  type="button"
+                  className="bg-[color:var(--accent)] text-[color:var(--text-inverse)] hover:bg-[color:var(--accent-soft)]"
+                  onClick={() => saveDepartment(department)}
+                  disabled={isSaving}
+                >
+                  {isSaving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Save className="mr-2 h-4 w-4" />}
+                  Kaydet
+                </Button>
+              </div>
             </div>
-            <div className="hero-form">
-              <div className="input-group">
-                <label>Hizmet Başlığı</label>
-                <input value={detail.title} onChange={e => setContent({ ...content, title: e.target.value })} />
-              </div>
-              <div className="input-group">
-                <label>Alt Slogan</label>
-                <input value={detail.sideLabel} onChange={e => setContent({ ...content, sideLabel: e.target.value })} />
-              </div>
-              <div className="input-group">
-                <label>Hero Blur Oranı</label>
-                <input
-                  type="number"
-                  min="0"
-                  max="30"
-                  value={detail.heroBlur ?? 0}
-                  onChange={e => setContent({ ...content, heroBlur: Number(e.target.value) })}
-                />
-              </div>
-              <div className="input-group">
-                <label>Hero Koyu Katman (%)</label>
-                <input
-                  type="number"
-                  min="0"
-                  max="100"
-                  value={detail.heroOverlay ?? 30}
-                  onChange={e => setContent({ ...content, heroOverlay: Number(e.target.value) })}
-                />
-              </div>
-              <div className="input-group">
-                <label>Hizmet Açıklaması (Vizyon Metni)</label>
-                <textarea rows={6} value={detail.description} onChange={e => setContent({ ...content, description: e.target.value })} />
-              </div>
-            </div>
-          </div>
+          </CardHeader>
 
-          <div className="section-title" style={{ marginTop: '2rem' }}>
-            <ImageIcon size={20} />
-            <h2>Slider Görselleri</h2>
-          </div>
-          <div className="gallery-grid">
-            {detail.sliderImages?.map((img: string, idx: number) => (
-              <div key={idx} className="gal-item">
-                <img src={img} alt="Slider" />
-                <button className="del-btn-abs" onClick={() => {
-                  const nc = { ...content };
-                  nc.sliderImages.splice(idx, 1);
-                  setContent(nc);
-                }}><Trash2 size={12} /></button>
-              </div>
-            ))}
-            <label className="add-gal-box">
-              <Plus />
-              <input type="file" className="hidden" onChange={e => handleImageUpload(e, 'slider')} />
-            </label>
-          </div>
-        </section>
+          <CardContent className="space-y-6 p-5 sm:p-6">
+            {activeTab === 'genel' && (
+              <div className="grid gap-6 xl:grid-cols-[340px_minmax(0,1fr)]">
+                <Card className="border border-[color:var(--line)] bg-[color:var(--surface-muted)] shadow-none">
+                  <CardHeader className="pb-4">
+                    <CardTitle className="text-base text-[color:var(--text)]">Kapak Görseli</CardTitle>
+                    <CardDescription className="text-[color:var(--text-muted)]">
+                      Hero görselini sürükle-bırak ile değiştirin.
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <label className="group relative flex aspect-[4/3] cursor-pointer items-center justify-center overflow-hidden rounded-[1.5rem] border-2 border-dashed border-[color:var(--line)] bg-[color:var(--surface)]">
+                      {currentHero ? (
+                        <img src={currentHero} alt={department.title} className="h-full w-full object-cover" />
+                      ) : (
+                        <div className="flex flex-col items-center gap-3 p-6 text-center text-[color:var(--text-muted)]">
+                          <Upload className="h-7 w-7 text-[color:var(--accent)]" />
+                          <p className="text-sm font-medium text-[color:var(--text)]">Görsel ekleyin</p>
+                        </div>
+                      )}
+                      <input
+                        type="file"
+                        accept="image/*,video/*"
+                        className="hidden"
+                        onChange={async (event) => {
+                          const file = event.target.files?.[0];
+                          if (!file) return;
+                          try {
+                            const url = await uploadFile(file);
+                            const next = cloneDepartment(department);
+                            next.image = url;
+                            next.mediaType = file.type.startsWith('video/') ? 'video' : 'image';
+                            setDepartment(next);
+                            setIsDirty(true);
+                            await saveDepartment(next);
+                            showToast('Kapak görseli güncellendi.', 'success');
+                          } catch (error) {
+                            showToast(error instanceof Error ? error.message : 'Yükleme başarısız.', 'error');
+                          } finally {
+                            event.target.value = '';
+                          }
+                        }}
+                      />
+                    </label>
+                    <div className="grid grid-cols-2 gap-3">
+                      <Badge variant="outline" className="border-[color:var(--line)] bg-[color:var(--surface)] text-[color:var(--text-muted)]">
+                        Media: {department.mediaType}
+                      </Badge>
+                      <Badge variant="outline" className="border-[color:var(--line)] bg-[color:var(--surface)] text-[color:var(--text-muted)]">
+                        Blur: {department.heroBlur}px
+                      </Badge>
+                    </div>
+                  </CardContent>
+                </Card>
 
-        <section className="section-card">
-          <div className="section-title" style={{ justifyContent: 'space-between' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-              <Workflow size={20} />
-              <h2>İş Süreci (Process)</h2>
-            </div>
-            <button className="add-btn" onClick={() => {
-              const nc = { ...content };
-              nc.process.push({ title: 'Yeni Adım', desc: 'Açıklama' });
-              setContent(nc);
-            }}>ADIM EKLE</button>
-          </div>
-          <div className="items-list">
-            {detail.process?.map((p: any, idx: number) => (
-              <div key={idx} className="item-row">
-                <input placeholder="Adım Başlığı" value={p.title} onChange={e => {
-                  const nc = { ...content };
-                  nc.process[idx].title = e.target.value;
-                  setContent(nc);
-                }} />
-                <textarea placeholder="Açıklama" value={p.desc} onChange={e => {
-                  const nc = { ...content };
-                  nc.process[idx].desc = e.target.value;
-                  setContent(nc);
-                }} />
-                <button className="del-btn" onClick={() => {
-                  const nc = { ...content };
-                  nc.process.splice(idx, 1);
-                  setContent(nc);
-                }}><Trash2 size={14} /></button>
+                <div className="grid gap-4">
+                  <div className="grid gap-4 lg:grid-cols-2">
+                    <div className="space-y-2">
+                      <label className="text-xs font-medium uppercase tracking-[0.24em] text-[color:var(--text-muted)]">Başlık</label>
+                      <Input
+                        value={department.title}
+                        onChange={(event) => mutateDepartment((draft) => { draft.title = event.target.value; })}
+                        className="h-12 rounded-2xl border-[color:var(--line)] bg-[color:var(--surface-muted)] text-[color:var(--text)]"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-xs font-medium uppercase tracking-[0.24em] text-[color:var(--text-muted)]">Yan Etiket</label>
+                      <Input
+                        value={department.sideLabel}
+                        onChange={(event) => mutateDepartment((draft) => { draft.sideLabel = event.target.value; })}
+                        className="h-12 rounded-2xl border-[color:var(--line)] bg-[color:var(--surface-muted)] text-[color:var(--text)]"
+                      />
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-xs font-medium uppercase tracking-[0.24em] text-[color:var(--text-muted)]">Açıklama</label>
+                    <Textarea
+                      value={department.description}
+                      onChange={(event) => mutateDepartment((draft) => { draft.description = event.target.value; })}
+                      rows={9}
+                      className="min-h-40 rounded-[1.5rem] border-[color:var(--line)] bg-[color:var(--surface-muted)] text-[color:var(--text)]"
+                    />
+                  </div>
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    <div className="space-y-2">
+                      <label className="text-xs font-medium uppercase tracking-[0.24em] text-[color:var(--text-muted)]">Hero Blur</label>
+                      <Input
+                        type="number"
+                        min={0}
+                        max={60}
+                        value={department.heroBlur}
+                        onChange={(event) => mutateDepartment((draft) => { draft.heroBlur = Number(event.target.value); })}
+                        className="h-12 rounded-2xl border-[color:var(--line)] bg-[color:var(--surface-muted)] text-[color:var(--text)]"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-xs font-medium uppercase tracking-[0.24em] text-[color:var(--text-muted)]">Hero Katman (%)</label>
+                      <Input
+                        type="number"
+                        min={0}
+                        max={100}
+                        value={department.heroOverlay}
+                        onChange={(event) => mutateDepartment((draft) => { draft.heroOverlay = Number(event.target.value); })}
+                        className="h-12 rounded-2xl border-[color:var(--line)] bg-[color:var(--surface-muted)] text-[color:var(--text)]"
+                      />
+                    </div>
+                  </div>
+                </div>
               </div>
-            ))}
-          </div>
-        </section>
+            )}
 
-        <section className="section-card">
-          <div className="section-title" style={{ justifyContent: 'space-between' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-              <Target size={20} />
-              <h2>Odak Alanları (Focus Areas)</h2>
-            </div>
-            <button className="add-btn" onClick={() => {
-              const nc = { ...content };
-              nc.focusAreas.push({ title: 'Yeni Odak', icon: 'diamond', desc: 'Açıklama' });
-              setContent(nc);
-            }}>ODAK EKLE</button>
-          </div>
-          <div className="items-list">
-            {detail.focusAreas?.map((f: any, idx: number) => (
-              <div key={idx} className="item-row">
-                <input placeholder="İkon Adı (Material Icon)" value={f.icon} onChange={e => {
-                  const nc = { ...content };
-                  nc.focusAreas[idx].icon = e.target.value;
-                  setContent(nc);
-                }} />
-                <input placeholder="Başlık" value={f.title} onChange={e => {
-                  const nc = { ...content };
-                  nc.focusAreas[idx].title = e.target.value;
-                  setContent(nc);
-                }} />
-                <textarea placeholder="Açıklama" value={f.desc} onChange={e => {
-                  const nc = { ...content };
-                  nc.focusAreas[idx].desc = e.target.value;
-                  setContent(nc);
-                }} />
-                <button className="del-btn" onClick={() => {
-                  const nc = { ...content };
-                  nc.focusAreas.splice(idx, 1);
-                  setContent(nc);
-                }}><Trash2 size={14} /></button>
+            {activeTab === 'hero' && (
+              <div className="space-y-5">
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <Card className="border border-[color:var(--line)] bg-[color:var(--surface-muted)] shadow-none">
+                    <CardHeader className="pb-4">
+                      <CardTitle className="text-base text-[color:var(--text)]">Hero Ayarları</CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      <div className="space-y-2">
+                        <label className="text-xs font-medium uppercase tracking-[0.24em] text-[color:var(--text-muted)]">Blur</label>
+                        <Input
+                          type="range"
+                          min={0}
+                          max={60}
+                          value={department.heroBlur}
+                          onChange={(event) => mutateDepartment((draft) => { draft.heroBlur = Number(event.target.value); })}
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <label className="text-xs font-medium uppercase tracking-[0.24em] text-[color:var(--text-muted)]">Overlay</label>
+                        <Input
+                          type="range"
+                          min={0}
+                          max={100}
+                          value={department.heroOverlay}
+                          onChange={(event) => mutateDepartment((draft) => { draft.heroOverlay = Number(event.target.value); })}
+                        />
+                      </div>
+                    </CardContent>
+                  </Card>
+                  <Card className="border border-[color:var(--line)] bg-[color:var(--surface-muted)] shadow-none">
+                    <CardHeader className="pb-4">
+                      <CardTitle className="text-base text-[color:var(--text)]">Slider Özeti</CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-3">
+                      <div className="rounded-[1.25rem] border border-[color:var(--line)] bg-[color:var(--surface)] p-4 text-sm text-[color:var(--text-muted)]">
+                        {department.sliderImages.length} slider görseli mevcut.
+                      </div>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        className="w-full border-[color:var(--line)] bg-[color:var(--surface)] text-[color:var(--text)]"
+                        onClick={() => document.getElementById('detail-slider-add')?.click()}
+                      >
+                        <Plus className="mr-2 h-4 w-4" />
+                        Slider Görseli Ekle
+                      </Button>
+                      <input
+                        id="detail-slider-add"
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        onChange={async (event) => {
+                          const file = event.target.files?.[0];
+                          if (!file) return;
+                          try {
+                            const url = await uploadFile(file);
+                            const next = cloneDepartment(department);
+                            next.sliderImages.push(url);
+                            setDepartment(next);
+                            setIsDirty(true);
+                            await saveDepartment(next);
+                            showToast('Slider görseli eklendi.', 'success');
+                          } catch (error) {
+                            showToast(error instanceof Error ? error.message : 'Yükleme başarısız.', 'error');
+                          } finally {
+                            event.target.value = '';
+                          }
+                        }}
+                      />
+                    </CardContent>
+                  </Card>
+                </div>
+
+                <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+                  {department.sliderImages.map((slide, index) => (
+                    <Card key={`${slide}-${index}`} className="overflow-hidden border border-[color:var(--line)] bg-[color:var(--surface-muted)] shadow-none">
+                      <div className="aspect-[16/10]">
+                        <img src={slide} alt={`Slide ${index + 1}`} className="h-full w-full object-cover" />
+                      </div>
+                      <CardContent className="flex items-center justify-between gap-2 p-4">
+                        <span className="text-sm text-[color:var(--text-muted)]">Slide {index + 1}</span>
+                        <div className="flex gap-2">
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="icon"
+                            className="h-10 w-10 border-[color:var(--line)] bg-[color:var(--surface)] text-[color:var(--text)]"
+                            onClick={() => document.getElementById(`detail-slider-replace-${index}`)?.click()}
+                          >
+                            <ImageIcon className="h-4 w-4" />
+                          </Button>
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="icon"
+                            className="h-10 w-10 border-rose-500/20 bg-rose-500/10 text-rose-700 hover:bg-rose-500 hover:text-white dark:text-rose-300"
+                            onClick={() =>
+                              mutateDepartment((draft) => {
+                                draft.sliderImages.splice(index, 1);
+                              })
+                            }
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                          <input
+                            id={`detail-slider-replace-${index}`}
+                            type="file"
+                            accept="image/*"
+                            className="hidden"
+                            onChange={async (event) => {
+                              const file = event.target.files?.[0];
+                              if (!file) return;
+                              try {
+                                const url = await uploadFile(file);
+                                const next = cloneDepartment(department);
+                                next.sliderImages[index] = url;
+                                setDepartment(next);
+                                setIsDirty(true);
+                                await saveDepartment(next);
+                                showToast('Slider görseli güncellendi.', 'success');
+                              } catch (error) {
+                                showToast(error instanceof Error ? error.message : 'Yükleme başarısız.', 'error');
+                              } finally {
+                                event.target.value = '';
+                              }
+                            }}
+                          />
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                  {department.sliderImages.length === 0 && (
+                    <div className="rounded-[1.5rem] border border-dashed border-[color:var(--line)] bg-[color:var(--surface-muted)] p-8 text-center text-sm text-[color:var(--text-muted)] md:col-span-2 xl:col-span-3">
+                      Henüz slider görseli eklenmedi.
+                    </div>
+                  )}
+                </div>
               </div>
-            ))}
-          </div>
-        </section>
+            )}
 
-        <section className="section-card">
-          <div className="section-title">
-            <Filter size={20} />
-            <h2>Kategoriler (Filtreler)</h2>
-          </div>
-          <div className="items-list">
-            {detail.categories?.map((c: any, idx: number) => (
-              <div key={idx} className="item-row" style={{ flexDirection: 'row', gap: '1rem' }}>
-                <input placeholder="Etiket" value={c.label} onChange={e => {
-                  const nc = { ...content };
-                  nc.categories[idx].label = e.target.value;
-                  setContent(nc);
-                }} />
-                <input placeholder="Değer" value={c.value} onChange={e => {
-                  const nc = { ...content };
-                  nc.categories[idx].value = e.target.value;
-                  setContent(nc);
-                }} />
-                <button className="del-btn" onClick={() => {
-                  const nc = { ...content };
-                  nc.categories.splice(idx, 1);
-                  setContent(nc);
-                }}><Trash2 size={14} /></button>
+            {activeTab === 'surec' && (
+              <div className="space-y-4">
+                <div className="flex items-center justify-between gap-4">
+                  <div>
+                    <h3 className="text-base font-semibold text-[color:var(--text)]">İş Süreci</h3>
+                    <p className="text-sm text-[color:var(--text-muted)]">Adımlar, açıklamalar ve akış.</p>
+                  </div>
+                  <Button type="button" className="bg-[color:var(--accent)] text-[color:var(--text-inverse)] hover:bg-[color:var(--accent-soft)]" onClick={() => mutateDepartment((draft) => draft.process.push({ title: 'Yeni Adım', desc: 'Açıklama' }))}>
+                    <Plus className="mr-2 h-4 w-4" />
+                    Adım Ekle
+                  </Button>
+                </div>
+                <div className="space-y-3">
+                  {department.process.map((item, index) => (
+                    <Card key={`${item.title}-${index}`} className="border border-[color:var(--line)] bg-[color:var(--surface-muted)] shadow-none">
+                      <CardContent className="grid gap-3 p-4 lg:grid-cols-[220px_minmax(0,1fr)_auto]">
+                        <Input
+                          value={item.title}
+                          onChange={(event) => mutateDepartment((draft) => { draft.process[index].title = event.target.value; })}
+                          className="h-11 rounded-2xl border-[color:var(--line)] bg-[color:var(--surface)] text-[color:var(--text)]"
+                        />
+                        <Textarea
+                          value={item.desc}
+                          onChange={(event) => mutateDepartment((draft) => { draft.process[index].desc = event.target.value; })}
+                          className="min-h-24 rounded-[1.25rem] border-[color:var(--line)] bg-[color:var(--surface)] text-[color:var(--text)]"
+                        />
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="icon"
+                          className="h-11 w-11 border-rose-500/20 bg-rose-500/10 text-rose-700 hover:bg-rose-500 hover:text-white dark:text-rose-300"
+                          onClick={() => mutateDepartment((draft) => { draft.process.splice(index, 1); })}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </CardContent>
+                    </Card>
+                  ))}
+                  {department.process.length === 0 && (
+                    <div className="rounded-[1.5rem] border border-dashed border-[color:var(--line)] bg-[color:var(--surface-muted)] p-8 text-center text-sm text-[color:var(--text-muted)]">
+                      Henüz süreç adımı yok.
+                    </div>
+                  )}
+                </div>
               </div>
-            ))}
-            <button className="add-btn-small" onClick={() => {
-              const nc = { ...content };
-              nc.categories.push({ label: 'Yeni Kategori', value: 'yeni-kat' });
-              setContent(nc);
-            }}>+ KATEGORİ EKLE</button>
-          </div>
-        </section>
-      </div>
+            )}
 
-      <style jsx>{`
-        .editor-container { display: flex; flex-direction: column; gap: 2rem; padding-bottom: 5rem; }
-        .editor-header { background: #141414; padding: 2.5rem; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: space-between; align-items: center; }
-        .back-link { display: flex; align-items: center; gap: 0.5rem; color: #a68966; text-decoration: none; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; }
-        .header-info h1 { font-family: var(--font-display), sans-serif; font-size: 1.8rem; letter-spacing: 0.05em; color: #fff; margin-top: 0.5rem; }
-        .header-info p { font-size: 0.8rem; opacity: 0.5; margin-top: 0.3rem; }
-        .save-btn { background: #a68966; color: #000; border: none; padding: 1rem 2.5rem; display: flex; align-items: center; gap: 1rem; font-weight: 800; cursor: pointer; transition: 0.3s; font-family: var(--font-display), sans-serif; font-size: 0.75rem; letter-spacing: 0.1em; }
-        .save-btn:hover { background: #c2a785; transform: scale(1.02); }
-        .editor-sections { display: flex; flex-direction: column; gap: 2rem; padding: 0 2.5rem; }
-        .section-card { background: #141414; border: 1px solid rgba(255,255,255,0.03); padding: 2rem; }
-        .section-title { display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem; color: #a68966; }
-        .section-title h2 { font-family: var(--font-display), sans-serif; font-size: 0.85rem; letter-spacing: 0.1em; text-transform: uppercase; color: #fff; }
-        .hero-edit-area { display: flex; gap: 2.5rem; }
-        .hero-preview { width: 350px; aspect-ratio: 16/9; position: relative; cursor: pointer; border: 1px solid rgba(255,255,255,0.1); overflow: hidden; }
-        .hero-preview img { width: 100%; height: 100%; object-fit: cover; }
-        .hero-overlay { position: absolute; inset: 0; background: rgba(166,137,102,0.8); display: flex; align-items: center; justify-content: center; opacity: 0; transition: 0.3s; color: #000; }
-        .hero-preview:hover .hero-overlay { opacity: 1; }
-        .hero-form { flex: 1; display: flex; flex-direction: column; gap: 1.5rem; }
-        .input-group { display: flex; flex-direction: column; gap: 0.6rem; }
-        .input-group label { font-size: 0.65rem; color: #a68966; letter-spacing: 0.1em; text-transform: uppercase; }
-        .input-group input, .input-group textarea { background: #0c0c0c; border: 1px solid rgba(255,255,255,0.1); padding: 1rem; color: #fff; font-size: 0.9rem; width: 100%; }
-        .items-list { display: flex; flex-direction: column; gap: 1rem; }
-        .item-row { background: #0c0c0c; border: 1px solid rgba(255,255,255,0.05); padding: 1.5rem; display: flex; flex-direction: column; gap: 0.75rem; position: relative; }
-        .item-row input { background: transparent; border: none; border-bottom: 1px solid rgba(255,255,255,0.1); color: #fff; font-weight: 600; padding: 0.5rem 0; width: 100%; }
-        .item-row textarea { background: transparent; border: none; color: rgba(255,255,255,0.5); font-size: 0.85rem; line-height: 1.6; width: 100%; min-height: 60px; }
-        .add-btn { background: rgba(166,137,102,0.15); border: 1px solid #a68966; color: #a68966; padding: 0.5rem 1rem; font-size: 0.65rem; font-weight: 800; cursor: pointer; }
-        .add-btn:hover { background: #a68966; color: #000; }
-        .add-btn-small { background: transparent; border: 1px dashed rgba(255,255,255,0.2); color: #fff; opacity: 0.5; padding: 0.75rem; font-size: 0.6rem; font-weight: 800; cursor: pointer; transition: 0.3s; }
-        .add-btn-small:hover { opacity: 1; border-color: #fff; }
-        .del-btn { position: absolute; top: 1rem; right: 1rem; background: rgba(255,0,0,0.1); border: none; color: #ff4444; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
-        .gal-item { position: relative; aspect-ratio: 1; }
-        .gal-item img { width: 100%; height: 100%; object-fit: cover; border: 1px solid rgba(255,255,255,0.1); }
-        .del-btn-abs { position: absolute; top: -5px; right: -5px; background: #ff4444; color: #fff; border: none; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; }
-        .gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 1rem; }
-        .add-gal-box { aspect-ratio: 1; background: rgba(255,255,255,0.03); border: 1px dashed rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; color: #a68966; cursor: pointer; }
-        .loader-wrap { height: 500px; display: flex; align-items: center; justify-content: center; color: #a68966; }
-        .hidden { display: none; }
-      `}</style>
+            {activeTab === 'odak' && (
+              <div className="space-y-4">
+                <div className="flex items-center justify-between gap-4">
+                  <div>
+                    <h3 className="text-base font-semibold text-[color:var(--text)]">Odak Alanları</h3>
+                    <p className="text-sm text-[color:var(--text-muted)]">İkon, başlık ve açıklamalar.</p>
+                  </div>
+                  <Button type="button" className="bg-[color:var(--accent)] text-[color:var(--text-inverse)] hover:bg-[color:var(--accent-soft)]" onClick={() => mutateDepartment((draft) => draft.focusAreas.push({ title: 'Yeni Odak', icon: 'sparkles', desc: 'Açıklama' }))}>
+                    <Plus className="mr-2 h-4 w-4" />
+                    Odak Ekle
+                  </Button>
+                </div>
+                <div className="grid gap-4 lg:grid-cols-2">
+                  {department.focusAreas.map((item, index) => (
+                    <Card key={`${item.title}-${index}`} className="border border-[color:var(--line)] bg-[color:var(--surface-muted)] shadow-none">
+                      <CardContent className="space-y-3 p-4">
+                        <div className="grid gap-3 sm:grid-cols-2">
+                          <Input
+                            value={item.icon}
+                            onChange={(event) => mutateDepartment((draft) => { draft.focusAreas[index].icon = event.target.value; })}
+                            className="h-11 rounded-2xl border-[color:var(--line)] bg-[color:var(--surface)] text-[color:var(--text)]"
+                          />
+                          <Input
+                            value={item.title}
+                            onChange={(event) => mutateDepartment((draft) => { draft.focusAreas[index].title = event.target.value; })}
+                            className="h-11 rounded-2xl border-[color:var(--line)] bg-[color:var(--surface)] text-[color:var(--text)]"
+                          />
+                        </div>
+                        <Textarea
+                          value={item.desc}
+                          onChange={(event) => mutateDepartment((draft) => { draft.focusAreas[index].desc = event.target.value; })}
+                          className="min-h-24 rounded-[1.25rem] border-[color:var(--line)] bg-[color:var(--surface)] text-[color:var(--text)]"
+                        />
+                        <div className="flex justify-end">
+                          <Button
+                            type="button"
+                            variant="outline"
+                            className="border-rose-500/20 bg-rose-500/10 text-rose-700 hover:bg-rose-500 hover:text-white dark:text-rose-300"
+                            onClick={() => mutateDepartment((draft) => { draft.focusAreas.splice(index, 1); })}
+                          >
+                            <Trash2 className="mr-2 h-4 w-4" />
+                            Sil
+                          </Button>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                  {department.focusAreas.length === 0 && (
+                    <div className="rounded-[1.5rem] border border-dashed border-[color:var(--line)] bg-[color:var(--surface-muted)] p-8 text-center text-sm text-[color:var(--text-muted)] lg:col-span-2">
+                      Henüz odak alanı yok.
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {activeTab === 'kategoriler' && (
+              <div className="space-y-4">
+                <div className="flex items-center justify-between gap-4">
+                  <div>
+                    <h3 className="text-base font-semibold text-[color:var(--text)]">Kategoriler</h3>
+                    <p className="text-sm text-[color:var(--text-muted)]">Departman kartlarını etiketleyin.</p>
+                  </div>
+                  <Button type="button" className="bg-[color:var(--accent)] text-[color:var(--text-inverse)] hover:bg-[color:var(--accent-soft)]" onClick={() => mutateDepartment((draft) => draft.categories.push({ label: 'Yeni Kategori', value: 'NEW' }))}>
+                    <Plus className="mr-2 h-4 w-4" />
+                    Kategori Ekle
+                  </Button>
+                </div>
+                <div className="grid gap-4 md:grid-cols-2">
+                  {department.categories.map((item, index) => (
+                    <Card key={`${item.label}-${index}`} className="border border-[color:var(--line)] bg-[color:var(--surface-muted)] shadow-none">
+                      <CardContent className="grid gap-3 p-4">
+                        <Input
+                          value={item.label}
+                          onChange={(event) => mutateDepartment((draft) => { draft.categories[index].label = event.target.value; })}
+                          className="h-11 rounded-2xl border-[color:var(--line)] bg-[color:var(--surface)] text-[color:var(--text)]"
+                        />
+                        <Input
+                          value={item.value}
+                          onChange={(event) => mutateDepartment((draft) => { draft.categories[index].value = event.target.value; })}
+                          className="h-11 rounded-2xl border-[color:var(--line)] bg-[color:var(--surface)] text-[color:var(--text)]"
+                        />
+                        <div className="flex items-center justify-between">
+                          <Badge variant="outline" className="border-[color:var(--line)] bg-[color:var(--surface)] text-[color:var(--text-muted)]">
+                            {item.value || 'VALUE'}
+                          </Badge>
+                          <Button
+                            type="button"
+                            variant="outline"
+                            className="border-rose-500/20 bg-rose-500/10 text-rose-700 hover:bg-rose-500 hover:text-white dark:text-rose-300"
+                            onClick={() => mutateDepartment((draft) => { draft.categories.splice(index, 1); })}
+                          >
+                            <Trash2 className="mr-2 h-4 w-4" />
+                            Sil
+                          </Button>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                  {department.categories.length === 0 && (
+                    <div className="rounded-[1.5rem] border border-dashed border-[color:var(--line)] bg-[color:var(--surface-muted)] p-8 text-center text-sm text-[color:var(--text-muted)] md:col-span-2">
+                      Henüz kategori yok.
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        <aside className="space-y-6 xl:sticky xl:top-6 xl:self-start">
+          <Card className="border border-[color:var(--line)] bg-[color:var(--surface)] shadow-[var(--shadow)]">
+            <CardHeader className="border-b border-[color:var(--line)]">
+              <CardTitle className="text-lg text-[color:var(--text)]">API Bağlantıları</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3 p-5 sm:p-6">
+              {apiCards.map((item) => {
+                const meta = probeMeta(item.status);
+                const Icon = meta.icon;
+                return (
+                  <div key={item.href} className="rounded-2xl border border-[color:var(--line)] bg-[color:var(--surface-muted)] p-4">
+                    <div className="flex items-start justify-between gap-4">
+                      <div className="space-y-1">
+                        <div className="flex items-center gap-2">
+                          <p className="text-sm font-semibold text-[color:var(--text)]">{item.title}</p>
+                          <Badge className={`border ${meta.className} px-2 py-0.5 text-[0.65rem] uppercase tracking-[0.24em]`}>
+                            <Icon className={`mr-1 h-3 w-3 ${item.status === 'loading' ? 'animate-spin' : ''}`} />
+                            {meta.label}
+                          </Badge>
+                        </div>
+                        <p className="text-xs leading-5 text-[color:var(--text-muted)]">{item.note}</p>
+                      </div>
+                      <Eye className="mt-1 h-4 w-4 text-[color:var(--text-muted)]" />
+                    </div>
+                    <p className="mt-3 text-[0.65rem] uppercase tracking-[0.24em] text-[color:var(--text-muted)]">
+                      {item.href}
+                    </p>
+                  </div>
+                );
+              })}
+            </CardContent>
+          </Card>
+
+          <Card className="border border-[color:var(--line)] bg-[color:var(--surface)] shadow-[var(--shadow)]">
+            <CardHeader className="border-b border-[color:var(--line)]">
+              <CardTitle className="text-lg text-[color:var(--text)]">Hızlı İşlem</CardTitle>
+              <CardDescription className="text-[color:var(--text-muted)]">Kaydet, geri al, yenile.</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-3 p-5 sm:p-6">
+              <Button
+                type="button"
+                className="w-full bg-[color:var(--accent)] text-[color:var(--text-inverse)] hover:bg-[color:var(--accent-soft)]"
+                onClick={() => saveDepartment(department)}
+                disabled={isSaving}
+              >
+                {isSaving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <CloudUpload className="mr-2 h-4 w-4" />}
+                Kaydet
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                className="w-full border-[color:var(--line)] bg-[color:var(--surface-muted)] text-[color:var(--text)]"
+                onClick={handleCancel}
+                disabled={!isDirty}
+              >
+                Vazgeç
+              </Button>
+              <Separator className="bg-[color:var(--line)]" />
+              <Button
+                type="button"
+                variant="outline"
+                className="w-full border-[color:var(--line)] bg-[color:var(--surface)] text-[color:var(--text)]"
+                onClick={loadDepartment}
+              >
+                <RefreshCw className="mr-2 h-4 w-4" />
+                Yeniden Yükle
+              </Button>
+            </CardContent>
+          </Card>
+
+          <Card className="border border-[color:var(--line)] bg-[color:var(--surface)] shadow-[var(--shadow)]">
+            <CardHeader className="border-b border-[color:var(--line)]">
+              <CardTitle className="text-lg text-[color:var(--text)]">Geri Dönüş</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3 p-5 sm:p-6">
+              <Button asChild variant="outline" className="w-full border-[color:var(--line)] bg-[color:var(--surface-muted)] text-[color:var(--text)]">
+                <Link href="/admin/content/services/mimari">
+                  <ArrowLeft className="mr-2 h-4 w-4" />
+                  Mimari Genel Ayarlar
+                </Link>
+              </Button>
+              <Button asChild variant="outline" className="w-full border-[color:var(--line)] bg-[color:var(--surface-muted)] text-[color:var(--text)]">
+                <Link href="/admin/projects">
+                  <FolderKanban className="mr-2 h-4 w-4" />
+                  Proje Havuzu
+                </Link>
+              </Button>
+            </CardContent>
+          </Card>
+        </aside>
+      </section>
     </div>
   );
 }

@@ -31,7 +31,11 @@ export async function GET(request: Request) {
     const page = searchParams.get("page");
 
     if (page) {
-      const content = await PageContent.findOne({ page }).sort({ "metadata.updatedAt": -1, updatedAt: -1, createdAt: -1 });
+      const [content] = await PageContent.collection
+        .find({ page })
+        .sort({ "metadata.updatedAt": -1, updatedAt: -1, createdAt: -1 })
+        .limit(1)
+        .toArray();
       return NextResponse.json(content || { page, sections: [] }, {
         headers: {
           "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate",
@@ -41,7 +45,7 @@ export async function GET(request: Request) {
       });
     }
 
-    const allContent = await PageContent.find({});
+    const allContent = await PageContent.collection.find({}).toArray();
     return NextResponse.json(allContent, {
       headers: {
         "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate",
