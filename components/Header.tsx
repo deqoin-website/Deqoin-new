@@ -20,9 +20,14 @@ export default function Header() {
   const pathname = usePathname();
   const searchInputRef = useRef<HTMLInputElement>(null);
   const navLinkClassName =
-    "text-base md:text-lg lg:text-xl font-light uppercase tracking-[0.15em] text-white/80 hover:text-white hover:underline decoration-white/30 underline-offset-8 transition-colors";
+    "text-base md:text-lg lg:text-xl font-light uppercase tracking-[0.15em] text-white hover:text-white hover:underline decoration-white/30 underline-offset-8 transition-colors";
   const journalNavLinkClassName =
-    "text-base md:text-lg lg:text-xl font-thin uppercase tracking-[0.2em] text-white/80 hover:text-white hover:underline decoration-white/30 underline-offset-8 transition-colors";
+    "text-base md:text-lg lg:text-xl font-thin uppercase tracking-[0.2em] text-white hover:text-white hover:underline decoration-white/30 underline-offset-8 transition-colors";
+  const mobileMenuLinkStyle = {
+    fontFamily: "Smooch Sans, sans-serif",
+    color: "#fff",
+    WebkitTextFillColor: "#fff",
+  } as const;
 
   useEffect(() => {
     if (isMenuOpen || isSearchOpen) {
@@ -127,12 +132,12 @@ export default function Header() {
           </button>
         </div>
         <nav className="mobile-menu-nav">
-          <Link href="/#hero-slider" className={navLinkClassName} style={{ fontFamily: "Smooch Sans, sans-serif" }} onClick={() => setIsMenuOpen(false)}>ANA SAYFA</Link>
-          <Link href="/faaliyet-alanlarimiz" className={navLinkClassName} style={{ fontFamily: "Smooch Sans, sans-serif" }} onClick={() => setIsMenuOpen(false)}>DESIGN & COLLECTION</Link>
-          <Link href="/galeri" className={navLinkClassName} style={{ fontFamily: "Smooch Sans, sans-serif" }} onClick={() => setIsMenuOpen(false)}>GALERİ</Link>
-          <Link href="/journal" className={journalNavLinkClassName} style={{ fontFamily: "Smooch Sans, sans-serif" }} onClick={() => setIsMenuOpen(false)}>JOURNAL</Link>
-          <Link href="/hakkimizda" className={navLinkClassName} style={{ fontFamily: "Smooch Sans, sans-serif" }} onClick={() => setIsMenuOpen(false)}>HAKKIMIZDA</Link>
-          <Link href="/iletisim" className={navLinkClassName} style={{ fontFamily: "Smooch Sans, sans-serif" }} onClick={() => setIsMenuOpen(false)}>
+          <Link href="/#hero-slider" className={navLinkClassName} style={mobileMenuLinkStyle} onClick={() => setIsMenuOpen(false)}>ANA SAYFA</Link>
+          <Link href="/faaliyet-alanlarimiz" className={navLinkClassName} style={mobileMenuLinkStyle} onClick={() => setIsMenuOpen(false)}>DESIGN & COLLECTION</Link>
+          <Link href="/galeri" className={navLinkClassName} style={mobileMenuLinkStyle} onClick={() => setIsMenuOpen(false)}>GALERİ</Link>
+          <Link href="/journal" className={journalNavLinkClassName} style={mobileMenuLinkStyle} onClick={() => setIsMenuOpen(false)}>JOURNAL</Link>
+          <Link href="/hakkimizda" className={navLinkClassName} style={mobileMenuLinkStyle} onClick={() => setIsMenuOpen(false)}>HAKKIMIZDA</Link>
+          <Link href="/iletisim" className={navLinkClassName} style={mobileMenuLinkStyle} onClick={() => setIsMenuOpen(false)}>
             İLETİŞİM
           </Link>
         </nav>

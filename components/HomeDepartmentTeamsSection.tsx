@@ -121,10 +121,10 @@ export default function HomeDepartmentTeamsSection({ className }: { className?: 
 
         <Button
           asChild
-          className="bg-white text-black hover:bg-zinc-200 rounded-full px-8 py-6 text-xl tracking-widest transition-all uppercase"
-          style={{ fontFamily: "Smooch Sans, sans-serif" }}
+          className="bg-white !text-black hover:bg-zinc-200 rounded-full px-8 py-6 text-xl tracking-widest transition-all uppercase"
+          style={{ fontFamily: "Smooch Sans, sans-serif", color: "#000", WebkitTextFillColor: "#000" }}
         >
-          <Link href="/departman-ekipleri">TÜM EKİPLERİ GÖR</Link>
+          <Link href="/departman-ekipleri" style={{ color: "#000", WebkitTextFillColor: "#000" }}>TÜM EKİPLERİ GÖR</Link>
         </Button>
       </div>
 

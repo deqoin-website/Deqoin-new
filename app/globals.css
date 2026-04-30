@@ -601,14 +601,17 @@ video {
 .mobile-menu-overlay {
   position: fixed;
   inset: 0;
-  z-index: 999;
-  background: #050505;
+  z-index: 2000;
+  background: rgba(5, 5, 5, 0.98);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  isolation: isolate;
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.5s cubic-bezier(0.165, 0.84, 0.44, 1);
@@ -648,12 +651,16 @@ video {
   flex-direction: column;
   align-items: center;
   gap: 2.5rem;
+  position: relative;
+  z-index: 1;
 }
 
 .mobile-menu-nav a,
 .mobile-menu-nav button {
   background: transparent;
   border: none;
+  color: #fff !important;
+  -webkit-text-fill-color: #fff;
   transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
   transform: translateY(20px);
   opacity: 0;
@@ -663,6 +670,7 @@ video {
   box-sizing: border-box;
   cursor: pointer;
   outline: none;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
 }
 
 .mobile-menu-overlay.open .mobile-menu-nav a,
@@ -676,6 +684,10 @@ video {
 .mobile-menu-overlay.open .mobile-menu-nav a:nth-child(3), .mobile-menu-overlay.open .mobile-menu-nav button:nth-child(3) { transition-delay: 0.2s; }
 .mobile-menu-overlay.open .mobile-menu-nav a:nth-child(4), .mobile-menu-overlay.open .mobile-menu-nav button:nth-child(4) { transition-delay: 0.25s; }
 .mobile-menu-overlay.open .mobile-menu-nav a:nth-child(5), .mobile-menu-overlay.open .mobile-menu-nav button:nth-child(5) { transition-delay: 0.3s; }
+
+.mobile-menu-nav a:visited {
+  color: #fff !important;
+}
 
 .mobile-menu-footer {
   position: absolute;
