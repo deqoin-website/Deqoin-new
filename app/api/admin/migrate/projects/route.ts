@@ -34,7 +34,7 @@ export async function GET() {
             }
           }
         },
-        { upsert: true, new: true }
+        { upsert: true, returnDocument: "after" }
       );
       results.push(updatedProject);
     }
