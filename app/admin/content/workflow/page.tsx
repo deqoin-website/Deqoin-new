@@ -15,6 +15,7 @@ import {
   RefreshCcw,
   Save,
   Search,
+  Settings2,
   Trash2,
   Workflow,
 } from "lucide-react";
@@ -24,6 +25,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { Select } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
 import { mimariServices } from "@/data/mimari-hizmetler";
@@ -32,11 +34,13 @@ import { uygulamaBirimleri } from "@/data/uygulama-birimleri";
 import {
   DEFAULT_WORKFLOW_STEPS,
   DEFAULT_WORKFLOW_TITLE,
+  WORKFLOW_ICON_OPTIONS,
   WorkflowContentDraft,
   WorkflowProcessItem,
   departmentProcessFromWorkflow,
   normalizeWorkflowSteps,
   pageWorkflowSectionFromDraft,
+  resolveWorkflowIconComponent,
   workflowDraftFromPageContent,
   workflowDraftFromProcess,
 } from "@/lib/workflow-content";
@@ -246,7 +250,7 @@ export default function WorkflowAdminPage() {
   const addStep = () => {
     setWorkflow((current) => ({
       ...current,
-      steps: [...current.steps, { title: "Yeni Adım", description: "Adım açıklaması" }],
+      steps: [...current.steps, { title: "Yeni Adım", description: "Adım açıklaması", icon: "Sparkles" }],
     }));
     setIsDirty(true);
   };
@@ -570,76 +574,123 @@ export default function WorkflowAdminPage() {
 
                 <div className="space-y-4">
                   <AnimatePresence initial={false}>
-                    {workflow.steps.map((step, index) => (
-                      <motion.div
-                        key={`${step.title}-${index}`}
-                        layout
-                        initial={{ opacity: 0, y: 12 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -12 }}
-                        className="rounded-3xl border border-white/10 bg-black/20 p-4"
-                      >
-                        <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-                          <Badge variant="secondary">Adım {String(index + 1).padStart(2, "0")}</Badge>
-                          <div className="flex items-center gap-2">
-                            <Button
-                              type="button"
-                              size="icon"
-                              variant="ghost"
-                              disabled={index === 0}
-                              onClick={() => moveStep(index, "up")}
-                              className="h-8 w-8 text-zinc-400 hover:bg-white/5 hover:text-zinc-100"
-                            >
-                              <ArrowUp className="h-4 w-4" />
-                            </Button>
-                            <Button
-                              type="button"
-                              size="icon"
-                              variant="ghost"
-                              disabled={index === workflow.steps.length - 1}
-                              onClick={() => moveStep(index, "down")}
-                              className="h-8 w-8 text-zinc-400 hover:bg-white/5 hover:text-zinc-100"
-                            >
-                              <ArrowDown className="h-4 w-4" />
-                            </Button>
-                            <Button
-                              type="button"
-                              variant="ghost"
-                              onClick={() => removeStep(index)}
-                              className="h-8 px-3 text-zinc-400 hover:bg-white/5 hover:text-red-300"
-                            >
-                              <Trash2 className="mr-2 h-4 w-4" />
-                              Sil
-                            </Button>
-                          </div>
-                        </div>
+                    {workflow.steps.map((step, index) => {
+                      const StepIcon = resolveWorkflowIconComponent(step.icon, index);
+                      const isKnownIcon = WORKFLOW_ICON_OPTIONS.some((option) => option.key === step.icon);
 
-                        <div className="grid gap-4 md:grid-cols-2">
-                          <div className="space-y-2">
-                            <label className="text-xs font-semibold uppercase tracking-[0.22em] text-zinc-400">
-                              Başlık
-                            </label>
-                            <Input
-                              value={step.title}
-                              onChange={(event) => updateStep(index, "title", event.target.value)}
-                              placeholder="Randevu"
-                              className="border-white/10 bg-black/20 text-zinc-100 placeholder:text-zinc-500"
-                            />
+                      return (
+                        <motion.div
+                          key={`${step.title}-${index}`}
+                          layout
+                          initial={{ opacity: 0, y: 12 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: -12 }}
+                          className="rounded-3xl border border-white/10 bg-black/20 p-4"
+                        >
+                          <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+                            <Badge variant="secondary">Adım {String(index + 1).padStart(2, "0")}</Badge>
+                            <div className="flex items-center gap-2">
+                              <Button
+                                type="button"
+                                size="icon"
+                                variant="ghost"
+                                disabled={index === 0}
+                                onClick={() => moveStep(index, "up")}
+                                className="h-8 w-8 text-zinc-400 hover:bg-white/5 hover:text-zinc-100"
+                              >
+                                <ArrowUp className="h-4 w-4" />
+                              </Button>
+                              <Button
+                                type="button"
+                                size="icon"
+                                variant="ghost"
+                                disabled={index === workflow.steps.length - 1}
+                                onClick={() => moveStep(index, "down")}
+                                className="h-8 w-8 text-zinc-400 hover:bg-white/5 hover:text-zinc-100"
+                              >
+                                <ArrowDown className="h-4 w-4" />
+                              </Button>
+                              <Button
+                                type="button"
+                                variant="ghost"
+                                onClick={() => removeStep(index)}
+                                className="h-8 px-3 text-zinc-400 hover:bg-white/5 hover:text-red-300"
+                              >
+                                <Trash2 className="mr-2 h-4 w-4" />
+                                Sil
+                              </Button>
+                            </div>
                           </div>
-                          <div className="space-y-2">
-                            <label className="text-xs font-semibold uppercase tracking-[0.22em] text-zinc-400">
-                              Açıklama
-                            </label>
-                            <Textarea
-                              value={step.description}
-                              onChange={(event) => updateStep(index, "description", event.target.value)}
-                              placeholder="Kısa açıklama..."
-                              className="min-h-[120px] border-white/10 bg-black/20 text-zinc-100 placeholder:text-zinc-500"
-                            />
+
+                          <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(320px,0.9fr)]">
+                            <div className="grid gap-4 md:grid-cols-2">
+                              <div className="space-y-2">
+                                <label className="text-xs font-semibold uppercase tracking-[0.22em] text-zinc-400">
+                                  Başlık
+                                </label>
+                                <Input
+                                  value={step.title}
+                                  onChange={(event) => updateStep(index, "title", event.target.value)}
+                                  placeholder="Randevu"
+                                  className="border-white/10 bg-black/20 text-zinc-100 placeholder:text-zinc-500"
+                                />
+                              </div>
+                              <div className="space-y-2">
+                                <label className="text-xs font-semibold uppercase tracking-[0.22em] text-zinc-400">
+                                  Açıklama
+                                </label>
+                                <Textarea
+                                  value={step.description}
+                                  onChange={(event) => updateStep(index, "description", event.target.value)}
+                                  placeholder="Kısa açıklama..."
+                                  className="min-h-[120px] border-white/10 bg-black/20 text-zinc-100 placeholder:text-zinc-500"
+                                />
+                              </div>
+                            </div>
+
+                            <div className="space-y-3 rounded-2xl border border-white/10 bg-white/[0.03] p-4">
+                              <div className="flex items-center gap-2 text-xs uppercase tracking-[0.22em] text-zinc-400">
+                                <Settings2 className="h-4 w-4 text-[color:var(--accent)]" />
+                                İkon
+                              </div>
+
+                              <div className="flex items-center gap-3">
+                                <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-white/10 bg-black/30 text-[color:var(--accent)]">
+                                  <StepIcon className="h-6 w-6" />
+                                </div>
+
+                                <div className="min-w-0 flex-1 space-y-2">
+                                  <Select
+                                    value={isKnownIcon ? step.icon : ""}
+                                    onChange={(event) => updateStep(index, "icon", event.target.value)}
+                                    className="border-white/10 bg-black/20 text-zinc-100"
+                                  >
+                                    <option value="" disabled>
+                                      Hazır ikon seç
+                                    </option>
+                                    {WORKFLOW_ICON_OPTIONS.map((option) => (
+                                      <option key={option.key} value={option.key}>
+                                        {option.label} - {option.description}
+                                      </option>
+                                    ))}
+                                  </Select>
+                                  <p className="text-[11px] leading-5 text-zinc-500">
+                                    Lucide export adını yazabilir veya üstteki listeden seçim yapabilirsiniz.
+                                  </p>
+                                </div>
+                              </div>
+
+                              <Input
+                                value={step.icon}
+                                onChange={(event) => updateStep(index, "icon", event.target.value)}
+                                placeholder="CalendarDays"
+                                className="border-white/10 bg-black/20 text-zinc-100 placeholder:text-zinc-500"
+                              />
+                            </div>
                           </div>
-                        </div>
-                      </motion.div>
-                    ))}
+                        </motion.div>
+                      );
+                    })}
                   </AnimatePresence>
                 </div>
               </CardContent>
@@ -661,6 +712,12 @@ export default function WorkflowAdminPage() {
                     >
                       <div className="flex items-center justify-between gap-3">
                         <Badge variant="secondary">Adım {String(index + 1).padStart(2, "0")}</Badge>
+                        <div className="flex h-9 w-9 items-center justify-center rounded-full border border-white/10 bg-white/[0.04] text-[color:var(--accent)]">
+                          {(() => {
+                            const Icon = resolveWorkflowIconComponent(step.icon, index);
+                            return <Icon className="h-4 w-4" />;
+                          })()}
+                        </div>
                         <span className="text-[0.62rem] uppercase tracking-[0.24em] text-zinc-500">
                           {selectedScope.kind === "page" ? "PAGE" : "DETAIL"}
                         </span>

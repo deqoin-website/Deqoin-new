@@ -30,7 +30,7 @@ interface DepartmentStudioProps {
   focusAreas?: { title: string; icon: string; desc: string }[];
   products?: { title: string; image: string; category?: string; desc: string; price?: string; link?: string }[];
   workflowType?: 'design' | 'material' | 'execution';
-  workflowProcess?: { title: string; desc: string }[];
+  workflowProcess?: { title: string; desc: string; icon?: string }[];
 }
 
 const FALLBACK_SLIDES = [
@@ -179,6 +179,7 @@ export default function DepartmentStudio({
         workflowProcess.map((step) => ({
           title: step.title,
           description: step.desc,
+          icon: step.icon,
         })),
       );
     }
