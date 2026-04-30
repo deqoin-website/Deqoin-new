@@ -151,7 +151,13 @@ export default function MaterialProjectShowcase({
 
       {!hideMobileToggle && (
         <div className="mt-6 lg:hidden">
-          <button className="mobile-filter-toggle w-full" onClick={() => setMobileDrawerOpen(true)}>
+          <button
+            className="mobile-filter-toggle w-full"
+            aria-controls="studio-gallery"
+            aria-expanded={isMobileDrawerOpen}
+            onClick={() => setMobileDrawerOpen(true)}
+            style={{ position: "sticky", top: "1rem", zIndex: 40 }}
+          >
             <span className="material-symbols-outlined">tune</span>
             KATEGORİLER
             {activeCategory !== "ALL" && <span className="active-dot" />}

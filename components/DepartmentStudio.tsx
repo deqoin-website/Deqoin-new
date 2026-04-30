@@ -275,7 +275,10 @@ export default function DepartmentStudio({
         <button
           type="button"
           className="mobile-filter-toggle w-full"
+          aria-controls="studio-gallery"
+          aria-expanded={isMobileDrawerOpen}
           onClick={() => setIsMobileDrawerOpen(true)}
+          style={{ position: "sticky", top: "1rem", zIndex: 40 }}
         >
           <span className="material-symbols-outlined">tune</span>
           KATEGORİLER
