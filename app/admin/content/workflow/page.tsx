@@ -112,6 +112,11 @@ const DEPARTMENT_SCOPES: WorkflowScope[] = [
 ];
 
 const ALL_SCOPES = [...PAGE_SCOPES, ...DEPARTMENT_SCOPES];
+const PAGE_SCOPE_KEYS = new Set(PAGE_SCOPES.map((scope) => scope.key));
+
+type ScopeMode = "page" | "department";
+
+const getScopeMode = (scopeKey: string): ScopeMode => (PAGE_SCOPE_KEYS.has(scopeKey) ? "page" : "department");
 
 const cloneDraft = (value: WorkflowContentDraft): WorkflowContentDraft => ({
   title: value.title,
@@ -141,7 +146,9 @@ export default function WorkflowAdminPage() {
     const candidate = searchParams.get("scope");
     return candidate && ALL_SCOPES.some((scope) => scope.key === candidate) ? candidate : PAGE_SCOPES[0].key;
   }, [searchParams]);
+  const initialScopeMode = getScopeMode(initialScopeKey);
   const [selectedScopeKey, setSelectedScopeKey] = useState(initialScopeKey);
+  const [activeScopeMode, setActiveScopeMode] = useState<ScopeMode>(initialScopeMode);
   const [workflow, setWorkflow] = useState<WorkflowContentDraft>(createDefaultDraft(ALL_SCOPES.find((scope) => scope.key === initialScopeKey) || PAGE_SCOPES[0]));
   const [rawContent, setRawContent] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -162,6 +169,7 @@ export default function WorkflowAdminPage() {
     if (!nextScopeKey) return;
     if (ALL_SCOPES.some((scope) => scope.key === nextScopeKey) && nextScopeKey !== selectedScopeKey) {
       setSelectedScopeKey(nextScopeKey);
+      setActiveScopeMode(getScopeMode(nextScopeKey));
     }
   }, [searchParams, selectedScopeKey]);
 
@@ -172,7 +180,9 @@ export default function WorkflowAdminPage() {
       `${scope.label} ${scope.description} ${scope.route}`.toLowerCase().includes(term);
 
     const byGroup = new Map<string, WorkflowScope[]>();
-    ALL_SCOPES.forEach((scope) => {
+    const visibleScopes = activeScopeMode === "page" ? PAGE_SCOPES : DEPARTMENT_SCOPES;
+
+    visibleScopes.forEach((scope) => {
       if (!matches(scope)) return;
       const current = byGroup.get(scope.group) || [];
       current.push(scope);
@@ -180,7 +190,16 @@ export default function WorkflowAdminPage() {
     });
 
     return Array.from(byGroup.entries()).map(([title, scopes]) => ({ title, scopes }));
-  }, [searchQuery]);
+  }, [searchQuery, activeScopeMode]);
+
+  const switchScopeMode = (mode: ScopeMode) => {
+    setActiveScopeMode(mode);
+    const pool = mode === "page" ? PAGE_SCOPES : DEPARTMENT_SCOPES;
+    const nextScope = pool.find((scope) => scope.key === selectedScopeKey) || pool[0];
+    if (nextScope && nextScope.key !== selectedScopeKey) {
+      setSelectedScopeKey(nextScope.key);
+    }
+  };
 
   const loadScope = async (scope: WorkflowScope) => {
     setIsScopeLoading(true);
@@ -420,8 +439,8 @@ export default function WorkflowAdminPage() {
                   Workflow editörü
                 </CardTitle>
                 <CardDescription className="max-w-3xl text-base text-zinc-400">
-                  Ana sayfa workflow bloklarını ve her departmanın detay akışını ayrı ayrı düzenleyin.
-                  Aynı şablonu koruyup istediğiniz zaman tekil sayfaları özelleştirebilirsiniz.
+                  Ana sayfa akışları ile departman akışlarını ayrı modlarda yönetin.
+                  Aynı ekranda karışmadan, yalnızca seçtiğiniz kümedeki akışları düzenleyin.
                 </CardDescription>
               </div>
 
@@ -434,6 +453,13 @@ export default function WorkflowAdminPage() {
                 <div className="flex items-center justify-between gap-4">
                   <span className="font-mono">{selectedScope.label}</span>
                   <Workflow className="h-4 w-4 text-emerald-400" />
+                </div>
+                <Separator />
+                <div className="flex items-center justify-between gap-4">
+                  <span className="font-mono">{activeScopeMode === "page" ? "ANA SAYFA" : "DEPARTMAN"}</span>
+                  <span className="text-[0.62rem] tracking-[0.28em] text-zinc-500">
+                    {activeScopeMode === "page" ? `${PAGE_SCOPES.length} akış` : `${DEPARTMENT_SCOPES.length} akış`}
+                  </span>
                 </div>
               </div>
             </div>
@@ -460,7 +486,7 @@ export default function WorkflowAdminPage() {
               <div className="flex items-center justify-between gap-3">
                 <div>
                   <CardTitle className="text-xl tracking-[0.06em]">Akış seçici</CardTitle>
-                  <CardDescription>Sayfa ve detay workflow hedefini seçin.</CardDescription>
+                  <CardDescription>Sadece seçili modun akışlarını görün.</CardDescription>
                 </div>
                 <Button
                   variant="outline"
@@ -472,12 +498,41 @@ export default function WorkflowAdminPage() {
                 </Button>
               </div>
 
+              <div className="grid grid-cols-2 gap-2 rounded-2xl border border-white/10 bg-black/20 p-2">
+                <Button
+                  type="button"
+                  variant={activeScopeMode === "page" ? "default" : "ghost"}
+                  onClick={() => switchScopeMode("page")}
+                  className={cn(
+                    "h-11 justify-center",
+                    activeScopeMode === "page"
+                      ? "bg-[color:var(--accent)] text-black hover:bg-[color:var(--accent)]/90"
+                      : "text-zinc-400 hover:bg-white/5 hover:text-zinc-50",
+                  )}
+                >
+                  Ana Sayfa
+                </Button>
+                <Button
+                  type="button"
+                  variant={activeScopeMode === "department" ? "default" : "ghost"}
+                  onClick={() => switchScopeMode("department")}
+                  className={cn(
+                    "h-11 justify-center",
+                    activeScopeMode === "department"
+                      ? "bg-[color:var(--accent)] text-black hover:bg-[color:var(--accent)]/90"
+                      : "text-zinc-400 hover:bg-white/5 hover:text-zinc-50",
+                  )}
+                >
+                  Departmanlar
+                </Button>
+              </div>
+
               <div className="relative">
                 <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-500" />
                 <Input
                   value={searchQuery}
                   onChange={(event) => setSearchQuery(event.target.value)}
-                  placeholder="Workflow ara..."
+                  placeholder={activeScopeMode === "page" ? "Ana sayfa akışı ara..." : "Departman akışı ara..."}
                   className="h-12 border-white/10 bg-black/20 pl-9 text-zinc-100 placeholder:text-zinc-500"
                 />
               </div>
@@ -523,6 +578,12 @@ export default function WorkflowAdminPage() {
                   </div>
                 </div>
               ))}
+
+              {groupedScopes.length === 0 && (
+                <div className="rounded-2xl border border-dashed border-white/10 bg-white/[0.03] px-4 py-8 text-center text-sm text-zinc-500">
+                  Bu modda eşleşen akış bulunamadı.
+                </div>
+              )}
             </CardContent>
           </Card>
 
