@@ -75,23 +75,23 @@ export default function ProjectFilterSidebar(props: ProjectFilterSidebarProps) {
   return (
     <aside
       className={cn(
-        "flex h-fit flex-col gap-10 lg:sticky lg:top-28",
+        "flex h-fit flex-col gap-10 text-[color:var(--text)] lg:sticky lg:top-28",
         className,
       )}
     >
       <div
         className={cn(
-          "relative w-full border-b border-white/10 pb-4",
+          "relative w-full border-b border-[color:var(--line)] pb-4",
           searchClassName,
         )}
       >
-        <Search className="pointer-events-none absolute left-0 top-1/2 h-4 w-4 -translate-y-1/2 text-white/30" />
+        <Search className="pointer-events-none absolute left-0 top-1/2 h-4 w-4 -translate-y-1/2 text-[color:var(--text-muted)]" />
         <Input
           type="search"
           value={searchValue}
           onChange={(event) => onSearchChange(event.target.value)}
           placeholder={searchPlaceholder}
-          className="h-12 border-0 bg-transparent pl-8 text-[0.72rem] uppercase tracking-[0.35em] text-white placeholder:text-white/25 focus-visible:ring-0"
+          className="h-12 border-0 bg-transparent pl-8 text-[0.72rem] uppercase tracking-[0.35em] text-[color:var(--text)] placeholder:text-[color:var(--text-muted)] focus-visible:ring-0"
           style={{ fontFamily: "Smooch Sans, sans-serif" }}
         />
       </div>
@@ -104,13 +104,13 @@ export default function ProjectFilterSidebar(props: ProjectFilterSidebarProps) {
             <section key={sectionTitle} className={cn("flex flex-col gap-4", sectionClassName)}>
               <header className="flex items-end justify-between gap-4">
                 <h3
-                  className="text-[0.68rem] font-thin uppercase tracking-[0.55em] text-red-500"
+                  className="text-[0.68rem] font-thin uppercase tracking-[0.55em] text-[color:var(--accent)]"
                   style={{ fontFamily: "Smooch Sans, sans-serif" }}
                 >
                   {sectionTitle}
                 </h3>
                 {group.description ? (
-                  <p className="max-w-[11rem] text-right text-[0.58rem] uppercase tracking-[0.35em] text-red-400/90">
+                  <p className="max-w-[11rem] text-right text-[0.58rem] uppercase tracking-[0.35em] text-[color:var(--text-muted)]">
                     {group.description}
                   </p>
                 ) : null}
@@ -126,8 +126,10 @@ export default function ProjectFilterSidebar(props: ProjectFilterSidebarProps) {
                       type="button"
                       onClick={() => group.onToggle(option.value)}
                       className={cn(
-                        "group flex w-full items-center justify-between border-b border-white/5 py-2 text-left transition-colors",
-                        isActive ? "text-white" : "text-white/45 hover:text-white/75",
+                        "group flex w-full items-center justify-between border-b border-[color:var(--line)] py-2 text-left transition-colors",
+                        isActive
+                          ? "text-[color:var(--text)]"
+                          : "text-[color:var(--text-soft)] hover:text-[color:var(--text)]",
                         optionClassName,
                       )}
                     >
@@ -138,7 +140,7 @@ export default function ProjectFilterSidebar(props: ProjectFilterSidebarProps) {
                         {option.label}
                       </span>
                       {option.meta ? (
-                        <span className="text-[0.55rem] uppercase tracking-[0.42em] text-white/30">
+                        <span className="text-[0.55rem] uppercase tracking-[0.42em] text-[color:var(--text-muted)]">
                           {option.meta}
                         </span>
                       ) : null}

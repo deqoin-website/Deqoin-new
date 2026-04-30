@@ -29,6 +29,7 @@
   --accent-soft: #c5ac8c;
   --shadow: 0 10px 40px rgba(0, 0, 0, 0.05);
   --selection: #a68966;
+  color-scheme: light;
 }
 
 [data-theme='dark'] {
@@ -45,6 +46,7 @@
   --accent-soft: #8a7154;
   --shadow: 0 30px 100px rgba(0, 0, 0, 0.6);
   --selection: #a68966;
+  color-scheme: dark;
 }
 
 * {
@@ -73,6 +75,11 @@ body::before {
   pointer-events: none;
   z-index: 10;
   mix-blend-mode: overlay;
+}
+
+[data-theme='light'] body::before {
+  opacity: 0.016;
+  mix-blend-mode: multiply;
 }
 
 body {
@@ -525,6 +532,55 @@ video {
 
 .topbar-links a {
   text-decoration: none;
+}
+
+[data-theme='light'] .topbar {
+  background: rgba(255, 252, 247, 0.62);
+  backdrop-filter: blur(18px) saturate(150%);
+  -webkit-backdrop-filter: blur(18px) saturate(150%);
+  border-bottom-color: rgba(20, 20, 20, 0.08);
+}
+
+[data-theme='light'] .topbar.scrolled {
+  background: rgba(255, 252, 247, 0.86);
+  border-bottom-color: rgba(20, 20, 20, 0.08);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.08);
+}
+
+[data-theme='light'] .topbar-links,
+[data-theme='light'] .brand-mark,
+[data-theme='light'] .icon-button,
+[data-theme='light'] .icon-button span {
+  color: var(--text) !important;
+  -webkit-text-fill-color: var(--text) !important;
+}
+
+[data-theme='light'] .icon-button:hover {
+  opacity: 1;
+  color: var(--accent) !important;
+}
+
+[data-theme='light'] .mobile-menu-overlay {
+  background: rgba(250, 246, 240, 0.96);
+}
+
+[data-theme='light'] .mobile-menu-header .close-button,
+[data-theme='light'] .mobile-menu-header .close-button span,
+[data-theme='light'] .search-overlay-header .close-button,
+[data-theme='light'] .search-overlay-header .close-button span,
+[data-theme='light'] .mobile-menu-nav a,
+[data-theme='light'] .mobile-menu-nav button {
+  color: var(--text) !important;
+  -webkit-text-fill-color: var(--text) !important;
+  text-shadow: none;
+}
+
+[data-theme='light'] .mobile-menu-nav a:visited {
+  color: var(--text) !important;
+}
+
+[data-theme='light'] .mobile-menu-footer {
+  color: rgba(18, 18, 18, 0.62);
 }
 
 .topbar-brand {
@@ -4501,11 +4557,21 @@ video {
   border-top: 1px solid rgba(255, 255, 255, 0.06);
 }
 
+[data-theme='light'] .site-footer {
+  background: linear-gradient(180deg, #fbf8f3 0%, #f5efe7 100%);
+  border-top: 1px solid rgba(18, 18, 18, 0.08);
+}
+
 /* ── TOP CTA STRIP ── */
 .footer-top {
   padding: 8rem 5rem 7rem;
   border-bottom: 1px solid rgba(255, 255, 255, 0.06);
   background: linear-gradient(135deg, #080808 0%, #040404 100%);
+}
+
+[data-theme='light'] .footer-top {
+  background: linear-gradient(135deg, rgba(255, 251, 245, 0.95) 0%, rgba(245, 239, 231, 0.98) 100%);
+  border-bottom: 1px solid rgba(18, 18, 18, 0.08);
 }
 
 .footer-top-inner {
@@ -4537,6 +4603,20 @@ video {
   margin: 0 0 3.5rem;
 }
 
+[data-theme='light'] .footer-cta-title,
+[data-theme='light'] .footer-address,
+[data-theme='light'] .footer-tagline,
+[data-theme='light'] .footer-nav-link,
+[data-theme='light'] .footer-copy,
+[data-theme='light'] .footer-bottom-tag {
+  color: var(--text);
+}
+
+[data-theme='light'] .footer-cta-label,
+[data-theme='light'] .footer-nav-label {
+  color: var(--accent);
+}
+
 .footer-address-block {
   text-align: right;
 }
@@ -4555,6 +4635,10 @@ video {
 .footer-divider {
   height: 1px;
   background: rgba(255, 255, 255, 0.06);
+}
+
+[data-theme='light'] .footer-divider {
+  background: rgba(18, 18, 18, 0.08);
 }
 
 /* ── MAIN GRID ── */
@@ -4673,6 +4757,29 @@ video {
   letter-spacing: 0.2em;
   color: #fff;
   text-transform: uppercase;
+}
+
+[data-theme='light'] .site-footer .footer-cta-btn {
+  color: var(--text);
+  border-color: rgba(18, 18, 18, 0.16);
+}
+
+[data-theme='light'] .site-footer .footer-cta-btn .hero-cta-text {
+  color: var(--text);
+}
+
+[data-theme='light'] .site-footer .footer-cta-btn .hero-cta-circle {
+  background: rgba(166, 137, 102, 0.08);
+  border-color: rgba(166, 137, 102, 0.18);
+}
+
+[data-theme='light'] .site-footer .footer-cta-btn .hero-cta-circle span {
+  color: var(--text) !important;
+}
+
+[data-theme='light'] .site-footer .footer-cta-btn:hover .hero-cta-text,
+[data-theme='light'] .site-footer .footer-cta-btn:hover .hero-cta-circle span {
+  color: var(--text-inverse) !important;
 }
 
 .site-footer .footer-cta-btn {
