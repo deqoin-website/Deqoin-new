@@ -80,6 +80,8 @@ export default async function RootLayout({
   return (
     <html lang="tr" className="scroll-smooth">
       <head>
+        <link rel="preconnect" href="https://res.cloudinary.com" />
+        <link rel="dns-prefetch" href="https://res.cloudinary.com" />
         <script dangerouslySetInnerHTML={{
           __html: `
             (function() {

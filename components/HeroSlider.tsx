@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useEffect, useRef, useMemo } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import SwipeAppointmentButton from "./SwipeAppointmentButton";
+import CloudinaryImage from "@/components/CloudinaryImage";
 
 export interface HeroSlide {
   title: string;
@@ -31,7 +32,7 @@ export default function HeroSlider({
 }: HeroSliderProps) {
   const [index, setIndex] = useState(0);
   const [direction, setDirection] = useState(0);
-  const [isIntroReady, setIsIntroReady] = useState(false);
+  const [isIntroReady] = useState(true);
   const touchX = useRef<number | null>(null);
   const touchY = useRef<number | null>(null);
   const flipAudioRef = useRef<HTMLAudioElement | null>(null);
@@ -50,10 +51,6 @@ export default function HeroSlider({
   };
 
   useEffect(() => {
-    setIsIntroReady(true);
-  }, []);
-
-  useEffect(() => {
     if (slides.length === 0) return;
 
     const preloadIndexes = [index, index + 1, index + 2, index - 1];
@@ -63,7 +60,13 @@ export default function HeroSlider({
       const src = slide?.mediaUrl || slide?.image;
       if (!src || slide?.mediaType === "video") return;
       const img = new Image();
+      img.decoding = "async";
+      img.loading = "eager";
+      img.fetchPriority = "high";
       img.src = src;
+      if (typeof img.decode === "function") {
+        img.decode().catch(() => {});
+      }
     });
   }, [index, slides]);
 
@@ -97,6 +100,7 @@ export default function HeroSlider({
   };
 
   const currentSlide = slides[index];
+  const currentSlideSrc = currentSlide?.image || currentSlide?.mediaUrl || "";
 
   const heroProgressStyle: React.CSSProperties = {
     position: "absolute",
@@ -158,15 +162,29 @@ export default function HeroSlider({
               }}
               transition={{ duration: slideTransitionDuration, ease: [0.77, 0, 0.175, 1] }}
               style={{
-                backgroundImage: `url(${currentSlide?.image || currentSlide?.mediaUrl})`,
-                backgroundSize: "cover",
-                backgroundPosition: "center",
                 width: '100%',
                 height: '100%',
                 position: 'absolute',
                 inset: 0
               }}
-            />
+            >
+              {currentSlideSrc ? (
+                <CloudinaryImage
+                  src={currentSlideSrc}
+                  alt={currentSlide?.title || "Hero visual"}
+                  priority={index === 0}
+                  loading={index === 0 ? "eager" : "lazy"}
+                  sizes="100vw"
+                  className="hero-slide-media"
+                  style={{
+                    objectFit: "cover",
+                    objectPosition: "center",
+                    width: "100%",
+                    height: "100%",
+                  }}
+                />
+              ) : null}
+            </motion.div>
           )}
         </AnimatePresence>
         <div className="hero-overlay" style={{ 
