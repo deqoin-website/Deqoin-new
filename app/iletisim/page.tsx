@@ -77,10 +77,6 @@ export default function IletisimPage() {
           </div>
         </div>
 
-          <div className="contact-footer-title">
-            <div className="watermark">Randevu</div>
-            <h3>RANDEVU TALEP EDİN</h3>
-          </div>
         </section>
 
         <section className="google-map-section">
