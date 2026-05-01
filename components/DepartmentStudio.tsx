@@ -29,7 +29,7 @@ interface DepartmentStudioProps {
   projects: ProjectDetail[];
   categories?: { label: string; value: Category | string }[];
   focusAreas?: { title: string; icon: string; desc: string }[];
-  products?: { title: string; image: string; category?: string; desc: string; price?: string; link?: string }[];
+  products?: { title: string; image: string; category?: string; desc: string; price?: string; link?: string; brand?: string; model?: string; collection?: string; collectionName?: string; finish?: string; usage?: string; priceLabel?: string; highlights?: string[] }[];
   workflowType?: 'design' | 'material' | 'execution';
   workflowProcess?: { title: string; desc: string; icon?: string }[];
 }
@@ -368,7 +368,16 @@ export default function DepartmentStudio({
                     <Image src={product.image} alt={product.title} fill sizes="(max-width: 768px) 100vw, 33vw" />
                     <div className="product-card-overlay">
                       <div className="product-hover-content">
+                        <div className="product-hover-kicker">
+                          {product.brand && <span>{product.brand}</span>}
+                          {product.model && <span>{product.model}</span>}
+                          {(product.collectionName || product.collection) && <span>{product.collectionName || product.collection}</span>}
+                        </div>
                         <p>{product.desc}</p>
+                        <div className="product-hover-tags">
+                          {product.finish && <span>{product.finish}</span>}
+                          {product.usage && <span>{product.usage}</span>}
+                        </div>
                         {product.link && (
                           <Link href={product.link} className="product-more-btn">
                             İNCELE <span className="material-symbols-outlined">north_east</span>
@@ -379,9 +388,25 @@ export default function DepartmentStudio({
                   </div>
                   <div className="product-card-footer">
                     <div className="product-meta-main">
-                      <h3>{product.title}</h3>
-                      {product.price && <span className="product-price-tag">{product.price}</span>}
+                      <div className="product-title-block">
+                        <span className="product-brand-label">{product.brand || "DEQOIN"}</span>
+                        <h3>{product.title}</h3>
+                      </div>
+                      <div className="product-meta-stack">
+                        {product.model && <span className="product-model-tag">{product.model}</span>}
+                        {(product.price || product.priceLabel) && <span className="product-price-tag">{product.price || product.priceLabel}</span>}
+                      </div>
                     </div>
+                    <div className="product-spec-line">
+                      {[product.category, product.collectionName || product.collection].filter(Boolean).join(" / ")}
+                    </div>
+                    {product.highlights && product.highlights.length > 0 && (
+                      <div className="product-highlight-row">
+                        {product.highlights.slice(0, 3).map((item) => (
+                          <span key={item}>{item}</span>
+                        ))}
+                      </div>
+                    )}
                     <div className="product-brand-line" />
                   </div>
                 </div>
@@ -667,6 +692,27 @@ export default function DepartmentStudio({
           font-weight: 300;
         }
 
+        .product-hover-kicker,
+        .product-hover-tags {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 0.5rem;
+          justify-content: center;
+          margin-bottom: 1rem;
+        }
+
+        .product-hover-kicker span,
+        .product-hover-tags span {
+          border: 1px solid rgba(255,255,255,0.14);
+          background: rgba(255,255,255,0.04);
+          color: rgba(255,255,255,0.82);
+          padding: 0.4rem 0.75rem;
+          border-radius: 999px;
+          font-size: 0.62rem;
+          letter-spacing: 0.18em;
+          text-transform: uppercase;
+        }
+
         .product-more-btn {
           display: inline-flex;
           align-items: center;
@@ -693,6 +739,27 @@ export default function DepartmentStudio({
           display: flex;
           justify-content: space-between;
           align-items: baseline;
+          gap: 1rem;
+        }
+
+        .product-title-block {
+          display: flex;
+          flex-direction: column;
+          gap: 0.3rem;
+        }
+
+        .product-brand-label {
+          font-size: 0.65rem;
+          letter-spacing: 0.24em;
+          text-transform: uppercase;
+          color: rgba(255,255,255,0.56);
+        }
+
+        .product-meta-stack {
+          display: flex;
+          flex-direction: column;
+          gap: 0.35rem;
+          align-items: flex-end;
         }
 
         .product-card-footer h3 {
@@ -709,6 +776,35 @@ export default function DepartmentStudio({
           color: #a68966;
           font-family: var(--font-display);
           font-weight: 400;
+        }
+
+        .product-model-tag,
+        .product-spec-line {
+          font-size: 0.7rem;
+          letter-spacing: 0.18em;
+          text-transform: uppercase;
+          color: rgba(255,255,255,0.6);
+        }
+
+        .product-spec-line {
+          line-height: 1.6;
+        }
+
+        .product-highlight-row {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 0.5rem;
+        }
+
+        .product-highlight-row span {
+          border: 1px solid rgba(166,137,102,0.18);
+          background: rgba(166,137,102,0.08);
+          color: #f0d9bf;
+          border-radius: 999px;
+          padding: 0.35rem 0.7rem;
+          font-size: 0.62rem;
+          letter-spacing: 0.16em;
+          text-transform: uppercase;
         }
 
         .product-brand-line {

@@ -21,7 +21,39 @@ export async function GET(
     const doc = await Department.findOne({ slug });
     
     if (doc) {
-      return NextResponse.json(doc);
+      const allStatic = [...mimariServices, ...uygulamaBirimleri, ...materyalKategorileri];
+      const match: any = allStatic.find((s: any) => s.slug === slug);
+      const docData = doc.toObject ? doc.toObject() : doc;
+      const fallbackData = match
+        ? {
+            slug: match.slug,
+            title: match.title,
+            sideLabel: match.sideLabel,
+            description: match.description,
+            image: match.image,
+            cardLabel: match.cardLabel,
+            brand: match.brand,
+            model: match.model,
+            series: match.series,
+            finish: match.finish,
+            usage: match.usage,
+            priceLabel: match.priceLabel,
+            highlight: match.highlight,
+            heroBlur: 0,
+            heroOverlay: 30,
+            sliderImages: match.sliderImages || [],
+            categories: match.categories || [],
+            process: match.process || (match.longDescription ? match.longDescription.content.map((c: string) => ({ title: "Açıklama Satırı", desc: c })) : []),
+            focusAreas: match.focusAreas || [],
+            products: match.products || [],
+          }
+        : {};
+
+      return NextResponse.json({
+        ...fallbackData,
+        ...docData,
+        products: Array.isArray(docData.products) && docData.products.length > 0 ? docData.products : fallbackData.products || [],
+      });
     }
 
     // 2. Fallback to static if no DB entry exists
@@ -35,6 +67,14 @@ export async function GET(
         sideLabel: match.sideLabel,
         description: match.description,
         image: match.image,
+        cardLabel: match.cardLabel,
+        brand: match.brand,
+        model: match.model,
+        series: match.series,
+        finish: match.finish,
+        usage: match.usage,
+        priceLabel: match.priceLabel,
+        highlight: match.highlight,
         heroBlur: 0,
         heroOverlay: 30,
         sliderImages: match.sliderImages || [],

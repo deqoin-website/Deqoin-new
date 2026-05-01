@@ -8,10 +8,33 @@ export interface MateryalKategori {
   sliderImages?: string[];
   categories?: { label: string; value: string }[];
   description: string;
+  cardLabel?: string;
+  brand?: string;
+  model?: string;
+  series?: string;
+  finish?: string;
+  usage?: string;
+  priceLabel?: string;
+  highlight?: string;
+  products?: MateryalProduct[];
   longDescription?: {
     title: string;
     content: string[];
   };
+}
+
+export interface MateryalProduct {
+  brand: string;
+  model: string;
+  category: string;
+  collection?: string;
+  finish?: string;
+  usage?: string;
+  priceLabel?: string;
+  description: string;
+  highlights: string[];
+  image: string;
+  link?: string;
 }
 
 export const materyalKategorileri: MateryalKategori[] = [
@@ -35,6 +58,52 @@ export const materyalKategorileri: MateryalKategori[] = [
       { label: "AKSESUAR & DEKOR", value: "aksesuar-dekor" }
     ],
     description: "Tasarlanan mekanın ruhuna uygun, malzeme ve formun kusursuz uyumuyla üretilen özel mobilya koleksiyonumuz.",
+    cardLabel: "Bespoke furniture / living collection",
+    brand: "DEQOIN Atelier",
+    model: "MOB-01 / MOB-02 / MOB-03",
+    series: "Living, dining and workplace modules",
+    finish: "Masif ahşap, doğal taş ve mat lake",
+    usage: "Salon, yatak odası, ofis ve ıslak hacim detayları",
+    priceLabel: "Proje bazlı teklif",
+    highlight: "Özel ölçü ve mimariye entegre üretim",
+    products: [
+      {
+        brand: "DEQOIN Atelier",
+        model: "MOB-01",
+        category: "Salon Grubu",
+        collection: "Living Collection",
+        finish: "Mat ceviz + bronz metal",
+        usage: "Oturma alanı ve lounge zone",
+        priceLabel: "Proje bazlı teklif",
+        description: "Mekanın merkezini toparlayan, düşük profilli ve yüksek konforlu oturma kurgusu.",
+        highlights: ["Özel ölçü", "Sessiz bağlantı detayları", "Dayanıklı döşeme"],
+        image: "/images/workflow/mobilya-custom.png",
+      },
+      {
+        brand: "DEQOIN Atelier",
+        model: "MOB-02",
+        category: "Yemek Alanı",
+        collection: "Dining Collection",
+        finish: "Doğal meşe + taş tabla",
+        usage: "Açık mutfak ve yemek alanı",
+        priceLabel: "Proje bazlı teklif",
+        description: "Mimari dile uyumlu, sert yüzey ve sıcak dokuyu aynı tabloda buluşturan masa sistemi.",
+        highlights: ["Kolay bakım", "Leke dayanımlı yüzey", "Modüler ölçüler"],
+        image: "/images/workflow/material-studio-home.png",
+      },
+      {
+        brand: "DEQOIN Atelier",
+        model: "MOB-03",
+        category: "Çalışma Modülü",
+        collection: "Workspace Collection",
+        finish: "Mat antrasit + ceviz kaplama",
+        usage: "Ev ofisi ve kurumsal çalışma alanı",
+        priceLabel: "Proje bazlı teklif",
+        description: "Teknik kablo kanalları ve gizli depolama ile düzenli bir çalışma ritmi kurar.",
+        highlights: ["Gizli depolama", "Kablo yönetimi", "Ergonomik ölçüler"],
+        image: "/images/workflow/design-studio-home.png",
+      },
+    ],
     longDescription: {
       title: "Mimari Vizyonla Entegre Mobilya Tasarımları",
       content: [
@@ -64,6 +133,52 @@ export const materyalKategorileri: MateryalKategori[] = [
       { label: "OTOMASYON & KONTROL", value: "otomasyon" }
     ],
     description: "Mekanın hiyerarşisini ve derinliğini yöneten, atmosferik ve heykelsi aydınlatma tasarımları.",
+    cardLabel: "Lighting systems / ambiance control",
+    brand: "DEQOIN Light Atelier",
+    model: "LGT-01 / LGT-02 / LGT-03",
+    series: "Decorative, technical and architectural lighting",
+    finish: "Pirinç, opal cam ve siyah toz boya",
+    usage: "Konut, ofis, dış mekan ve vitrin kurgu",
+    priceLabel: "Proje bazlı teklif",
+    highlight: "Işık senaryosu ile birlikte kurgulanan armatürler",
+    products: [
+      {
+        brand: "DEQOIN Light Atelier",
+        model: "LGT-01",
+        category: "Dekoratif Aydınlatma",
+        collection: "Pendant Series",
+        finish: "Pirinç gövde + opal difüzör",
+        usage: "Yemek adası ve galeri boşlukları",
+        priceLabel: "Proje bazlı teklif",
+        description: "Işığı yumuşak biçimde dağıtan, heykelsi gövdeli sarkıt armatür.",
+        highlights: ["Dimmable", "Sıcak renk sıcaklığı", "Tekil / çoklu kullanım"],
+        image: "/images/workflow/aydinlatma-custom.png",
+      },
+      {
+        brand: "DEQOIN Light Atelier",
+        model: "LGT-02",
+        category: "Teknik Aydınlatma",
+        collection: "Track System",
+        finish: "Siyah ray + yönlenebilir spot",
+        usage: "Sergi, koridor ve çalışma alanı",
+        priceLabel: "Proje bazlı teklif",
+        description: "Mekanda esnek yönlendirme sağlayan, minimal çizgide teknik ray sistemi.",
+        highlights: ["Ray modülerliği", "Yüksek CRI", "Esnek montaj"],
+        image: "/images/workflow/design-studio-home.png",
+      },
+      {
+        brand: "DEQOIN Light Atelier",
+        model: "LGT-03",
+        category: "Mimari Aydınlatma",
+        collection: "Linear Detail",
+        finish: "Gömme lineer profil",
+        usage: "Tavan, niş ve dolaşım aksları",
+        priceLabel: "Proje bazlı teklif",
+        description: "Mimari çizgiyi görünmez kılan, yüzeyle bütünleşen lineer ışık çözümü.",
+        highlights: ["Gömme uygulama", "Temiz hat", "Katmanlı ışık"],
+        image: "/images/workflow/execution-studio-home.png",
+      },
+    ],
     longDescription: {
       title: "Mekanı Şekillendiren Aydınlatma Tasarımları",
       content: [
@@ -92,6 +207,7 @@ export const materyalKategorileri: MateryalKategori[] = [
       { label: "PAS & OKSİT", value: "pas-oksit" }
     ],
     description: "Duvarları birer sanat eserine dönüştüren, dokulu ve derinlikli İtalyan sıva uygulamaları.",
+    cardLabel: "Texture / tactile surfaces",
     longDescription: {
       title: "Yüzeylerin Derinliği: İtalyan Sıvalar",
       content: [
@@ -120,6 +236,7 @@ export const materyalKategorileri: MateryalKategori[] = [
       { label: "RENK PALETİ", value: "palette" }
     ],
     description: "Mekanın karakterini belirleyen, derin tonlu ve yüksek kaliteli dekoratif boya sistemleri.",
+    cardLabel: "Paint systems / color palettes",
     longDescription: {
       title: "Mekana Atmosfer Katan Dekoratif Boyalar",
       content: [
@@ -146,6 +263,7 @@ export const materyalKategorileri: MateryalKategori[] = [
       { label: "TEZGAH", value: "tezgah" }
     ],
     description: "Derzsiz, modern ve dayanıklı yüzeylerle kesintisiz mekan deneyimi sunan mikro çimento çözümleri.",
+    cardLabel: "Seamless finishes / wet areas",
     longDescription: {
       title: "Kesintisiz Yüzeyler: Mikro Çimento",
       content: [
@@ -174,6 +292,7 @@ export const materyalKategorileri: MateryalKategori[] = [
       { label: "DİJİTAL SANAT", value: "dijital" }
     ],
     description: "Projelerimize özel olarak kurgulanan resim, heykel ve enstalasyon gibi sanatsal dokunuşlar.",
+    cardLabel: "Art pieces / site specific work",
     longDescription: {
       title: "Mekana Ruh Katan Sanatsal Dokunuşlar",
       content: [
@@ -202,6 +321,7 @@ export const materyalKategorileri: MateryalKategori[] = [
       { label: "KAYRAK TAŞI", value: "kayrak" }
     ],
     description: "Doğanın ham gücünü modern mimarlığa entegre eden, karakter sahibi tuğla ve doğal taş seçkilerimiz.",
+    cardLabel: "Stone / masonry collections",
     longDescription: {
       title: "Doğanın Ham Gücü: Tuğla ve Taş",
       content: [
