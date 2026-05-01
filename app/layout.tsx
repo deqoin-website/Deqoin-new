@@ -138,7 +138,7 @@ export default async function RootLayout({
             {!isAdminPath && <Header />}
             {isAdminPath && <Header />} {/* Keep header for admin if needed, or modify logic */}
             {children}
-            {!isAdminPath && pathname !== '/' && pathname !== '' && <Footer />}
+            {!isAdminPath && pathname !== '/' && pathname !== '' && pathname !== '/iletisim' && <Footer />}
           </>
         )}
       </body>
