@@ -4,6 +4,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import Footer from "@/components/Footer";
 import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel";
 import { DEFAULT_HOME_SERVICE_CARDS, normalizeHomeServiceCards } from "@/lib/home-services";
 
@@ -103,6 +104,8 @@ export default function FaaliyetAlanlarimiz() {
           </CarouselContent>
         </Carousel>
       </div>
+
+      <Footer />
     </main>
   );
 }
