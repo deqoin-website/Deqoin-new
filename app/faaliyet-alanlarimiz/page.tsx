@@ -48,8 +48,8 @@ export default function FaaliyetAlanlarimiz() {
   const heroHighlights = serviceCards.slice(0, 3);
 
   return (
-    <main className="w-full min-h-screen bg-zinc-950 flex flex-col relative overflow-x-hidden pt-0 pb-32">
-      <section className="relative w-full border-b border-white/8 bg-[#070707]">
+    <main className="faaliyet-snap-shell w-full min-h-screen bg-zinc-950 flex flex-col relative overflow-x-hidden pt-0 pb-0">
+      <section className="snap-section relative w-full border-b border-white/8 bg-[#070707] faaliyet-hero-snap">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(204,168,131,0.12),transparent_34%),radial-gradient(circle_at_80%_20%,rgba(255,255,255,0.07),transparent_26%)]" />
         <div className="relative mx-auto w-full max-w-[1600px] px-6 py-28 md:px-16 lg:py-36">
           <div className="flex flex-col gap-8">
@@ -91,9 +91,9 @@ export default function FaaliyetAlanlarimiz() {
         </div>
       </section>
 
-      <WorkflowSection className="mt-10 md:mt-16" title="İŞ AKIŞI" />
+      <WorkflowSection className="snap-section faaliyet-workflow-snap" title="İŞ AKIŞI" />
 
-      <div className="relative w-full max-w-full overflow-hidden px-0 mx-0 mt-6 md:mt-10">
+      <section className="snap-section faaliyet-cards-snap relative w-full max-w-full overflow-hidden px-0 mx-0">
         <Carousel opts={{ align: "start" }} className="w-full">
           <CarouselContent className="ml-0 w-full flex">
             {serviceCards.map((item) => (
@@ -138,9 +138,11 @@ export default function FaaliyetAlanlarimiz() {
             ))}
           </CarouselContent>
         </Carousel>
-      </div>
+      </section>
 
-      <Footer />
+      <div className="homepage-footer-snap faaliyet-footer-snap">
+        <Footer />
+      </div>
     </main>
   );
 }

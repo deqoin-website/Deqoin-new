@@ -133,6 +133,11 @@ video {
   width: 100%;
 }
 
+.faaliyet-snap-shell {
+  position: relative;
+  width: 100%;
+}
+
 @media (min-width: 1024px) {
   .homepage-snap-shell {
     height: 100vh;
@@ -165,6 +170,62 @@ video {
   .homepage-snap-shell > .snap-section,
   .homepage-snap-shell > .homepage-footer-snap {
     width: 100%;
+  }
+
+  .faaliyet-snap-shell {
+    height: 100vh;
+    height: 100svh;
+    overflow-y: auto;
+    scroll-snap-type: y mandatory;
+    scroll-behavior: smooth;
+    scroll-padding-top: 0;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .faaliyet-snap-shell::-webkit-scrollbar {
+    display: none;
+  }
+
+  .faaliyet-snap-shell > .snap-section,
+  .faaliyet-snap-shell > .faaliyet-footer-snap {
+    width: 100%;
+  }
+
+  .faaliyet-snap-shell .snap-section {
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+    height: 100vh !important;
+    height: 100svh !important;
+    width: 100% !important;
+    min-height: 100vh !important;
+    min-height: 100svh !important;
+    overflow: hidden;
+    box-sizing: border-box;
+  }
+
+  .faaliyet-snap-shell .faaliyet-footer-snap {
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+    min-height: 100svh;
+  }
+
+  .faaliyet-snap-shell .faaliyet-footer-snap .site-footer {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  .faaliyet-snap-shell .faaliyet-footer-snap .footer-top {
+    flex: 1;
+    display: flex;
+    align-items: center;
+  }
+
+  .faaliyet-snap-shell .faaliyet-footer-snap .footer-main {
+    align-items: center;
   }
 }
 
