@@ -1,146 +1,187 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import Link from 'next/link';
+import { useEffect, useMemo, useState } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { 
-  LayoutDashboard, 
-  Image as ImageIcon, 
-  Settings, 
-  FolderKanban, 
-  LogOut,
-  ChevronLeft,
-  Menu,
-  Briefcase,
-  Users,
-  MessageSquare,
+import { AnimatePresence, motion } from 'framer-motion';
+import {
   Aperture,
-  Workflow,
+  ArrowUpRight,
+  ChevronDown,
+  ChevronLeft,
   FileText,
+  FolderKanban,
+  Image as ImageIcon,
+  LayoutDashboard,
+  LogOut,
+  Menu,
+  MessageSquare,
+  PanelLeftClose,
+  PanelLeftOpen,
+  Settings,
+  ShieldCheck,
+  Users,
+  Workflow,
+  Briefcase,
 } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+
 import ThemeToggle from '@/components/ThemeToggle';
 import { AdminNotificationProvider } from '@/components/admin/AdminNotificationProvider';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Separator } from '@/components/ui/separator';
+
 import './admin.css';
 
+type SubItem = {
+  name: string;
+  path: string;
+};
+
+type MenuItem = {
+  name: string;
+  icon: typeof LayoutDashboard;
+  path: string;
+  hint?: string;
+  subItems?: SubItem[];
+};
+
+type MenuGroup = {
+  group: string;
+  description: string;
+  items: MenuItem[];
+};
+
+const menuGroups: MenuGroup[] = [
+  {
+    group: 'Özet',
+    description: 'Hızlı erişim ve operasyon',
+    items: [
+      { name: 'Dashboard', icon: LayoutDashboard, path: '/admin', hint: 'Genel sistem özeti' },
+      { name: 'Randevu & CRM', icon: MessageSquare, path: '/admin/crm', hint: 'Yeni talepler ve durumlar' },
+    ],
+  },
+  {
+    group: 'İçerik',
+    description: 'Sayfa ve medya yönetimi',
+    items: [
+      { name: 'Tüm Projeler', icon: FolderKanban, path: '/admin/projects', hint: 'Proje havuzu ve düzenleme' },
+      { name: 'Slider', icon: ImageIcon, path: '/admin/content/slider', hint: 'Ana vitrin sahneleri' },
+      { name: 'Ana Sayfa Medya', icon: ImageIcon, path: '/admin/content/home/gallery', hint: 'Hero ve galeri akışı' },
+      { name: 'Servis Kartları', icon: Aperture, path: '/admin/content/home/services', hint: 'Ana sayfa hizmet blokları' },
+      { name: 'Galeri', icon: FolderKanban, path: '/admin/content/gallery', hint: 'Galeri sayfası ve modal' },
+      { name: 'Journal', icon: FileText, path: '/admin/content/journal', hint: 'Editoryal içerikler' },
+      { name: 'Hakkımızda', icon: Briefcase, path: '/admin/content/corporate', hint: 'Kurumsal sayfalar' },
+      { name: 'Ekip', icon: Users, path: '/admin/team', hint: 'Yönetim kadrosu' },
+    ],
+  },
+  {
+    group: 'Akışlar',
+    description: 'Departman ve workflow',
+    items: [
+      {
+        name: 'Workflow',
+        icon: Workflow,
+        path: '/admin/content/workflow',
+        hint: 'Akış ve senaryo yönetimi',
+        subItems: [
+          { name: 'Keşif', path: '/admin/content/workflow?scope=page:kesif' },
+          { name: 'Mimari', path: '/admin/content/workflow?scope=page:mimari' },
+          { name: 'Materyal', path: '/admin/content/workflow?scope=page:material' },
+          { name: 'Uygulama', path: '/admin/content/workflow?scope=page:execution' },
+        ],
+      },
+      {
+        name: 'Mimari Stüdyo',
+        icon: Aperture,
+        path: '/admin/content/services/mimari',
+        hint: 'Mimarlık servis katmanı',
+        subItems: [
+          { name: 'Genel Ayarlar', path: '/admin/content/services/mimari' },
+          { name: 'Mimarlık', path: '/admin/studios/mimarlik' },
+          { name: 'İç Mimarlık', path: '/admin/studios/ic-mimarlik' },
+          { name: 'Restorasyon', path: '/admin/studios/restorasyon' },
+        ],
+      },
+      {
+        name: 'Materyal Stüdyo',
+        icon: Aperture,
+        path: '/admin/content/services/material',
+        hint: 'Materyal katalogları',
+        subItems: [
+          { name: 'Genel Ayarlar', path: '/admin/content/services/material' },
+          { name: 'Mobilya', path: '/admin/studios/mobilya' },
+          { name: 'Aydınlatma', path: '/admin/studios/aydinlatma' },
+          { name: 'İtalyan Sıvalar', path: '/admin/studios/italyan-sivalar' },
+        ],
+      },
+      {
+        name: 'Uygulama Birimi',
+        icon: Aperture,
+        path: '/admin/content/services/execution',
+        hint: 'Uygulama akışları',
+        subItems: [
+          { name: 'Genel Ayarlar', path: '/admin/content/services/execution' },
+          { name: 'İnşaat', path: '/admin/studios/insaat-ekipleri' },
+          { name: 'Boya', path: '/admin/studios/boya-ekipleri' },
+          { name: 'Duvar', path: '/admin/studios/duvar-sanatcilari' },
+        ],
+      },
+    ],
+  },
+  {
+    group: 'Sistem',
+    description: 'Kullanıcı ve ayar yönetimi',
+    items: [
+      { name: 'Kullanıcılar', icon: Users, path: '/admin/users', hint: 'Rol ve erişim yönetimi' },
+      { name: 'Ayarlar', icon: Settings, path: '/admin/settings', hint: 'SEO ve sistem ayarları' },
+    ],
+  },
+];
+
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+  const [isMobileOpen, setIsMobileOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   const [openSubmenus, setOpenSubmenus] = useState<string[]>([]);
+
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const router = useRouter();
 
-  const toggleSubmenu = (item: any) => {
-    if (!isSidebarOpen) setIsSidebarOpen(true);
-    setOpenSubmenus(prev => 
-      prev.includes(item.name) ? prev.filter(n => n !== item.name) : [...prev, item.name]
-    );
-  };
+  useEffect(() => {
+    const updateMode = () => setIsMobile(window.innerWidth < 1024);
+    updateMode();
+    window.addEventListener('resize', updateMode);
+    return () => window.removeEventListener('resize', updateMode);
+  }, []);
 
-  const menuGroups = [
-    {
-      group: 'OVERVIEW',
-      items: [
-        { name: 'Dashboard', icon: LayoutDashboard, path: '/admin' },
-        { name: 'Randevu & CRM', icon: MessageSquare, path: '/admin/crm' }
-      ]
-    },
-    {
-      group: 'DEPARTMANLAR & STÜDYO',
-      items: [
-        { name: 'Tüm Projeler (Havuz)', icon: FolderKanban, path: '/admin/projects' },
-        { 
-          name: 'Mimari Stüdyo', 
-          icon: Aperture, 
-          path: '/admin/studios-mimari', // Not a real router, just for active state
-          subItems: [
-            { name: 'Genel Sayfa Ayarları', path: '/admin/content/services/mimari' },
-            { name: 'Mimarlık', path: '/admin/studios/mimarlik' },
-            { name: 'İç Mimarlık', path: '/admin/studios/ic-mimarlik' },
-            { name: 'Restorasyon', path: '/admin/studios/restorasyon' },
-            { name: 'Peyzaj', path: '/admin/studios/peyzaj-mimarligi' },
-            { name: 'Mühendislik', path: '/admin/studios/insaat-muhendisligi' },
-            { name: 'Mekanik', path: '/admin/studios/elektrik-elektronik-muhendisligi' },
-          ]
-        },
-        { 
-          name: 'Materyal Stüdyo', 
-          icon: Aperture, 
-          path: '/admin/studios-materyal',
-          subItems: [
-            { name: 'Genel Sayfa Ayarları', path: '/admin/content/services/material' },
-            { name: 'Mobilya', path: '/admin/studios/mobilya' },
-            { name: 'Aydınlatma', path: '/admin/studios/aydinlatma' },
-            { name: 'İtalyan Sıvalar', path: '/admin/studios/italyan-sivalar' },
-            { name: 'Sanatsal Çalışmalar', path: '/admin/studios/sanatsal-calismalar' },
-            { name: 'Tuğla ve Taş', path: '/admin/studios/tugla-ve-tas' },
-          ]
-        },
-        { 
-          name: 'Uygulama Birimi', 
-          icon: Aperture, 
-          path: '/admin/studios-uygulama',
-          subItems: [
-            { name: 'Genel Sayfa Ayarları', path: '/admin/content/services/execution' },
-            { name: 'İnşaat', path: '/admin/studios/insaat-ekipleri' },
-            { name: 'Sıva & Alçı', path: '/admin/studios/siva-ve-alci-ekipleri' },
-            { name: 'Boya', path: '/admin/studios/boya-ekipleri' },
-            { name: 'Duvar', path: '/admin/studios/duvar-sanatcilari' },
-            { name: 'Resim', path: '/admin/studios/ressamlar' },
-            { name: 'Heykel', path: '/admin/studios/heykeltiraslar' },
-          ]
-        },
-      ]
-    },
-    {
-      group: 'SAYFA YÖNETİMİ',
-      items: [
-        { name: 'Sinematik Medya & Slider', icon: ImageIcon, path: '/admin/content/slider' },
-        { name: 'Ana Sayfa Slider Hero', icon: ImageIcon, path: '/admin/content/home/gallery' },
-        { name: 'Galeri Sayfası & Modal', icon: FolderKanban, path: '/admin/content/gallery' },
-        { name: 'Hizmet Kartları (Ana Sayfa)', icon: Aperture, path: '/admin/content/home/services' },
-        { name: 'Journal İçerikleri', icon: FileText, path: '/admin/content/journal' },
-        { name: 'Hakkımızda', icon: Briefcase, path: '/admin/content/corporate' },
-        { name: 'Ekip Üyeleri', icon: Users, path: '/admin/team' },
-      ]
-    },
-    {
-      group: 'İŞ AKIŞLARI',
-      items: [
-        {
-          name: 'Workflow Yönetimi',
-          icon: Workflow,
-          path: '/admin/content/workflow',
-          subItems: [
-            { name: 'Keşif Genel Akış', path: '/admin/content/workflow?scope=page:kesif' },
-            { name: 'Mimari Genel Akış', path: '/admin/content/workflow?scope=page:mimari' },
-            { name: 'Materyal Genel Akış', path: '/admin/content/workflow?scope=page:material' },
-            { name: 'Uygulama Genel Akış', path: '/admin/content/workflow?scope=page:execution' },
-          ],
-        },
-      ],
-    },
-    {
-      group: 'SİSTEM',
-      items: [
-        { name: 'Kullanıcı Yönetimi', icon: Users, path: '/admin/users' },
-        { name: 'Genel Ayarlar', icon: Settings, path: '/admin/settings' },
-      ]
+  useEffect(() => {
+    if (isMobile) {
+      setIsSidebarCollapsed(false);
+    } else {
+      setIsMobileOpen(false);
     }
-  ];
-
-  const allItems = menuGroups.flatMap(g => g.items);
-  const allSubItems = allItems.flatMap(i => i.subItems || []);
-  const currentPath = searchParams.toString() ? `${pathname}?${searchParams.toString()}` : pathname;
-  const currentPathItem = allItems.find(item => item.path === currentPath || item.path === pathname) || allSubItems.find(s => s.path === currentPath || s.path === pathname);
+  }, [isMobile]);
 
   useEffect(() => {
     if (pathname.startsWith('/admin/content/workflow')) {
-      setOpenSubmenus((prev) => (prev.includes('Workflow Yönetimi') ? prev : [...prev, 'Workflow Yönetimi']));
+      setOpenSubmenus((current) => (current.includes('Workflow') ? current : [...current, 'Workflow']));
     }
   }, [pathname]);
+
+  const currentPath = searchParams.toString() ? `${pathname}?${searchParams.toString()}` : pathname;
+
+  const flatItems = useMemo(() => menuGroups.flatMap((group) => group.items), []);
+  const allSubItems = useMemo(() => flatItems.flatMap((item) => item.subItems || []), [flatItems]);
+  const activeItem =
+    flatItems.find((item) => item.path === pathname || item.path === currentPath) ||
+    allSubItems.find((item) => item.path === pathname || item.path === currentPath);
+
+  const activeGroup = menuGroups.find((group) =>
+    group.items.some((item) => item.path === pathname || item.path === currentPath || item.subItems?.some((sub) => sub.path === pathname || sub.path === currentPath)),
+  );
 
   const handleLogout = async () => {
     try {
@@ -148,8 +189,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       if (res.ok) {
         router.push('/admin/login');
       }
-    } catch (err) {
-      console.error("Logout error:", err);
+    } catch (error) {
+      console.error('Logout error:', error);
       router.push('/admin/login');
     }
   };
@@ -160,155 +201,233 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   return (
     <AdminNotificationProvider>
-      <div className="admin-layout">
-        {/* SIDEBAR */}
-        <aside className={`admin-sidebar ${isSidebarOpen ? 'open' : 'closed'} ${isMobileMenuOpen ? 'mobile-show' : ''}`}>
-          <div className="sidebar-header">
-            <div className="admin-logo">
-              <Image src="/images/logo-new.jpeg" alt="DEQOIN" width={36} height={36} />
-              {isSidebarOpen && <motion.span initial={{ opacity: 0 }} animate={{ opacity: 1 }}>STUDIO ADMIN</motion.span>}
-            </div>
-            <button onClick={() => {
-              if (window.innerWidth <= 900) {
-                  setIsMobileMenuOpen(false);
-              } else {
-                  setIsSidebarOpen(!isSidebarOpen);
-              }
-            }} className="sidebar-toggle">
-              {isSidebarOpen ? <ChevronLeft size={20} /> : <Menu size={20} />}
-            </button>
-          </div>
-
-          <nav className="sidebar-nav">
-            {menuGroups.map((group) => (
-              <div key={group.group} className="sidebar-group">
-                {(isSidebarOpen || window.innerWidth <= 900) && <span className="group-label">{group.group}</span>}
-                <div className="group-items">
-                  {group.items.map((item) => {
-                    const hasSubItems = item.subItems && item.subItems.length > 0;
-                    const isOpen = openSubmenus.includes(item.name);
-                    const isActive = pathname === item.path || item.subItems?.some(s => s.path === pathname);
-
-                    return (
-                      <div key={item.name} className="nav-wrapper">
-                        {hasSubItems ? (
-                          <div 
-                            className={`nav-item ${isActive ? 'active' : ''}`}
-                            onClick={() => toggleSubmenu(item)}
-                            style={{ cursor: 'pointer' }}
-                          >
-                            <item.icon size={20} className="nav-icon" />
-                            {(isSidebarOpen || window.innerWidth <= 900) && (
-                              <>
-                                <span>{item.name}</span>
-                                <ChevronLeft 
-                                  size={14} 
-                                  style={{ 
-                                    marginLeft: 'auto', 
-                                    transform: isOpen ? 'rotate(-90deg)' : 'none',
-                                    transition: 'transform 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
-                                    opacity: 0.5
-                                  }} 
-                                />
-                              </>
-                            )}
-                          </div>
-                        ) : (
-                          <Link 
-                            href={item.path}
-                            className={`nav-item ${pathname === item.path ? 'active' : ''}`}
-                            onClick={() => {
-                              if (window.innerWidth <= 900) setIsMobileMenuOpen(false);
-                            }}
-                          >
-                            <item.icon size={20} className="nav-icon" />
-                            {(isSidebarOpen || window.innerWidth <= 900) && <span>{item.name}</span>}
-                            {pathname === item.path && (isSidebarOpen || window.innerWidth <= 900) && <motion.div layoutId="nav-active" className="nav-active-indicator" />}
-                          </Link>
-                        )}
-
-                        {/* SUB ITEMS */}
-                        <AnimatePresence>
-                          {hasSubItems && isOpen && (isSidebarOpen || window.innerWidth <= 900) && (
-                            <motion.div 
-                              initial={{ height: 0, opacity: 0 }}
-                              animate={{ height: 'auto', opacity: 1 }}
-                              exit={{ height: 0, opacity: 0 }}
-                              className="sub-items-container"
-                            >
-                              {item.subItems?.map(sub => (
-                                <Link 
-                                  key={sub.path} 
-                                  href={sub.path}
-                                  className={`sub-nav-item ${pathname === sub.path ? 'active' : ''}`}
-                                  onClick={() => {
-                                    if (window.innerWidth <= 900) setIsMobileMenuOpen(false);
-                                  }}
-                                >
-                                  {sub.name}
-                                </Link>
-                              ))}
-                            </motion.div>
-                          )}
-                        </AnimatePresence>
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-            ))}
-          </nav>
-
-          <div className="sidebar-footer">
-            <button onClick={handleLogout} className="nav-item logout-btn">
-              <LogOut size={20} className="nav-icon" />
-              {(isSidebarOpen || window.innerWidth <= 900) && <span>Sistemi Kapat</span>}
-            </button>
-          </div>
-        </aside>
-
-        {/* OVERLAY FOR MOBILE */}
+      <div className="admin-shell">
         <AnimatePresence>
-          {isMobileMenuOpen && (
-            <motion.div 
+          {isMobile && isMobileOpen && (
+            <motion.button
+              type="button"
+              className="admin-overlay"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              onClick={() => setIsMobileMenuOpen(false)}
-              className="mobile-sidebar-overlay"
+              onClick={() => setIsMobileOpen(false)}
+              aria-label="Menüyü kapat"
             />
           )}
         </AnimatePresence>
 
-        {/* MAIN CONTENT */}
+        <aside
+          className={`admin-sidebar ${isSidebarCollapsed && !isMobile ? 'is-collapsed' : ''} ${isMobile && isMobileOpen ? 'is-mobile-open' : ''}`}
+        >
+          <div className="admin-sidebar__header">
+            <Link href="/admin" className="admin-brand" onClick={() => setIsMobileOpen(false)}>
+              <Image src="/images/logo-new.jpeg" alt="DEQOIN" width={40} height={40} className="admin-brand__logo" />
+              <span className="admin-brand__copy">
+                <strong>DEQOIN</strong>
+                <small>Studio Admin</small>
+              </span>
+            </Link>
+
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              className="admin-sidebar__toggle"
+              onClick={() => {
+                if (isMobile) {
+                  setIsMobileOpen(false);
+                } else {
+                  setIsSidebarCollapsed((current) => !current);
+                }
+              }}
+              aria-label={isMobile ? 'Menüyü kapat' : 'Menüyü daralt'}
+            >
+              {isMobile ? <ChevronLeft className="h-4 w-4" /> : isSidebarCollapsed ? <PanelLeftOpen className="h-4 w-4" /> : <PanelLeftClose className="h-4 w-4" />}
+            </Button>
+          </div>
+
+          <div className="admin-sidebar__meta">
+            <Badge variant="secondary" className="admin-sidebar__badge">
+              <ShieldCheck className="mr-2 h-3 w-3" />
+              CANLI PANEL
+            </Badge>
+            <div className="admin-sidebar__meta-copy">
+              <p>{activeGroup?.group || 'Özet'}</p>
+              <span>{activeItem?.hint || 'Hızlı erişim ve kontrol'}</span>
+            </div>
+          </div>
+
+          <nav className="admin-nav">
+            {menuGroups.map((group) => {
+              const groupOpen = openSubmenus.includes(group.group);
+              return (
+                <section key={group.group} className="admin-nav__group">
+                  <button
+                    type="button"
+                    className="admin-nav__group-header"
+                    onClick={() => {
+                      if (group.items.some((item) => item.subItems?.length)) {
+                        setOpenSubmenus((current) =>
+                          current.includes(group.group)
+                            ? current.filter((item) => item !== group.group)
+                            : [...current, group.group],
+                        );
+                      }
+                    }}
+                  >
+                    <span className="admin-nav__group-copy">
+                      <strong>{group.group}</strong>
+                      <small>{group.description}</small>
+                    </span>
+                    <ChevronDown className={`h-4 w-4 transition-transform ${groupOpen ? 'rotate-180' : ''}`} />
+                  </button>
+
+                  <div className="admin-nav__items">
+                    {group.items.map((item) => {
+                      const hasSubItems = Boolean(item.subItems?.length);
+                      const isOpen = openSubmenus.includes(item.name);
+                      const isActive =
+                        pathname === item.path ||
+                        currentPath === item.path ||
+                        item.subItems?.some((sub) => sub.path === pathname || sub.path === currentPath);
+
+                      return (
+                        <div key={item.name} className="admin-nav__item-wrap">
+                          {hasSubItems ? (
+                            <button
+                              type="button"
+                              className={`admin-nav__item ${isActive ? 'is-active' : ''}`}
+                              onClick={() => {
+                                if (isMobile) {
+                                  setIsMobileOpen(true);
+                                } else {
+                                  setIsSidebarCollapsed(false);
+                                }
+
+                                setOpenSubmenus((current) =>
+                                  current.includes(item.name)
+                                    ? current.filter((entry) => entry !== item.name)
+                                    : [...current, item.name],
+                                );
+                              }}
+                            >
+                              <item.icon className="admin-nav__icon" />
+                              {!isSidebarCollapsed && <span className="admin-nav__label">{item.name}</span>}
+                              {!isSidebarCollapsed && <ChevronDown className={`admin-nav__chevron ${isOpen ? 'is-open' : ''}`} />}
+                            </button>
+                          ) : (
+                            <Link
+                              href={item.path}
+                              className={`admin-nav__item ${isActive ? 'is-active' : ''}`}
+                              onClick={() => setIsMobileOpen(false)}
+                            >
+                              <item.icon className="admin-nav__icon" />
+                              {!isSidebarCollapsed && <span className="admin-nav__label">{item.name}</span>}
+                              {!isSidebarCollapsed && isActive && <ArrowUpRight className="admin-nav__chevron" />}
+                            </Link>
+                          )}
+
+                          <AnimatePresence>
+                            {hasSubItems && isOpen && !isSidebarCollapsed && (
+                              <motion.div
+                                initial={{ height: 0, opacity: 0 }}
+                                animate={{ height: 'auto', opacity: 1 }}
+                                exit={{ height: 0, opacity: 0 }}
+                                className="admin-nav__subitems"
+                              >
+                                {item.subItems?.map((sub) => (
+                                  <Link
+                                    key={sub.path}
+                                    href={sub.path}
+                                    className={`admin-nav__subitem ${pathname === sub.path || currentPath === sub.path ? 'is-active' : ''}`}
+                                    onClick={() => setIsMobileOpen(false)}
+                                  >
+                                    {sub.name}
+                                  </Link>
+                                ))}
+                              </motion.div>
+                            )}
+                          </AnimatePresence>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </section>
+              );
+            })}
+          </nav>
+
+          <div className="admin-sidebar__footer">
+            <div className="admin-sidebar__footer-copy">
+              <span>Sistem yöneticisi</span>
+              <small>{activeItem?.name || 'Dashboard'}</small>
+            </div>
+            <Button
+              type="button"
+              variant="outline"
+              className="admin-sidebar__logout"
+              onClick={handleLogout}
+            >
+              <LogOut className="mr-2 h-4 w-4" />
+              {!isSidebarCollapsed && 'Sistemi Kapat'}
+            </Button>
+          </div>
+        </aside>
+
         <main className="admin-main">
-          <header className="admin-top-bar">
-            <div className="top-bar-left">
-              <button className="mobile-menu-toggle" onClick={() => setIsMobileMenuOpen(true)}>
-                <Menu size={24} />
-              </button>
-              <div className="page-info">
-                <span className="page-breadcrumb">Yönetim Paneli / {currentPathItem?.name || 'Dashboard'}</span>
-                <h1>{currentPathItem?.name || 'Dashboard'}</h1>
+          <header className="admin-topbar">
+            <div className="admin-topbar__left">
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                className="admin-mobile-trigger"
+                onClick={() => setIsMobileOpen(true)}
+                aria-label="Menüyü aç"
+              >
+                <Menu className="h-5 w-5" />
+              </Button>
+
+              <div className="admin-page-meta">
+                <div className="admin-page-meta__breadcrumb">
+                  <span>Yönetim Paneli</span>
+                  <Separator orientation="vertical" className="hidden h-4 w-px sm:block" />
+                  <span>{activeGroup?.group || 'Özet'}</span>
+                </div>
+                <h1>{activeItem?.name || 'Dashboard'}</h1>
+                <p>{activeItem?.hint || 'Kritik veriler, içerik ve sistem ayarları'}</p>
               </div>
             </div>
-            <div className="top-bar-actions">
+
+            <div className="admin-topbar__actions">
+              <Badge variant="outline" className="admin-topbar__badge">
+                <ShieldCheck className="mr-2 h-3 w-3" />
+                LIVE
+              </Badge>
+
+              <Button
+                asChild
+                variant="outline"
+                className="admin-topbar__action-link"
+              >
+                <Link href="/admin/crm">
+                  <MessageSquare className="mr-2 h-4 w-4" />
+                  CRM
+                </Link>
+              </Button>
+
               <ThemeToggle />
-              <div className="user-profile">
-                <span className="user-name-desktop">SİSTEM YÖNETİCİSİ</span>
-                <div className="avatar">DQ</div>
-              </div>
             </div>
           </header>
-          
-          <div className="admin-content-inner">
+
+          <div className="admin-content">
             <AnimatePresence mode="wait">
               <motion.div
-                key={pathname}
+                key={currentPath}
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+                exit={{ opacity: 0, y: -8 }}
+                transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
               >
                 {children}
               </motion.div>

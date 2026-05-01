@@ -56,6 +56,10 @@ type ProjectDraft = {
   gallery: string[];
 };
 
+type ProjectSource = ProjectDetail & {
+  _id?: string;
+};
+
 type GalleryPageContent = {
   page?: string;
   sections?: Array<{
@@ -131,7 +135,7 @@ function normalizePageContent(payload: GalleryPageContent | null): PageForm {
   };
 }
 
-function draftFromProject(project: ProjectDetail): ProjectDraft {
+function draftFromProject(project: ProjectSource): ProjectDraft {
   return {
     _id: (project as any)._id,
     title: project.title || '',
@@ -153,7 +157,7 @@ export default function GalleryContentAdminPage() {
   const { showToast } = useNotification();
   const [pageForm, setPageForm] = useState<PageForm>(DEFAULT_FORM);
   const [initialPageForm, setInitialPageForm] = useState<PageForm>(DEFAULT_FORM);
-  const [projects, setProjects] = useState<ProjectDetail[]>([]);
+  const [projects, setProjects] = useState<ProjectSource[]>([]);
   const [selectedSlug, setSelectedSlug] = useState<string>('');
   const [draft, setDraft] = useState<ProjectDraft | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -194,7 +198,7 @@ export default function GalleryContentAdminPage() {
       setPageStatus(pageRes.ok ? 'ok' : 'error');
 
       const normalizedProjects = Array.isArray(projectData)
-        ? projectData.map((item: any) => normalizeGalleryProject(item))
+        ? projectData.map((item: any) => ({ ...normalizeGalleryProject(item), _id: item?._id }))
         : [];
 
       const projectList = normalizedProjects.length > 0 ? normalizedProjects : projectsData.map((item) => normalizeGalleryProject(item));
