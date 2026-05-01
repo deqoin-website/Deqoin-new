@@ -558,27 +558,8 @@ body.faaliyet-alanlarimiz-page .topbar-links a {
   color: #fff !important;
 }
 
-[data-theme='light'] .mobile-menu-overlay {
-  background: rgba(250, 246, 240, 0.96);
-}
-
-[data-theme='light'] .mobile-menu-header .close-button,
-[data-theme='light'] .mobile-menu-header .close-button span,
-[data-theme='light'] .search-overlay-header .close-button,
-[data-theme='light'] .search-overlay-header .close-button span,
-[data-theme='light'] .mobile-menu-nav a,
-[data-theme='light'] .mobile-menu-nav button {
-  color: var(--text) !important;
-  -webkit-text-fill-color: var(--text) !important;
-  text-shadow: none;
-}
-
-[data-theme='light'] .mobile-menu-nav a:visited {
-  color: var(--text) !important;
-}
-
 [data-theme='light'] .mobile-menu-footer {
-  color: rgba(18, 18, 18, 0.62);
+  color: rgba(255, 255, 255, 0.65);
 }
 
 .topbar-brand {
@@ -656,7 +637,7 @@ body.faaliyet-alanlarimiz-page .topbar-links a {
   position: fixed;
   inset: 0;
   z-index: 2000;
-  background: rgba(5, 5, 5, 0.98);
+  background: rgba(5, 5, 5, 0.98) !important;
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   display: flex;
@@ -698,6 +679,7 @@ body.faaliyet-alanlarimiz-page .topbar-links a {
 .search-overlay-header .close-button,
 .search-overlay-header .close-button span {
   color: #fff !important;
+  -webkit-text-fill-color: #fff !important;
 }
 
 .mobile-menu-nav {
@@ -725,6 +707,9 @@ body.faaliyet-alanlarimiz-page .topbar-links a {
   cursor: pointer;
   outline: none;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+  font-size: clamp(2.1rem, 6vw, 4.1rem) !important;
+  letter-spacing: 0.28em;
+  line-height: 1;
 }
 
 .mobile-menu-overlay.open .mobile-menu-nav a,
@@ -741,6 +726,16 @@ body.faaliyet-alanlarimiz-page .topbar-links a {
 
 .mobile-menu-nav a:visited {
   color: #fff !important;
+}
+
+.mobile-menu-header .close-button {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.mobile-menu-header .close-button:hover {
+  color: #fff !important;
+  background: rgba(255, 255, 255, 0.08);
 }
 
 .mobile-menu-footer {
