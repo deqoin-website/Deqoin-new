@@ -5,6 +5,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import Footer from "@/components/Footer";
+import WorkflowSection from "@/components/WorkflowSection";
 import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel";
 import { DEFAULT_HOME_SERVICE_CARDS, normalizeHomeServiceCards } from "@/lib/home-services";
 
@@ -137,6 +138,7 @@ export default function FaaliyetAlanlarimiz() {
         </Carousel>
       </div>
 
+      <WorkflowSection className="mt-10 md:mt-16" title="İŞ AKIŞI" />
       <Footer />
     </main>
   );
