@@ -61,7 +61,7 @@ export default function FaaliyetAlanlarimiz() {
                 className="text-[clamp(4.5rem,10vw,9.75rem)] font-thin uppercase leading-[0.84] tracking-[0.14em] text-white"
                 style={{ fontFamily: "Smooch Sans, sans-serif" }}
               >
-                Faaliyet Alanlarımız
+                DESIGN & COLLECTION
               </h1>
               <p className="max-w-2xl text-sm leading-7 tracking-[0.18em] text-white/70 md:text-base">
                 Mimari tasarım, materyal geliştirme ve uygulama disiplinlerini tek çatı altında toplayan
