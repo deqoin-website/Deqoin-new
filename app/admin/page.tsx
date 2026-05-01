@@ -689,10 +689,10 @@ export default function AdminDashboard() {
                 <div className="flex items-start justify-between gap-4">
                   <div>
                     <p className="text-[0.62rem] uppercase tracking-[0.32em] text-zinc-400">
-                      Sistem Durumu
+                      Aktif API Bağlantıları
                     </p>
                     <p className="mt-2 text-lg font-semibold text-white">
-                      {data.settings.maintenanceMode ? 'Bakım modu açık' : 'Yayın açık'}
+                      {successCount}/{totalSources}
                     </p>
                   </div>
                   <div className="rounded-2xl bg-emerald-400/10 p-3 text-emerald-300">
@@ -701,7 +701,7 @@ export default function AdminDashboard() {
                 </div>
                 <Separator className="my-4 bg-white/10" />
                 <p className="text-sm leading-6 text-zinc-300">
-                  {data.settings.studioName || 'Sistem ayarları yükleniyor'}
+                  Paneli besleyen endpoint’lerin canlı durumunu gösterir.
                 </p>
               </div>
 

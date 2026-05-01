@@ -20,7 +20,6 @@ import {
   PanelLeftClose,
   PanelLeftOpen,
   Settings,
-  ShieldCheck,
   Users,
   Workflow,
   Briefcase,
@@ -28,7 +27,6 @@ import {
 
 import ThemeToggle from '@/components/ThemeToggle';
 import { AdminNotificationProvider } from '@/components/admin/AdminNotificationProvider';
-import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 
@@ -247,10 +245,6 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           </div>
 
           <div className="admin-sidebar__meta">
-            <Badge variant="secondary" className="admin-sidebar__badge">
-              <ShieldCheck className="mr-2 h-3 w-3" />
-              CANLI PANEL
-            </Badge>
             <div className="admin-sidebar__meta-copy">
               <p>{activeGroup?.group || 'Özet'}</p>
               <span>{activeItem?.hint || 'Hızlı erişim ve kontrol'}</span>
@@ -400,11 +394,6 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             </div>
 
             <div className="admin-topbar__actions">
-              <Badge variant="outline" className="admin-topbar__badge">
-                <ShieldCheck className="mr-2 h-3 w-3" />
-                LIVE
-              </Badge>
-
               <Button
                 asChild
                 variant="outline"
