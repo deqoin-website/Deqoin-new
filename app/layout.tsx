@@ -123,6 +123,7 @@ export default async function RootLayout({
         )}
       </head>
       <body
+        className={pathname.startsWith('/faaliyet-alanlarimiz') ? 'faaliyet-alanlarimiz-page' : ''}
         suppressHydrationWarning
       >
         <InteractiveBackground />
