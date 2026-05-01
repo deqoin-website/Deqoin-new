@@ -44,21 +44,81 @@ export default function FaaliyetAlanlarimiz() {
     };
   }, []);
 
-  return (
-    <main className="w-full min-h-screen bg-zinc-950 flex flex-col relative overflow-x-hidden pt-32 pb-32">
-      <div className="w-full max-w-[1600px] mx-auto px-6 md:px-16 flex flex-col items-center justify-center gap-2 mb-12 shrink-0 z-10">
-        <h1
-          className="text-5xl md:text-7xl lg:text-8xl font-thin text-white uppercase tracking-[0.2em] text-center leading-none"
-          style={{ fontFamily: "Smooch Sans, sans-serif" }}
-        >
-          DESIGN & COLLECTION
-        </h1>
-        <p className="text-xs md:text-sm tracking-[0.4em] text-zinc-400 uppercase text-center mt-4">
-          STUDIO SELECTION
-        </p>
-      </div>
+  const featuredCard = serviceCards[0] ?? DEFAULT_HOME_SERVICE_CARDS[0];
+  const heroHighlights = serviceCards.slice(0, 3);
 
-      <div className="w-full max-w-full px-0 mx-0 overflow-hidden relative">
+  return (
+    <main className="w-full min-h-screen bg-zinc-950 flex flex-col relative overflow-x-hidden pt-0 pb-32">
+      <section className="relative w-full border-b border-white/8 bg-[#070707]">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(204,168,131,0.12),transparent_34%),radial-gradient(circle_at_80%_20%,rgba(255,255,255,0.07),transparent_26%)]" />
+        <div className="relative mx-auto grid w-full max-w-[1600px] gap-10 px-6 py-28 md:px-16 lg:grid-cols-[1.1fr_0.9fr] lg:items-end lg:py-36">
+          <div className="flex flex-col gap-8">
+            <div className="space-y-5 max-w-4xl">
+              <p className="text-[0.62rem] uppercase tracking-[0.55em] text-white/45">
+                DESIGN & COLLECTION / STUDIO SELECTION
+              </p>
+              <h1
+                className="text-[clamp(4.5rem,10vw,9.75rem)] font-thin uppercase leading-[0.84] tracking-[0.14em] text-white"
+                style={{ fontFamily: "Smooch Sans, sans-serif" }}
+              >
+                Faaliyet Alanlarımız
+              </h1>
+              <p className="max-w-2xl text-sm leading-7 tracking-[0.18em] text-white/70 md:text-base">
+                Mimari tasarım, materyal geliştirme ve uygulama disiplinlerini tek çatı altında toplayan
+                seçkin çalışma alanlarımızı keşfedin.
+              </p>
+            </div>
+
+            <div className="grid gap-3 sm:grid-cols-3">
+              {heroHighlights.map((item) => (
+                <div
+                  key={`hero-${item.studioType}`}
+                  className="border border-white/10 bg-white/[0.03] px-4 py-4 backdrop-blur-sm"
+                >
+                  <p
+                    className="text-[0.58rem] uppercase tracking-[0.45em] text-white/45"
+                    style={{ fontFamily: "Smooch Sans, sans-serif" }}
+                  >
+                    {item.studioType}
+                  </p>
+                  <p className="mt-3 text-sm uppercase tracking-[0.28em] text-white">
+                    {item.title}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="relative min-h-[38rem] overflow-hidden border border-white/10 bg-zinc-900/80 shadow-[0_40px_120px_rgba(0,0,0,0.45)]">
+            <img
+              src={featuredCard.image}
+              className="absolute inset-0 h-full w-full object-cover object-center"
+              alt={featuredCard.title}
+              style={{ filter: `blur(${featuredCard.blur || 0}px)` }}
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/30 to-transparent" />
+            <div className="absolute inset-x-0 bottom-0 p-6 md:p-10">
+              <p
+                className="text-[0.58rem] uppercase tracking-[0.45em] text-white/55"
+                style={{ fontFamily: "Smooch Sans, sans-serif" }}
+              >
+                FEATURED STUDIO
+              </p>
+              <h2
+                className="mt-4 text-4xl md:text-5xl lg:text-6xl font-thin uppercase tracking-[0.1em] text-white leading-none"
+                style={{ fontFamily: "Smooch Sans, sans-serif" }}
+              >
+                {featuredCard.title}
+              </h2>
+              <p className="mt-4 max-w-md text-xs md:text-sm uppercase tracking-[0.3em] text-white/75">
+                {featuredCard.subTitle}
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div className="relative w-full max-w-full overflow-hidden px-0 mx-0 mt-6 md:mt-10">
         <Carousel opts={{ align: "start" }} className="w-full">
           <CarouselContent className="ml-0 w-full flex">
             {serviceCards.map((item) => (
