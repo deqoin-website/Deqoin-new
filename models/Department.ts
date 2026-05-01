@@ -11,6 +11,14 @@ const DepartmentSchema = new mongoose.Schema(
     heroBlur: { type: Number, default: 0 },
     heroOverlay: { type: Number, default: 30 },
     sliderImages: [{ type: String }],
+    cardLabel: { type: String },
+    brand: { type: String },
+    model: { type: String },
+    series: { type: String },
+    finish: { type: String },
+    usage: { type: String },
+    priceLabel: { type: String },
+    highlight: { type: String },
     
     // Arrays for dynamic tabs
     process: [
@@ -37,6 +45,12 @@ const DepartmentSchema = new mongoose.Schema(
         title: { type: String },
         image: { type: String },
         category: { type: String },
+        brand: { type: String },
+        model: { type: String },
+        collectionName: { type: String },
+        finish: { type: String },
+        usage: { type: String },
+        priceLabel: { type: String },
         desc: { type: String },
         price: { type: String },
         link: { type: String }

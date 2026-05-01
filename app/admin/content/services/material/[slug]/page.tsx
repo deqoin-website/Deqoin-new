@@ -36,7 +36,22 @@ import { Textarea } from '@/components/ui/textarea';
 import { SLIDER_IMAGE_URLS } from '@/lib/slider-images';
 import { materyalKategorileri } from '../../../../../../data/materyal-studyo';
 
-type TabKey = 'genel' | 'hero' | 'surec' | 'odak' | 'kategoriler';
+type TabKey = 'genel' | 'hero' | 'surec' | 'odak' | 'urunler';
+
+type ProductItem = {
+  title: string;
+  image: string;
+  category: string;
+  brand: string;
+  model: string;
+  collection: string;
+  finish: string;
+  usage: string;
+  priceLabel: string;
+  desc: string;
+  link: string;
+  highlights: string[];
+};
 
 type DepartmentState = {
   slug: string;
@@ -51,6 +66,15 @@ type DepartmentState = {
   process: { title: string; desc: string }[];
   focusAreas: { title: string; icon: string; desc: string }[];
   categories: { label: string; value: string }[];
+  cardLabel: string;
+  brand: string;
+  model: string;
+  series: string;
+  finish: string;
+  usage: string;
+  priceLabel: string;
+  highlight: string;
+  products: ProductItem[];
 };
 
 type ProbeStatus = 'idle' | 'loading' | 'ok' | 'error';
@@ -60,13 +84,27 @@ const TAB_ITEMS: Array<{ key: TabKey; label: string; description: string; icon: 
   { key: 'hero', label: 'Hero', description: 'Slider ve katman ayarları', icon: ImageIcon },
   { key: 'surec', label: 'Süreç', description: 'Malzeme hikayesi ve adımlar', icon: Wrench },
   { key: 'odak', label: 'Odak', description: 'Öne çıkan materyal özellikleri', icon: Target },
-  { key: 'kategoriler', label: 'Kategoriler', description: 'Etiket ve filtre setleri', icon: FolderKanban },
+  { key: 'urunler', label: 'Ürünler', description: 'Marka, model ve ürün kartları', icon: FolderKanban },
 ];
 
 const cloneDepartment = (value: DepartmentState) => JSON.parse(JSON.stringify(value)) as DepartmentState;
 
 const makeSeed = (slug: string): DepartmentState => {
   const matched = materyalKategorileri.find((item) => item.slug === slug);
+  const productSeed = matched?.products?.map((item, index) => ({
+    title: item.brand || item.model || `${matched?.title || slug} ${index + 1}`,
+    image: item.image,
+    category: item.category,
+    brand: item.brand,
+    model: item.model,
+    collection: item.collectionName || item.collection || '',
+    finish: item.finish || '',
+    usage: item.usage || '',
+    priceLabel: item.priceLabel || '',
+    desc: item.description,
+    link: item.link || '',
+    highlights: item.highlights || [],
+  })) || [];
 
   return {
     slug,
@@ -86,6 +124,28 @@ const makeSeed = (slug: string): DepartmentState => {
     categories: matched?.categories?.length
       ? matched.categories.map((item) => ({ label: item.label, value: item.value }))
       : [{ label: 'TÜM PROJELER', value: 'ALL' }],
+    cardLabel: matched?.cardLabel || 'Product collection',
+    brand: matched?.brand || 'DEQOIN Atelier',
+    model: matched?.model || slug.toUpperCase(),
+    series: matched?.series || matched?.highlight || '',
+    finish: matched?.finish || '',
+    usage: matched?.usage || '',
+    priceLabel: matched?.priceLabel || 'Proje bazlı teklif',
+    highlight: matched?.highlight || '',
+    products: productSeed.length > 0 ? productSeed : [{
+      title: matched?.title || slug,
+      image: matched?.image || SLIDER_IMAGE_URLS.material,
+      category: matched?.sideLabel || 'Koleksiyon',
+      brand: matched?.brand || 'DEQOIN Atelier',
+      model: matched?.model || slug.toUpperCase(),
+      collection: matched?.series || '',
+      finish: matched?.finish || '',
+      usage: matched?.usage || '',
+      priceLabel: matched?.priceLabel || 'Proje bazlı teklif',
+      desc: matched?.description || '',
+      link: '',
+      highlights: matched?.highlight ? [matched.highlight] : [],
+    }],
   };
 };
 
@@ -110,6 +170,30 @@ const normalizeDepartment = (value: any, slug: string): DepartmentState => {
     categories: Array.isArray(value?.categories) && value.categories.length > 0
       ? value.categories.map((item: any) => ({ label: item?.label || '', value: item?.value || '' }))
       : seed.categories,
+    cardLabel: value?.cardLabel || seed.cardLabel,
+    brand: value?.brand || seed.brand,
+    model: value?.model || seed.model,
+    series: value?.series || seed.series,
+    finish: value?.finish || seed.finish,
+    usage: value?.usage || seed.usage,
+    priceLabel: value?.priceLabel || seed.priceLabel,
+    highlight: value?.highlight || seed.highlight,
+    products: Array.isArray(value?.products) && value.products.length > 0
+      ? value.products.map((item: any) => ({
+          title: item?.title || '',
+          image: item?.image || seed.image,
+          category: item?.category || '',
+          brand: item?.brand || '',
+          model: item?.model || '',
+          collection: item?.collectionName || item?.collection || '',
+          finish: item?.finish || '',
+          usage: item?.usage || '',
+          priceLabel: item?.priceLabel || '',
+          desc: item?.desc || item?.description || '',
+          link: item?.link || '',
+          highlights: Array.isArray(item?.highlights) ? item.highlights.filter(Boolean) : [],
+        }))
+      : seed.products,
   };
 };
 
@@ -283,10 +367,17 @@ export default function MaterialDetailEditor() {
   const saveDepartment = async (nextDepartment = department) => {
     setIsSaving(true);
     try {
+      const payload = {
+        ...nextDepartment,
+        products: nextDepartment.products.map((item) => ({
+          ...item,
+          collectionName: item.collection,
+        })),
+      };
       const res = await fetch(`/api/admin/departments/${slug}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...nextDepartment, slug }),
+        body: JSON.stringify({ ...payload, slug }),
       });
       const payload = await res.json().catch(() => null);
       if (!res.ok) {
@@ -321,7 +412,7 @@ export default function MaterialDetailEditor() {
       title: 'Departman API',
       href: `/api/admin/departments/${slug}`,
       status: apiStatus.department,
-      note: 'Başlık, açıklama, süreç ve kategori kartlarını okur/yazar.',
+      note: 'Başlık, açıklama, süreç ve ürün kartlarını okur/yazar.',
     },
     {
       title: 'Upload servisi',
@@ -357,7 +448,7 @@ export default function MaterialDetailEditor() {
                 {department.title}
               </h1>
               <p className="max-w-2xl text-sm leading-7 text-[color:var(--text-muted)]">
-                Bu kartın yayın katmanlarını tek ekranda düzenleyin. Hero, süreç, odak ve kategori
+                Bu kartın yayın katmanlarını tek ekranda düzenleyin. Hero, süreç, odak ve ürün
                 yapısı modern bir yönetim kabuğu içinde toplandı.
               </p>
             </div>
@@ -374,7 +465,7 @@ export default function MaterialDetailEditor() {
             </div>
           </div>
 
-          <div className="grid gap-3 sm:grid-cols-2 xl:min-w-[470px]">
+    <div className="grid gap-3 sm:grid-cols-2 xl:min-w-[470px]">
             <div className="rounded-2xl border border-[color:var(--line)] bg-[color:var(--surface-muted)] p-4">
               <p className="text-[0.65rem] uppercase tracking-[0.28em] text-[color:var(--text-muted)]">Hero</p>
               <p className="mt-1 text-2xl font-semibold text-[color:var(--text)]">{department.sliderImages.length}</p>
@@ -386,9 +477,9 @@ export default function MaterialDetailEditor() {
               <p className="mt-2 text-xs text-[color:var(--text-muted)]">Not sayısı</p>
             </div>
             <div className="rounded-2xl border border-[color:var(--line)] bg-[color:var(--surface-muted)] p-4">
-              <p className="text-[0.65rem] uppercase tracking-[0.28em] text-[color:var(--text-muted)]">Odak</p>
-              <p className="mt-1 text-2xl font-semibold text-[color:var(--text)]">{department.focusAreas.length}</p>
-              <p className="mt-2 text-xs text-[color:var(--text-muted)]">Odak alanı</p>
+              <p className="text-[0.65rem] uppercase tracking-[0.28em] text-[color:var(--text-muted)]">Ürün</p>
+              <p className="mt-1 text-2xl font-semibold text-[color:var(--text)]">{department.products.length}</p>
+              <p className="mt-2 text-xs text-[color:var(--text-muted)]">Yönetilen kartlar</p>
             </div>
             <div className="rounded-2xl border border-[color:var(--line)] bg-[color:var(--surface-muted)] p-4">
               <p className="text-[0.65rem] uppercase tracking-[0.28em] text-[color:var(--text-muted)]">API</p>
@@ -775,45 +866,142 @@ export default function MaterialDetailEditor() {
               </div>
             )}
 
-            {activeTab === 'kategoriler' && (
+            {activeTab === 'urunler' && (
               <div className="space-y-4">
                 <div className="flex items-center justify-between gap-4">
                   <div>
-                    <h3 className="text-base font-semibold text-[color:var(--text)]">Kategoriler</h3>
-                    <p className="text-sm text-[color:var(--text-muted)]">Materyal kart etiketleri.</p>
+                    <h3 className="text-base font-semibold text-[color:var(--text)]">Ürün Kartları</h3>
+                    <p className="text-sm text-[color:var(--text-muted)]">Marka, model, seri ve kullanım bilgilerini yönetin.</p>
                   </div>
                   <Button
                     type="button"
                     className="bg-[color:var(--accent)] text-[color:var(--text-inverse)] hover:bg-[color:var(--accent-soft)]"
-                    onClick={() => mutateDepartment((draft) => draft.categories.push({ label: 'Yeni Kategori', value: 'NEW' }))}
+                    onClick={() =>
+                      mutateDepartment((draft) =>
+                        draft.products.push({
+                          title: 'Yeni Ürün',
+                          image: department.image,
+                          category: 'Koleksiyon',
+                          brand: department.brand,
+                          model: 'NEW-01',
+                          collection: department.series,
+                          finish: department.finish,
+                          usage: department.usage,
+                          priceLabel: department.priceLabel,
+                          desc: department.description,
+                          link: '',
+                          highlights: department.highlight ? [department.highlight] : [],
+                        }),
+                      )
+                    }
                   >
                     <Plus className="mr-2 h-4 w-4" />
-                    Kategori Ekle
+                    Ürün Ekle
                   </Button>
                 </div>
-                <div className="grid gap-4 md:grid-cols-2">
-                  {department.categories.map((item, index) => (
-                    <Card key={`${item.label}-${index}`} className="border border-[color:var(--line)] bg-[color:var(--surface-muted)] shadow-none">
-                      <CardContent className="grid gap-3 p-4">
+                <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+                  {department.products.map((item, index) => (
+                    <Card key={`${item.title}-${index}`} className="overflow-hidden border border-[color:var(--line)] bg-[color:var(--surface-muted)] shadow-none">
+                      <AdminImageDropzone
+                        aspectClassName="aspect-[16/10]"
+                        accept="image/*"
+                        buttonLabel="Görsel seç"
+                        description="Ürün kartı görselini sürükleyip bırakın."
+                        emptySubtitle="Ürün görselini sürükleyin veya tıklayıp seçin."
+                        emptyTitle="Ürün görseli"
+                        previewAlt={item.title}
+                        previewUrl={item.image}
+                        title={item.title}
+                        onFileSelect={async (file) => {
+                          const url = await uploadFile(file);
+                          mutateDepartment((draft) => {
+                            if (!draft.products[index]) return;
+                            draft.products[index].image = url;
+                          });
+                        }}
+                      />
+                      <CardContent className="space-y-3 p-4">
+                        <div className="grid gap-3 sm:grid-cols-2">
+                          <Input
+                            value={item.brand}
+                            onChange={(event) => mutateDepartment((draft) => { draft.products[index].brand = event.target.value; })}
+                            className="h-11 rounded-2xl border-[color:var(--line)] bg-[color:var(--surface)] text-[color:var(--text)]"
+                            placeholder="Marka"
+                          />
+                          <Input
+                            value={item.model}
+                            onChange={(event) => mutateDepartment((draft) => { draft.products[index].model = event.target.value; })}
+                            className="h-11 rounded-2xl border-[color:var(--line)] bg-[color:var(--surface)] text-[color:var(--text)]"
+                            placeholder="Model"
+                          />
+                        </div>
+                        <div className="grid gap-3 sm:grid-cols-2">
+                          <Input
+                            value={item.title}
+                            onChange={(event) => mutateDepartment((draft) => { draft.products[index].title = event.target.value; })}
+                            className="h-11 rounded-2xl border-[color:var(--line)] bg-[color:var(--surface)] text-[color:var(--text)]"
+                            placeholder="Ürün adı"
+                          />
+                          <Input
+                            value={item.category}
+                            onChange={(event) => mutateDepartment((draft) => { draft.products[index].category = event.target.value; })}
+                            className="h-11 rounded-2xl border-[color:var(--line)] bg-[color:var(--surface)] text-[color:var(--text)]"
+                            placeholder="Kategori"
+                          />
+                        </div>
+                        <div className="grid gap-3 sm:grid-cols-2">
+                          <Input
+                            value={item.collection}
+                            onChange={(event) => mutateDepartment((draft) => { draft.products[index].collection = event.target.value; })}
+                            className="h-11 rounded-2xl border-[color:var(--line)] bg-[color:var(--surface)] text-[color:var(--text)]"
+                            placeholder="Seri"
+                          />
+                          <Input
+                            value={item.priceLabel}
+                            onChange={(event) => mutateDepartment((draft) => { draft.products[index].priceLabel = event.target.value; })}
+                            className="h-11 rounded-2xl border-[color:var(--line)] bg-[color:var(--surface)] text-[color:var(--text)]"
+                            placeholder="Fiyat etiketi"
+                          />
+                        </div>
                         <Input
-                          value={item.label}
-                          onChange={(event) => mutateDepartment((draft) => { draft.categories[index].label = event.target.value; })}
+                          value={item.finish}
+                          onChange={(event) => mutateDepartment((draft) => { draft.products[index].finish = event.target.value; })}
                           className="h-11 rounded-2xl border-[color:var(--line)] bg-[color:var(--surface)] text-[color:var(--text)]"
+                          placeholder="Finish / yüzey"
                         />
                         <Input
-                          value={item.value}
-                          onChange={(event) => mutateDepartment((draft) => { draft.categories[index].value = event.target.value; })}
+                          value={item.usage}
+                          onChange={(event) => mutateDepartment((draft) => { draft.products[index].usage = event.target.value; })}
                           className="h-11 rounded-2xl border-[color:var(--line)] bg-[color:var(--surface)] text-[color:var(--text)]"
+                          placeholder="Kullanım alanı"
                         />
-                        <div className="flex items-center justify-between">
+                        <Textarea
+                          value={item.desc}
+                          onChange={(event) => mutateDepartment((draft) => { draft.products[index].desc = event.target.value; })}
+                          className="min-h-28 rounded-[1.25rem] border-[color:var(--line)] bg-[color:var(--surface)] text-[color:var(--text)]"
+                          placeholder="Ürün açıklaması"
+                        />
+                        <Input
+                          value={item.link}
+                          onChange={(event) => mutateDepartment((draft) => { draft.products[index].link = event.target.value; })}
+                          className="h-11 rounded-2xl border-[color:var(--line)] bg-[color:var(--surface)] text-[color:var(--text)]"
+                          placeholder="Detay bağlantısı"
+                        />
+                        <Textarea
+                          value={item.highlights.join(', ')}
+                          onChange={(event) => mutateDepartment((draft) => { draft.products[index].highlights = event.target.value.split(',').map((value) => value.trim()).filter(Boolean); })}
+                          className="min-h-24 rounded-[1.25rem] border-[color:var(--line)] bg-[color:var(--surface)] text-[color:var(--text)]"
+                          placeholder="Öne çıkanlar, virgülle ayırın"
+                        />
+                        <div className="flex items-center justify-between gap-2">
                           <Badge variant="outline" className="border-[color:var(--line)] bg-[color:var(--surface)] text-[color:var(--text-muted)]">
-                            {item.value || 'VALUE'}
+                            {item.brand || 'Marka'} / {item.model || 'Model'}
                           </Badge>
                           <Button
                             type="button"
                             variant="outline"
                             className="border-rose-500/20 bg-rose-500/10 text-rose-700 hover:bg-rose-500 hover:text-white dark:text-rose-300"
-                            onClick={() => mutateDepartment((draft) => { draft.categories.splice(index, 1); })}
+                            onClick={() => mutateDepartment((draft) => { draft.products.splice(index, 1); })}
                           >
                             <Trash2 className="mr-2 h-4 w-4" />
                             Sil
@@ -822,9 +1010,9 @@ export default function MaterialDetailEditor() {
                       </CardContent>
                     </Card>
                   ))}
-                  {department.categories.length === 0 && (
+                  {department.products.length === 0 && (
                     <div className="rounded-[1.5rem] border border-dashed border-[color:var(--line)] bg-[color:var(--surface-muted)] p-8 text-center text-sm text-[color:var(--text-muted)] md:col-span-2">
-                      Henüz kategori yok.
+                      Henüz ürün yok.
                     </div>
                   )}
                 </div>
