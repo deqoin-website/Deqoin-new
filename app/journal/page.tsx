@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 
+import Footer from "@/components/Footer";
 import JournalCard from "@/components/JournalCard";
 import JournalDrawer from "@/components/JournalDrawer";
 import { Button } from "@/components/ui/button";
@@ -461,6 +462,7 @@ export default function JournalPage() {
       </section>
 
       <JournalDrawer article={selectedArticle} onClose={() => setSelectedArticleSlug(null)} />
+      <Footer />
     </main>
   );
 }
