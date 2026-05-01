@@ -35,20 +35,6 @@ export default function HeroSlider({
   const [isCurrentSlideReady, setIsCurrentSlideReady] = useState(false);
   const touchX = useRef<number | null>(null);
   const touchY = useRef<number | null>(null);
-  const flipAudioRef = useRef<HTMLAudioElement | null>(null);
-
-  useEffect(() => {
-    flipAudioRef.current = new Audio("/sounds/page-flip.mp3");
-    flipAudioRef.current.volume = 0.25;
-    flipAudioRef.current.load();
-  }, []);
-
-  const playFlipSound = () => {
-    if (!flipAudioRef.current) return;
-    const sound = flipAudioRef.current.cloneNode() as HTMLAudioElement;
-    sound.volume = 0.25;
-    sound.play().catch(() => {});
-  };
 
   useEffect(() => {
     if (slides.length === 0) return;
@@ -98,7 +84,6 @@ export default function HeroSlider({
   }, [slides.length, autoplayDelay]);
 
   const navigate = (newDirection: number) => {
-    playFlipSound();
     setDirection(newDirection);
     setIndex((prev) => (prev + newDirection + slides.length) % slides.length);
   };

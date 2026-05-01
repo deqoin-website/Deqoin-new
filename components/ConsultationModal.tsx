@@ -40,8 +40,6 @@ export default function ConsultationModal({ isOpen, onClose }: ConsultationModal
   const [isVisible, setIsVisible] = useState(false);
   const dragControls = useDragControls();
   const sheetRef = useRef<HTMLDivElement | null>(null);
-  const audioRef = useRef<HTMLAudioElement | null>(null);
-  const lastPlayTime = useRef<number>(0);
   const [formData, setFormData] = useState<ConsultationFormData>(createInitialFormData);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -63,11 +61,6 @@ export default function ConsultationModal({ isOpen, onClose }: ConsultationModal
     setIsVisible(false);
     document.body.style.overflow = "";
 
-    if (audioRef.current) {
-      audioRef.current.pause();
-      audioRef.current.currentTime = 0;
-    }
-
     const timeout = window.setTimeout(() => {
       setShouldRender(false);
       resetFormState();
@@ -75,24 +68,6 @@ export default function ConsultationModal({ isOpen, onClose }: ConsultationModal
 
     return () => window.clearTimeout(timeout);
   }, [isOpen, resetFormState]);
-
-  useEffect(() => {
-    audioRef.current = new Audio("/sounds/writing.mp3");
-    audioRef.current.volume = 0.25;
-    audioRef.current.load();
-  }, []);
-
-  const playWritingSound = () => {
-    if (!audioRef.current) return;
-
-    const now = Date.now();
-    if (now - lastPlayTime.current < 120) return;
-
-    const sound = audioRef.current.cloneNode() as HTMLAudioElement;
-    sound.volume = 0.25;
-    sound.play().catch(() => {});
-    lastPlayTime.current = now;
-  };
 
   useEffect(() => {
     if (!shouldRender) {
@@ -111,8 +86,6 @@ export default function ConsultationModal({ isOpen, onClose }: ConsultationModal
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = event.target;
-
-    playWritingSound();
 
     setFormData((prev) => ({
       ...prev,

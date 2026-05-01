@@ -4784,6 +4784,77 @@ body.faaliyet-alanlarimiz-page .topbar-links a {
   border-color: rgba(255, 255, 255, 0.22);
 }
 
+body.faaliyet-alanlarimiz-page .site-footer {
+  background: #050505;
+  color: #fff;
+}
+
+body.faaliyet-alanlarimiz-page .footer-top {
+  background: linear-gradient(135deg, #080808 0%, #040404 100%) !important;
+  border-bottom-color: rgba(255, 255, 255, 0.06) !important;
+}
+
+body.faaliyet-alanlarimiz-page .footer-divider {
+  background: rgba(255, 255, 255, 0.06) !important;
+}
+
+body.faaliyet-alanlarimiz-page .footer-bottom {
+  border-top-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+body.faaliyet-alanlarimiz-page .footer-cta-label,
+body.faaliyet-alanlarimiz-page .footer-cta-title,
+body.faaliyet-alanlarimiz-page .footer-address,
+body.faaliyet-alanlarimiz-page .footer-tagline,
+body.faaliyet-alanlarimiz-page .footer-nav-label,
+body.faaliyet-alanlarimiz-page .footer-nav-link,
+body.faaliyet-alanlarimiz-page .footer-copy,
+body.faaliyet-alanlarimiz-page .footer-bottom-tag {
+  color: #fff !important;
+}
+
+body.faaliyet-alanlarimiz-page .footer-cta-label,
+body.faaliyet-alanlarimiz-page .footer-nav-label {
+  color: #cca883 !important;
+}
+
+body.faaliyet-alanlarimiz-page .footer-social-link {
+  border-color: rgba(255, 255, 255, 0.12) !important;
+  color: rgba(255, 255, 255, 0.72) !important;
+}
+
+body.faaliyet-alanlarimiz-page .footer-social-link:hover {
+  border-color: #cca883 !important;
+  color: #cca883 !important;
+  background: rgba(204, 168, 131, 0.08) !important;
+}
+
+body.faaliyet-alanlarimiz-page .site-footer .footer-cta-btn {
+  color: #fff !important;
+  border-color: rgba(255, 255, 255, 0.22) !important;
+}
+
+body.faaliyet-alanlarimiz-page .site-footer .footer-cta-btn .hero-cta-text {
+  color: #fff !important;
+}
+
+body.faaliyet-alanlarimiz-page .site-footer .footer-cta-btn .hero-cta-circle {
+  border-color: rgba(255, 255, 255, 0.18) !important;
+}
+
+body.faaliyet-alanlarimiz-page .site-footer .footer-cta-btn .hero-cta-circle span {
+  color: #fff !important;
+}
+
+body.faaliyet-alanlarimiz-page .site-footer .footer-cta-btn:hover .hero-cta-text,
+body.faaliyet-alanlarimiz-page .site-footer .footer-cta-btn:hover .hero-cta-circle span {
+  color: #050505 !important;
+}
+
+body.faaliyet-alanlarimiz-page .site-footer .footer-nav-link:hover {
+  color: #fff !important;
+}
+
 .site-footer .footer-cta-btn .hero-cta-text {
   color: #fff;
 }
