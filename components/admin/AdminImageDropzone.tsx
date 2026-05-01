@@ -4,6 +4,7 @@
 
 import * as React from 'react';
 import { Image as ImageIcon, Upload, Video } from 'lucide-react';
+import Image from 'next/image';
 
 import { cn } from '@/lib/utils';
 
@@ -172,7 +173,7 @@ export function AdminImageDropzone({
               <source src={previewUrl} />
             </video>
           ) : (
-            <img src={previewUrl} alt={previewAlt} className={cn('h-full w-full object-cover', previewClassName)} />
+            <Image src={previewUrl} alt={previewAlt} fill className={cn('h-full w-full object-cover', previewClassName)} sizes="100vw" />
           )
         ) : (
           <div className="flex h-full w-full flex-col items-center justify-center gap-3 px-6 text-center text-[color:var(--text-muted)]">

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo, useEffect } from "react";
+import Image from "next/image";
 import { ProjectDetail, Category } from "../data/projects";
 import ConsultationModal from "./ConsultationModal";
 import Link from "next/link";
@@ -364,7 +365,7 @@ export default function DepartmentStudio({
               {filteredProductsList.map((product, idx) => (
                 <div key={idx} className="studio-product-card">
                   <div className="product-card-visual">
-                    <img src={product.image} alt={product.title} />
+                    <Image src={product.image} alt={product.title} fill sizes="(max-width: 768px) 100vw, 33vw" />
                     <div className="product-card-overlay">
                       <div className="product-hover-content">
                         <p>{product.desc}</p>

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import ConsultationModal from "../../components/ConsultationModal";
 import SwipeAppointmentButton from "../../components/SwipeAppointmentButton";
 import HeroSlider from "../../components/HeroSlider";
@@ -94,7 +95,7 @@ export default function KesifPage() {
       {/* ── CTA ── */}
       <section className="mimari-cta-banner">
         <div className="mimari-cta-bg">
-          <img src={SLIDER_IMAGE_URLS.mimari} alt="CTA" style={{ filter: `blur(2px)` }} />
+          <Image src={SLIDER_IMAGE_URLS.mimari} alt="CTA" fill style={{ filter: `blur(2px)` }} sizes="100vw" />
         </div>
         <div className="mimari-cta-overlay" style={{ background: `rgba(0,0,0,0.4)` }} />
         <div className="mimari-cta-content">

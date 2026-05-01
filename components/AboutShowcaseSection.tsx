@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import { motion, useReducedMotion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { CURRENT_ABOUT_CONTENT } from "@/lib/about-content";
@@ -116,10 +117,12 @@ export default function AboutShowcaseSection() {
           className="order-2 lg:order-none"
         >
           <div className="relative w-full h-[50vh] md:h-[70vh] rounded-2xl overflow-hidden">
-            <img
+            <Image
               src={content.image}
               alt="deqoin atölye ve kütüphane iç mekanı"
+              fill
               className="object-cover w-full h-full"
+              sizes="(max-width: 768px) 100vw, 50vw"
             />
           </div>
         </motion.div>

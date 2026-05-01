@@ -1,6 +1,7 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
+import Image from 'next/image';
 import { 
   Plus, 
   Trash2, 
@@ -20,11 +21,8 @@ export default function HomeEditor() {
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
 
-  useEffect(() => {
-    fetchContent();
-  }, []);
-
-  const createDefaultHomeContent = () => ({
+  function createDefaultHomeContent() {
+    return {
     page: 'home',
     sections: [
       {
@@ -58,9 +56,16 @@ export default function HomeEditor() {
         }
       }
     ]
-  });
+    };
+  }
 
-  const fetchContent = async () => {
+  const loadDefaults = useCallback(() => {
+    const defaultContent = createDefaultHomeContent();
+    setPageContent(defaultContent);
+    setSlides(defaultContent.sections[0].content.slides);
+  }, []);
+
+  const fetchContent = useCallback(async () => {
     try {
       const res = await fetch('/api/content?page=home');
       const data = await res.json();
@@ -82,13 +87,11 @@ export default function HomeEditor() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [loadDefaults]);
 
-  const loadDefaults = () => {
-    const defaultContent = createDefaultHomeContent();
-    setPageContent(defaultContent);
-    setSlides(defaultContent.sections[0].content.slides);
-  };
+  useEffect(() => {
+    fetchContent();
+  }, [fetchContent]);
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
     const file = e.target.files?.[0];
@@ -217,7 +220,7 @@ export default function HomeEditor() {
             <motion.div layout key={index} className="slide-card">
               <div className="slide-preview-container">
                 <div className="slide-preview" onClick={() => document.getElementById(`slide-up-${index}`)?.click()}>
-                  {slide.image ? <img src={slide.image} alt="Slide" /> : <div className="upload-placeholder"><Upload size={24} /></div>}
+                  {slide.image ? <Image src={slide.image} alt="Slide" fill sizes="240px" /> : <div className="upload-placeholder"><Upload size={24} /></div>}
                   <div className="preview-overlay">
                     <Upload size={20} />
                     <span>GÖRSELİ DEĞİŞTİR</span>

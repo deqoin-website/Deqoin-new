@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import Image from "next/image";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -94,11 +95,13 @@ export default function OurTeam() {
                     className="group"
                   >
                     <div className="relative w-full aspect-[3/4] min-h-[500px] lg:min-h-[600px] rounded-2xl overflow-hidden group cursor-pointer">
-                      <img
+                      <Image
                         src={member.image}
                         alt={member.name}
+                        fill
                         className="h-full w-full object-cover object-top transition-transform duration-700 group-hover:scale-105"
                         loading="lazy"
+                        sizes="(max-width: 768px) 100vw, 33vw"
                       />
 
                       <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent" />

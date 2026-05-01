@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useMemo } from "react";
+import Image from "next/image";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { ArrowUpRight, ChevronDown, X } from "lucide-react";
 
@@ -134,10 +135,13 @@ export default function ProjectInsightPanel({
                 <div className="grid h-full w-full min-h-0 grid-cols-1 lg:grid-cols-[1.07fr_0.93fr]">
                   <section className="flex min-h-0 flex-col border-b border-white/10 lg:border-b-0 lg:border-r lg:border-white/10">
                     <div className="group relative min-h-[42svh] flex-1 overflow-hidden bg-black">
-                      <img
+                      <Image
                         src={project.coverImage}
                         alt={project.title}
+                        fill
                         className="h-full w-full object-cover transition-transform duration-[1400ms] group-hover:scale-105"
+                        sizes="100vw"
+                        priority
                       />
                       <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0.08)_0%,rgba(0,0,0,0.24)_32%,rgba(0,0,0,0.86)_100%)]" />
                       <div className="absolute inset-x-0 top-0 flex items-start justify-between p-4 md:p-6">
@@ -182,10 +186,12 @@ export default function ProjectInsightPanel({
                       <div className="grid grid-cols-4 gap-0">
                         {galleryImages.slice(0, 4).map((image, index) => (
                           <div key={`${project.slug}-thumb-${index}`} className="relative aspect-[4/3] overflow-hidden rounded-none border-r border-white/8 last:border-r-0">
-                            <img
+                            <Image
                               src={image}
                               alt={`${project.title} görsel ${index + 1}`}
+                              fill
                               className="h-full w-full object-cover transition-transform duration-700 hover:scale-105"
+                              sizes="25vw"
                             />
                             <div className="absolute inset-0 bg-gradient-to-t from-black/45 via-transparent to-transparent" />
                           </div>
@@ -290,11 +296,13 @@ export default function ProjectInsightPanel({
                             {galleryImages.map((image, index) => (
                               <CarouselItem key={`${project.slug}-mobile-${index}`} className="pl-4">
                                 <div className="relative aspect-[4/3] overflow-hidden rounded-none border border-white/10 bg-black">
-                                  <img
-                                    src={image}
-                                    alt={`${project.title} galeri ${index + 1}`}
-                                    className="h-full w-full object-cover"
-                                  />
+                                <Image
+                                  src={image}
+                                  alt={`${project.title} galeri ${index + 1}`}
+                                  fill
+                                  className="h-full w-full object-cover"
+                                  sizes="(max-width: 768px) 100vw, 50vw"
+                                />
                                   <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
                                 </div>
                               </CarouselItem>

@@ -1,6 +1,7 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
+import Image from 'next/image';
 import { 
   Camera, 
   Save, 
@@ -32,11 +33,7 @@ export default function SettingsPage() {
   const [isDraggingLogo, setIsDraggingLogo] = useState(false);
   const [isDraggingFavicon, setIsDraggingFavicon] = useState(false);
 
-  useEffect(() => {
-    fetchSettings();
-  }, []);
-
-  const fetchSettings = async () => {
+  const fetchSettings = useCallback(async () => {
     try {
       const res = await fetch('/api/settings');
       const data = await res.json();
@@ -48,7 +45,11 @@ export default function SettingsPage() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [showToast]);
+
+  useEffect(() => {
+    fetchSettings();
+  }, [fetchSettings]);
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>, field: string) => {
     const file = e.target.files?.[0];
@@ -161,7 +162,7 @@ export default function SettingsPage() {
                       onDragLeave={() => setIsDraggingLogo(false)}
                       onDrop={(e) => handleDrop(e, 'logoUrl')}
                     >
-                      {settings.logoUrl ? <img src={settings.logoUrl} alt="Logo" /> : <Camera size={24} />}
+                      {settings.logoUrl ? <Image src={settings.logoUrl} alt="Logo" width={120} height={48} /> : <Camera size={24} />}
                       {uploadLoading && <div className="upload-overlay"><Loader2 className="animate-spin" /></div>}
                     </div>
                     <input id="logo-file" type="file" className="hidden" onChange={e => handleImageUpload(e, 'logoUrl')} />
@@ -176,7 +177,7 @@ export default function SettingsPage() {
                       onDragLeave={() => setIsDraggingFavicon(false)}
                       onDrop={(e) => handleDrop(e, 'faviconUrl')}
                     >
-                      {settings.faviconUrl ? <img src={settings.faviconUrl} alt="Favicon" /> : <Camera size={20} />}
+                      {settings.faviconUrl ? <Image src={settings.faviconUrl} alt="Favicon" width={48} height={48} /> : <Camera size={20} />}
                       {uploadLoading && <div className="upload-overlay"><Loader2 className="animate-spin" /></div>}
                     </div>
                     <input id="favicon-file" type="file" className="hidden" onChange={e => handleImageUpload(e, 'faviconUrl')} />
@@ -262,7 +263,7 @@ export default function SettingsPage() {
                 <div className="card-header">
                    <div>
                       <h3>Bakım Modu</h3>
-                      <p>Aktif edildiğinde ziyaretçiler siteyi göremez, sadece "Bakımdayız" mesajı ile karşılaşırlar.</p>
+                      <p>Aktif edildiğinde ziyaretçiler siteyi göremez, sadece &quot;Bakımdayız&quot; mesajı ile karşılaşırlar.</p>
                    </div>
                    <div className={`status-toggle ${settings.maintenanceMode ? 'active' : ''}`} onClick={() => { setSettings({...settings, maintenanceMode: !settings.maintenanceMode}); setIsDirty(true); }}>
                       <div className="toggle-bullet" />

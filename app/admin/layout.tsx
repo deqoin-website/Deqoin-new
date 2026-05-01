@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { 
   LayoutDashboard, 
@@ -161,7 +162,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         <aside className={`admin-sidebar ${isSidebarOpen ? 'open' : 'closed'} ${isMobileMenuOpen ? 'mobile-show' : ''}`}>
           <div className="sidebar-header">
             <div className="admin-logo">
-              <img src="/images/logo-new.jpeg" alt="DEQOIN" />
+              <Image src="/images/logo-new.jpeg" alt="DEQOIN" width={36} height={36} />
               {isSidebarOpen && <motion.span initial={{ opacity: 0 }} animate={{ opacity: 1 }}>STUDIO ADMIN</motion.span>}
             </div>
             <button onClick={() => {

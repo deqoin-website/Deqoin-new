@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useMemo, useRef } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { projectsData } from "../data/projects";
 import { teamMembers } from "../data/team";
@@ -175,7 +176,7 @@ export default function Header() {
                   {searchResults.projects.map(p => (
                     <Link href={`/galeri/${p.slug}`} key={`proj-${p.slug}`} className="search-result-card" onClick={() => setIsSearchOpen(false)}>
                       <div className="result-img-wrap">
-                        {p.coverImage && <img src={p.coverImage} alt={p.title} />}
+                        {p.coverImage && <Image src={p.coverImage} alt={p.title} width={80} height={80} className="object-cover" />}
                       </div>
                       <div className="result-info">
                         <h4>{p.title}</h4>
@@ -194,7 +195,7 @@ export default function Header() {
                   {searchResults.team.map(t => (
                     <Link href={`/departman-ekipleri`} key={`team-${t.id}`} className="search-result-card" onClick={() => setIsSearchOpen(false)}>
                       <div className="result-img-wrap team-style">
-                        {t.image && <img src={t.image} alt={t.name} />}
+                        {t.image && <Image src={t.image} alt={t.name} width={80} height={80} className="object-cover" />}
                       </div>
                       <div className="result-info">
                         <h4>{t.name}</h4>
@@ -213,7 +214,7 @@ export default function Header() {
                   {searchResults.journal.map(article => (
                     <Link href={`/journal/${article.slug}`} key={`journal-${article.slug}`} className="search-result-card" onClick={() => setIsSearchOpen(false)}>
                       <div className="result-img-wrap">
-                        {article.coverImage && <img src={article.coverImage} alt={article.title} />}
+                        {article.coverImage && <Image src={article.coverImage} alt={article.title} width={80} height={80} className="object-cover" />}
                       </div>
                       <div className="result-info">
                         <h4>{article.title}</h4>
@@ -252,9 +253,11 @@ export default function Header() {
             </div>
             <Link href="/" className="brand-mark">
               {logoUrl && logoUrl.trim() !== '' && (
-                <img
+                <Image
                   src={logoUrl}
                   alt="DEQOIN Architectural Studio"
+                  width={180}
+                  height={44}
                   className="topbar-logo"
                   onLoad={() => setIsLogoLoaded(true)}
                   style={{ 

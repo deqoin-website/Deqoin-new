@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import Image from "next/image";
 
 import PageNumberNavigator from "@/components/PageNumberNavigator";
 import { projectsData } from "@/data/projects";
@@ -53,10 +54,13 @@ export default async function ProjectDetail({ params }: { params: Promise<Projec
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-12">
           <div id="gallery-hero" className="lg:col-span-4">
             <div className="relative w-full aspect-[4/3] md:aspect-[16/9] overflow-hidden rounded-2xl">
-              <img
+              <Image
                 src={project.coverImage}
                 alt={project.title}
+                fill
                 className="h-full w-full object-cover transition-transform duration-1000 hover:scale-105"
+                sizes="100vw"
+                priority
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/25 to-transparent" />
 
@@ -171,10 +175,12 @@ export default async function ProjectDetail({ params }: { params: Promise<Projec
                 key={`${project.slug}-${index}`}
                 className="relative aspect-[4/3] overflow-hidden rounded-2xl border border-zinc-900/80"
               >
-                <img
+                <Image
                   src={imgSrc}
                   alt={`${project.title} detayı ${index + 1}`}
+                  fill
                   className="h-full w-full object-cover transition-transform duration-1000 hover:scale-105"
+                  sizes="(max-width: 768px) 100vw, 50vw"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
               </div>

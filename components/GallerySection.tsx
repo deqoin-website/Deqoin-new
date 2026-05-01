@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { motion } from "framer-motion";
 import type { UseEmblaCarouselType } from "embla-carousel-react";
@@ -167,11 +168,14 @@ function HeroSlide({
         transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
         className="relative h-[100svh] w-full overflow-hidden bg-black"
       >
-        <img
+        <Image
           src={image.src}
           alt={image.alt}
+          fill
           loading={index === 0 ? "eager" : "lazy"}
           className="absolute inset-0 h-full w-full object-cover"
+          sizes="100vw"
+          priority={index === 0}
         />
 
         <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0.18)_0%,rgba(0,0,0,0.34)_28%,rgba(0,0,0,0.68)_100%)]" />

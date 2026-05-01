@@ -884,7 +884,7 @@ export default function WorkflowAdminPage() {
               <Card className="border-white/10 bg-white/[0.04]">
                 <CardHeader>
                   <CardTitle className="text-lg tracking-[0.06em]">Kayıt özeti</CardTitle>
-                  <CardDescription>Seçili workflow'un son durumunu burada kontrol edin.</CardDescription>
+                  <CardDescription>Seçili workflow&apos;un son durumunu burada kontrol edin.</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="rounded-2xl border border-white/10 bg-black/20 p-4 text-sm">

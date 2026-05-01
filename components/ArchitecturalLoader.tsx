@@ -1,6 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import Image from "next/image";
 import styles from "./ArchitecturalLoader.module.css";
 
 type ArchitecturalLoaderProps = {
@@ -59,7 +60,7 @@ export default function ArchitecturalLoader({ isLoading, logoSrc = "/images/logo
               exit={{ opacity: 0, filter: "blur(3px)" }}
               transition={prefersReducedMotion ? { duration: 0.1 } : { duration: 0.65, ease: [0.77, 0, 0.175, 1] }}
             >
-              <img src={logoSrc} alt="DEQOIN" className={styles.logo} />
+              <Image src={logoSrc} alt="DEQOIN" width={320} height={120} className={styles.logo} priority />
             </motion.div>
 
             <motion.div

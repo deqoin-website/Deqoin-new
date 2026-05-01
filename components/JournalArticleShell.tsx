@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { ArrowUpRight, ChevronLeft } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -78,10 +79,12 @@ function renderSection(section: JournalSection, index: number) {
       return (
         <figure key={`image-${index}`} className="space-y-3">
           <div className="overflow-hidden rounded-none border border-white/10 bg-black">
-            <img
+            <Image
               src={section.src}
               alt={section.alt}
+              fill
               className="h-full w-full object-cover"
+              sizes="100vw"
             />
           </div>
           {section.caption ? (
@@ -198,10 +201,13 @@ export default function JournalArticleShell({
           <div className="grid min-h-0 grid-cols-1 lg:grid-cols-[1.1fr_0.9fr]">
             <section className="border-b border-white/10 lg:border-b-0 lg:border-r lg:border-white/10">
               <div id="journal-cover" className="group relative aspect-[4/3] overflow-hidden bg-black lg:h-[52svh] lg:aspect-auto">
-                <img
+                <Image
                   src={article.coverImage}
                   alt={article.title}
+                  fill
                   className="h-full w-full object-cover transition-transform duration-[1400ms] group-hover:scale-[1.04]"
+                  sizes="100vw"
+                  priority
                 />
                 <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0.12)_0%,rgba(0,0,0,0.34)_42%,rgba(0,0,0,0.88)_100%)]" />
                 <div className="absolute inset-x-0 bottom-0 p-5 md:p-8">

@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import type { CSSProperties, ImgHTMLAttributes } from "react";
 
 function isCloudinarySource(src: string) {
@@ -31,14 +32,15 @@ export default function CloudinaryImage({
   const decoding = priority ? "sync" : "async";
 
   return (
-    <img
+    <Image
       src={src}
       alt={alt}
+      fill
       loading={loading}
       className={className}
       style={style}
-      fetchPriority={fetchPriority}
-      decoding={decoding}
+      fetchPriority={fetchPriority as "high" | "auto"}
+      decoding={decoding as "sync" | "async"}
       sizes={sizes}
       data-cloudinary-source={isCloudinarySource(src) ? "true" : "false"}
     />

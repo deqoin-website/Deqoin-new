@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 import { Lock, User, ArrowRight, Eye, EyeOff, ShieldCheck } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -75,7 +76,7 @@ export default function AdminLoginPage() {
                 className="brand-identity"
               >
                 <div className="logo-box">
-                  <img src="/images/logo-new.jpeg" alt="DEQOIN" />
+                  <Image src="/images/logo-new.jpeg" alt="DEQOIN" width={120} height={120} />
                   <div className="logo-glow"></div>
                 </div>
                 <h1 className="brand-name">DEQOIN</h1>

@@ -60,7 +60,7 @@ export default function UploadPage() {
         <div style={{ marginTop: '4rem' }}>
           <p style={{ marginBottom: '1rem' }}>Yükleme Başarılı!</p>
           <div style={{ position: 'relative', width: '300px', height: '300px', margin: '0 auto' }}>
-            <img src={uploadResult.url} alt="Uploaded" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+            <Image src={uploadResult.url} alt="Uploaded" fill style={{ objectFit: 'cover' }} sizes="300px" />
           </div>
           <pre style={{ marginTop: '2rem', textAlign: 'left', background: 'rgba(255,255,255,0.1)', padding: '1rem', overflow: 'auto' }}>
             {JSON.stringify(uploadResult, null, 2)}

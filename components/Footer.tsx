@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import ConsultationModal from "./ConsultationModal";
 import { safeSetLocalStorage } from "@/lib/browser-storage";
 
@@ -108,9 +109,11 @@ export default function Footer() {
         {/* Logo + tagline */}
         <div className="footer-brand">
           <Link href="/" aria-label="DEQOIN Ana Sayfa">
-            <img
+            <Image
               src={logoUrl}
               alt="DEQOIN"
+              width={180}
+              height={48}
               className="footer-logo"
             />
           </Link>
