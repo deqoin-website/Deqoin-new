@@ -17,6 +17,7 @@ import {
   MessageSquare,
   Aperture,
   Workflow,
+  FileText,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import ThemeToggle from '@/components/ThemeToggle';
@@ -100,6 +101,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         { name: 'Ana Sayfa Slider Hero', icon: ImageIcon, path: '/admin/content/home/gallery' },
         { name: 'Galeri Sayfası & Modal', icon: FolderKanban, path: '/admin/content/gallery' },
         { name: 'Hizmet Kartları (Ana Sayfa)', icon: Aperture, path: '/admin/content/home/services' },
+        { name: 'Journal İçerikleri', icon: FileText, path: '/admin/content/journal' },
         { name: 'Hakkımızda', icon: Briefcase, path: '/admin/content/corporate' },
         { name: 'Ekip Üyeleri', icon: Users, path: '/admin/team' },
       ]

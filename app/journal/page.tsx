@@ -21,9 +21,8 @@ import {
   JOURNAL_CONTENT_TYPES,
   JOURNAL_DEPARTMENTS,
   JOURNAL_PROJECT_TYPES,
-  getJournalArticleBySlug,
-  journalArticles,
 } from "@/data/journal";
+import { createDefaultJournalDraft, normalizeJournalDraft } from "@/lib/journal-content";
 
 function toggleValue(values: string[], value: string) {
   return values.includes(value) ? values.filter((item) => item !== value) : [...values, value];
@@ -43,6 +42,8 @@ function buildPageNumbers(currentPage: number, totalPages: number) {
 }
 
 export default function JournalPage() {
+  const [pageContent, setPageContent] = useState(() => createDefaultJournalDraft());
+  const [contentStatus, setContentStatus] = useState<"loading" | "ok" | "error">("loading");
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedDepartments, setSelectedDepartments] = useState<string[]>([]);
   const [selectedProjectTypes, setSelectedProjectTypes] = useState<string[]>([]);
@@ -54,7 +55,7 @@ export default function JournalPage() {
   const visibleArticles = useMemo(() => {
     const query = searchTerm.trim().toLowerCase();
 
-    return journalArticles.filter((article) => {
+    return pageContent.articles.filter((article) => {
       const matchSearch =
         query.length === 0 ||
         [
@@ -78,7 +79,7 @@ export default function JournalPage() {
 
       return matchSearch && matchDepartments && matchProjectTypes && matchContentTypes;
     });
-  }, [searchTerm, selectedContentTypes, selectedDepartments, selectedProjectTypes]);
+  }, [pageContent.articles, searchTerm, selectedContentTypes, selectedDepartments, selectedProjectTypes]);
 
   const totalPages = Math.max(1, Math.ceil(visibleArticles.length / ARTICLES_PER_PAGE));
   const pageNumbers = useMemo(() => buildPageNumbers(currentPage, totalPages), [currentPage, totalPages]);
@@ -88,8 +89,8 @@ export default function JournalPage() {
   }, [currentPage, visibleArticles]);
 
   const selectedArticle = useMemo(
-    () => (selectedArticleSlug ? getJournalArticleBySlug(selectedArticleSlug) : null),
-    [selectedArticleSlug],
+    () => (selectedArticleSlug ? pageContent.articles.find((article) => article.slug === selectedArticleSlug) ?? null : null),
+    [pageContent.articles, selectedArticleSlug],
   );
 
   useEffect(() => {
@@ -101,6 +102,44 @@ export default function JournalPage() {
       setCurrentPage(totalPages);
     }
   }, [currentPage, totalPages]);
+
+  useEffect(() => {
+    let active = true;
+
+    const loadPage = async () => {
+      try {
+        setContentStatus("loading");
+        const res = await fetch("/api/journal", { cache: "no-store" });
+        const data = await res.json().catch(() => null);
+        if (!active) return;
+
+        const normalized = normalizeJournalDraft(res.ok ? data : null);
+        setPageContent(normalized);
+        setContentStatus(res.ok ? "ok" : "error");
+      } catch {
+        if (!active) return;
+        setPageContent(createDefaultJournalDraft());
+        setContentStatus("error");
+      }
+    };
+
+    void loadPage();
+
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  useEffect(() => {
+    if (pageContent.articles.length === 0) {
+      setSelectedArticleSlug(null);
+      return;
+    }
+
+    if (!selectedArticleSlug || !pageContent.articles.some((article) => article.slug === selectedArticleSlug)) {
+      setSelectedArticleSlug(pageContent.articles[0].slug);
+    }
+  }, [pageContent.articles, selectedArticleSlug]);
 
   useEffect(() => {
     if (!isMobileFiltersOpen) return;
@@ -118,20 +157,25 @@ export default function JournalPage() {
       <section className="mx-auto w-full max-w-[1700px] px-6 pt-28 md:px-10 lg:px-16">
         <header className="mb-14 max-w-5xl space-y-5">
           <p className="text-[0.62rem] uppercase tracking-[0.55em] text-white/40">
-            QUIET LUXURY / EDITORIAL ARCHIVE
+            {pageContent.hero.subtitle}
           </p>
           <h1
             className="text-[clamp(4rem,9vw,9.5rem)] font-thin uppercase leading-[0.8] tracking-[0.12em] text-white"
             style={{ fontFamily: "Smooch Sans, sans-serif", fontWeight: 100 }}
           >
-            JOURNAL
+            {pageContent.hero.title}
           </h1>
           <p
             className="max-w-4xl text-[0.82rem] uppercase tracking-[0.38em] text-white/58 md:text-[0.9rem]"
             style={{ fontFamily: "Smooch Sans, sans-serif" }}
           >
-            SESSİZ LÜKSÜN MİMARİ OKUMASI, TEKNİK NOTLAR VE PROJE BAĞLANTILARIYLA BİR DERGİ ALGISINDA SUNULUR.
+            {pageContent.hero.description}
           </p>
+          <div className="flex flex-wrap items-center gap-3 text-[0.58rem] uppercase tracking-[0.45em] text-white/40">
+            <span>{pageContent.hero.subtitle}</span>
+            <span className="hidden md:inline">/</span>
+            <span>{contentStatus === "ok" ? "API SENKRON" : contentStatus === "error" ? "FALLBACK VERİ" : "YÜKLENİYOR"}</span>
+          </div>
         </header>
 
         <div className="lg:hidden mb-8">
