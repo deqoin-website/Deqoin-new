@@ -91,6 +91,8 @@ export default function FaaliyetAlanlarimiz() {
         </div>
       </section>
 
+      <WorkflowSection className="mt-10 md:mt-16" title="İŞ AKIŞI" />
+
       <div className="relative w-full max-w-full overflow-hidden px-0 mx-0 mt-6 md:mt-10">
         <Carousel opts={{ align: "start" }} className="w-full">
           <CarouselContent className="ml-0 w-full flex">
@@ -138,7 +140,6 @@ export default function FaaliyetAlanlarimiz() {
         </Carousel>
       </div>
 
-      <WorkflowSection className="mt-10 md:mt-16" title="İŞ AKIŞI" />
       <Footer />
     </main>
   );
