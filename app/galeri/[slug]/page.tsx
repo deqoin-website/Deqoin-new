@@ -3,38 +3,21 @@ import { notFound } from "next/navigation";
 import Image from "next/image";
 
 import PageNumberNavigator from "@/components/PageNumberNavigator";
-import { projectsData } from "@/data/projects";
+import { getGalleryCategoryLabel, getGalleryProjectBySlug } from "@/lib/gallery-projects";
 
 type ProjectParams = {
   slug: string;
 };
 
-function getCategoryLabel(category: string) {
-  const labels: Record<string, string> = {
-    "luks-konut": "LÜKS KONUT",
-    "ticari-yapi": "TİCARİ YAPI",
-    "karma-kullanim": "KARMA KULLANIM",
-    "kurumsal-alan": "KURUMSAL ALAN",
-    "butik-otel": "BUTİK OTEL",
-    "kultur-yapisi": "KÜLTÜR YAPISI",
-    mimarlik: "MİMARLIK",
-    "ic-mimarlik": "İÇ MİMARLIK",
-    restorasyon: "RESTORASYON",
-    peyzaj: "PEYZAJ",
-  };
-
-  return labels[category] ?? category.toUpperCase();
-}
-
 export default async function ProjectDetail({ params }: { params: Promise<ProjectParams> }) {
   const { slug } = await params;
-  const project = projectsData.find((item) => item.slug === slug);
+  const project = await getGalleryProjectBySlug(slug);
 
   if (!project) return notFound();
 
   return (
     <main className="min-h-screen w-full bg-zinc-950 pb-24 text-white">
-      <section className="mx-auto w-full max-w-[1600px] px-6 md:px-16 pt-28">
+      <section className="mx-auto w-full max-w-[1600px] px-6 pt-28 md:px-16">
         <div className="mb-8 flex items-center justify-between gap-6">
           <Link
             href="/galeri"
@@ -47,13 +30,13 @@ export default async function ProjectDetail({ params }: { params: Promise<Projec
             className="text-[10px] md:text-xs tracking-[0.4em] text-zinc-500 uppercase"
             style={{ fontFamily: "Smooch Sans, sans-serif" }}
           >
-            {getCategoryLabel(project.category)}
+            {getGalleryCategoryLabel(project.category)}
           </p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-5 gap-12">
+        <div className="grid grid-cols-1 gap-12 lg:grid-cols-5">
           <div id="gallery-hero" className="lg:col-span-4">
-            <div className="relative w-full aspect-[4/3] md:aspect-[16/9] overflow-hidden rounded-2xl">
+            <div className="relative aspect-[4/3] w-full overflow-hidden rounded-2xl md:aspect-[16/9]">
               <Image
                 src={project.coverImage}
                 alt={project.title}
@@ -69,7 +52,7 @@ export default async function ProjectDetail({ params }: { params: Promise<Projec
                   className="mb-3 text-[10px] md:text-xs tracking-[0.3em] text-zinc-400 uppercase"
                   style={{ fontFamily: "Smooch Sans, sans-serif" }}
                 >
-                  {getCategoryLabel(project.category)}
+                  {getGalleryCategoryLabel(project.category)}
                 </p>
                 <h1
                   className="text-5xl md:text-7xl lg:text-8xl font-thin tracking-[0.22em] uppercase text-white leading-none"
@@ -82,7 +65,7 @@ export default async function ProjectDetail({ params }: { params: Promise<Projec
           </div>
 
           <aside id="gallery-meta" className="lg:col-span-1 lg:sticky lg:top-32 h-fit">
-            <div className="flex flex-col gap-6 border border-zinc-900/80 bg-black/20 p-6 md:p-8 rounded-2xl">
+            <div className="flex flex-col gap-6 rounded-2xl border border-zinc-900/80 bg-black/20 p-6 md:p-8">
               <div>
                 <p
                   className="mb-2 text-[10px] tracking-[0.35em] text-zinc-500 uppercase"
@@ -118,12 +101,24 @@ export default async function ProjectDetail({ params }: { params: Promise<Projec
                   {project.area || "-"}
                 </p>
               </div>
+
+              <div>
+                <p
+                  className="mb-2 text-[10px] tracking-[0.35em] text-zinc-500 uppercase"
+                  style={{ fontFamily: "Smooch Sans, sans-serif" }}
+                >
+                  DEPARTMAN
+                </p>
+                <p className="text-base md:text-lg text-white/90" style={{ fontFamily: "Smooch Sans, sans-serif" }}>
+                  {project.department || "-"}
+                </p>
+              </div>
             </div>
           </aside>
         </div>
 
-        <div className="mt-16 grid grid-cols-1 lg:grid-cols-5 gap-12">
-          <div id="gallery-details" className="lg:col-span-4 grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="mt-16 grid grid-cols-1 gap-12 lg:grid-cols-5">
+          <div id="gallery-details" className="lg:col-span-4 grid grid-cols-1 gap-6 md:grid-cols-3">
             <div className="rounded-2xl border border-zinc-900/80 bg-black/20 p-6 md:p-8">
               <p className="mb-4 text-[10px] tracking-[0.35em] text-zinc-500 uppercase" style={{ fontFamily: "Smooch Sans, sans-serif" }}>
                 ÇALIŞMA BİLGİSİ
@@ -154,7 +149,7 @@ export default async function ProjectDetail({ params }: { params: Promise<Projec
         </div>
 
         <div id="gallery-images" className="mt-16">
-          <div className="flex items-end justify-between gap-4 mb-8">
+          <div className="mb-8 flex items-end justify-between gap-4">
             <h2
               className="text-3xl md:text-5xl font-thin tracking-[0.22em] uppercase text-white"
               style={{ fontFamily: "Smooch Sans, sans-serif" }}
@@ -169,7 +164,7 @@ export default async function ProjectDetail({ params }: { params: Promise<Projec
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
             {project.gallery.map((imgSrc, index) => (
               <div
                 key={`${project.slug}-${index}`}
@@ -188,7 +183,7 @@ export default async function ProjectDetail({ params }: { params: Promise<Projec
           </div>
         </div>
 
-        <div id="gallery-story" className="mt-16 border-t border-zinc-900/80 pt-8 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <div id="gallery-story" className="mt-16 flex flex-col gap-4 border-t border-zinc-900/80 pt-8 md:flex-row md:items-center md:justify-between">
           <p
             className="text-[10px] md:text-xs tracking-[0.35em] text-zinc-500 uppercase"
             style={{ fontFamily: "Smooch Sans, sans-serif" }}

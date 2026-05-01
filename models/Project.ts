@@ -11,6 +11,7 @@ const ProjectSchema = new mongoose.Schema(
     slug: { type: String, required: true, unique: true },
     title: { type: String, required: true },
     label: { type: String, required: true }, // "VİLLA", "MAĞAZA" vs.
+    department: { type: String },
     
     // Çapraz Filtreler (Lüks Konut, Ticari vb.)
     categories: [{ type: String }],

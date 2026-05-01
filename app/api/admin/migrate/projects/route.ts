@@ -17,6 +17,7 @@ export async function GET() {
           $set: {
             title: proj.title,
             label: proj.label,
+            department: proj.department,
             categories: proj.category ? [proj.category] : [],
             coverImage: proj.coverImage,
             client: proj.client,

@@ -61,6 +61,7 @@ type ProjectRecord = {
   slug?: string;
   title: string;
   label: string;
+  department?: string;
   categories?: string[];
   publishTargets?: PublishTargets;
   coverImage?: string;
@@ -84,6 +85,7 @@ type ProjectRecord = {
 type FormState = {
   title: string;
   label: string;
+  department: string;
   categories: string[];
   publishTargets: PublishTargets;
   coverImage: string;
@@ -119,9 +121,17 @@ const TARGET_OPTIONS: Array<{ key: keyof PublishTargets; label: string }> = [
   { key: 'executionStudio', label: 'Uygulama Birimi' },
 ];
 
+const DEPARTMENT_OPTIONS = [
+  'MİMARİ TASARIM',
+  'MATERYAL STÜDYO',
+  'UYGULAMA HİZMETLERİ',
+  'MÜHENDİSLİK',
+];
+
 const emptyFormState: FormState = {
   title: '',
   label: '',
+  department: 'MİMARİ TASARIM',
   categories: [],
   publishTargets: {
     designStudio: true,
@@ -386,6 +396,7 @@ export default function AdminProjects() {
     setFormData({
       title: project.title || '',
       label: project.label || '',
+      department: project.department || 'MİMARİ TASARIM',
       categories: project.categories || [],
       publishTargets: project.publishTargets || {
         designStudio: true,
@@ -535,8 +546,8 @@ export default function AdminProjects() {
       const res = await fetch(url, {
         method,
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
-      });
+      body: JSON.stringify(formData),
+    });
 
       if (!res.ok) {
         const errorBody = await res.json().catch(() => null);
@@ -606,6 +617,7 @@ export default function AdminProjects() {
         const haystack = [
           project.title,
           project.label,
+          project.department,
           project.client,
           project.year,
           project.area,
@@ -941,6 +953,11 @@ export default function AdminProjects() {
                             <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/10 to-transparent" />
                             <div className="absolute inset-x-0 bottom-0 p-4">
                               <div className="mb-3 flex flex-wrap gap-2">
+                                {project.department ? (
+                                  <Badge className="border border-white/10 bg-white/10 text-white backdrop-blur-sm">
+                                    {project.department}
+                                  </Badge>
+                                ) : null}
                                 {TARGET_OPTIONS.filter((option) =>
                                   project.publishTargets?.[option.key],
                                 ).map((option) => (
@@ -1309,6 +1326,24 @@ export default function AdminProjects() {
                               className="h-12 rounded-2xl border-[color:var(--line)] bg-[color:var(--surface-muted)] text-[color:var(--text)] placeholder:text-[color:var(--text-muted)]"
                               required
                             />
+                          </div>
+                          <div className="space-y-2">
+                            <label className="text-xs font-medium uppercase tracking-[0.24em] text-[color:var(--text-muted)]">
+                              Departman
+                            </label>
+                            <select
+                              value={formData.department}
+                              onChange={(event) =>
+                                setFormData({ ...formData, department: event.target.value })
+                              }
+                              className="h-12 w-full rounded-2xl border border-[color:var(--line)] bg-[color:var(--surface-muted)] px-4 text-sm text-[color:var(--text)] outline-none"
+                            >
+                              {DEPARTMENT_OPTIONS.map((option) => (
+                                <option key={option} value={option}>
+                                  {option}
+                                </option>
+                              ))}
+                            </select>
                           </div>
                           <div className="space-y-2">
                             <label className="text-xs font-medium uppercase tracking-[0.24em] text-[color:var(--text-muted)]">

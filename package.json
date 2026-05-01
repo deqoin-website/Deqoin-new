@@ -8,6 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "test:team": "node scripts/team-flow-smoke.mjs",
+    "test:gallery": "node scripts/gallery-flow-smoke.mjs",
     "migrate:cloudinary": "node scripts/migrate-legacy-images-to-cloudinary.cjs"
   },
   "dependencies": {
