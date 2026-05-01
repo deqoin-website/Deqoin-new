@@ -3,6 +3,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import InteractiveBackground from "@/components/InteractiveBackground";
 import PageTransitionSound from "@/components/PageTransitionSound";
+import RouteThemeSync from "@/components/RouteThemeSync";
 import MaintenancePage from "./maintenance/page";
 import connectToDatabase from "@/lib/mongodb";
 import Settings from "@/models/Settings";
@@ -86,7 +87,8 @@ export default async function RootLayout({
           __html: `
             (function() {
               try {
-                var theme = localStorage.getItem('deqoin_theme') || 'dark';
+                var isAdmin = location.pathname.indexOf('/admin') === 0;
+                var theme = isAdmin ? (localStorage.getItem('deqoin_admin_theme') || 'dark') : 'dark';
                 document.documentElement.setAttribute('data-theme', theme);
               } catch (e) {}
             })();
@@ -126,6 +128,7 @@ export default async function RootLayout({
         className={pathname.startsWith('/faaliyet-alanlarimiz') ? 'faaliyet-alanlarimiz-page' : ''}
         suppressHydrationWarning
       >
+        <RouteThemeSync />
         <InteractiveBackground />
         <PageTransitionSound />
         {isMaintenance && !isAdminPath ? (

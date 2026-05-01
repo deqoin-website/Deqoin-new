@@ -8,10 +8,11 @@ import { safeGetLocalStorage, safeSetLocalStorage } from '@/lib/browser-storage'
 export default function ThemeToggle() {
   const [theme, setTheme] = useState<'dark' | 'light'>('dark');
   const [mounted, setMounted] = useState(false);
+  const storageKey = 'deqoin_admin_theme';
 
   useEffect(() => {
     setMounted(true);
-    const savedTheme = safeGetLocalStorage('deqoin_theme') as 'dark' | 'light';
+    const savedTheme = safeGetLocalStorage(storageKey) as 'dark' | 'light';
     if (savedTheme) {
       setTheme(savedTheme);
       document.documentElement.setAttribute('data-theme', savedTheme);
@@ -25,7 +26,7 @@ export default function ThemeToggle() {
     const newTheme = theme === 'dark' ? 'light' : 'dark';
     setTheme(newTheme);
     document.documentElement.setAttribute('data-theme', newTheme);
-    safeSetLocalStorage('deqoin_theme', newTheme);
+    safeSetLocalStorage(storageKey, newTheme);
   };
 
   if (!mounted) return null;
