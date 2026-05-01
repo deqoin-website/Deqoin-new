@@ -19,7 +19,6 @@ import {
   Search,
   Server,
   Settings2,
-  ShieldCheck,
   Sparkles,
   TrendingUp,
   Users,
@@ -626,42 +625,30 @@ export default function AdminDashboard() {
                   DEQOIN ADMIN DASHBOARD
                 </p>
                 <h1 className="max-w-2xl text-3xl font-semibold tracking-tight text-white sm:text-4xl lg:text-5xl">
-                  Hızlı karar verdiren, kritik veriyi öne çıkaran bir yönetim ekranı.
+                  Hızlı İşlemler
                 </h1>
                 <p className="max-w-2xl text-sm leading-7 text-zinc-300 sm:text-base">
-                  Randevu, proje, ekip ve içerik akışını tek bakışta görün. Ana sayfa servisleri,
-                  slider öğeleri, sistem ayarları ve API sağlığı aynı ekranda toplandı; mobilde de
-                  rahat kullanılacak şekilde yeniden düzenlendi.
+                  Randevu, proje, ekip ve içerik akışını tek bakışta görün.
                 </p>
               </div>
 
-              <div className="flex flex-wrap gap-3">
-                <Button asChild className="rounded-full bg-amber-400 text-zinc-950 hover:bg-amber-300">
-                  <Link href="/admin/crm">
-                    <MessageSquare className="mr-2 h-4 w-4" />
-                    Randevuları Aç
-                  </Link>
-                </Button>
-                <Button
-                  asChild
-                  variant="outline"
-                  className="rounded-full border-white/15 bg-white/5 text-white hover:bg-white/10 hover:text-white"
-                >
-                  <Link href="/admin/projects">
-                    <FolderKanban className="mr-2 h-4 w-4" />
-                    Projelere Git
-                  </Link>
-                </Button>
-                <Button
-                  asChild
-                  variant="outline"
-                  className="rounded-full border-white/15 bg-white/5 text-white hover:bg-white/10 hover:text-white"
-                >
-                  <Link href="/admin/settings">
-                    <ShieldCheck className="mr-2 h-4 w-4" />
-                    Sistem Ayarları
-                  </Link>
-                </Button>
+              <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+                {quickActions.map((item) => {
+                  const Icon = item.icon;
+                  return (
+                    <Button
+                      key={item.label}
+                      asChild
+                      variant="outline"
+                      className="h-auto justify-start rounded-2xl border-white/10 bg-white/[0.04] px-4 py-4 text-left text-white hover:bg-white/10 hover:text-white"
+                    >
+                      <Link href={item.href}>
+                        <Icon className="mr-3 h-4 w-4 shrink-0" />
+                        <span className="text-sm font-medium">{item.label}</span>
+                      </Link>
+                    </Button>
+                  );
+                })}
               </div>
             </div>
 
@@ -1129,37 +1116,6 @@ export default function AdminDashboard() {
                       API durumu henüz yüklenmedi.
                     </div>
                   )}
-                </CardContent>
-              </Card>
-            </motion.section>
-
-            <motion.section variants={itemVariants}>
-              <Card className="border border-white/10 bg-white/[0.04] shadow-[0_24px_80px_rgba(0,0,0,0.24)] backdrop-blur-xl">
-                <CardHeader className="border-b border-white/10">
-                  <CardTitle className="text-lg tracking-tight text-white">Hızlı İşlemler</CardTitle>
-                  <CardDescription className="mt-1 text-zinc-400">
-                    Sık kullanılan yönetim noktalarına doğrudan geçin.
-                  </CardDescription>
-                </CardHeader>
-
-                <CardContent className="grid gap-3 p-4 sm:grid-cols-2 xl:grid-cols-1">
-                  {quickActions.map((item) => {
-                    const Icon = item.icon;
-
-                    return (
-                      <Button
-                        key={item.label}
-                        asChild
-                        variant="outline"
-                        className="h-auto justify-start rounded-2xl border-white/10 bg-white/[0.04] px-4 py-4 text-left text-white hover:bg-white/10 hover:text-white"
-                      >
-                        <Link href={item.href}>
-                          <Icon className="mr-3 h-4 w-4 shrink-0" />
-                          <span className="text-sm font-medium">{item.label}</span>
-                        </Link>
-                      </Button>
-                    );
-                  })}
                 </CardContent>
               </Card>
             </motion.section>
