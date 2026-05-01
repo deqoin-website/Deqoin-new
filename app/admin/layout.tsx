@@ -29,6 +29,9 @@ import ThemeToggle from '@/components/ThemeToggle';
 import { AdminNotificationProvider } from '@/components/admin/AdminNotificationProvider';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
+import { mimariServices } from '@/data/mimari-hizmetler';
+import { materyalKategorileri } from '@/data/materyal-studyo';
+import { uygulamaBirimleri } from '@/data/uygulama-birimleri';
 
 import './admin.css';
 
@@ -50,6 +53,18 @@ type MenuGroup = {
   description: string;
   items: MenuItem[];
 };
+
+const createStudioSubItems = (
+  settingsPath: string,
+  detailPathBase: string,
+  items: Array<{ slug: string; title: string }>,
+) => [
+  { name: 'Genel Ayarlar', path: settingsPath },
+  ...items.map((item) => ({
+    name: item.title,
+    path: `${detailPathBase}/${item.slug}`,
+  })),
+];
 
 const menuGroups: MenuGroup[] = [
   {
@@ -95,36 +110,21 @@ const menuGroups: MenuGroup[] = [
         icon: Aperture,
         path: '/admin/content/services/mimari',
         hint: 'Mimarlık servis katmanı',
-        subItems: [
-          { name: 'Genel Ayarlar', path: '/admin/content/services/mimari' },
-          { name: 'Mimarlık', path: '/admin/studios/mimarlik' },
-          { name: 'İç Mimarlık', path: '/admin/studios/ic-mimarlik' },
-          { name: 'Restorasyon', path: '/admin/studios/restorasyon' },
-        ],
+        subItems: createStudioSubItems('/admin/content/services/mimari', '/admin/studios', mimariServices),
       },
       {
         name: 'Materyal Stüdyo',
         icon: Aperture,
         path: '/admin/content/services/material',
         hint: 'Materyal katalogları',
-        subItems: [
-          { name: 'Genel Ayarlar', path: '/admin/content/services/material' },
-          { name: 'Mobilya', path: '/admin/studios/mobilya' },
-          { name: 'Aydınlatma', path: '/admin/studios/aydinlatma' },
-          { name: 'İtalyan Sıvalar', path: '/admin/studios/italyan-sivalar' },
-        ],
+        subItems: createStudioSubItems('/admin/content/services/material', '/admin/studios', materyalKategorileri),
       },
       {
-        name: 'Uygulama Birimi',
+        name: 'Uygulama Stüdyo',
         icon: Aperture,
         path: '/admin/content/services/execution',
         hint: 'Uygulama akışları',
-        subItems: [
-          { name: 'Genel Ayarlar', path: '/admin/content/services/execution' },
-          { name: 'İnşaat', path: '/admin/studios/insaat-ekipleri' },
-          { name: 'Boya', path: '/admin/studios/boya-ekipleri' },
-          { name: 'Duvar', path: '/admin/studios/duvar-sanatcilari' },
-        ],
+        subItems: createStudioSubItems('/admin/content/services/execution', '/admin/studios', uygulamaBirimleri),
       },
     ],
   },
@@ -147,6 +147,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const router = useRouter();
+  const currentPath = searchParams.toString() ? `${pathname}?${searchParams.toString()}` : pathname;
 
   useEffect(() => {
     const updateMode = () => setIsMobile(window.innerWidth < 1024);
@@ -169,7 +170,25 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     }
   }, [pathname]);
 
-  const currentPath = searchParams.toString() ? `${pathname}?${searchParams.toString()}` : pathname;
+  useEffect(() => {
+    const matchedSubmenus = menuGroups
+      .flatMap((group) =>
+        group.items.filter((item) =>
+          item.subItems?.some((sub) => sub.path === pathname || sub.path === currentPath),
+        ),
+      )
+      .map((item) => item.name);
+
+    if (matchedSubmenus.length === 0) {
+      return;
+    }
+
+    setOpenSubmenus((current) => {
+      const next = new Set(current);
+      matchedSubmenus.forEach((name) => next.add(name));
+      return Array.from(next);
+    });
+  }, [currentPath, pathname]);
 
   const flatItems = useMemo(() => menuGroups.flatMap((group) => group.items), []);
   const allSubItems = useMemo(() => flatItems.flatMap((item) => item.subItems || []), [flatItems]);
