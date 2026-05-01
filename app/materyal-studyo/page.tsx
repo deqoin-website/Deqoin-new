@@ -143,9 +143,6 @@ export default function MateryalStudyo() {
             <div>
               <span className="section-small-label" style={{ color: "#cca883", marginBottom: "1rem", display: "block" }}>CATEGORY SELECTION</span>
               <h2 style={{ marginBottom: "0.5rem", textTransform: "uppercase", color: "#fff" }}>MATERIAL COLLECTION</h2>
-              <p style={{ maxWidth: "760px", color: "rgba(255,255,255,0.68)", lineHeight: 1.8, fontSize: "0.98rem" }}>
-                Marka, model, seri ve kullanım alanı gibi ürün verileri ile tasarlanan koleksiyonları keşfedin. Her kart, ilgili kategoriye ait öne çıkan ürün bilgisini ve detay sayfasına giriş kapısını taşır.
-              </p>
               <div className="section-line" />
             </div>
           </div>
@@ -157,11 +154,6 @@ export default function MateryalStudyo() {
                 href={`/materyal-studyo/${card.slug}`}
                 image={card.image}
                 title={card.title}
-                sideLabel={card.sideLabel}
-                eyebrow={card.cardLabel || card.brand || "PRODUCT COLLECTION"}
-                meta={[card.brand, card.model, card.series].filter(Boolean)}
-                description={card.highlight || card.description}
-                priceLabel={card.priceLabel}
               />
             ))}
           </div>

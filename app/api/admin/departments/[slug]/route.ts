@@ -29,20 +29,11 @@ export async function GET(
           sideLabel: match.sideLabel,
           description: match.description,
           image: match.image,
-          cardLabel: match.cardLabel,
-          brand: match.brand,
-          model: match.model,
-          series: match.series,
-          finish: match.finish,
-          usage: match.usage,
-          priceLabel: match.priceLabel,
-          highlight: match.highlight,
           sliderImages: match.sliderImages || [],
           categories: match.categories || [],
           // Eski yapıdaki longDescription satırlarını yeni process mantığına çeviriyoruz:
           process: match.process || (match.longDescription ? match.longDescription.content.map((c: string) => ({ title: "Açıklama Satırı", desc: c })) : []),
-          focusAreas: match.focusAreas || [],
-          products: match.products || [],
+          focusAreas: match.focusAreas || []
         };
       }
     }

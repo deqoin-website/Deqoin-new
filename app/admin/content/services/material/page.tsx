@@ -42,14 +42,6 @@ type CategoryItem = {
   sideLabel: string;
   image: string;
   slug: string;
-  cardLabel?: string;
-  brand?: string;
-  model?: string;
-  series?: string;
-  priceLabel?: string;
-  highlight?: string;
-  finish?: string;
-  usage?: string;
 };
 
 type ContentSection = {
@@ -70,33 +62,12 @@ type PageContent = {
   metadata?: { updatedAt?: string };
 };
 
-type NewCategoryDraft = {
-  title: string;
-  sideLabel: string;
-  slug: string;
-  cardLabel: string;
-  brand: string;
-  model: string;
-  series: string;
-  priceLabel: string;
-  highlight: string;
-  image: string;
-};
-
-const DEFAULT_MATERIAL_CATEGORIES: CategoryItem[] = materyalKategorileri.map(({ slug, title, sideLabel, image, cardLabel, brand, model, series, priceLabel, highlight, finish, usage }) => ({
+const DEFAULT_MATERIAL_CATEGORIES: CategoryItem[] = materyalKategorileri.map(({ slug, title, sideLabel, image }) => ({
   href: `/admin/content/services/material/${slug}`,
   title,
   sideLabel,
   image,
   slug,
-  cardLabel,
-  brand,
-  model,
-  series,
-  priceLabel,
-  highlight,
-  finish,
-  usage,
 }));
 
 const normalizeKey = (value?: string) =>
@@ -128,14 +99,6 @@ const mergeMaterialCategories = (items: CategoryItem[]) => {
       href: item?.href || fallback.href,
       slug: item?.slug || fallback.slug,
       image: item?.image || source.image,
-      cardLabel: item?.cardLabel || fallback.cardLabel,
-      brand: item?.brand || fallback.brand,
-      model: item?.model || fallback.model,
-      series: item?.series || fallback.series,
-      priceLabel: item?.priceLabel || fallback.priceLabel,
-      highlight: item?.highlight || fallback.highlight,
-      finish: item?.finish || fallback.finish,
-      usage: item?.usage || fallback.usage,
     };
   });
 
@@ -148,14 +111,6 @@ const mergeMaterialCategories = (items: CategoryItem[]) => {
     .map((item) => ({
       ...item,
       image: item?.image || SLIDER_IMAGE_URLS.material,
-      cardLabel: item?.cardLabel,
-      brand: item?.brand,
-      model: item?.model,
-      series: item?.series,
-      priceLabel: item?.priceLabel,
-      highlight: item?.highlight,
-      finish: item?.finish,
-      usage: item?.usage,
     }));
 
   return [...merged, ...extras];
@@ -211,14 +166,6 @@ const normalizeContent = (value: any): PageContent => {
         sideLabel: item?.sideLabel || 'Material Detail',
         image: item?.image || SLIDER_IMAGE_URLS.material,
         slug: item?.slug || 'yeni-kategori',
-        cardLabel: item?.cardLabel,
-        brand: item?.brand,
-        model: item?.model,
-        series: item?.series,
-        priceLabel: item?.priceLabel,
-        highlight: item?.highlight,
-        finish: item?.finish,
-        usage: item?.usage,
       })))
     : DEFAULT_MATERIAL_CATEGORIES;
 
@@ -285,16 +232,10 @@ export default function MaterialEditor() {
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-  const [newCategory, setNewCategory] = useState<NewCategoryDraft>({
+  const [newCategory, setNewCategory] = useState({
     title: '',
     sideLabel: '',
     slug: '',
-    cardLabel: '',
-    brand: '',
-    model: '',
-    series: '',
-    priceLabel: '',
-    highlight: '',
     image: SLIDER_IMAGE_URLS.material,
   });
   const [theme, setTheme] = useState<'dark' | 'light'>('dark');
@@ -462,17 +403,11 @@ export default function MaterialEditor() {
     mutateContent((draft) => {
       const categories = draft.sections.find((section) => section.id === 'categories');
       categories?.items?.push({
-        href: `/admin/content/services/material/${newCategory.slug || 'yeni-kategori'}`,
-        title: newCategory.title || 'Yeni Kategori',
-        sideLabel: newCategory.sideLabel || 'Material Detail',
-        image: newCategory.image || SLIDER_IMAGE_URLS.material,
-        slug: newCategory.slug || 'yeni-kategori',
-        cardLabel: newCategory.cardLabel,
-        brand: newCategory.brand,
-        model: newCategory.model,
-        series: newCategory.series,
-        priceLabel: newCategory.priceLabel,
-        highlight: newCategory.highlight,
+        href: '/admin/content/services/material/yeni-kategori',
+        title: 'Yeni Kategori',
+        sideLabel: 'Material Detail',
+        image: SLIDER_IMAGE_URLS.material,
+        slug: 'yeni-kategori',
       });
     });
   };
@@ -500,7 +435,7 @@ export default function MaterialEditor() {
       title: 'Sayfa içeriği',
       href: '/api/content?page=material',
       status: apiStatus.content,
-      note: 'Hero, CTA ve koleksiyon kartları bu kayıt üzerinden okunup yazılır.',
+      note: 'Hero, CTA ve materyal kartları bu kayıt üzerinden okunup yazılır.',
     },
     {
       title: 'Upload servisi',
@@ -560,7 +495,7 @@ export default function MaterialEditor() {
               <p className="mt-2 text-xs text-[color:var(--text-muted)]">Slider görseli</p>
             </div>
             <div className="rounded-2xl border border-[color:var(--line)] bg-[color:var(--surface-muted)] p-4">
-              <p className="text-[0.65rem] uppercase tracking-[0.28em] text-[color:var(--text-muted)]">Koleksiyon</p>
+              <p className="text-[0.65rem] uppercase tracking-[0.28em] text-[color:var(--text-muted)]">Kategori</p>
               <p className="mt-1 text-2xl font-semibold text-[color:var(--text)]">{categoryItems.length}</p>
               <p className="mt-2 text-xs text-[color:var(--text-muted)]">Yönetilen kartlar</p>
             </div>
@@ -886,9 +821,9 @@ export default function MaterialEditor() {
               <div className="space-y-4">
                 <div className="flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
                   <div>
-                    <h3 className="text-base font-semibold text-[color:var(--text)]">Koleksiyon Kartları</h3>
+                    <h3 className="text-base font-semibold text-[color:var(--text)]">Malzeme Kategorileri</h3>
                     <p className="text-sm text-[color:var(--text-muted)]">
-                      Marka, model, seri ve öne çıkan ürün bilgilerini düzenleyin.
+                      Kategori kartlarını düzenleyin ve detay sayfalarına gidin.
                     </p>
                   </div>
                   <div className="flex gap-2">
@@ -896,10 +831,10 @@ export default function MaterialEditor() {
                       type="button"
                       variant="outline"
                       className="border-[color:var(--line)] bg-[color:var(--surface-muted)] text-[color:var(--text)]"
-                      onClick={() => setIsAddModalOpen(true)}
+                      onClick={addCategory}
                     >
                       <Plus className="mr-2 h-4 w-4" />
-                      Kart Ekle
+                      Kategori Ekle
                     </Button>
                     <Button asChild className="bg-[color:var(--accent)] text-[color:var(--text-inverse)] hover:bg-[color:var(--accent-soft)]">
                       <Link href="/admin/studios/mobilya">
@@ -947,59 +882,6 @@ export default function MaterialEditor() {
                       />
                       <CardContent className="space-y-4 p-4">
                         <div className="space-y-2">
-                          <div className="grid gap-3 sm:grid-cols-2">
-                            <Input
-                              value={item.brand || ''}
-                              onChange={(event) =>
-                                mutateContent((draft) => {
-                                  const categories = draft.sections.find((section) => section.id === 'categories');
-                                  if (!categories?.items?.[index]) return;
-                                  categories.items[index].brand = event.target.value;
-                                })
-                              }
-                              className="h-11 rounded-2xl border-[color:var(--line)] bg-[color:var(--surface)] text-[color:var(--text)]"
-                              placeholder="Marka"
-                            />
-                            <Input
-                              value={item.model || ''}
-                              onChange={(event) =>
-                                mutateContent((draft) => {
-                                  const categories = draft.sections.find((section) => section.id === 'categories');
-                                  if (!categories?.items?.[index]) return;
-                                  categories.items[index].model = event.target.value;
-                                })
-                              }
-                              className="h-11 rounded-2xl border-[color:var(--line)] bg-[color:var(--surface)] text-[color:var(--text)]"
-                              placeholder="Model"
-                            />
-                          </div>
-                          <div className="grid gap-3 sm:grid-cols-2">
-                            <Input
-                              value={item.cardLabel || ''}
-                              onChange={(event) =>
-                                mutateContent((draft) => {
-                                  const categories = draft.sections.find((section) => section.id === 'categories');
-                                  if (!categories?.items?.[index]) return;
-                                  categories.items[index].cardLabel = event.target.value;
-                                })
-                              }
-                              className="h-11 rounded-2xl border-[color:var(--line)] bg-[color:var(--surface)] text-[color:var(--text)]"
-                              placeholder="Kart etiketi"
-                            />
-                            <Input
-                              value={item.series || ''}
-                              onChange={(event) =>
-                                mutateContent((draft) => {
-                                  const categories = draft.sections.find((section) => section.id === 'categories');
-                                  if (!categories?.items?.[index]) return;
-                                  categories.items[index].series = event.target.value;
-                                })
-                              }
-                              className="h-11 rounded-2xl border-[color:var(--line)] bg-[color:var(--surface)] text-[color:var(--text)]"
-                              placeholder="Seri"
-                            />
-                          </div>
-                          <div className="grid gap-3 sm:grid-cols-2">
                           <Input
                             value={item.title}
                             onChange={(event) =>
@@ -1022,44 +904,17 @@ export default function MaterialEditor() {
                             }
                             className="h-11 rounded-2xl border-[color:var(--line)] bg-[color:var(--surface)] text-[color:var(--text)]"
                           />
-                          </div>
-                          <div className="grid gap-3 sm:grid-cols-2">
-                            <Input
-                              value={item.priceLabel || ''}
-                              onChange={(event) =>
-                                mutateContent((draft) => {
-                                  const categories = draft.sections.find((section) => section.id === 'categories');
-                                  if (!categories?.items?.[index]) return;
-                                  categories.items[index].priceLabel = event.target.value;
-                                })
-                              }
-                              className="h-11 rounded-2xl border-[color:var(--line)] bg-[color:var(--surface)] text-[color:var(--text)]"
-                              placeholder="Fiyat etiketi"
-                            />
-                            <Input
-                              value={item.slug}
-                              onChange={(event) =>
-                                mutateContent((draft) => {
-                                  const categories = draft.sections.find((section) => section.id === 'categories');
-                                  if (!categories?.items?.[index]) return;
-                                  categories.items[index].slug = event.target.value;
-                                  categories.items[index].href = `/admin/content/services/material/${event.target.value}`;
-                                })
-                              }
-                              className="h-11 rounded-2xl border-[color:var(--line)] bg-[color:var(--surface)] text-[color:var(--text)]"
-                            />
-                          </div>
-                          <Textarea
-                            value={item.highlight || ''}
+                          <Input
+                            value={item.slug}
                             onChange={(event) =>
                               mutateContent((draft) => {
                                 const categories = draft.sections.find((section) => section.id === 'categories');
                                 if (!categories?.items?.[index]) return;
-                                categories.items[index].highlight = event.target.value;
+                                categories.items[index].slug = event.target.value;
+                                categories.items[index].href = `/admin/content/services/material/${event.target.value}`;
                               })
                             }
-                            className="min-h-24 rounded-[1.25rem] border-[color:var(--line)] bg-[color:var(--surface)] text-[color:var(--text)]"
-                            placeholder="Öne çıkan ürün özeti"
+                            className="h-11 rounded-2xl border-[color:var(--line)] bg-[color:var(--surface)] text-[color:var(--text)]"
                           />
                         </div>
                         <div className="flex items-center justify-between gap-2">
@@ -1083,17 +938,12 @@ export default function MaterialEditor() {
                             Sil
                           </Button>
                         </div>
-                        <div className="flex flex-wrap gap-2">
-                          {item.brand && <Badge variant="outline" className="border-[color:var(--line)] bg-[color:var(--surface)] text-[color:var(--text-muted)]">{item.brand}</Badge>}
-                          {item.model && <Badge variant="outline" className="border-[color:var(--line)] bg-[color:var(--surface)] text-[color:var(--text-muted)]">{item.model}</Badge>}
-                          {item.series && <Badge variant="outline" className="border-[color:var(--line)] bg-[color:var(--surface)] text-[color:var(--text-muted)]">{item.series}</Badge>}
-                        </div>
                       </CardContent>
                     </Card>
                   ))}
                   {categoryItems.length === 0 && (
                     <div className="rounded-[1.5rem] border border-dashed border-[color:var(--line)] bg-[color:var(--surface-muted)] p-8 text-center text-sm text-[color:var(--text-muted)] md:col-span-2 2xl:col-span-3">
-                      Henüz kart yok.
+                      Henüz kategori yok.
                     </div>
                   )}
                 </div>
@@ -1211,8 +1061,8 @@ export default function MaterialEditor() {
             >
               <div className="flex items-start justify-between gap-4 border-b border-[color:var(--line)] bg-[color:var(--surface-muted)] px-5 py-4 sm:px-6">
                 <div>
-                  <p className="text-[0.65rem] uppercase tracking-[0.32em] text-[color:var(--text-muted)]">Yeni Koleksiyon</p>
-                  <h2 className="text-xl font-semibold tracking-tight text-[color:var(--text)]">Ürün kartı ekle</h2>
+                  <p className="text-[0.65rem] uppercase tracking-[0.32em] text-[color:var(--text-muted)]">Yeni Kategori</p>
+                  <h2 className="text-xl font-semibold tracking-tight text-[color:var(--text)]">Kart ekle</h2>
                 </div>
                 <Button
                   type="button"
@@ -1228,81 +1078,42 @@ export default function MaterialEditor() {
                 <div className="space-y-4 p-5 sm:p-6">
                   <div className="grid gap-4 sm:grid-cols-2">
                     <Input
-                      value={newCategory.title}
-                      onChange={(event) => setNewCategory((prev) => ({ ...prev, title: event.target.value }))}
-                      className="h-12 rounded-2xl border-[color:var(--line)] bg-[color:var(--surface-muted)] text-[color:var(--text)]"
-                      placeholder="Ürün adı"
-                    />
-                    <Input
-                      value={newCategory.sideLabel}
-                      onChange={(event) => setNewCategory((prev) => ({ ...prev, sideLabel: event.target.value }))}
-                      className="h-12 rounded-2xl border-[color:var(--line)] bg-[color:var(--surface-muted)] text-[color:var(--text)]"
-                      placeholder="Kategori"
-                    />
-                  </div>
-                  <div className="grid gap-4 sm:grid-cols-2">
-                    <Input
-                      value={newCategory.brand}
-                      onChange={(event) => setNewCategory((prev) => ({ ...prev, brand: event.target.value }))}
-                      className="h-12 rounded-2xl border-[color:var(--line)] bg-[color:var(--surface-muted)] text-[color:var(--text)]"
-                      placeholder="Marka"
-                    />
-                    <Input
-                      value={newCategory.model}
-                      onChange={(event) => setNewCategory((prev) => ({ ...prev, model: event.target.value }))}
-                      className="h-12 rounded-2xl border-[color:var(--line)] bg-[color:var(--surface-muted)] text-[color:var(--text)]"
-                      placeholder="Model"
-                    />
-                  </div>
-                  <div className="grid gap-4 sm:grid-cols-2">
-                    <Input
-                      value={newCategory.series}
-                      onChange={(event) => setNewCategory((prev) => ({ ...prev, series: event.target.value }))}
-                      className="h-12 rounded-2xl border-[color:var(--line)] bg-[color:var(--surface-muted)] text-[color:var(--text)]"
-                      placeholder="Seri"
-                    />
-                    <Input
-                      value={newCategory.priceLabel}
-                      onChange={(event) => setNewCategory((prev) => ({ ...prev, priceLabel: event.target.value }))}
-                      className="h-12 rounded-2xl border-[color:var(--line)] bg-[color:var(--surface-muted)] text-[color:var(--text)]"
-                      placeholder="Fiyat etiketi"
-                    />
-                  </div>
-                  <Input
-                    value={newCategory.cardLabel}
-                    onChange={(event) => setNewCategory((prev) => ({ ...prev, cardLabel: event.target.value }))}
+                    value={newCategory.title}
+                    onChange={(event) => setNewCategory((prev) => ({ ...prev, title: event.target.value }))}
                     className="h-12 rounded-2xl border-[color:var(--line)] bg-[color:var(--surface-muted)] text-[color:var(--text)]"
-                    placeholder="Kart etiketi / koleksiyon"
+                    placeholder="Kategori adı"
                   />
                   <Input
-                    value={newCategory.slug}
-                    onChange={(event) => setNewCategory((prev) => ({ ...prev, slug: event.target.value }))}
+                    value={newCategory.sideLabel}
+                    onChange={(event) => setNewCategory((prev) => ({ ...prev, sideLabel: event.target.value }))}
                     className="h-12 rounded-2xl border-[color:var(--line)] bg-[color:var(--surface-muted)] text-[color:var(--text)]"
-                    placeholder="slug"
+                    placeholder="Yan etiket"
                   />
-                  <div className="grid gap-4 sm:grid-cols-2">
+                </div>
+                <div className="grid gap-4 sm:grid-cols-2">
+                    <Input
+                      value={newCategory.slug}
+                      onChange={(event) => setNewCategory((prev) => ({ ...prev, slug: event.target.value }))}
+                      className="h-12 rounded-2xl border-[color:var(--line)] bg-[color:var(--surface-muted)] text-[color:var(--text)]"
+                      placeholder="slug"
+                    />
+                  <div className="sm:col-span-2">
                     <AdminImageDropzone
                       aspectClassName="aspect-[16/10]"
                       accept="image/*"
                       buttonLabel="Görsel seç"
-                      description="Yeni ürün kartı için görsel yükleyin."
-                      emptySubtitle="Ürün görselini sürükleyin veya tıklayıp seçin."
-                      emptyTitle="Ürün görseli"
+                      description="Yeni kategori için görsel yükleyin."
+                      emptySubtitle="Kategori görselini sürükleyin veya tıklayıp seçin."
+                      emptyTitle="Kategori görseli"
                       previewAlt={newCategory.title || 'Yeni kategori'}
                       previewUrl={newCategory.image}
-                      title="Ürün görseli"
+                      title="Kategori görseli"
                       onFileSelect={async (file) => {
                         const url = await uploadFile(file);
                         setNewCategory((prev) => ({ ...prev, image: url }));
                       }}
                     />
                   </div>
-                  <Textarea
-                    value={newCategory.highlight}
-                    onChange={(event) => setNewCategory((prev) => ({ ...prev, highlight: event.target.value }))}
-                    className="min-h-28 rounded-[1.25rem] border-[color:var(--line)] bg-[color:var(--surface-muted)] text-[color:var(--text)]"
-                    placeholder="Öne çıkan ürün özeti"
-                  />
                 </div>
                 <Button
                   type="button"
@@ -1320,20 +1131,15 @@ export default function MaterialEditor() {
                         sideLabel: newCategory.sideLabel,
                         image: newCategory.image || SLIDER_IMAGE_URLS.material,
                         slug: newCategory.slug,
-                        cardLabel: newCategory.cardLabel,
-                        brand: newCategory.brand,
-                        model: newCategory.model,
-                        series: newCategory.series,
-                        priceLabel: newCategory.priceLabel,
-                        highlight: newCategory.highlight,
                       });
                     });
                     setIsAddModalOpen(false);
-                    setNewCategory({ title: '', sideLabel: '', slug: '', cardLabel: '', brand: '', model: '', series: '', priceLabel: '', highlight: '', image: SLIDER_IMAGE_URLS.material });
+                    setNewCategory({ title: '', sideLabel: '', slug: '', image: SLIDER_IMAGE_URLS.material });
                   }}
                 >
-                  Ürün Kartını Ekle
+                  Kartı Ekle
                 </Button>
+              </div>
             </motion.div>
           </div>
         )}

@@ -37,7 +37,6 @@ export default function MaterialDetail({ params }: { params: Promise<ServicePara
   }, [slug]);
 
   const service = materyalKategorileri.find((s) => s.slug === slug);
-  const detailSource = content || service;
 
   if (isLoading) {
     return (
@@ -61,45 +60,6 @@ export default function MaterialDetail({ params }: { params: Promise<ServicePara
   return (
     <>
       <main className="site-shell">
-        {detailSource && (
-          <section style={{ padding: "5rem 1.5rem 2rem", background: "#080808", color: "#fff", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
-            <div style={{ maxWidth: "1400px", margin: "0 auto" }}>
-              <div style={{ display: "flex", flexWrap: "wrap", gap: "0.75rem", alignItems: "center", marginBottom: "1.25rem" }}>
-                <span style={{ fontSize: "0.65rem", letterSpacing: "0.3em", textTransform: "uppercase", color: "#cca883" }}>
-                  {detailSource.cardLabel || "Product detail"}
-                </span>
-                {detailSource.brand && (
-                  <span style={{ border: "1px solid rgba(255,255,255,0.12)", borderRadius: "999px", padding: "0.45rem 0.8rem", fontSize: "0.65rem", letterSpacing: "0.22em", textTransform: "uppercase" }}>
-                    {detailSource.brand}
-                  </span>
-                )}
-                {detailSource.model && (
-                  <span style={{ border: "1px solid rgba(255,255,255,0.12)", borderRadius: "999px", padding: "0.45rem 0.8rem", fontSize: "0.65rem", letterSpacing: "0.22em", textTransform: "uppercase" }}>
-                    {detailSource.model}
-                  </span>
-                )}
-              </div>
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: "1rem" }}>
-                <div style={{ border: "1px solid rgba(255,255,255,0.08)", background: "rgba(255,255,255,0.03)", padding: "1.25rem", borderRadius: "1.25rem" }}>
-                  <div style={{ fontSize: "0.65rem", letterSpacing: "0.28em", textTransform: "uppercase", color: "rgba(255,255,255,0.45)" }}>Kategori</div>
-                  <div style={{ marginTop: "0.75rem", fontSize: "1rem", lineHeight: 1.5 }}>{detailSource.sideLabel || "-"}</div>
-                </div>
-                <div style={{ border: "1px solid rgba(255,255,255,0.08)", background: "rgba(255,255,255,0.03)", padding: "1.25rem", borderRadius: "1.25rem" }}>
-                  <div style={{ fontSize: "0.65rem", letterSpacing: "0.28em", textTransform: "uppercase", color: "rgba(255,255,255,0.45)" }}>Seri</div>
-                  <div style={{ marginTop: "0.75rem", fontSize: "1rem", lineHeight: 1.5 }}>{detailSource.series || detailSource.highlight || "-"}</div>
-                </div>
-                <div style={{ border: "1px solid rgba(255,255,255,0.08)", background: "rgba(255,255,255,0.03)", padding: "1.25rem", borderRadius: "1.25rem" }}>
-                  <div style={{ fontSize: "0.65rem", letterSpacing: "0.28em", textTransform: "uppercase", color: "rgba(255,255,255,0.45)" }}>Finish</div>
-                  <div style={{ marginTop: "0.75rem", fontSize: "1rem", lineHeight: 1.5 }}>{detailSource.finish || "-"}</div>
-                </div>
-                <div style={{ border: "1px solid rgba(255,255,255,0.08)", background: "rgba(255,255,255,0.03)", padding: "1.25rem", borderRadius: "1.25rem" }}>
-                  <div style={{ fontSize: "0.65rem", letterSpacing: "0.28em", textTransform: "uppercase", color: "rgba(255,255,255,0.45)" }}>Kullanım</div>
-                  <div style={{ marginTop: "0.75rem", fontSize: "1rem", lineHeight: 1.5 }}>{detailSource.usage || "-"}</div>
-                </div>
-              </div>
-            </div>
-          </section>
-        )}
         <DepartmentStudio 
           title={title.toUpperCase()}
           subtitle={subtitle.toUpperCase()}
