@@ -164,8 +164,10 @@ export default function GaleriPage() {
             <Badge className="border border-white/10 bg-white/5 text-white/80">
               {visibleProjects.length} proje
             </Badge>
-            <Button asChild className="bg-white text-black hover:bg-white/90 hover:text-black">
-              <a href={pageContent.ctaHref}>{pageContent.ctaText}</a>
+            <Button asChild className="bg-white !text-black hover:bg-white/90 hover:!text-black">
+              <a href={pageContent.ctaHref} className="!text-black">
+                {pageContent.ctaText}
+              </a>
             </Button>
           </div>
         </header>
