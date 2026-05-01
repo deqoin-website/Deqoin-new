@@ -77,8 +77,8 @@ function renderSection(section: JournalSection, index: number) {
       );
     case "image":
       return (
-        <figure key={`image-${index}`} className="space-y-3">
-          <div className="overflow-hidden rounded-none border border-white/10 bg-black">
+        <figure key={`image-${index}`} className="space-y-4">
+          <div className="relative overflow-hidden rounded-none border border-white/10 bg-black">
             <Image
               src={section.src}
               alt={section.alt}
@@ -87,6 +87,28 @@ function renderSection(section: JournalSection, index: number) {
               sizes="100vw"
             />
           </div>
+          {section.gallery && section.gallery.length > 0 ? (
+            <div className="grid grid-cols-2 gap-3 md:grid-cols-3">
+              {section.gallery.map((image, galleryIndex) => (
+                <div key={`${section.src}-gallery-${galleryIndex}`} className="space-y-2">
+                  <div className="relative aspect-[4/3] overflow-hidden border border-white/10 bg-black">
+                    <Image
+                      src={image.src}
+                      alt={image.alt}
+                      fill
+                      className="h-full w-full object-cover transition-transform duration-500 hover:scale-[1.03]"
+                      sizes="(max-width: 768px) 50vw, 33vw"
+                    />
+                  </div>
+                  {image.caption ? (
+                    <p className="text-[0.58rem] uppercase tracking-[0.4em] text-white/32">
+                      {image.caption}
+                    </p>
+                  ) : null}
+                </div>
+              ))}
+            </div>
+          ) : null}
           {section.caption ? (
             <figcaption className="text-[0.6rem] uppercase tracking-[0.45em] text-white/35">
               {section.caption}

@@ -38,6 +38,12 @@ export type JournalTechnicalDatum = {
   value: string;
 };
 
+export type JournalImageAsset = {
+  src: string;
+  alt: string;
+  caption?: string;
+};
+
 export type JournalSection =
   | {
       type: "paragraph";
@@ -48,6 +54,7 @@ export type JournalSection =
       src: string;
       alt: string;
       caption?: string;
+      gallery?: JournalImageAsset[];
     }
   | {
       type: "technical";

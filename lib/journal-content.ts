@@ -3,6 +3,7 @@ import {
   JOURNAL_DEPARTMENTS,
   JOURNAL_PROJECT_TYPES,
   journalArticles,
+  type JournalImageAsset,
   type JournalArticle,
   type JournalContentType,
   type JournalDepartment,
@@ -68,6 +69,21 @@ function stringOr(value: unknown, fallback: string) {
   return typeof value === "string" && value.trim() ? value.trim() : fallback;
 }
 
+function normalizeGalleryItem(item: any, index: number): JournalImageAsset {
+  if (typeof item === "string") {
+    return {
+      src: stringOr(item, ""),
+      alt: `Journal gallery image ${index + 1}`,
+    };
+  }
+
+  return {
+    src: stringOr(item?.src ?? item?.url, ""),
+    alt: stringOr(item?.alt, `Journal gallery image ${index + 1}`),
+    caption: typeof item?.caption === "string" && item.caption.trim() ? item.caption.trim() : undefined,
+  };
+}
+
 function pickAllowedValue<T extends string>(value: unknown, allowed: Set<T>, fallback: T) {
   return typeof value === "string" && allowed.has(value as T) ? (value as T) : fallback;
 }
@@ -93,6 +109,7 @@ function normalizeSection(section: any, index: number): JournalSection {
         src: stringOr(section.src, ""),
         alt: stringOr(section.alt, `Journal section image ${index + 1}`),
         caption: typeof section.caption === "string" && section.caption.trim() ? section.caption.trim() : undefined,
+        gallery: Array.isArray(section.gallery) ? section.gallery.map((item: any, galleryIndex: number) => normalizeGalleryItem(item, galleryIndex)).filter((item: JournalImageAsset) => Boolean(item.src)) : [],
       };
     case "technical":
       return {

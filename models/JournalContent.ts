@@ -1,5 +1,14 @@
 import mongoose from "mongoose";
 
+const JournalImageGallerySchema = new mongoose.Schema(
+  {
+    src: { type: String, required: true },
+    alt: { type: String, required: true },
+    caption: { type: String },
+  },
+  { _id: false },
+);
+
 const JournalSectionSchema = new mongoose.Schema(
   {
     type: { type: String, required: true, enum: ["paragraph", "image", "technical", "related"] },
@@ -9,6 +18,7 @@ const JournalSectionSchema = new mongoose.Schema(
     caption: { type: String },
     title: { type: String },
     items: { type: [mongoose.Schema.Types.Mixed], default: [] },
+    gallery: { type: [JournalImageGallerySchema], default: [] },
   },
   { _id: false },
 );

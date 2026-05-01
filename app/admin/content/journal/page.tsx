@@ -1,7 +1,8 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
+import Image from "next/image";
 import {
   ArrowDown,
   ArrowUp,
@@ -21,6 +22,7 @@ import {
 } from "lucide-react";
 
 import { useNotification } from "@/components/admin/AdminNotificationProvider";
+import { AdminImageDropzone } from "@/components/admin/AdminImageDropzone";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -32,6 +34,7 @@ import {
   JOURNAL_CONTENT_TYPES,
   JOURNAL_DEPARTMENTS,
   JOURNAL_PROJECT_TYPES,
+  type JournalImageAsset,
   type JournalArticle,
   type JournalSection,
 } from "@/data/journal";
@@ -84,7 +87,7 @@ function attachSectionIds(sections: JournalSection[]): SectionDraft[] {
 function createEmptySection(type: SectionType): SectionDraft {
   switch (type) {
     case "image":
-      return { id: createId("image"), type, src: "", alt: "Journal görseli", caption: "" };
+      return { id: createId("image"), type, src: "", alt: "Journal görseli", caption: "", gallery: [] };
     case "technical":
       return { id: createId("technical"), type, items: [{ label: "BAŞLIK", value: "DEĞER" }] };
     case "related":
@@ -160,14 +163,288 @@ function moveArrayItem<T>(values: T[], index: number, direction: "up" | "down") 
   return next;
 }
 
+function fileNameFromUrl(url: string) {
+  try {
+    const pathname = new URL(url).pathname;
+    return pathname.split("/").pop() || "journal-image";
+  } catch {
+    return "journal-image";
+  }
+}
+
 function reorderArray<T>(values: T[], fromIndex: number, toIndex: number) {
   if (fromIndex === toIndex) return values;
-  if (fromIndex < 0 || toIndex < 0 || fromIndex >= values.length || toIndex >= values.length) return values;
+  if (fromIndex < 0 || toIndex < 0 || fromIndex >= values.length || toIndex > values.length) return values;
 
   const next = [...values];
   const [moved] = next.splice(fromIndex, 1);
-  next.splice(toIndex, 0, moved);
+  const targetIndex = Math.max(0, Math.min(toIndex, next.length));
+  next.splice(targetIndex, 0, moved);
   return next;
+}
+
+function createGalleryAsset(src: string, label?: string): JournalImageAsset {
+  const normalizedLabel = label?.trim();
+  return {
+    src,
+    alt: normalizedLabel || fileNameFromUrl(src),
+    caption: normalizedLabel || undefined,
+  };
+}
+
+function ImageGalleryEditor({
+  gallery,
+  onChange,
+  onUploadImage,
+}: {
+  gallery: JournalImageAsset[];
+  onChange: (nextGallery: JournalImageAsset[]) => void;
+  onUploadImage?: (file: File) => Promise<string>;
+}) {
+  const inputRef = useRef<HTMLInputElement>(null);
+  const dragDepth = useRef(0);
+  const [isDragging, setIsDragging] = useState(false);
+
+  const resetInput = useCallback(() => {
+    if (inputRef.current) {
+      inputRef.current.value = "";
+    }
+  }, []);
+
+  const openPicker = useCallback(() => {
+    inputRef.current?.click();
+  }, []);
+
+  const addFiles = useCallback(
+    async (files: FileList | File[] | null) => {
+      if (!onUploadImage) return;
+      const list = Array.from(files ?? []);
+      if (list.length === 0) return;
+
+      const uploaded = await Promise.all(
+        list.map(async (file) => {
+          const src = await onUploadImage(file);
+          return createGalleryAsset(src, file.name.replace(/\.[^.]+$/, "").replace(/[-_]+/g, " ").trim() || "Görsel");
+        }),
+      );
+
+      onChange([...gallery, ...uploaded]);
+      resetInput();
+    },
+    [gallery, onChange, onUploadImage, resetInput],
+  );
+
+  const handleDragEnter = (event: React.DragEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    event.stopPropagation();
+    dragDepth.current += 1;
+    setIsDragging(true);
+  };
+
+  const handleDragOver = (event: React.DragEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    event.stopPropagation();
+  };
+
+  const handleDragLeave = (event: React.DragEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    event.stopPropagation();
+    dragDepth.current = Math.max(0, dragDepth.current - 1);
+    if (dragDepth.current === 0) {
+      setIsDragging(false);
+    }
+  };
+
+  const handleDrop = async (event: React.DragEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    event.stopPropagation();
+    dragDepth.current = 0;
+    setIsDragging(false);
+    await addFiles(event.dataTransfer.files);
+  };
+
+  const handleChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    try {
+      await addFiles(event.target.files);
+    } finally {
+      resetInput();
+    }
+  };
+
+  return (
+    <div className="space-y-4 rounded-[1.5rem] border border-white/10 bg-white/[0.03] p-4 md:p-5">
+      <div className="flex items-center justify-between gap-3">
+        <div className="space-y-1">
+          <p className="text-[0.6rem] uppercase tracking-[0.45em] text-white/35">GALERİ</p>
+          <p className="text-sm leading-6 text-white/60">Çoklu yükleme ile bölümün altında bir görsel serisi oluşturun.</p>
+        </div>
+        <Badge variant="outline" className="border-white/10 bg-white/[0.03] text-white/70">
+          {gallery.length} görsel
+        </Badge>
+      </div>
+
+      <button
+        type="button"
+        className={cn(
+          "group relative flex min-h-[140px] w-full flex-col items-center justify-center gap-3 overflow-hidden rounded-[1.35rem] border-2 border-dashed border-white/10 bg-white/[0.03] px-5 py-6 text-center transition-all",
+          "hover:border-white/20 hover:bg-white/[0.05]",
+          isDragging ? "border-white/35 bg-white/[0.07] shadow-[0_0_0_5px_rgba(255,255,255,0.04)]" : "",
+        )}
+        onClick={openPicker}
+        onDragEnter={handleDragEnter}
+        onDragOver={handleDragOver}
+        onDragLeave={handleDragLeave}
+        onDrop={handleDrop}
+      >
+        <input ref={inputRef} type="file" accept="image/*" multiple className="hidden" onChange={handleChange} />
+        <div className="flex h-12 w-12 items-center justify-center rounded-full border border-white/10 bg-black/20 text-white">
+          <Plus className="h-5 w-5" />
+        </div>
+        <div className="space-y-1">
+          <p className="text-sm uppercase tracking-[0.28em] text-white">GÖRSELLERİ EKLE</p>
+          <p className="text-[0.68rem] uppercase tracking-[0.3em] text-white/45">
+            Sürükleyip bırakın, tıklayın veya birden fazla dosya seçin
+          </p>
+        </div>
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent opacity-60" />
+      </button>
+
+      {gallery.length > 0 ? (
+        <div className="grid gap-3 xl:grid-cols-2">
+          {gallery.map((image, galleryIndex) => (
+            <div
+              key={`${image.src}-${galleryIndex}`}
+              className="space-y-3 rounded-[1.25rem] border border-white/10 bg-black/15 p-3"
+            >
+              <div className="relative aspect-[4/3] overflow-hidden rounded-[1rem] border border-white/10 bg-black">
+                <Image src={image.src} alt={image.alt} fill className="h-full w-full object-cover" sizes="(max-width: 768px) 100vw, 50vw" />
+              </div>
+              <div className="grid gap-3 sm:grid-cols-[minmax(0,1fr)_auto]">
+                <div className="space-y-2">
+                  <Input
+                    value={image.src}
+                    onChange={(event) =>
+                      onChange(
+                        gallery.map((currentImage, currentIndex) =>
+                          currentIndex === galleryIndex
+                            ? {
+                                ...currentImage,
+                                src: event.target.value,
+                                alt: currentImage.alt || fileNameFromUrl(event.target.value),
+                              }
+                            : currentImage,
+                        ),
+                      )
+                    }
+                    placeholder="https://... veya /gorsel.jpg"
+                    className="bg-white/[0.03]"
+                  />
+                  <Input
+                    value={image.alt}
+                    onChange={(event) =>
+                      onChange(
+                        gallery.map((currentImage, currentIndex) =>
+                          currentIndex === galleryIndex ? { ...currentImage, alt: event.target.value } : currentImage,
+                        ),
+                      )
+                    }
+                    placeholder="Alt metin"
+                    className="bg-white/[0.03]"
+                  />
+                  <Input
+                    value={image.caption || ""}
+                    onChange={(event) =>
+                      onChange(
+                        gallery.map((currentImage, currentIndex) =>
+                          currentIndex === galleryIndex ? { ...currentImage, caption: event.target.value } : currentImage,
+                        ),
+                      )
+                    }
+                    placeholder="Kısa açıklama"
+                    className="bg-white/[0.03]"
+                  />
+                </div>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  className="h-11 w-11 rounded-2xl border border-rose-500/20 bg-rose-500/10 text-rose-100 hover:bg-rose-500 hover:text-white"
+                  onClick={() => onChange(gallery.filter((_, currentIndex) => currentIndex !== galleryIndex))}
+                >
+                  <Trash2 className="h-4 w-4" />
+                </Button>
+              </div>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div className="rounded-[1.25rem] border border-dashed border-white/10 bg-white/[0.02] px-4 py-5 text-sm leading-7 text-white/50">
+          Galeri boş. Birden fazla görsel yükleyerek bölümünüzü seri halinde kurgulayabilirsiniz.
+        </div>
+      )}
+    </div>
+  );
+}
+
+function SectionDropTarget({
+  index,
+  active,
+  onDropItem,
+  onDragEnter,
+  onDragLeave,
+}: {
+  index: number;
+  active: boolean;
+  onDropItem: () => void;
+  onDragEnter: () => void;
+  onDragLeave: () => void;
+}) {
+  return (
+    <div
+      className={cn(
+        "group relative h-14 rounded-[1.25rem] border border-dashed transition-all duration-200",
+        active
+          ? "border-white/35 bg-white/[0.08] shadow-[0_0_0_1px_rgba(255,255,255,0.14),0_12px_45px_rgba(0,0,0,0.18)]"
+          : "border-white/10 bg-white/[0.025] hover:border-white/20 hover:bg-white/[0.05]",
+      )}
+      onDragOver={(event) => {
+        event.preventDefault();
+        onDragEnter();
+      }}
+      onDragLeave={(event) => {
+        event.preventDefault();
+        onDragLeave();
+      }}
+      onDrop={(event) => {
+        event.preventDefault();
+        onDropItem();
+      }}
+    >
+      <div className="pointer-events-none absolute inset-0 flex items-center justify-between px-4">
+        <div className="flex items-center gap-3">
+          <div
+            className={cn(
+              "flex h-8 w-8 items-center justify-center rounded-full border transition-colors",
+              active ? "border-white/35 bg-white text-zinc-950" : "border-white/10 bg-white/[0.04] text-white/45",
+            )}
+          >
+            <GripVertical className="h-4 w-4" />
+          </div>
+          <div className="space-y-0.5">
+            <p className="text-[0.58rem] uppercase tracking-[0.35em] text-white/55">
+              Bölüm bırakma alanı
+            </p>
+            <p className="text-[0.68rem] uppercase tracking-[0.25em] text-white/35">
+              {active ? "Bırakmak için bırakın" : "Bu çizgiye bir bölümü bırakın"}
+            </p>
+          </div>
+        </div>
+        <Badge variant="outline" className="border-white/10 bg-white/[0.03] text-white/60">
+          #{String(index + 1).padStart(2, "0")}
+        </Badge>
+      </div>
+    </div>
+  );
 }
 
 function SectionEditor({
@@ -177,9 +454,8 @@ function SectionEditor({
   onMove,
   onDuplicate,
   onRemove,
+  onUploadImage,
   onDragStart,
-  onDragOver,
-  onDrop,
   onDragEnd,
   isDragging = false,
 }: {
@@ -189,9 +465,8 @@ function SectionEditor({
   onMove: (direction: "up" | "down") => void;
   onDuplicate: () => void;
   onRemove: () => void;
+  onUploadImage?: (file: File) => Promise<string>;
   onDragStart?: () => void;
-  onDragOver?: () => void;
-  onDrop?: () => void;
   onDragEnd?: () => void;
   isDragging?: boolean;
 }) {
@@ -202,18 +477,10 @@ function SectionEditor({
     <Card
       draggable
       onDragStart={onDragStart}
-      onDragOver={(event) => {
-        event.preventDefault();
-        onDragOver?.();
-      }}
-      onDrop={(event) => {
-        event.preventDefault();
-        onDrop?.();
-      }}
       onDragEnd={onDragEnd}
       className={cn(
-        "rounded-[1.5rem] border-white/10 bg-white/[0.04] shadow-none transition-all",
-        isDragging ? "scale-[0.99] border-white/20 bg-white/[0.07] opacity-80" : "",
+        "rounded-[1.5rem] border-white/10 bg-white/[0.04] shadow-none transition-all duration-200",
+        isDragging ? "scale-[0.995] border-white/20 bg-white/[0.07] opacity-80" : "",
       )}
     >
       <CardContent className="p-5 md:p-6 space-y-5">
@@ -288,29 +555,67 @@ function SectionEditor({
         )}
 
         {section.type === "image" && (
-          <div className="grid gap-4 lg:grid-cols-2">
-            <div className="space-y-2">
-              <p className="text-[0.6rem] uppercase tracking-[0.45em] text-white/35">GÖRSEL URL</p>
-              <Input
-                value={section.src}
-                onChange={(event) => onChange({ ...section, src: event.target.value })}
-                placeholder="https://... veya /local-image.jpg"
-              />
-            </div>
-            <div className="space-y-2">
-              <p className="text-[0.6rem] uppercase tracking-[0.45em] text-white/35">ALT METİN</p>
-              <Input
-                value={section.alt}
-                onChange={(event) => onChange({ ...section, alt: event.target.value })}
-                placeholder="Görsel açıklaması"
-              />
-            </div>
-            <div className="space-y-2 lg:col-span-2">
-              <p className="text-[0.6rem] uppercase tracking-[0.45em] text-white/35">CAPTION</p>
-              <Input
-                value={section.caption || ""}
-                onChange={(event) => onChange({ ...section, caption: event.target.value })}
-                placeholder="Görsel altı açıklama"
+          <div className="grid gap-4 2xl:grid-cols-[1.1fr_0.9fr]">
+            <AdminImageDropzone
+              accept="image/*"
+              aspectClassName="aspect-[16/10]"
+              buttonLabel="Görsel ekle"
+              className="min-h-[340px] rounded-[1.5rem] border-white/10 bg-white/[0.03]"
+              description="Sürükleyip bırakın, tıklayıp seçin veya mevcut URL'i değiştirin."
+              emptySubtitle="Journal bölüm görseli yükleyin."
+              emptyTitle="Bölüm görseli"
+              onFileSelect={async (file) => {
+                if (!onUploadImage) return;
+                const url = await onUploadImage(file);
+                onChange({ ...section, src: url });
+              }}
+              previewAlt={section.alt || "Journal görseli"}
+              previewUrl={section.src}
+              title="BÖLÜM GÖRSELİ"
+            />
+
+            <div className="space-y-4">
+              <div className="space-y-4 rounded-[1.5rem] border border-white/10 bg-white/[0.03] p-4 md:p-5">
+                <div className="grid gap-4 md:grid-cols-2">
+                  <div className="space-y-2">
+                    <p className="text-[0.6rem] uppercase tracking-[0.45em] text-white/35">GÖRSEL URL</p>
+                    <Input
+                      value={section.src}
+                      onChange={(event) => onChange({ ...section, src: event.target.value })}
+                      placeholder="https://... veya /local-image.jpg"
+                      className="bg-white/[0.03]"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <p className="text-[0.6rem] uppercase tracking-[0.45em] text-white/35">ALT METİN</p>
+                    <Input
+                      value={section.alt}
+                      onChange={(event) => onChange({ ...section, alt: event.target.value })}
+                      placeholder="Görsel açıklaması"
+                      className="bg-white/[0.03]"
+                    />
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <p className="text-[0.6rem] uppercase tracking-[0.45em] text-white/35">CAPTION</p>
+                  <Input
+                    value={section.caption || ""}
+                    onChange={(event) => onChange({ ...section, caption: event.target.value })}
+                    placeholder="Görsel altı açıklama"
+                    className="bg-white/[0.03]"
+                  />
+                </div>
+              </div>
+
+              <ImageGalleryEditor
+                gallery={section.gallery ?? []}
+                onChange={(nextGallery) =>
+                  onChange({
+                    ...section,
+                    gallery: nextGallery,
+                  })
+                }
+                onUploadImage={onUploadImage}
               />
             </div>
           </div>
@@ -488,6 +793,8 @@ export default function JournalAdminPage() {
   const [hasDirtyState, setHasDirtyState] = useState(false);
   const [draggedArticleIndex, setDraggedArticleIndex] = useState<number | null>(null);
   const [draggedSectionIndex, setDraggedSectionIndex] = useState<number | null>(null);
+  const [sectionDropTargetIndex, setSectionDropTargetIndex] = useState<number | null>(null);
+  const [isUploadingImage, setIsUploadingImage] = useState(false);
 
   const selectedIndex = useMemo(() => draft.articles.findIndex((article) => article.slug === selectedSlug), [draft.articles, selectedSlug]);
   const selectedArticle = selectedIndex >= 0 ? draft.articles[selectedIndex] : draft.articles[0] || null;
@@ -520,6 +827,28 @@ export default function JournalAdminPage() {
     });
   };
 
+  const uploadJournalImage = useCallback(async (file: File) => {
+    setIsUploadingImage(true);
+
+    try {
+      const response = await fetch(`/api/upload?filename=${encodeURIComponent(file.name)}`, {
+        method: "POST",
+        body: file,
+      });
+
+      const payload = await response.json().catch(() => null);
+      const uploadedUrl = payload?.url || payload?.secure_url || payload?.downloadUrl;
+
+      if (!response.ok || !uploadedUrl) {
+        throw new Error(payload?.error || "Upload failed");
+      }
+
+      return uploadedUrl as string;
+    } finally {
+      setIsUploadingImage(false);
+    }
+  }, []);
+
   const fetchContent = useCallback(async () => {
     setIsLoading(true);
     setApiStatus("loading");
@@ -534,6 +863,7 @@ export default function JournalAdminPage() {
       setSelectedSlug(nextDraft.articles[0]?.slug ?? "");
       setDraggedArticleIndex(null);
       setDraggedSectionIndex(null);
+      setSectionDropTargetIndex(null);
       setHasDirtyState(false);
       setApiStatus(res.ok ? "ok" : "error");
 
@@ -547,6 +877,7 @@ export default function JournalAdminPage() {
       setSelectedSlug(fallback.articles[0]?.slug ?? "");
       setDraggedArticleIndex(null);
       setDraggedSectionIndex(null);
+      setSectionDropTargetIndex(null);
       setHasDirtyState(false);
       setApiStatus("error");
       showToast("Journal içerikleri yüklenemedi, varsayılan veri gösteriliyor.", "error");
@@ -708,6 +1039,7 @@ export default function JournalAdminPage() {
       setDraft(nextDraft);
       setDraggedArticleIndex(null);
       setDraggedSectionIndex(null);
+      setSectionDropTargetIndex(null);
       setHasDirtyState(false);
       setApiStatus("ok");
       showToast("Journal içeriği kaydedildi.", "success");
@@ -774,8 +1106,8 @@ export default function JournalAdminPage() {
         </CardContent>
       </Card>
 
-      <div className="grid gap-6 xl:grid-cols-[320px_minmax(0,1fr)]">
-        <aside className="space-y-6">
+      <div className="grid gap-6 xl:grid-cols-[340px_minmax(0,1fr)]">
+        <aside className="space-y-6 xl:sticky xl:top-6 xl:self-start">
           <Card className="border-white/10 bg-white/[0.04] shadow-none">
             <CardHeader className="space-y-4">
               <div className="flex items-start justify-between gap-3">
@@ -955,22 +1287,65 @@ export default function JournalAdminPage() {
                 </Badge>
               </div>
             </CardHeader>
-            <CardContent className="grid gap-4 lg:grid-cols-2">
+            <CardContent className="grid gap-4 xl:grid-cols-[1.1fr_0.9fr]">
               <div className="space-y-4">
-                <div className="space-y-2">
-                  <p className="text-[0.6rem] uppercase tracking-[0.45em] text-white/35">BAŞLIK</p>
-                  <Input
-                    value={draft.pageTitle}
-                    onChange={(event) =>
-                      setNextDraft((current) => ({
-                        ...current,
-                        pageTitle: event.target.value,
-                      }))
-                    }
-                    className="bg-white/[0.03]"
-                  />
-                </div>
+                <AdminImageDropzone
+                  accept="image/*"
+                  aspectClassName="aspect-[16/9]"
+                  buttonLabel="Kapak ekle"
+                  className="min-h-[320px] rounded-[1.5rem] border-white/10 bg-white/[0.03]"
+                  description="Kapak görselini sürükleyip bırakın ya da seçin."
+                  emptySubtitle="Journal arşivinin kapak görseli."
+                  emptyTitle="Kapak görseli"
+                  onFileSelect={async (file) => {
+                    const url = await uploadJournalImage(file);
+                    updateSelectedArticle((article) => ({
+                      ...article,
+                      coverImage: url,
+                    }));
+                  }}
+                  previewAlt={selectedArticle?.title || "Journal kapak görseli"}
+                  previewUrl={selectedArticle?.coverImage}
+                  title="KAPAK GÖRSELİ"
+                />
 
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <div className="space-y-2">
+                    <p className="text-[0.6rem] uppercase tracking-[0.45em] text-white/35">BAŞLIK</p>
+                    <Input
+                      value={draft.pageTitle}
+                      onChange={(event) =>
+                        setNextDraft((current) => ({
+                          ...current,
+                          pageTitle: event.target.value,
+                        }))
+                      }
+                      className="bg-white/[0.03]"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <p className="text-[0.6rem] uppercase tracking-[0.45em] text-white/35">ÖNE ÇIKAN MAKALE</p>
+                    <Select
+                      value={draft.hero.featuredArticleSlug}
+                      onChange={(event) =>
+                        setNextDraft((current) => ({
+                          ...current,
+                          hero: { ...current.hero, featuredArticleSlug: event.target.value },
+                        }))
+                      }
+                    >
+                      {draft.articles.map((article) => (
+                        <option key={article.slug} value={article.slug}>
+                          {article.title}
+                        </option>
+                      ))}
+                    </Select>
+                  </div>
+                </div>
+              </div>
+
+              <div className="space-y-4 rounded-[1.5rem] border border-white/10 bg-white/[0.03] p-4 md:p-5">
                 <div className="space-y-2">
                   <p className="text-[0.6rem] uppercase tracking-[0.45em] text-white/35">KAHRAMAN BAŞLIK</p>
                   <Input
@@ -998,9 +1373,7 @@ export default function JournalAdminPage() {
                     className="bg-white/[0.03]"
                   />
                 </div>
-              </div>
 
-              <div className="space-y-4">
                 <div className="space-y-2">
                   <p className="text-[0.6rem] uppercase tracking-[0.45em] text-white/35">AÇIKLAMA</p>
                   <Textarea
@@ -1011,27 +1384,19 @@ export default function JournalAdminPage() {
                         hero: { ...current.hero, description: event.target.value },
                       }))
                     }
-                    className="min-h-[160px] bg-white/[0.03] uppercase tracking-[0.08em] text-white"
+                    className="min-h-[170px] bg-white/[0.03] uppercase tracking-[0.08em] text-white"
                   />
                 </div>
 
-                <div className="space-y-2">
-                  <p className="text-[0.6rem] uppercase tracking-[0.45em] text-white/35">ÖNE ÇIKAN MAKALE</p>
-                  <Select
-                    value={draft.hero.featuredArticleSlug}
-                    onChange={(event) =>
-                      setNextDraft((current) => ({
-                        ...current,
-                        hero: { ...current.hero, featuredArticleSlug: event.target.value },
-                      }))
-                    }
-                  >
-                    {draft.articles.map((article) => (
-                      <option key={article.slug} value={article.slug}>
-                        {article.title}
-                      </option>
-                    ))}
-                  </Select>
+                <div className="grid grid-cols-2 gap-3 text-[0.58rem] uppercase tracking-[0.38em] text-white/45">
+                  <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-3">
+                    <p>Makale</p>
+                    <p className="mt-2 text-lg text-white">{draft.articles.length}</p>
+                  </div>
+                  <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-3">
+                    <p>Durum</p>
+                    <p className="mt-2 text-lg text-white">{isUploadingImage ? "Yükleniyor" : hasDirtyState ? "Düzenlendi" : "Hazır"}</p>
+                  </div>
                 </div>
               </div>
             </CardContent>
@@ -1352,27 +1717,69 @@ export default function JournalAdminPage() {
                   </CardHeader>
 
                   <CardContent className="space-y-4">
-                    {selectedArticle.sections.map((section, sectionIndex) => (
-                      <SectionEditor
-                        key={section.id}
-                        section={section}
-                        index={sectionIndex}
-                        isDragging={draggedSectionIndex === sectionIndex}
-                        onChange={(nextSection) => updateSection(sectionIndex, nextSection)}
-                        onMove={(direction) => moveSection(sectionIndex, direction)}
-                        onDuplicate={() => duplicateSection(sectionIndex)}
-                        onRemove={() => removeSection(sectionIndex)}
-                        onDragStart={() => setDraggedSectionIndex(sectionIndex)}
-                        onDragOver={() => setDraggedSectionIndex(sectionIndex)}
-                        onDrop={() => {
+                    {selectedArticle.sections.length === 0 ? (
+                      <SectionDropTarget
+                        index={0}
+                        active={sectionDropTargetIndex === 0}
+                        onDragEnter={() => setSectionDropTargetIndex(0)}
+                        onDragLeave={() => setSectionDropTargetIndex(null)}
+                        onDropItem={() => {
                           if (draggedSectionIndex !== null) {
-                            reorderSection(draggedSectionIndex, sectionIndex);
+                            reorderSection(draggedSectionIndex, 0);
                           }
                           setDraggedSectionIndex(null);
+                          setSectionDropTargetIndex(null);
                         }}
-                        onDragEnd={() => setDraggedSectionIndex(null)}
                       />
-                    ))}
+                    ) : (
+                      <>
+                        {selectedArticle.sections.map((section, sectionIndex) => (
+                          <div key={section.id} className="space-y-4">
+                            <SectionDropTarget
+                              index={sectionIndex}
+                              active={sectionDropTargetIndex === sectionIndex}
+                              onDragEnter={() => setSectionDropTargetIndex(sectionIndex)}
+                              onDragLeave={() => setSectionDropTargetIndex(null)}
+                              onDropItem={() => {
+                                if (draggedSectionIndex !== null) {
+                                  reorderSection(draggedSectionIndex, sectionIndex);
+                                }
+                                setDraggedSectionIndex(null);
+                                setSectionDropTargetIndex(null);
+                              }}
+                            />
+                            <SectionEditor
+                              section={section}
+                              index={sectionIndex}
+                              isDragging={draggedSectionIndex === sectionIndex}
+                              onChange={(nextSection) => updateSection(sectionIndex, nextSection)}
+                              onMove={(direction) => moveSection(sectionIndex, direction)}
+                              onDuplicate={() => duplicateSection(sectionIndex)}
+                              onRemove={() => removeSection(sectionIndex)}
+                              onUploadImage={uploadJournalImage}
+                              onDragStart={() => setDraggedSectionIndex(sectionIndex)}
+                              onDragEnd={() => {
+                                setDraggedSectionIndex(null);
+                                setSectionDropTargetIndex(null);
+                              }}
+                            />
+                          </div>
+                        ))}
+                        <SectionDropTarget
+                          index={selectedArticle.sections.length}
+                          active={sectionDropTargetIndex === selectedArticle.sections.length}
+                          onDragEnter={() => setSectionDropTargetIndex(selectedArticle.sections.length)}
+                          onDragLeave={() => setSectionDropTargetIndex(null)}
+                          onDropItem={() => {
+                            if (draggedSectionIndex !== null) {
+                              reorderSection(draggedSectionIndex, selectedArticle.sections.length);
+                            }
+                            setDraggedSectionIndex(null);
+                            setSectionDropTargetIndex(null);
+                          }}
+                        />
+                      </>
+                    )}
                   </CardContent>
                 </Card>
               </motion.div>
