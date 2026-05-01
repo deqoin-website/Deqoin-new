@@ -15,7 +15,9 @@ export default function AboutUs() {
           </h1>
         </div>
       </section>
-      <AboutShowcaseSection />
+      <section className="snap-section hakkimizda-showcase-snap">
+        <AboutShowcaseSection />
+      </section>
       <div className="homepage-footer-snap hakkimizda-footer-snap">
         <Footer />
       </div>
