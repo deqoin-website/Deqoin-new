@@ -16,6 +16,16 @@ export type WorkflowContentDraft = {
   steps: WorkflowProcessItem[];
 };
 
+export type WorkflowScopeKind = "home" | "page" | "department";
+
+export type WorkflowContentRecord = {
+  scope?: string;
+  kind?: WorkflowScopeKind;
+  title?: string;
+  steps?: unknown;
+  source?: "workflow" | "legacy" | "default";
+};
+
 export const DEFAULT_WORKFLOW_TITLE = "İŞ AKIŞI";
 
 export const DEFAULT_WORKFLOW_STEPS: WorkflowProcessItem[] = [
@@ -124,6 +134,30 @@ export const workflowDraftFromProcess = (
   title: fallbackTitle,
   steps: normalizeWorkflowSteps(value, fallbackSteps),
 });
+
+export const workflowDraftFromRecord = (
+  value: WorkflowContentRecord | null | undefined,
+  fallbackTitle: string = DEFAULT_WORKFLOW_TITLE,
+  fallbackSteps: WorkflowProcessItem[] = DEFAULT_WORKFLOW_STEPS,
+): WorkflowContentDraft => {
+  if (!value) {
+    return {
+      title: fallbackTitle,
+      steps: normalizeWorkflowSteps(undefined, fallbackSteps),
+    };
+  }
+
+  return {
+    title: value.title?.toString() || fallbackTitle,
+    steps: normalizeWorkflowSteps(value.steps, fallbackSteps),
+  };
+};
+
+export const workflowScopeKindFromKey = (scope: string): WorkflowScopeKind => {
+  if (scope === "home") return "home";
+  if (scope.startsWith("department:")) return "department";
+  return "page";
+};
 
 export const workflowDraftFromPageContent = (
   value: any,

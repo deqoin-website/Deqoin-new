@@ -8,13 +8,8 @@ import Footer from "../../components/Footer";
 import WorkflowSection from "../../components/WorkflowSection";
 import NextStepCarouselSection from "../../components/NextStepCarouselSection";
 import StudioVerticalCard from "../../components/StudioVerticalCard";
+import { useWorkflowContent } from "@/components/useWorkflowContent";
 import { SLIDER_IMAGE_URLS } from "@/lib/slider-images";
-import {
-  DEFAULT_WORKFLOW_STEPS,
-  DEFAULT_WORKFLOW_TITLE,
-  workflowDraftFromPageContent,
-  workflowStepsForSection,
-} from "@/lib/workflow-content";
 
 const heroSlides = [
   SLIDER_IMAGE_URLS.mimari,
@@ -179,10 +174,7 @@ export default function MimariPage() {
   const [contentVersion, setContentVersion] = useState<string>("");
   const [pageInfo, setPageInfo] = useState({ title: 'DESIGN STUDIO', subtitle: 'MİMARİ TASARIMIN GELECEĞİNİ ŞEKİLLENDİRİYORUZ' });
   const [heroVisual, setHeroVisual] = useState({ blur: 2, overlay: 30 });
-  const [workflow, setWorkflow] = useState({
-    title: DEFAULT_WORKFLOW_TITLE,
-    steps: workflowStepsForSection(DEFAULT_WORKFLOW_STEPS),
-  });
+  const { workflow } = useWorkflowContent("page:mimari");
   useEffect(() => {
     const fetchContent = async () => {
       try {
@@ -194,8 +186,6 @@ export default function MimariPage() {
         if (data.sections) {
           const hero = data.sections.find((s: any) => s.id === 'hero');
           const cats = data.sections.find((s: any) => s.id === 'categories');
-          const workflowSection = workflowDraftFromPageContent(data, DEFAULT_WORKFLOW_TITLE, DEFAULT_WORKFLOW_STEPS);
-          
           if (hero) {
             if (hero.slides?.length > 0) setSlides(hero.slides);
             setPageInfo({ title: hero.title, subtitle: hero.subtitle });
@@ -206,12 +196,6 @@ export default function MimariPage() {
           }
           if (cats?.items?.length > 0) {
             setCategories(mergeCategories(cats.items));
-          }
-          if (workflowSection.steps.length > 0) {
-            setWorkflow({
-              title: workflowSection.title,
-              steps: workflowStepsForSection(workflowSection.steps, DEFAULT_WORKFLOW_STEPS),
-            });
           }
         }
       } catch (err) {

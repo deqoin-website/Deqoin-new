@@ -51,7 +51,7 @@ const kesifStages = [
 export default function KesifPage() {
   const [isConsultationOpen, setIsConsultationOpen] = useState(false);
   const [currentSlide, setCurrentSlide] = useState(0);
-  const { workflow } = useWorkflowContent();
+  const { workflow } = useWorkflowContent("page:kesif");
 
   useEffect(() => {
     const timer = setInterval(() => {

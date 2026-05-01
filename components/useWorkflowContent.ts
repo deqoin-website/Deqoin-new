@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
 
-import type { WorkflowStep } from "./WorkflowMarquee";
+import type { WorkflowStep } from "./WorkflowSection";
 import {
   DEFAULT_WORKFLOW_STEPS,
   DEFAULT_WORKFLOW_TITLE,
-  workflowDraftFromPageContent,
-  workflowStepsForMarquee,
+  workflowDraftFromRecord,
+  workflowStepsForSection,
+  type WorkflowContentDraft,
 } from "@/lib/workflow-content";
 
 export type WorkflowContent = {
@@ -15,11 +16,15 @@ export type WorkflowContent = {
 
 const FALLBACK_WORKFLOW: WorkflowContent = {
   title: DEFAULT_WORKFLOW_TITLE,
-  steps: workflowStepsForMarquee(DEFAULT_WORKFLOW_STEPS),
+  steps: workflowStepsForSection(DEFAULT_WORKFLOW_STEPS),
 };
 
-export function useWorkflowContent(page = "kesif") {
+export function useWorkflowContent(scope = "home") {
   const [workflow, setWorkflow] = useState<WorkflowContent>(FALLBACK_WORKFLOW);
+  const [draft, setDraft] = useState<WorkflowContentDraft>({
+    title: DEFAULT_WORKFLOW_TITLE,
+    steps: DEFAULT_WORKFLOW_STEPS,
+  });
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -29,16 +34,17 @@ export function useWorkflowContent(page = "kesif") {
       setLoading(true);
 
       try {
-        const res = await fetch(`/api/content?page=${page}`, { cache: "no-store" });
+        const res = await fetch(`/api/workflow?scope=${encodeURIComponent(scope)}`, { cache: "no-store" });
         if (!res.ok) return;
 
         const data = await res.json();
-        const draft = workflowDraftFromPageContent(data, DEFAULT_WORKFLOW_TITLE, DEFAULT_WORKFLOW_STEPS);
+        const nextDraft = workflowDraftFromRecord(data, DEFAULT_WORKFLOW_TITLE, DEFAULT_WORKFLOW_STEPS);
         if (!active) return;
 
+        setDraft(nextDraft);
         setWorkflow({
-          title: draft.title,
-          steps: workflowStepsForMarquee(draft.steps, DEFAULT_WORKFLOW_STEPS),
+          title: nextDraft.title,
+          steps: workflowStepsForSection(nextDraft.steps, DEFAULT_WORKFLOW_STEPS),
         });
       } catch (error) {
         console.error("Workflow content load error:", error);
@@ -52,10 +58,11 @@ export function useWorkflowContent(page = "kesif") {
     return () => {
       active = false;
     };
-  }, [page]);
+  }, [scope]);
 
   return {
     workflow,
+    draft,
     loading,
     setWorkflow,
   };

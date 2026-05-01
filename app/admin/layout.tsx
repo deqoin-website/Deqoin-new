@@ -99,6 +99,7 @@ const menuGroups: MenuGroup[] = [
         path: '/admin/content/workflow',
         hint: 'Akış ve senaryo yönetimi',
         subItems: [
+          { name: 'Anasayfa', path: '/admin/content/workflow?scope=home' },
           { name: 'Keşif', path: '/admin/content/workflow?scope=page:kesif' },
           { name: 'Mimari', path: '/admin/content/workflow?scope=page:mimari' },
           { name: 'Materyal', path: '/admin/content/workflow?scope=page:material' },

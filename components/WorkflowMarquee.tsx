@@ -1,5 +1,6 @@
 "use client";
 
+import type { LucideIcon } from "lucide-react";
 import { CalendarDays, Compass, Hammer, Layers, PenTool } from "lucide-react";
 
 import WorkflowSection, { type WorkflowStep as SectionWorkflowStep } from "./WorkflowSection";
@@ -9,6 +10,7 @@ export type WorkflowStep = {
   title: string;
   description: string;
   href?: string;
+  icon?: LucideIcon;
 };
 
 type WorkflowMarqueeProps = {

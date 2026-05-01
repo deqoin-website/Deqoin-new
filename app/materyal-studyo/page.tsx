@@ -7,13 +7,8 @@ import HeroSlider from "../../components/HeroSlider";
 import WorkflowSection from "../../components/WorkflowSection";
 import NextStepCarouselSection from "../../components/NextStepCarouselSection";
 import StudioVerticalCard from "../../components/StudioVerticalCard";
+import { useWorkflowContent } from "@/components/useWorkflowContent";
 import { materyalKategorileri } from "../../data/materyal-studyo";
-import {
-  DEFAULT_WORKFLOW_STEPS,
-  DEFAULT_WORKFLOW_TITLE,
-  workflowDraftFromPageContent,
-  workflowStepsForSection,
-} from "@/lib/workflow-content";
 
 const materialCategories = materyalKategorileri;
 const materialImageBySlug = Object.fromEntries(
@@ -69,10 +64,7 @@ export default function MateryalStudyo() {
   const [isLoading, setIsLoading] = useState(true);
   const [isConsultationOpen, setIsConsultationOpen] = useState(false);
   const heroRef = useRef<HTMLDivElement>(null);
-  const [workflow, setWorkflow] = useState({
-    title: DEFAULT_WORKFLOW_TITLE,
-    steps: workflowStepsForSection(DEFAULT_WORKFLOW_STEPS),
-  });
+  const { workflow } = useWorkflowContent("page:material");
 
   useEffect(() => {
     const fetchContent = async () => {
@@ -81,11 +73,6 @@ export default function MateryalStudyo() {
         const data = await res.json();
         if (data && data.sections) {
           setContent(data);
-          const workflowSection = workflowDraftFromPageContent(data, DEFAULT_WORKFLOW_TITLE, DEFAULT_WORKFLOW_STEPS);
-          setWorkflow({
-            title: workflowSection.title,
-            steps: workflowStepsForSection(workflowSection.steps, DEFAULT_WORKFLOW_STEPS),
-          });
         }
       } catch (err) {
         console.error("Failed to fetch material studio content:", err);
@@ -154,6 +141,7 @@ export default function MateryalStudyo() {
                 href={`/materyal-studyo/${card.slug}`}
                 image={card.image}
                 title={card.title}
+                sideLabel={card.sideLabel}
               />
             ))}
           </div>

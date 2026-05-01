@@ -38,12 +38,9 @@ import {
   WORKFLOW_ICON_OPTIONS,
   WorkflowContentDraft,
   WorkflowProcessItem,
-  departmentProcessFromWorkflow,
+  workflowDraftFromRecord,
   normalizeWorkflowSteps,
-  pageWorkflowSectionFromDraft,
   resolveWorkflowIconComponent,
-  workflowDraftFromPageContent,
-  workflowDraftFromProcess,
 } from "@/lib/workflow-content";
 import { cn } from "@/lib/utils";
 
@@ -57,6 +54,14 @@ type WorkflowScope = {
 };
 
 const PAGE_SCOPES: WorkflowScope[] = [
+  {
+    key: "home",
+    kind: "page",
+    label: "Anasayfa",
+    description: "Ana sayfa workflow bloğu.",
+    route: "/",
+    group: "Ana Sayfa Akışları",
+  },
   {
     key: "page:kesif",
     kind: "page",
@@ -123,20 +128,14 @@ const cloneDraft = (value: WorkflowContentDraft): WorkflowContentDraft => ({
   steps: value.steps.map((step) => ({ ...step })),
 });
 
-const createDefaultDraft = (scope: WorkflowScope): WorkflowContentDraft => {
-  if (scope.kind === "page") {
-    return workflowDraftFromPageContent(
-      { title: scope.label, sections: [] },
-      scope.key === "page:kesif" ? DEFAULT_WORKFLOW_TITLE : `${scope.label.toUpperCase()} AKIŞI`,
-      DEFAULT_WORKFLOW_STEPS,
-    );
-  }
+const defaultWorkflowTitleForScope = (scope: WorkflowScope) =>
+  scope.key === "home" ? DEFAULT_WORKFLOW_TITLE : `${scope.label.toUpperCase()} AKIŞI`;
 
-  return workflowDraftFromProcess(
-    [],
-    `${scope.label.toUpperCase()} AKIŞI`,
-    DEFAULT_WORKFLOW_STEPS,
-  );
+const createDefaultDraft = (scope: WorkflowScope): WorkflowContentDraft => {
+  return {
+    title: defaultWorkflowTitleForScope(scope),
+    steps: DEFAULT_WORKFLOW_STEPS.map((step) => ({ ...step })),
+  };
 };
 
 export default function WorkflowAdminPage() {
@@ -150,7 +149,6 @@ export default function WorkflowAdminPage() {
   const [selectedScopeKey, setSelectedScopeKey] = useState(initialScopeKey);
   const [activeScopeMode, setActiveScopeMode] = useState<ScopeMode>(initialScopeMode);
   const [workflow, setWorkflow] = useState<WorkflowContentDraft>(createDefaultDraft(ALL_SCOPES.find((scope) => scope.key === initialScopeKey) || PAGE_SCOPES[0]));
-  const [rawContent, setRawContent] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isScopeLoading, setIsScopeLoading] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
@@ -209,47 +207,25 @@ export default function WorkflowAdminPage() {
     setApiError(null);
 
     try {
-      if (scope.kind === "page") {
-        const pageKey = scope.key.replace("page:", "");
-        const res = await fetch(`/api/content?page=${pageKey}`, { cache: "no-store" });
-        if (!res.ok) {
-          throw new Error(`GET /api/content?page=${pageKey} failed with ${res.status}`);
-        }
-
-        const data = await res.json();
-        const draft = workflowDraftFromPageContent(
-          data,
-          scope.key === "page:kesif" ? DEFAULT_WORKFLOW_TITLE : `${scope.label.toUpperCase()} AKIŞI`,
-          DEFAULT_WORKFLOW_STEPS,
-        );
-
-        setRawContent(data);
-        setWorkflow(cloneDraft(draft));
-        setExpandedStepIndex(0);
-      } else {
-        const slug = scope.key.replace("department:", "");
-        const res = await fetch(`/api/departments/${slug}`, { cache: "no-store" });
-        if (!res.ok) {
-          throw new Error(`GET /api/departments/${slug} failed with ${res.status}`);
-        }
-
-        const data = await res.json();
-        const draft = workflowDraftFromProcess(
-          data?.process || [],
-          `${(data?.title || scope.label).toString().toUpperCase()} AKIŞI`,
-          DEFAULT_WORKFLOW_STEPS,
-        );
-
-        setRawContent(data);
-        setWorkflow(cloneDraft(draft));
-        setExpandedStepIndex(0);
+      const res = await fetch(`/api/workflow?scope=${encodeURIComponent(scope.key)}`, { cache: "no-store" });
+      if (!res.ok) {
+        throw new Error(`GET /api/workflow?scope=${scope.key} failed with ${res.status}`);
       }
+
+      const data = await res.json();
+      const draft = workflowDraftFromRecord(
+        data,
+        defaultWorkflowTitleForScope(scope),
+        DEFAULT_WORKFLOW_STEPS,
+      );
+
+      setWorkflow(cloneDraft(draft));
+      setExpandedStepIndex(0);
 
       setIsDirty(false);
     } catch (error) {
       console.error("Workflow load error:", error);
       const fallback = createDefaultDraft(scope);
-      setRawContent(null);
       setWorkflow(cloneDraft(fallback));
       setExpandedStepIndex(0);
       setApiError("Seçili workflow içeriği yüklenemedi. Varsayılan veriler gösteriliyor.");
@@ -325,78 +301,28 @@ export default function WorkflowAdminPage() {
     setApiError(null);
 
     try {
-      if (selectedScope.kind === "page") {
-        const pageKey = selectedScope.key.replace("page:", "");
-        const nextContent = JSON.parse(
-          JSON.stringify(
-            rawContent?.sections ? rawContent : { page: pageKey, sections: [] },
-          ),
-        );
+      const res = await fetch("/api/workflow", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          scope: selectedScope.key,
+          title: workflow.title,
+          steps: workflow.steps,
+        }),
+      });
 
-        nextContent.page = pageKey;
-        nextContent.title = rawContent?.title || selectedScope.label;
-        nextContent.sections = Array.isArray(nextContent.sections) ? nextContent.sections : [];
-
-        const workflowSection = pageWorkflowSectionFromDraft(workflow);
-        const workflowIndex = nextContent.sections.findIndex(
-          (section: any) => section?.id === "workflow" || section?.type === "workflow",
-        );
-
-        if (workflowIndex >= 0) {
-          nextContent.sections[workflowIndex] = {
-            ...nextContent.sections[workflowIndex],
-            ...workflowSection,
-          };
-        } else {
-          nextContent.sections.push(workflowSection);
-        }
-
-        const res = await fetch("/api/content", {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(nextContent),
-        });
-
-        if (!res.ok) {
-          throw new Error(`PUT /api/content failed with ${res.status}`);
-        }
-
-        const data = await res.json();
-        const draft = workflowDraftFromPageContent(
-          data,
-          selectedScope.key === "page:kesif" ? DEFAULT_WORKFLOW_TITLE : `${selectedScope.label.toUpperCase()} AKIŞI`,
-          DEFAULT_WORKFLOW_STEPS,
-        );
-
-        setRawContent(data);
-        setWorkflow(cloneDraft(draft));
-      } else {
-        const slug = selectedScope.key.replace("department:", "");
-        const payload = {
-          ...(rawContent || {}),
-          process: departmentProcessFromWorkflow(workflow),
-        };
-
-        const res = await fetch(`/api/admin/departments/${slug}`, {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload),
-        });
-
-        if (!res.ok) {
-          throw new Error(`PUT /api/admin/departments/${slug} failed with ${res.status}`);
-        }
-
-        const data = await res.json();
-        const draft = workflowDraftFromProcess(
-          data?.process || [],
-          `${(data?.title || selectedScope.label).toString().toUpperCase()} AKIŞI`,
-          DEFAULT_WORKFLOW_STEPS,
-        );
-
-        setRawContent(data);
-        setWorkflow(cloneDraft(draft));
+      if (!res.ok) {
+        throw new Error(`PUT /api/workflow failed with ${res.status}`);
       }
+
+      const data = await res.json();
+      const draft = workflowDraftFromRecord(
+        data,
+        defaultWorkflowTitleForScope(selectedScope),
+        DEFAULT_WORKFLOW_STEPS,
+      );
+
+      setWorkflow(cloneDraft(draft));
 
       setIsDirty(false);
       showToast("Workflow başarıyla güncellendi.", "success");

@@ -9,11 +9,13 @@ import GallerySection from "../components/GallerySection";
 import HomeDepartmentTeamsSection from "../components/HomeDepartmentTeamsSection";
 import Footer from "@/components/Footer";
 import AboutShowcaseSection from "@/components/AboutShowcaseSection";
+import { useWorkflowContent } from "@/components/useWorkflowContent";
 import { DEFAULT_HOME_SERVICE_CARDS, normalizeHomeServiceCards } from "@/lib/home-services";
 
 export default function Page() {
   const [isConsultationOpen, setIsConsultationOpen] = useState(false);
   const [slides, setSlides] = useState<any[]>([]);
+  const { workflow } = useWorkflowContent("home");
 
   const [serviceCards, setServiceCards] = useState<any[]>(DEFAULT_HOME_SERVICE_CARDS);
   useEffect(() => {
@@ -76,7 +78,7 @@ export default function Page() {
         slideTransitionDuration={0.3}
       />
 
-        <WorkflowSection className="snap-section homepage-workflow-section" />
+        <WorkflowSection className="snap-section homepage-workflow-section" title={workflow.title} steps={workflow.steps} />
 
         <GallerySection className="snap-section homepage-section-v2" />
 

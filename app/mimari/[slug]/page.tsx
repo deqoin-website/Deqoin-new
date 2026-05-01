@@ -8,6 +8,8 @@ import DepartmentStudio from "../../../components/DepartmentStudio";
 import NextStepCarouselSection from "../../../components/NextStepCarouselSection";
 import Footer from "../../../components/Footer";
 import { Loader2 } from "lucide-react";
+import { useWorkflowContent } from "@/components/useWorkflowContent";
+import { departmentProcessFromWorkflow } from "@/lib/workflow-content";
 
 type ServiceParams = {
   slug: string;
@@ -19,6 +21,7 @@ export default function MimariDetail({ params }: { params: Promise<ServiceParams
   
   const [content, setContent] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const { draft: workflowDraft } = useWorkflowContent(`department:${slug}`);
 
   useEffect(() => {
     const fetchContent = async () => {
@@ -74,7 +77,7 @@ export default function MimariDetail({ params }: { params: Promise<ServiceParams
           categories={categories}
           focusAreas={focusAreas}
           products={products}
-          workflowProcess={content?.process || []}
+          workflowProcess={departmentProcessFromWorkflow(workflowDraft)}
           workflowType="design"
         />
         <NextStepCarouselSection currentStudio="mimari" />
