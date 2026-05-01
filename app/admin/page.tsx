@@ -5,8 +5,10 @@ import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import {
+  Aperture,
   Activity,
   ArrowUpRight,
+  Briefcase,
   CalendarClock,
   CheckCircle2,
   CircleAlert,
@@ -570,10 +572,19 @@ export default function AdminDashboard() {
   const quickActions = [
     { label: 'CRM Aç', href: '/admin/crm', icon: MessageSquare },
     { label: 'Yeni Proje', href: '/admin/projects', icon: FolderKanban },
+    { label: 'Tüm Projeler', href: '/admin/projects', icon: FolderKanban },
     { label: 'Slider Düzenle', href: '/admin/content/slider', icon: ImageIcon },
+    { label: 'Ana Sayfa Medya', href: '/admin/content/home/gallery', icon: ImageIcon },
     { label: 'Genel Ayarlar', href: '/admin/settings', icon: Settings2 },
     { label: 'Ekip Yönetimi', href: '/admin/team', icon: Users },
+    { label: 'Kullanıcılar', href: '/admin/users', icon: Users },
     { label: 'Workflow', href: '/admin/content/workflow', icon: Workflow },
+    { label: 'İçerik Paneli', href: '/admin/content/home', icon: LayoutDashboard },
+    { label: 'Galeri', href: '/admin/content/gallery', icon: FolderKanban },
+    { label: 'Journal', href: '/admin/content/journal', icon: LayoutDashboard },
+    { label: 'Servis Kartları', href: '/admin/content/home/services', icon: LayoutDashboard },
+    { label: 'Hakkımızda', href: '/admin/content/corporate', icon: Briefcase },
+    { label: 'Stüdyo Ayarları', href: '/admin/content/services/mimari', icon: Aperture },
   ] as const;
 
   const apiCards = [
@@ -632,7 +643,7 @@ export default function AdminDashboard() {
                 </p>
               </div>
 
-              <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+              <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
                 {quickActions.map((item) => {
                   const Icon = item.icon;
                   return (
