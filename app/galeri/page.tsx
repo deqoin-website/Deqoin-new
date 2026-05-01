@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 
+import Footer from "@/components/Footer";
 import ProjectCard from "@/components/ProjectCard";
 import ProjectInsightPanel from "@/components/ProjectInsightPanel";
 import ProjectFilterSidebar, { type FilterGroup } from "@/components/ProjectFilterSidebar";
@@ -156,6 +157,7 @@ export default function GaleriPage() {
       </section>
 
       <ProjectInsightPanel project={selectedProject} onClose={() => setSelectedProjectSlug(null)} />
+      <Footer />
     </main>
   );
 }
