@@ -367,7 +367,7 @@ export default function MaterialDetailEditor() {
   const saveDepartment = async (nextDepartment = department) => {
     setIsSaving(true);
     try {
-      const requestBody = {
+      const payload = {
         ...nextDepartment,
         products: nextDepartment.products.map((item) => ({
           ...item,
@@ -377,14 +377,14 @@ export default function MaterialDetailEditor() {
       const res = await fetch(`/api/admin/departments/${slug}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...requestBody, slug }),
+        body: JSON.stringify({ ...payload, slug }),
       });
-      const responseBody = await res.json().catch(() => null);
+      const payload = await res.json().catch(() => null);
       if (!res.ok) {
-        throw new Error(responseBody?.error || 'Save failed');
+        throw new Error(payload?.error || 'Save failed');
       }
 
-      const next = normalizeDepartment(responseBody || nextDepartment, slug);
+      const next = normalizeDepartment(payload || nextDepartment, slug);
       setDepartment(next);
       setInitialDepartment(cloneDepartment(next));
       setIsDirty(false);
