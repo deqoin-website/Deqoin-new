@@ -1,394 +1,847 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
-import Image from 'next/image';
-import { 
-  Camera, 
-  Save, 
-  Loader2, 
-  Globe, 
-  Mail, 
-  Share2,
-  Shield,
-  Phone,
-  MapPin,
-  Settings as SettingsIcon,
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
+import {
+  Globe,
   Hash,
-  Activity,
-  UserCheck
+  Loader2,
+  Mail,
+  Phone,
+  Save,
+  Settings2,
+  Shield,
+  Sparkles,
+  UserCheck,
 } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { useNotification } from '@/components/admin/AdminNotificationProvider';
+
+import { AdminImageDropzone } from '@/components/admin/AdminImageDropzone';
 import { AdminSaveBar } from '@/components/admin/AdminSaveBar';
+import { useNotification } from '@/components/admin/AdminNotificationProvider';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Separator } from '@/components/ui/separator';
+import { Textarea } from '@/components/ui/textarea';
+import { cn } from '@/lib/utils';
+
+type SettingsDraft = {
+  key: string;
+  logoUrl: string;
+  faviconUrl: string;
+  studioName: string;
+  contactEmail: string;
+  maintenanceMode: boolean;
+  metaTitle: string;
+  metaDescription: string;
+  keywords: string;
+  googleAnalyticsId: string;
+  metaPixelId: string;
+  phone: string;
+  whatsapp: string;
+  address: string;
+  googleMapsUrl: string;
+  socialLinks: {
+    instagram: string;
+    linkedin: string;
+    facebook: string;
+    x: string;
+  };
+};
+
+type TabKey = 'genel' | 'seo' | 'iletisim' | 'sistem';
+
+const TABS: Array<{
+  key: TabKey;
+  label: string;
+  description: string;
+  icon: typeof Settings2;
+}> = [
+  { key: 'genel', label: 'Genel', description: 'Marka kimliği ve sosyal profiller', icon: Settings2 },
+  { key: 'seo', label: 'SEO', description: 'Meta başlıklar ve takip kodları', icon: Globe },
+  { key: 'iletisim', label: 'İletişim', description: 'E-posta, telefon ve adres', icon: Phone },
+  { key: 'sistem', label: 'Sistem', description: 'Bakım modu ve yayın durumu', icon: Shield },
+];
+
+const DEFAULT_SETTINGS: SettingsDraft = {
+  key: 'site-settings',
+  logoUrl: '/images/logo-new.jpeg',
+  faviconUrl: '',
+  studioName: 'DEQOIN | Architectural Studio',
+  contactEmail: 'randevu@deqoin.com',
+  maintenanceMode: false,
+  metaTitle: '',
+  metaDescription: '',
+  keywords: '',
+  googleAnalyticsId: '',
+  metaPixelId: '',
+  phone: '',
+  whatsapp: '',
+  address: '',
+  googleMapsUrl: '',
+  socialLinks: {
+    instagram: '',
+    linkedin: '',
+    facebook: '',
+    x: '',
+  },
+};
+
+function cloneSettings(value: SettingsDraft) {
+  return JSON.parse(JSON.stringify(value)) as SettingsDraft;
+}
+
+function normalizeSettings(payload: any): SettingsDraft {
+  return {
+    ...DEFAULT_SETTINGS,
+    ...(payload || {}),
+    socialLinks: {
+      ...DEFAULT_SETTINGS.socialLinks,
+      ...(payload?.socialLinks || {}),
+    },
+  };
+}
+
+function TabButton({
+  active,
+  icon: Icon,
+  label,
+  description,
+  onClick,
+}: {
+  active: boolean;
+  icon: typeof Settings2;
+  label: string;
+  description: string;
+  onClick: () => void;
+}) {
+  return (
+    <Button
+      type="button"
+      variant="ghost"
+      onClick={onClick}
+      className={cn(
+        'h-auto w-full justify-start rounded-[1.35rem] border px-4 py-4 text-left transition-all',
+        active
+          ? 'border-white/20 bg-white/10 text-white shadow-[0_18px_50px_rgba(0,0,0,0.22)]'
+          : 'border-white/10 bg-white/[0.03] text-white/65 hover:border-white/15 hover:bg-white/[0.06] hover:text-white',
+      )}
+    >
+      <Icon className="mr-3 h-4 w-4 shrink-0" />
+      <span className="flex min-w-0 flex-col items-start gap-1">
+        <span className="text-[0.66rem] uppercase tracking-[0.35em]">{label}</span>
+        <span className="text-[0.68rem] normal-case tracking-normal text-white/70">{description}</span>
+      </span>
+    </Button>
+  );
+}
+
+function SummaryMetric({
+  label,
+  value,
+  icon: Icon,
+}: {
+  label: string;
+  value: string;
+  icon: typeof Sparkles;
+}) {
+  return (
+    <div className="rounded-[1.2rem] border border-white/10 bg-white/[0.03] p-4">
+      <div className="flex items-center gap-2 text-white/45">
+        <Icon className="h-4 w-4" />
+        <span className="text-[0.55rem] uppercase tracking-[0.45em]">{label}</span>
+      </div>
+      <p className="mt-3 text-sm uppercase tracking-[0.24em] text-white">{value}</p>
+    </div>
+  );
+}
 
 export default function SettingsPage() {
   const { showToast } = useNotification();
-  const [settings, setSettings] = useState<any>(null);
-  const [initialSettings, setInitialSettings] = useState<any>(null);
+  const [settings, setSettings] = useState<SettingsDraft>(() => cloneSettings(DEFAULT_SETTINGS));
+  const [initialSettings, setInitialSettings] = useState<SettingsDraft>(() => cloneSettings(DEFAULT_SETTINGS));
   const [isDirty, setIsDirty] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
-  const [activeTab, setActiveTab] = useState('genel');
-  const [uploadLoading, setUploadLoading] = useState(false);
-  const [isDraggingLogo, setIsDraggingLogo] = useState(false);
-  const [isDraggingFavicon, setIsDraggingFavicon] = useState(false);
+  const [activeTab, setActiveTab] = useState<TabKey>('genel');
+  const [uploadingField, setUploadingField] = useState<keyof Pick<SettingsDraft, 'logoUrl' | 'faviconUrl'> | null>(null);
 
   const fetchSettings = useCallback(async () => {
     try {
-      const res = await fetch('/api/settings');
-      const data = await res.json();
-      setSettings(data);
-      setInitialSettings(JSON.parse(JSON.stringify(data)));
-    } catch (err) {
-      console.error(err);
-      showToast("Ayarlar yüklenemedi.", "error");
+      const res = await fetch('/api/settings', { cache: 'no-store' });
+      const data = await res.json().catch(() => null);
+      const normalized = normalizeSettings(res.ok ? data : null);
+      setSettings(cloneSettings(normalized));
+      setInitialSettings(cloneSettings(normalized));
+
+      if (!res.ok) {
+        showToast('Ayarlar varsayılan veriyle yüklendi.', 'warning');
+      }
+    } catch (error) {
+      console.error('Settings fetch error:', error);
+      const fallback = cloneSettings(DEFAULT_SETTINGS);
+      setSettings(fallback);
+      setInitialSettings(cloneSettings(fallback));
+      showToast('Ayarlar yüklenemedi, varsayılan değerler gösteriliyor.', 'error');
     } finally {
       setIsLoading(false);
     }
   }, [showToast]);
 
   useEffect(() => {
-    fetchSettings();
+    void fetchSettings();
   }, [fetchSettings]);
 
-  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>, field: string) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    uploadFile(file, field);
-  };
-
-  const uploadFile = async (file: File, field: string) => {
-    setUploadLoading(true);
-    try {
-      const res = await fetch(`/api/upload?filename=${file.name}`, {
-        method: 'POST',
-        body: file
-      });
-      const blob = await res.json();
-      setSettings({ ...settings, [field]: blob.url });
+  const patchSettings = useCallback((updater: (current: SettingsDraft) => SettingsDraft) => {
+    setSettings((current) => {
+      const next = updater(current);
       setIsDirty(true);
-    } catch (err) {
-      showToast("Görsel yüklenemedi.", "error");
-    } finally {
-      setUploadLoading(false);
-    }
-  };
+      return next;
+    });
+  }, []);
 
-  const handleDrop = (e: React.DragEvent, field: string) => {
-    e.preventDefault();
-    setIsDraggingLogo(false);
-    setIsDraggingFavicon(false);
-    const file = e.dataTransfer.files[0];
-    if (file) {
-      uploadFile(file, field);
-    }
-  };
+  const updateSocialLink = useCallback((key: keyof SettingsDraft['socialLinks'], value: string) => {
+    patchSettings((current) => ({
+      ...current,
+      socialLinks: {
+        ...current.socialLinks,
+        [key]: value,
+      },
+    }));
+  }, [patchSettings]);
 
-  const saveSettings = async () => {
+  const uploadFile = useCallback(
+    async (file: File, field: keyof Pick<SettingsDraft, 'logoUrl' | 'faviconUrl'>) => {
+      setUploadingField(field);
+
+      try {
+        const res = await fetch(`/api/upload?filename=${encodeURIComponent(file.name)}`, {
+          method: 'POST',
+          body: file,
+        });
+
+        const blob = await res.json().catch(() => null);
+        const uploadedUrl = blob?.url || blob?.secure_url || blob?.downloadUrl;
+
+        if (!res.ok || !uploadedUrl) {
+          throw new Error(blob?.error || 'Upload failed');
+        }
+
+        patchSettings((current) => ({
+          ...current,
+          [field]: uploadedUrl,
+        }));
+      } catch (error) {
+        console.error('Settings upload error:', error);
+        showToast('Görsel yüklenemedi.', 'error');
+      } finally {
+        setUploadingField(null);
+      }
+    },
+    [patchSettings, showToast],
+  );
+
+  const saveSettings = useCallback(async () => {
     setIsSaving(true);
+
     try {
       const res = await fetch('/api/settings', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(settings)
+        body: JSON.stringify(settings),
       });
-      if (res.ok) {
-        showToast("Ayarlar başarıyla kaydedildi!", "success");
-        setInitialSettings(JSON.parse(JSON.stringify(settings)));
-        setIsDirty(false);
-      } else {
-        showToast("Kaydetme sırasında bir hata oluştu.", "error");
+
+      const data = await res.json().catch(() => null);
+
+      if (!res.ok) {
+        throw new Error(data?.error || 'Save failed');
       }
-    } catch (err) {
-      showToast("Bağlantı hatası.", "error");
+
+      const normalized = normalizeSettings(data || settings);
+      setSettings(cloneSettings(normalized));
+      setInitialSettings(cloneSettings(normalized));
+      setIsDirty(false);
+      showToast('Ayarlar başarıyla kaydedildi.', 'success');
+    } catch (error) {
+      console.error('Settings save error:', error);
+      showToast('Kaydetme sırasında bir hata oluştu.', 'error');
     } finally {
       setIsSaving(false);
     }
-  };
+  }, [settings, showToast]);
 
-  const handleCancel = () => {
-    setSettings(JSON.parse(JSON.stringify(initialSettings)));
+  const handleCancel = useCallback(() => {
+    setSettings(cloneSettings(initialSettings));
     setIsDirty(false);
-    showToast("Değişiklikler geri alındı.", "info");
-  };
+    showToast('Değişiklikler geri alındı.', 'info');
+  }, [initialSettings, showToast]);
 
-  if (isLoading) return <div className="loader-wrap"><Loader2 className="animate-spin" /></div>;
+  const activeTabConfig = useMemo(() => TABS.find((tab) => tab.key === activeTab) ?? TABS[0], [activeTab]);
+
+  const logoUploadLabel = uploadingField === 'logoUrl' ? 'Yükleniyor' : settings.logoUrl ? 'Değiştir' : 'Yükle';
+  const faviconUploadLabel = uploadingField === 'faviconUrl' ? 'Yükleniyor' : settings.faviconUrl ? 'Değiştir' : 'Yükle';
+
+  if (isLoading) {
+    return (
+      <div className="flex min-h-[60vh] items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-[color:var(--accent)]" />
+      </div>
+    );
+  }
 
   return (
-    <div className="settings-container">
-      <div className="settings-header">
-        <div className="header-text">
-          <p>SİTE YÖNETİM MERKEZİ</p>
-          <span>Kimlik, SEO, İletişim ve Sistem ayarlarını buradan yönetin.</span>
-        </div>
-        <div style={{ display: 'flex', gap: '1rem' }}>
-          {isDirty && (
-            <button className="cancel-btn-header" onClick={handleCancel}>SIFIRLA</button>
-          )}
-          <button className={`save-btn ${isDirty ? 'dirty-pulse' : ''}`} onClick={saveSettings} disabled={isSaving}>
-            {isSaving ? <Loader2 className="animate-spin" size={18} /> : <Save size={18} />}
-            <span>{isDirty ? 'KAYDETMEYİ UNUTMAYIN' : 'KAYDET'}</span>
-          </button>
-        </div>
-      </div>
+    <div className="space-y-6 pb-12">
+      <Card className="relative overflow-hidden border-white/10 bg-[radial-gradient(circle_at_top_left,rgba(166,137,102,0.2),transparent_35%),linear-gradient(180deg,rgba(255,255,255,0.06),rgba(255,255,255,0.02))] shadow-[0_35px_120px_rgba(0,0,0,0.28)]">
+        <div className="pointer-events-none absolute inset-0 opacity-40 [background-image:radial-gradient(circle_at_1px_1px,rgba(255,255,255,0.22)_1px,transparent_0)] [background-size:24px_24px]" />
+        <CardContent className="relative flex flex-col gap-6 p-6 md:p-8 lg:flex-row lg:items-end lg:justify-between">
+          <div className="max-w-4xl space-y-4">
+            <div className="flex flex-wrap items-center gap-3">
+              <Badge variant="outline" className="border-white/10 bg-white/5 text-white/80">
+                SITE SETTINGS
+              </Badge>
+              <Badge
+                variant="outline"
+                className={cn(
+                  'border-white/10 text-white/80',
+                  isDirty ? 'bg-rose-500/10 text-rose-100' : 'bg-emerald-500/10 text-emerald-100',
+                )}
+              >
+                {isDirty ? 'KAYDEDİLMEMİŞ DEĞİŞİKLİK' : 'SENKRONİZE'}
+              </Badge>
+              <Badge variant="outline" className="border-amber-500/20 bg-amber-500/10 text-amber-100">
+                API: {uploadingField ? 'GÖRSEL YÜKLENİYOR' : 'BAĞLI'}
+              </Badge>
+            </div>
 
-      <AdminSaveBar 
-        isVisible={isDirty} 
-        onSave={saveSettings} 
+            <div className="space-y-3">
+              <p className="text-[0.62rem] uppercase tracking-[0.5em] text-white/42">YÖNETİM PANELİ</p>
+              <h1
+                className="max-w-4xl text-[clamp(2.3rem,5vw,4.8rem)] font-thin uppercase leading-[0.86] tracking-[0.1em] text-white"
+                style={{ fontFamily: 'Smooch Sans, sans-serif' }}
+              >
+                AYARLAR
+              </h1>
+              <p className="max-w-3xl text-sm uppercase tracking-[0.28em] text-white/62 md:text-[0.85rem]">
+                Marka kimliği, SEO, iletişim kanalları ve sistem davranışlarını tek bir responsive panelden yönetin.
+              </p>
+            </div>
+
+            <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+              <SummaryMetric label="Kimlik" value={settings.studioName || 'DEQOIN'} icon={Sparkles} />
+              <SummaryMetric label="SEO" value={settings.metaTitle ? 'DOLU' : 'BOŞ'} icon={Hash} />
+              <SummaryMetric label="İletişim" value={settings.contactEmail || 'E-POSTA YOK'} icon={Mail} />
+              <SummaryMetric label="Durum" value={settings.maintenanceMode ? 'BAKIM' : 'YAYINDA'} icon={settings.maintenanceMode ? Shield : UserCheck} />
+            </div>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-3">
+            <Button
+              type="button"
+              variant="ghost"
+              className="border border-white/10 bg-white/[0.03] text-white hover:bg-white hover:text-zinc-950"
+              onClick={handleCancel}
+              disabled={!isDirty}
+            >
+              SIFIRLA
+            </Button>
+            <Button
+              type="button"
+              className="border border-white/10 bg-white text-zinc-950 hover:bg-white/90"
+              onClick={saveSettings}
+              disabled={isSaving}
+            >
+              {isSaving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Save className="mr-2 h-4 w-4" />}
+              {isDirty ? 'KAYDET' : 'KAYDEDİLDİ'}
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+
+      <AdminSaveBar
+        isVisible={isDirty}
+        onSave={saveSettings}
         onCancel={handleCancel}
         isSaving={isSaving}
       />
 
-      <div className="tabs-navigation">
-        <button className={activeTab === 'genel' ? 'active' : ''} onClick={() => setActiveTab('genel')}><SettingsIcon size={14}/> GENEL</button>
-        <button className={activeTab === 'seo' ? 'active' : ''} onClick={() => setActiveTab('seo')}><Globe size={14}/> SEO</button>
-        <button className={activeTab === 'iletisim' ? 'active' : ''} onClick={() => setActiveTab('iletisim')}><Phone size={14}/> İLETİŞİM</button>
-        <button className={activeTab === 'sistem' ? 'active' : ''} onClick={() => setActiveTab('sistem')}><Shield size={14}/> SİSTEM</button>
-      </div>
+      <div className="grid gap-6 xl:grid-cols-[280px_minmax(0,1fr)]">
+        <aside className="space-y-4 xl:sticky xl:top-6 xl:self-start">
+          <Card className="border-white/10 bg-white/[0.04] shadow-none">
+            <CardHeader className="space-y-3">
+              <CardTitle className="text-sm uppercase tracking-[0.32em] text-white/90">Bölümler</CardTitle>
+              <CardDescription className="text-white/55">Panel alanları arasında hızlı geçiş yapın.</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              {TABS.map((tab) => (
+                <TabButton
+                  key={tab.key}
+                  active={activeTab === tab.key}
+                  icon={tab.icon}
+                  label={tab.label}
+                  description={tab.description}
+                  onClick={() => setActiveTab(tab.key)}
+                />
+              ))}
+            </CardContent>
+          </Card>
 
-      <div className="settings-content">
-        <AnimatePresence mode="wait">
-          {activeTab === 'genel' && (
-            <motion.div key="genel" initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 10 }} className="settings-grid">
-              <section className="settings-card logo-card">
-                <div className="card-header"><h3>Site Kimliği</h3></div>
-                <div className="logo-section-grid">
-                  <div className="logo-upload-wrap">
-                    <label>ANA LOGO</label>
-                    <div 
-                      className={`logo-preview-box ${isDraggingLogo ? 'drag-active' : ''}`} 
-                      onClick={() => document.getElementById('logo-file')?.click()}
-                      onDragOver={(e) => { e.preventDefault(); setIsDraggingLogo(true); }}
-                      onDragLeave={() => setIsDraggingLogo(false)}
-                      onDrop={(e) => handleDrop(e, 'logoUrl')}
+          <Card className="border-white/10 bg-white/[0.04] shadow-none">
+            <CardHeader className="space-y-3">
+              <CardTitle className="text-sm uppercase tracking-[0.32em] text-white/90">Durum Özeti</CardTitle>
+              <CardDescription className="text-white/55">Son API bağlantısı ve yayın durumu.</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-3 text-sm leading-7 text-white/65">
+              <div className="rounded-[1.2rem] border border-white/10 bg-white/[0.03] p-4">
+                <p className="text-[0.58rem] uppercase tracking-[0.45em] text-white/35">AKTİF TAB</p>
+                <p className="mt-2 text-sm uppercase tracking-[0.24em] text-white">{activeTabConfig.label}</p>
+              </div>
+              <div className="rounded-[1.2rem] border border-white/10 bg-white/[0.03] p-4">
+                <p className="text-[0.58rem] uppercase tracking-[0.45em] text-white/35">API BAĞLANTISI</p>
+                <p className="mt-2 text-sm uppercase tracking-[0.24em] text-white">/api/settings</p>
+              </div>
+              <div className="rounded-[1.2rem] border border-white/10 bg-white/[0.03] p-4">
+                <p className="text-[0.58rem] uppercase tracking-[0.45em] text-white/35">YAYIN DURUMU</p>
+                <p className="mt-2 text-sm uppercase tracking-[0.24em] text-white">
+                  {settings.maintenanceMode ? 'Bakım modu açık' : 'Site yayında'}
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+        </aside>
+
+        <section className="space-y-6">
+          <AnimatePresence mode="wait">
+            {activeTab === 'genel' && (
+              <motion.div
+                key="genel"
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -8 }}
+                transition={{ duration: 0.22 }}
+                className="grid gap-6 lg:grid-cols-2"
+              >
+                <Card className="border-white/10 bg-white/[0.04] shadow-none">
+                  <CardHeader className="space-y-3">
+                    <CardTitle className="text-sm uppercase tracking-[0.32em] text-white/90">Site Kimliği</CardTitle>
+                    <CardDescription className="text-white/55">Logo ve favicon dosyalarını sürükleyip bırakabilirsiniz.</CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="grid gap-4 xl:grid-cols-2">
+                      <AdminImageDropzone
+                        accept="image/*"
+                        aspectClassName="aspect-[16/10]"
+                        buttonLabel={logoUploadLabel}
+                        className="min-h-[260px] rounded-[1.35rem] border-white/10 bg-white/[0.03]"
+                        description="Kurumsal logo dosyasını yükleyin."
+                        emptySubtitle="Ana logo görseli"
+                        emptyTitle="Logo ekleyin"
+                        onFileSelect={async (file) => uploadFile(file, 'logoUrl')}
+                        previewAlt="Logo"
+                        previewUrl={settings.logoUrl}
+                        title="ANA LOGO"
+                      />
+                      <AdminImageDropzone
+                        accept="image/*"
+                        aspectClassName="aspect-square"
+                        buttonLabel={faviconUploadLabel}
+                        className="min-h-[260px] rounded-[1.35rem] border-white/10 bg-white/[0.03]"
+                        description="Tarayıcı sekmesinde kullanılacak ikon."
+                        emptySubtitle="Favicon görseli"
+                        emptyTitle="Favicon ekleyin"
+                        onFileSelect={async (file) => uploadFile(file, 'faviconUrl')}
+                        previewAlt="Favicon"
+                        previewUrl={settings.faviconUrl}
+                        title="FAVICON"
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <p className="text-[0.6rem] uppercase tracking-[0.45em] text-white/35">STÜDYO İSMİ</p>
+                      <Input
+                        value={settings.studioName}
+                        onChange={(event) =>
+                          patchSettings((current) => ({
+                            ...current,
+                            studioName: event.target.value,
+                          }))
+                        }
+                        className="bg-white/[0.03]"
+                      />
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card className="border-white/10 bg-white/[0.04] shadow-none">
+                  <CardHeader className="space-y-3">
+                    <CardTitle className="text-sm uppercase tracking-[0.32em] text-white/90">Sosyal Profiller</CardTitle>
+                    <CardDescription className="text-white/55">Footer ve paylaşım alanlarında kullanılan profiller.</CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="grid gap-4 sm:grid-cols-2">
+                      <div className="space-y-2">
+                        <p className="text-[0.6rem] uppercase tracking-[0.45em] text-white/35">INSTAGRAM</p>
+                        <Input
+                          value={settings.socialLinks.instagram}
+                          onChange={(event) => updateSocialLink('instagram', event.target.value)}
+                          className="bg-white/[0.03]"
+                          placeholder="https://instagram.com/..."
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <p className="text-[0.6rem] uppercase tracking-[0.45em] text-white/35">LINKEDIN</p>
+                        <Input
+                          value={settings.socialLinks.linkedin}
+                          onChange={(event) => updateSocialLink('linkedin', event.target.value)}
+                          className="bg-white/[0.03]"
+                          placeholder="https://linkedin.com/..."
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <p className="text-[0.6rem] uppercase tracking-[0.45em] text-white/35">FACEBOOK</p>
+                        <Input
+                          value={settings.socialLinks.facebook}
+                          onChange={(event) => updateSocialLink('facebook', event.target.value)}
+                          className="bg-white/[0.03]"
+                          placeholder="https://facebook.com/..."
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <p className="text-[0.6rem] uppercase tracking-[0.45em] text-white/35">X / TWITTER</p>
+                        <Input
+                          value={settings.socialLinks.x}
+                          onChange={(event) => updateSocialLink('x', event.target.value)}
+                          className="bg-white/[0.03]"
+                          placeholder="https://x.com/..."
+                        />
+                      </div>
+                    </div>
+
+                    <Separator className="bg-white/10" />
+
+                    <div className="rounded-[1.2rem] border border-white/10 bg-white/[0.03] p-4 text-sm leading-7 text-white/60">
+                      Sosyal linkler boş bırakılabilir. Sistemin diğer bölümleri bu alanları opsiyonel olarak kullanır.
+                    </div>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            )}
+
+            {activeTab === 'seo' && (
+              <motion.div
+                key="seo"
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -8 }}
+                transition={{ duration: 0.22 }}
+                className="grid gap-6 lg:grid-cols-2"
+              >
+                <Card className="border-white/10 bg-white/[0.04] shadow-none">
+                  <CardHeader className="space-y-3">
+                    <CardTitle className="text-sm uppercase tracking-[0.32em] text-white/90">Meta Bilgiler</CardTitle>
+                    <CardDescription className="text-white/55">Arama sonuçları ve sosyal önizleme başlıkları.</CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="space-y-2">
+                      <p className="text-[0.6rem] uppercase tracking-[0.45em] text-white/35">VARSAYILAN SAYFA BAŞLIĞI</p>
+                      <Input
+                        value={settings.metaTitle}
+                        onChange={(event) =>
+                          patchSettings((current) => ({
+                            ...current,
+                            metaTitle: event.target.value,
+                          }))
+                        }
+                        className="bg-white/[0.03]"
+                        placeholder="Örn: Deqoin | Architectural Design Studio"
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <p className="text-[0.6rem] uppercase tracking-[0.45em] text-white/35">META AÇIKLAMASI</p>
+                      <Textarea
+                        rows={5}
+                        value={settings.metaDescription}
+                        onChange={(event) =>
+                          patchSettings((current) => ({
+                            ...current,
+                            metaDescription: event.target.value,
+                          }))
+                        }
+                        className="min-h-[160px] bg-white/[0.03] uppercase tracking-[0.08em] text-white"
+                        placeholder="Siteniz hakkında arama sonuçlarında görünecek kısa açıklama..."
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <p className="text-[0.6rem] uppercase tracking-[0.45em] text-white/35">ANAHTAR KELİMELER</p>
+                      <Input
+                        value={settings.keywords}
+                        onChange={(event) =>
+                          patchSettings((current) => ({
+                            ...current,
+                            keywords: event.target.value,
+                          }))
+                        }
+                        className="bg-white/[0.03]"
+                        placeholder="mimari, iç mimari, tasarım, istanbul..."
+                      />
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card className="border-white/10 bg-white/[0.04] shadow-none">
+                  <CardHeader className="space-y-3">
+                    <CardTitle className="text-sm uppercase tracking-[0.32em] text-white/90">Takip Kodları</CardTitle>
+                    <CardDescription className="text-white/55">Analytics ve reklam platformu kimlikleri.</CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="grid gap-4 sm:grid-cols-2">
+                      <div className="space-y-2">
+                        <p className="text-[0.6rem] uppercase tracking-[0.45em] text-white/35">GOOGLE ANALYTICS (GA4)</p>
+                        <Input
+                          value={settings.googleAnalyticsId}
+                          onChange={(event) =>
+                            patchSettings((current) => ({
+                              ...current,
+                              googleAnalyticsId: event.target.value,
+                            }))
+                          }
+                          className="bg-white/[0.03]"
+                          placeholder="G-XXXXXXXXXX"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <p className="text-[0.6rem] uppercase tracking-[0.45em] text-white/35">META PIXEL ID</p>
+                        <Input
+                          value={settings.metaPixelId}
+                          onChange={(event) =>
+                            patchSettings((current) => ({
+                              ...current,
+                              metaPixelId: event.target.value,
+                            }))
+                          }
+                          className="bg-white/[0.03]"
+                          placeholder="123456789012345"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="rounded-[1.2rem] border border-white/10 bg-white/[0.03] p-4 text-sm leading-7 text-white/60">
+                      Bu alanlar boş bırakıldığında izleme kodu eklenmez. API tarafı boş değerleri bozmadan saklar.
+                    </div>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            )}
+
+            {activeTab === 'iletisim' && (
+              <motion.div
+                key="iletisim"
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -8 }}
+                transition={{ duration: 0.22 }}
+                className="grid gap-6 lg:grid-cols-2"
+              >
+                <Card className="border-white/10 bg-white/[0.04] shadow-none">
+                  <CardHeader className="space-y-3">
+                    <CardTitle className="text-sm uppercase tracking-[0.32em] text-white/90">İletişim Kanalları</CardTitle>
+                    <CardDescription className="text-white/55">Site üstbilgisi ve iletişim sayfasında kullanılan bilgiler.</CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="space-y-2">
+                      <p className="text-[0.6rem] uppercase tracking-[0.45em] text-white/35">E-POSTA</p>
+                      <Input
+                        type="email"
+                        value={settings.contactEmail}
+                        onChange={(event) =>
+                          patchSettings((current) => ({
+                            ...current,
+                            contactEmail: event.target.value,
+                          }))
+                        }
+                        className="bg-white/[0.03]"
+                      />
+                    </div>
+                    <div className="grid gap-4 sm:grid-cols-2">
+                      <div className="space-y-2">
+                        <p className="text-[0.6rem] uppercase tracking-[0.45em] text-white/35">TELEFON</p>
+                        <Input
+                          value={settings.phone}
+                          onChange={(event) =>
+                            patchSettings((current) => ({
+                              ...current,
+                              phone: event.target.value,
+                            }))
+                          }
+                          className="bg-white/[0.03]"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <p className="text-[0.6rem] uppercase tracking-[0.45em] text-white/35">WHATSAPP</p>
+                        <Input
+                          value={settings.whatsapp}
+                          onChange={(event) =>
+                            patchSettings((current) => ({
+                              ...current,
+                              whatsapp: event.target.value,
+                            }))
+                          }
+                          className="bg-white/[0.03]"
+                        />
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card className="border-white/10 bg-white/[0.04] shadow-none">
+                  <CardHeader className="space-y-3">
+                    <CardTitle className="text-sm uppercase tracking-[0.32em] text-white/90">Adres ve Harita</CardTitle>
+                    <CardDescription className="text-white/55">İletişim sayfasındaki adres ve yönlendirme bileşenleri.</CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="space-y-2">
+                      <p className="text-[0.6rem] uppercase tracking-[0.45em] text-white/35">FİZİKSEL ADRES</p>
+                      <Textarea
+                        rows={4}
+                        value={settings.address}
+                        onChange={(event) =>
+                          patchSettings((current) => ({
+                            ...current,
+                            address: event.target.value,
+                          }))
+                        }
+                        className="min-h-[130px] bg-white/[0.03] uppercase tracking-[0.08em] text-white"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <p className="text-[0.6rem] uppercase tracking-[0.45em] text-white/35">GOOGLE MAPS URL</p>
+                      <Input
+                        value={settings.googleMapsUrl}
+                        onChange={(event) =>
+                          patchSettings((current) => ({
+                            ...current,
+                            googleMapsUrl: event.target.value,
+                          }))
+                        }
+                        className="bg-white/[0.03]"
+                        placeholder="https://www.google.com/maps/embed?..."
+                      />
+                    </div>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            )}
+
+            {activeTab === 'sistem' && (
+              <motion.div
+                key="sistem"
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -8 }}
+                transition={{ duration: 0.22 }}
+                className="grid gap-6 xl:grid-cols-[1.1fr_0.9fr]"
+              >
+                <Card className="border-white/10 bg-white/[0.04] shadow-none">
+                  <CardHeader className="space-y-3">
+                    <CardTitle className="text-sm uppercase tracking-[0.32em] text-white/90">Bakım Modu</CardTitle>
+                    <CardDescription className="text-white/55">
+                      Aktif edildiğinde ziyaretçiler siteyi bakım ekranı üzerinden görür.
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-5">
+                    <button
+                      type="button"
+                      className={cn(
+                        'flex w-full items-center justify-between rounded-[1.35rem] border p-4 text-left transition-all',
+                        settings.maintenanceMode
+                          ? 'border-amber-400/20 bg-amber-500/10'
+                          : 'border-white/10 bg-white/[0.03] hover:border-white/20 hover:bg-white/[0.05]',
+                      )}
+                      onClick={() =>
+                        patchSettings((current) => ({
+                          ...current,
+                          maintenanceMode: !current.maintenanceMode,
+                        }))
+                      }
                     >
-                      {settings.logoUrl ? <Image src={settings.logoUrl} alt="Logo" width={120} height={48} /> : <Camera size={24} />}
-                      {uploadLoading && <div className="upload-overlay"><Loader2 className="animate-spin" /></div>}
+                      <span className="flex items-center gap-3">
+                        <span
+                          className={cn(
+                            'flex h-11 w-11 items-center justify-center rounded-full border',
+                            settings.maintenanceMode
+                              ? 'border-amber-400/30 bg-amber-400/15 text-amber-100'
+                              : 'border-white/10 bg-white/[0.04] text-white/60',
+                          )}
+                        >
+                          {settings.maintenanceMode ? <Shield className="h-4 w-4" /> : <UserCheck className="h-4 w-4" />}
+                        </span>
+                        <span className="flex flex-col">
+                          <span className="text-[0.68rem] uppercase tracking-[0.35em] text-white/70">
+                            {settings.maintenanceMode ? 'Bakım modu açık' : 'Bakım modu kapalı'}
+                          </span>
+                          <span className="mt-1 text-sm text-white/55">
+                            Tek tıkla yayın davranışını değiştirin.
+                          </span>
+                        </span>
+                      </span>
+                      <span
+                        className={cn(
+                          'flex h-8 w-14 items-center rounded-full border p-1 transition-colors',
+                          settings.maintenanceMode ? 'justify-end border-amber-400/20 bg-amber-400/20' : 'justify-start border-white/10 bg-white/[0.03]',
+                        )}
+                      >
+                        <span className={cn('h-6 w-6 rounded-full', settings.maintenanceMode ? 'bg-amber-100' : 'bg-white/75')} />
+                      </span>
+                    </button>
+
+                    <div className="grid gap-4 sm:grid-cols-2">
+                      <div className="rounded-[1.2rem] border border-white/10 bg-white/[0.03] p-4">
+                        <p className="text-[0.58rem] uppercase tracking-[0.45em] text-white/35">YAYIN DURUMU</p>
+                        <p className="mt-2 text-sm uppercase tracking-[0.24em] text-white">
+                          {settings.maintenanceMode ? 'Bakım ekranı aktif' : 'Normal yayın'}
+                        </p>
+                      </div>
+                      <div className="rounded-[1.2rem] border border-white/10 bg-white/[0.03] p-4">
+                        <p className="text-[0.58rem] uppercase tracking-[0.45em] text-white/35">API KAYIT</p>
+                        <p className="mt-2 text-sm uppercase tracking-[0.24em] text-white">/api/settings</p>
+                      </div>
                     </div>
-                    <input id="logo-file" type="file" className="hidden" onChange={e => handleImageUpload(e, 'logoUrl')} />
-                    <button type="button" className="upload-btn-mini" onClick={() => document.getElementById('logo-file')?.click()}>DEĞİŞTİR</button>
-                  </div>
-                  <div className="logo-upload-wrap">
-                    <label>FAVICON</label>
-                    <div 
-                      className={`logo-preview-box square ${isDraggingFavicon ? 'drag-active' : ''}`} 
-                      onClick={() => document.getElementById('favicon-file')?.click()}
-                      onDragOver={(e) => { e.preventDefault(); setIsDraggingFavicon(true); }}
-                      onDragLeave={() => setIsDraggingFavicon(false)}
-                      onDrop={(e) => handleDrop(e, 'faviconUrl')}
-                    >
-                      {settings.faviconUrl ? <Image src={settings.faviconUrl} alt="Favicon" width={48} height={48} /> : <Camera size={20} />}
-                      {uploadLoading && <div className="upload-overlay"><Loader2 className="animate-spin" /></div>}
+                  </CardContent>
+                </Card>
+
+                <Card className="border-white/10 bg-white/[0.04] shadow-none">
+                  <CardHeader className="space-y-3">
+                    <CardTitle className="text-sm uppercase tracking-[0.32em] text-white/90">Hızlı Kontroller</CardTitle>
+                    <CardDescription className="text-white/55">Bu alan kaydetmeden önce son kontrol için kullanılır.</CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-4 text-sm leading-7 text-white/65">
+                    <div className="rounded-[1.2rem] border border-white/10 bg-white/[0.03] p-4">
+                      <p className="text-[0.58rem] uppercase tracking-[0.45em] text-white/35">GÖRSEL YÜKLEME</p>
+                      <p className="mt-2">
+                        Logo ve favicon dosyaları doğrudan <span className="text-white">/api/upload</span> üzerinden yüklenir.
+                      </p>
                     </div>
-                    <input id="favicon-file" type="file" className="hidden" onChange={e => handleImageUpload(e, 'faviconUrl')} />
-                    <button type="button" className="upload-btn-mini" onClick={() => document.getElementById('favicon-file')?.click()}>DEĞİŞTİR</button>
-                  </div>
-                  <div className="info-inputs">
-                    <div className="form-group">
-                      <label>STÜDYO İSMİ</label>
-                      <input type="text" value={settings.studioName} onChange={e => {
-                        setSettings({ ...settings, studioName: e.target.value });
-                        setIsDirty(true);
-                      }} />
+                    <div className="rounded-[1.2rem] border border-white/10 bg-white/[0.03] p-4">
+                      <p className="text-[0.58rem] uppercase tracking-[0.45em] text-white/35">KAYIT BAĞLANTISI</p>
+                      <p className="mt-2">
+                        Değişiklikler <span className="text-white">POST /api/settings</span> ile saklanır ve anında üst bileşenlere yansır.
+                      </p>
                     </div>
-                  </div>
-                </div>
-              </section>
-
-              <section className="settings-card">
-                <div className="card-header"><h3>Sosyal Medya Linkleri</h3></div>
-                <div className="form-grid-2">
-                  <div className="form-group"><label><Globe size={14}/> INSTAGRAM</label><input type="text" value={settings.socialLinks?.instagram || ''} onChange={e => { setSettings({...settings, socialLinks: {...settings.socialLinks, instagram: e.target.value}}); setIsDirty(true); }} /></div>
-                  <div className="form-group"><label><Share2 size={14}/> LINKEDIN</label><input type="text" value={settings.socialLinks?.linkedin || ''} onChange={e => { setSettings({...settings, socialLinks: {...settings.socialLinks, linkedin: e.target.value}}); setIsDirty(true); }} /></div>
-                  <div className="form-group"><label><Globe size={14}/> FACEBOOK</label><input type="text" value={settings.socialLinks?.facebook || ''} onChange={e => { setSettings({...settings, socialLinks: {...settings.socialLinks, facebook: e.target.value}}); setIsDirty(true); }} /></div>
-                  <div className="form-group"><label><Share2 size={14}/> X / TWITTER</label><input type="text" value={settings.socialLinks?.x || ''} onChange={e => { setSettings({...settings, socialLinks: {...settings.socialLinks, x: e.target.value}}); setIsDirty(true); }} /></div>
-                </div>
-              </section>
-            </motion.div>
-          )}
-
-          {activeTab === 'seo' && (
-            <motion.div key="seo" initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 10 }} className="settings-grid single-col">
-              <section className="settings-card">
-                <div className="card-header"><h3>Arama Motoru Optimizasyonu (SEO)</h3></div>
-                <div className="form-group">
-                  <label><Hash size={14}/> VARSAYILAN SAYFA BAŞLIĞI</label>
-                  <input type="text" value={settings.metaTitle || ''} onChange={e => { setSettings({ ...settings, metaTitle: e.target.value }); setIsDirty(true); }} placeholder="Örn: Deqoin | Architectural Design Studio" />
-                </div>
-                <div className="form-group">
-                  <label><Mail size={14}/> META AÇIKLAMASI</label>
-                  <textarea rows={4} value={settings.metaDescription || ''} onChange={e => { setSettings({ ...settings, metaDescription: e.target.value }); setIsDirty(true); }} placeholder="Siteniz hakkında arama sonuçlarında görünecek kısa açıklama..." />
-                </div>
-                <div className="form-group">
-                  <label><Hash size={14}/> ANAHTAR KELİMELER</label>
-                  <input type="text" value={settings.keywords || ''} onChange={e => { setSettings({ ...settings, keywords: e.target.value }); setIsDirty(true); }} placeholder="mimari, iç mimari, tasarım, istanbul..." />
-                </div>
-              </section>
-
-              <section className="settings-card">
-                <div className="card-header"><h3>Takip & Analitik Kodları</h3></div>
-                <div className="form-grid-2">
-                  <div className="form-group">
-                    <label><Activity size={14}/> GOOGLE ANALYTICS (GA4) ID</label>
-                    <input type="text" value={settings.googleAnalyticsId || ''} onChange={e => { setSettings({ ...settings, googleAnalyticsId: e.target.value }); setIsDirty(true); }} placeholder="G-XXXXXXXXXX" />
-                  </div>
-                  <div className="form-group">
-                    <label><UserCheck size={14}/> META PIXEL ID</label>
-                    <input type="text" value={settings.metaPixelId || ''} onChange={e => { setSettings({ ...settings, metaPixelId: e.target.value }); setIsDirty(true); }} placeholder="123456789012345" />
-                  </div>
-                </div>
-              </section>
-            </motion.div>
-          )}
-
-          {activeTab === 'iletisim' && (
-            <motion.div key="iletisim" initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 10 }} className="settings-grid">
-              <section className="settings-card">
-                <div className="card-header"><h3>İletişim Kanalları</h3></div>
-                <div className="form-group"><label><Mail size={14}/> E-POSTA</label><input type="email" value={settings.contactEmail} onChange={e => { setSettings({ ...settings, contactEmail: e.target.value }); setIsDirty(true); }} /></div>
-                <div className="form-group"><label><Phone size={14}/> TELEFON</label><input type="text" value={settings.phone || ''} onChange={e => { setSettings({ ...settings, phone: e.target.value }); setIsDirty(true); }} /></div>
-                <div className="form-group"><label><Phone size={14}/> WHATSAPP</label><input type="text" value={settings.whatsapp || ''} onChange={e => { setSettings({ ...settings, whatsapp: e.target.value }); setIsDirty(true); }} /></div>
-              </section>
-              <section className="settings-card">
-                <div className="card-header"><h3>Adres Bilgileri</h3></div>
-                <div className="form-group"><label><MapPin size={14}/> FİZİKSEL ADRES</label><textarea rows={2} value={settings.address || ''} onChange={e => { setSettings({ ...settings, address: e.target.value }); setIsDirty(true); }} /></div>
-                <div className="form-group"><label><Globe size={14}/> GOOGLE MAPS URL</label><input type="text" value={settings.googleMapsUrl || ''} onChange={e => { setSettings({ ...settings, googleMapsUrl: e.target.value }); setIsDirty(true); }} /></div>
-              </section>
-            </motion.div>
-          )}
-
-          {activeTab === 'sistem' && (
-            <motion.div key="sistem" initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 10 }} className="settings-grid single-col">
-              <section className="settings-card maintenance-card">
-                <div className="card-header">
-                   <div>
-                      <h3>Bakım Modu</h3>
-                      <p>Aktif edildiğinde ziyaretçiler siteyi göremez, sadece &quot;Bakımdayız&quot; mesajı ile karşılaşırlar.</p>
-                   </div>
-                   <div className={`status-toggle ${settings.maintenanceMode ? 'active' : ''}`} onClick={() => { setSettings({...settings, maintenanceMode: !settings.maintenanceMode}); setIsDirty(true); }}>
-                      <div className="toggle-bullet" />
-                   </div>
-                </div>
-                <div className="maintenance-status-info">
-                   {settings.maintenanceMode ? (
-                     <p className="status-warn"><Shield size={16}/> SİTE ŞU AN ZİYARETÇİLERE KAPALI</p>
-                   ) : (
-                     <p className="status-ok"><UserCheck size={16}/> SİTE ŞU AN YAYINDA</p>
-                   )}
-                </div>
-              </section>
-            </motion.div>
-          )}
-        </AnimatePresence>
+                    <div className="rounded-[1.2rem] border border-white/10 bg-white/[0.03] p-4">
+                      <p className="text-[0.58rem] uppercase tracking-[0.45em] text-white/35">SON DURUM</p>
+                      <p className="mt-2">
+                        {isDirty ? 'Taslak değişti, kaydedilmesi gerekiyor.' : 'Mevcut değerler ile senkron durumdasınız.'}
+                      </p>
+                    </div>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </section>
       </div>
-
-      <style jsx>{`
-        .settings-container { display: flex; flex-direction: column; gap: 3rem; }
-        
-        .settings-header {
-          display: flex;
-          justify-content: space-between;
-          align-items: flex-end;
-          border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-          padding-bottom: 2rem;
-          gap: 1.5rem;
-        }
-        @media (max-width: 768px) {
-          .settings-header { flex-direction: column; align-items: stretch; text-align: center; }
-          .save-btn { justify-content: center; }
-        }
-
-        .header-text p { font-family: var(--font-display), sans-serif; font-size: 0.75rem; letter-spacing: 0.3em; color: #a68966; margin: 0; }
-        .header-text span { font-size: 0.85rem; color: var(--text-soft); opacity: 0.7; display: block; margin-top: 0.5rem; }
-
-        .cancel-btn-header { background: transparent; border: 1px solid var(--line); color: var(--text-muted); padding: 0.5rem 1.5rem; font-size: 0.7rem; font-weight: 700; cursor: pointer; transition: 0.3s; }
-        .cancel-btn-header:hover { background: rgba(255,255,255,0.05); color: #fff; }
-
-        .save-btn.dirty-pulse { background: #a68966; box-shadow: 0 0 20px rgba(166,137,102,0.4); animation: pulse-border 2s infinite; }
-        @keyframes pulse-border { 0% { box-shadow: 0 0 0 0 rgba(166,137,102,0.4); } 70% { box-shadow: 0 0 0 10px rgba(166,137,102,0); } 100% { box-shadow: 0 0 0 0 rgba(166,137,102,0); } }
-
-        .tabs-navigation { display: flex; gap: 0.5rem; margin-top: -1rem; overflow-x: auto; scrollbar-width: none; -ms-overflow-style: none; }
-        .tabs-navigation::-webkit-scrollbar { display: none; }
-        .tabs-navigation button { background: transparent; border: none; border-bottom: 2px solid transparent; color: var(--text-muted); padding: 0.75rem 1rem; font-size: 0.7rem; font-weight: 800; letter-spacing: 0.1em; cursor: pointer; transition: all 0.3s; display: flex; align-items: center; gap: 0.5rem; white-space: nowrap; }
-        .tabs-navigation button:hover { color: var(--text); }
-        .tabs-navigation button.active { color: #a68966; border-color: #a68966; }
-
-        .save-btn {
-          background: #a68966;
-          color: #080808;
-          border: none;
-          padding: 1rem 2rem;
-          display: flex;
-          align-items: center;
-          gap: 1rem;
-          font-family: var(--font-display), sans-serif;
-          font-weight: 700;
-          font-size: 0.75rem;
-          letter-spacing: 0.1em;
-          cursor: pointer;
-          transition: all 0.3s ease;
-        }
-
-        .save-btn:hover { background: #c2a785; transform: translateY(-2px); }
-
-        .settings-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
-        .settings-grid.single-col { grid-template-columns: 1fr; }
-        
-        .settings-card {
-          background: var(--surface);
-          border: 1px solid var(--line);
-          padding: 2.5rem;
-          display: flex;
-          flex-direction: column;
-          gap: 1.5rem;
-          border-radius: 12px;
-        }
-
-        .card-header h3 { font-family: var(--font-display), sans-serif; font-size: 0.8rem; letter-spacing: 0.1em; color: #a68966; text-transform: uppercase; margin: 0; }
-        .card-header p { font-size: 0.8rem; color: var(--text-soft); opacity: 0.7; margin-top: 0.5rem; }
-
-        .logo-section-grid { display: flex; gap: 2.5rem; align-items: flex-end; }
-        @media (max-width: 600px) { .logo-section-grid { flex-direction: column; align-items: flex-start; gap: 2rem; } .info-inputs { width: 100%; } }
-        .logo-upload-wrap { display: flex; flex-direction: column; gap: 0.75rem; }
-        .logo-upload-wrap label { font-size: 0.6rem; font-weight: 900; color: var(--text-muted); }
-        .logo-preview-box { width: 140px; height: 100px; background: #fff; border-radius: 4px; display: flex; align-items: center; justify-content: center; cursor: pointer; padding: 10px; position: relative; }
-        .logo-preview-box.square { width: 60px; height: 60px; }
-        .logo-preview-box img { max-width: 100%; max-height: 100%; object-fit: contain; }
-        .upload-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; }
-        
-        .upload-btn-mini { background: var(--surface-muted); color: var(--text); border: 1px solid var(--line); padding: 0.4rem; font-size: 0.6rem; font-weight: 700; cursor: pointer; border-radius: 2px; }
-        .upload-btn-mini:hover { background: var(--text); color: var(--background); }
-        .info-inputs { flex: 1; }
-
-        .form-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
-        .form-group { display: flex; flex-direction: column; gap: 0.75rem; }
-        .form-group label { font-size: 0.65rem; color: var(--text-muted); font-weight: 800; display: flex; align-items: center; gap: 0.5rem; }
-        .form-group input, .form-group textarea {
-          background: var(--background);
-          border: 1px solid var(--line);
-          padding: 1rem;
-          color: var(--text);
-          border-radius: 4px;
-          font-size: 0.85rem;
-          font-family: inherit;
-        }
-
-        .status-toggle { width: 60px; height: 32px; background: var(--line); border-radius: 20px; position: relative; cursor: pointer; transition: all 0.3s; }
-        .status-toggle.active { background: #a68966; }
-        .toggle-bullet { width: 24px; height: 24px; background: #fff; border-radius: 50%; position: absolute; top: 4px; left: 4px; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
-        .status-toggle.active .toggle-bullet { left: 32px; background: #000; }
-        
-        .maintenance-status-info { margin-top: 1rem; padding-top: 1.5rem; border-top: 1px solid var(--line); }
-        .status-warn { color: #ffab40; font-size: 0.8rem; font-weight: 700; display: flex; align-items: center; gap: 0.5rem; }
-        .status-ok { color: #4caf50; font-size: 0.8rem; font-weight: 700; display: flex; align-items: center; gap: 0.5rem; }
-
-        .hidden { display: none; }
-        .loader-wrap { height: 400px; display: flex; align-items: center; justify-content: center; color: #a68966; }
-
-        @media (max-width: 1024px) {
-          .settings-grid { grid-template-columns: 1fr; }
-        }
-      `}</style>
     </div>
   );
 }
