@@ -8,7 +8,6 @@ import ProjectInsightPanel from "@/components/ProjectInsightPanel";
 import ProjectFilterSidebar, { type FilterGroup } from "@/components/ProjectFilterSidebar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Loader2 } from "lucide-react";
 import { projectsData, type ProjectDetail } from "@/data/projects";
@@ -25,7 +24,7 @@ type PageContent = {
 const DEFAULT_PAGE_CONTENT: PageContent = {
   title: "GALERİ",
   subtitle: "TÜM ÇALIŞMALARIMIZ & PORTFOLYO",
-  description: "Filtrelenebilir proje havuzu, detay modalı ve seçili kartların gelişmiş anlatımı.",
+  description: "",
   ctaText: "GALERİYİ KEŞFET",
   ctaHref: "/galeri",
 };
@@ -159,37 +158,17 @@ export default function GaleriPage() {
             >
               {pageContent.title}
             </h1>
-            <p className="mt-4 max-w-3xl text-sm leading-7 text-zinc-400 md:text-base">
-              {pageContent.description}
-            </p>
           </div>
 
           <div className="flex flex-wrap items-center gap-3">
             <Badge className="border border-white/10 bg-white/5 text-white/80">
               {visibleProjects.length} proje
             </Badge>
-            <Button asChild className="bg-white text-zinc-950 hover:bg-white/90">
+            <Button asChild className="bg-white text-black hover:bg-white/90 hover:text-black">
               <a href={pageContent.ctaHref}>{pageContent.ctaText}</a>
             </Button>
           </div>
         </header>
-
-        <Card className="mb-8 border-white/10 bg-white/[0.04] backdrop-blur-sm">
-          <CardContent className="grid gap-4 p-4 md:grid-cols-3 md:p-6">
-            <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
-              <p className="text-[0.65rem] uppercase tracking-[0.35em] text-zinc-500">Anlık Filtre</p>
-              <p className="mt-2 text-sm text-white/90">Kartlar kategori, departman ve arama metnine göre filtrelenir.</p>
-            </div>
-            <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
-              <p className="text-[0.65rem] uppercase tracking-[0.35em] text-zinc-500">Detay Modalı</p>
-              <p className="mt-2 text-sm text-white/90">Seçilen proje aynı modal bileşeniyle detaylı gösterilir.</p>
-            </div>
-            <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
-              <p className="text-[0.65rem] uppercase tracking-[0.35em] text-zinc-500">API Kaynağı</p>
-              <p className="mt-2 text-sm text-white/90">İçerik /api/content?page=galeri ve /api/projects üzerinden okunur.</p>
-            </div>
-          </CardContent>
-        </Card>
 
         <div className="grid grid-cols-1 gap-12 lg:grid-cols-[280px_minmax(0,1fr)]">
           <ProjectFilterSidebar
