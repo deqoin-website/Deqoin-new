@@ -4556,8 +4556,8 @@ body.faaliyet-alanlarimiz-page .topbar-links a {
 }
 
 [data-theme='light'] .site-footer {
-  background: linear-gradient(180deg, #fbf8f3 0%, #f5efe7 100%);
-  border-top: 1px solid rgba(18, 18, 18, 0.08);
+  background: #060606;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 /* ── TOP CTA STRIP ── */
@@ -4568,8 +4568,8 @@ body.faaliyet-alanlarimiz-page .topbar-links a {
 }
 
 [data-theme='light'] .footer-top {
-  background: linear-gradient(135deg, rgba(255, 251, 245, 0.95) 0%, rgba(245, 239, 231, 0.98) 100%);
-  border-bottom: 1px solid rgba(18, 18, 18, 0.08);
+  background: linear-gradient(135deg, #080808 0%, #040404 100%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 .footer-top-inner {
@@ -4586,7 +4586,7 @@ body.faaliyet-alanlarimiz-page .topbar-links a {
   font-family: var(--font-display), sans-serif;
   font-size: 0.65rem;
   letter-spacing: 0.45em;
-  color: #cca883;
+  color: #fff;
   text-transform: uppercase;
   margin-bottom: 1.5rem;
 }
@@ -4599,20 +4599,6 @@ body.faaliyet-alanlarimiz-page .topbar-links a {
   line-height: 0.92;
   letter-spacing: 0.04em;
   margin: 0 0 3.5rem;
-}
-
-[data-theme='light'] .footer-cta-title,
-[data-theme='light'] .footer-address,
-[data-theme='light'] .footer-tagline,
-[data-theme='light'] .footer-nav-link,
-[data-theme='light'] .footer-copy,
-[data-theme='light'] .footer-bottom-tag {
-  color: var(--text);
-}
-
-[data-theme='light'] .footer-cta-label,
-[data-theme='light'] .footer-nav-label {
-  color: var(--accent);
 }
 
 .footer-address-block {
@@ -4636,7 +4622,7 @@ body.faaliyet-alanlarimiz-page .topbar-links a {
 }
 
 [data-theme='light'] .footer-divider {
-  background: rgba(18, 18, 18, 0.08);
+  background: rgba(255, 255, 255, 0.06);
 }
 
 /* ── MAIN GRID ── */
@@ -4675,7 +4661,7 @@ body.faaliyet-alanlarimiz-page .topbar-links a {
   width: 2.2rem;
   height: 2.2rem;
   border: 1px solid var(--line);
-  color: var(--text-muted);
+  color: #fff;
   transition: border-color 0.4s ease, color 0.4s ease, background 0.4s ease;
 }
 
@@ -4691,7 +4677,7 @@ body.faaliyet-alanlarimiz-page .topbar-links a {
   font-family: var(--font-display), sans-serif;
   font-size: 0.6rem;
   letter-spacing: 0.35em;
-  color: #cca883;
+  color: #fff;
   text-transform: uppercase;
   margin-bottom: 1.8rem;
 }
@@ -4729,7 +4715,7 @@ body.faaliyet-alanlarimiz-page .topbar-links a {
 }
 
 .footer-nav-link:hover {
-  color: var(--text);
+  color: #fff;
 }
 
 .footer-nav-link:hover::after {
@@ -4755,29 +4741,6 @@ body.faaliyet-alanlarimiz-page .topbar-links a {
   letter-spacing: 0.2em;
   color: #fff;
   text-transform: uppercase;
-}
-
-[data-theme='light'] .site-footer .footer-cta-btn {
-  color: var(--text);
-  border-color: rgba(18, 18, 18, 0.16);
-}
-
-[data-theme='light'] .site-footer .footer-cta-btn .hero-cta-text {
-  color: var(--text);
-}
-
-[data-theme='light'] .site-footer .footer-cta-btn .hero-cta-circle {
-  background: rgba(166, 137, 102, 0.08);
-  border-color: rgba(166, 137, 102, 0.18);
-}
-
-[data-theme='light'] .site-footer .footer-cta-btn .hero-cta-circle span {
-  color: var(--text) !important;
-}
-
-[data-theme='light'] .site-footer .footer-cta-btn:hover .hero-cta-text,
-[data-theme='light'] .site-footer .footer-cta-btn:hover .hero-cta-circle span {
-  color: var(--text-inverse) !important;
 }
 
 .site-footer .footer-cta-btn {
