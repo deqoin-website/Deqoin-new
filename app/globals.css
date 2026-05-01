@@ -534,14 +534,6 @@ video {
   text-decoration: none;
 }
 
-[data-theme='light'] .topbar-links,
-[data-theme='light'] .brand-mark,
-[data-theme='light'] .icon-button,
-[data-theme='light'] .icon-button span {
-  color: var(--text) !important;
-  -webkit-text-fill-color: var(--text) !important;
-}
-
 body.faaliyet-alanlarimiz-page .topbar-links,
 body.faaliyet-alanlarimiz-page .brand-mark,
 body.faaliyet-alanlarimiz-page .icon-button,
@@ -552,9 +544,18 @@ body.faaliyet-alanlarimiz-page .topbar-links a {
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.28);
 }
 
-[data-theme='light'] .icon-button:hover {
-  opacity: 1;
-  color: var(--accent) !important;
+.topbar-links,
+.brand-mark,
+.icon-button,
+.icon-button span,
+.topbar-links a {
+  color: #fff !important;
+  -webkit-text-fill-color: #fff !important;
+}
+
+.icon-button:hover {
+  opacity: 0.8;
+  color: #fff !important;
 }
 
 [data-theme='light'] .mobile-menu-overlay {
