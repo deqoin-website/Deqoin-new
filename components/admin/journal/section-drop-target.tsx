@@ -37,9 +37,9 @@ export function SectionDropTarget({ index, active, onDropItem, onDragEnter, onDr
           <div className={cn("flex h-8 w-8 items-center justify-center rounded-full border", active ? "border-white/30 bg-white text-zinc-950" : "border-white/10 bg-white/[0.04] text-zinc-500")}>
             <GripVertical className="h-4 w-4" />
           </div>
-          <p className="text-[0.58rem] tracking-[0.08em] text-zinc-500">blok bırakma alanı {index + 1}</p>
+          <p className="text-[0.58rem] tracking-[0.08em] uppercase text-zinc-500">blok bırakma alanı {index + 1}</p>
         </div>
-        <span className="text-[0.58rem] tracking-[0.08em] text-zinc-500">sürükle ve bırak</span>
+        <span className="text-[0.58rem] tracking-[0.08em] uppercase text-zinc-500">sürükle ve bırak</span>
       </div>
     </div>
   );

@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
 import { JOURNAL_CONTENT_TYPES, JOURNAL_DEPARTMENTS, JOURNAL_PROJECT_TYPES, type JournalArticle } from "@/data/journal";
 import { cn } from "@/lib/utils";
-import { toTurkishLowerCase } from "@/lib/journal-content";
+import { toTurkishUpperCase } from "@/lib/journal-content";
 
 import { FieldGroup } from "./field-group";
 import type { JournalArticleDraft } from "./journal-utils";
@@ -32,7 +32,7 @@ export function JournalTaxonomyTab({ article, onUpdateArticle }: JournalTaxonomy
             >
               {JOURNAL_CONTENT_TYPES.map((type) => (
                 <option key={type.value} value={type.value}>
-                  {toTurkishLowerCase(type.label)}
+                  {toTurkishUpperCase(type.label)}
                 </option>
               ))}
             </Select>
@@ -41,9 +41,9 @@ export function JournalTaxonomyTab({ article, onUpdateArticle }: JournalTaxonomy
 
         <div className="rounded-[1.5rem] border border-white/10 bg-white/[0.03] p-4">
           <div className="flex items-center justify-between">
-            <p className="text-[0.6rem] tracking-[0.08em] text-zinc-500">departmanlar</p>
+            <p className="text-[0.6rem] tracking-[0.08em] text-zinc-500 uppercase">departmanlar</p>
             <Badge variant="outline" className="border-white/10 bg-white/[0.04] text-zinc-300">
-              çoklu seçim
+              ÇOKLU SEÇİM
             </Badge>
           </div>
           <div className="space-y-2">
@@ -67,8 +67,8 @@ export function JournalTaxonomyTab({ article, onUpdateArticle }: JournalTaxonomy
                     }))
                   }
                 >
-                  <span>{toTurkishLowerCase(department.label)}</span>
-                  <span className="text-xs text-zinc-500">{active ? "aktif" : "pasif"}</span>
+                  <span className="uppercase">{toTurkishUpperCase(department.label)}</span>
+                  <span className="text-xs text-zinc-500 uppercase">{active ? "aktif" : "pasif"}</span>
                 </button>
               );
             })}
@@ -77,9 +77,9 @@ export function JournalTaxonomyTab({ article, onUpdateArticle }: JournalTaxonomy
 
         <div className="rounded-[1.5rem] border border-white/10 bg-white/[0.03] p-4">
           <div className="flex items-center justify-between">
-            <p className="text-[0.6rem] tracking-[0.08em] text-zinc-500">proje tipleri</p>
+            <p className="text-[0.6rem] tracking-[0.08em] text-zinc-500 uppercase">proje tipleri</p>
             <Badge variant="outline" className="border-white/10 bg-white/[0.04] text-zinc-300">
-              çoklu seçim
+              ÇOKLU SEÇİM
             </Badge>
           </div>
           <div className="space-y-2">
@@ -103,8 +103,8 @@ export function JournalTaxonomyTab({ article, onUpdateArticle }: JournalTaxonomy
                     }))
                   }
                 >
-                  <span>{toTurkishLowerCase(projectType.label)}</span>
-                  <span className="text-xs text-zinc-500">{active ? "aktif" : "pasif"}</span>
+                  <span className="uppercase">{toTurkishUpperCase(projectType.label)}</span>
+                  <span className="text-xs text-zinc-500 uppercase">{active ? "aktif" : "pasif"}</span>
                 </button>
               );
             })}
@@ -166,11 +166,11 @@ export function JournalTaxonomyTab({ article, onUpdateArticle }: JournalTaxonomy
         </div>
 
         <div className="space-y-2 rounded-[1.5rem] border border-white/10 bg-white/[0.03] p-4">
-          <p className="text-[0.6rem] tracking-[0.08em] text-zinc-500">seçili sınıflandırmalar</p>
+          <p className="text-[0.6rem] tracking-[0.08em] text-zinc-500 uppercase">seçili sınıflandırmalar</p>
           <div className="space-y-2 text-sm text-zinc-300">
-            <p>departmanlar: {article.departments.map((item) => toTurkishLowerCase(item)).join(", ") || "boş"}</p>
-            <p>proje tipleri: {article.projectTypes.map((item) => toTurkishLowerCase(item)).join(", ") || "boş"}</p>
-            <p>ilgili slug sayısı: {article.relatedProjectSlugs.filter(Boolean).length}</p>
+            <p className="uppercase">departmanlar: {article.departments.map((item) => toTurkishUpperCase(item)).join(", ") || "boş"}</p>
+            <p className="uppercase">proje tipleri: {article.projectTypes.map((item) => toTurkishUpperCase(item)).join(", ") || "boş"}</p>
+            <p className="uppercase">ilgili slug sayısı: {article.relatedProjectSlugs.filter(Boolean).length}</p>
           </div>
         </div>
       </div>

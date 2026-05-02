@@ -73,6 +73,10 @@ export function toTurkishLowerCase(value: string) {
   return value.toLocaleLowerCase("tr-TR");
 }
 
+export function toTurkishUpperCase(value: string) {
+  return value.toLocaleUpperCase("tr-TR");
+}
+
 function stringOr(value: unknown, fallback: string) {
   const normalized = normalizeJournalText(value);
   return normalized || fallback;

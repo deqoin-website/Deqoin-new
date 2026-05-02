@@ -17,6 +17,7 @@ import {
   normalizeJournalDraft,
   serializeJournalDraft,
   toTurkishLowerCase,
+  toTurkishUpperCase,
 } from "@/lib/journal-content";
 
 import { JournalDialogs } from "@/components/admin/journal/journal-dialogs";
@@ -75,7 +76,7 @@ function ArticleTable({
   if (articles.length === 0) {
     return (
       <Card className="border-white/10 bg-white/[0.03] shadow-none">
-        <CardContent className="px-6 py-14 text-sm text-zinc-400">
+        <CardContent className="px-6 py-14 text-sm uppercase text-zinc-400">
           bu filtre için içerik bulunamadı.
         </CardContent>
       </Card>
@@ -87,7 +88,7 @@ function ArticleTable({
       <CardContent className="overflow-x-auto p-0">
         <table className="min-w-full border-separate border-spacing-0">
           <thead className="sticky top-0 z-10 bg-[color:var(--admin-bg)]/90 backdrop-blur">
-            <tr className="text-left text-[0.62rem] tracking-[0.08em] text-zinc-500">
+            <tr className="text-left text-[0.62rem] tracking-[0.08em] text-zinc-500 uppercase">
               <th className="border-b border-white/10 px-5 py-4 font-medium">başlık</th>
               <th className="border-b border-white/10 px-5 py-4 font-medium">slug</th>
               <th className="border-b border-white/10 px-5 py-4 font-medium">kategori</th>
@@ -125,7 +126,7 @@ function ArticleTable({
                   <td className="border-b border-white/10 px-5 py-4 text-sm text-zinc-400">{toTurkishLowerCase(article.publishedAt)}</td>
                   <td className="border-b border-white/10 px-5 py-4 text-sm text-zinc-400">{toTurkishLowerCase(article.readTime)}</td>
                   <td className="border-b border-white/10 px-5 py-4">
-                    <span className="text-xs tracking-[0.08em] text-[color:var(--admin-accent)]">aktif</span>
+                    <span className="text-xs tracking-[0.08em] text-[color:var(--admin-accent)] uppercase">aktif</span>
                   </td>
                   <td className="border-b border-white/10 px-5 py-4">
                     <div className="flex flex-wrap gap-2">
@@ -133,36 +134,36 @@ function ArticleTable({
                         type="button"
                         size="sm"
                         variant="ghost"
-                        className="h-9 border border-white/10 bg-white/[0.03] text-zinc-200 hover:bg-white hover:text-zinc-950"
+                        className="h-9 border border-white/10 bg-white/[0.03] uppercase text-zinc-200 hover:bg-white hover:text-zinc-950"
                         onClick={(event) => {
                           event.stopPropagation();
                           onSelectArticle(article);
                         }}
-                      >
+                        >
                         aç
                       </Button>
                       <Button
                         type="button"
                         size="sm"
                         variant="ghost"
-                        className="h-9 border border-white/10 bg-white/[0.03] text-zinc-200 hover:bg-white hover:text-zinc-950"
+                        className="h-9 border border-white/10 bg-white/[0.03] uppercase text-zinc-200 hover:bg-white hover:text-zinc-950"
                         onClick={(event) => {
                           event.stopPropagation();
                           onDuplicateArticle(article);
                         }}
-                      >
+                        >
                         kopyala
                       </Button>
                       <Button
                         type="button"
                         size="sm"
                         variant="ghost"
-                        className="h-9 border border-rose-500/20 bg-rose-500/10 text-rose-100 hover:bg-rose-500 hover:text-white"
+                        className="h-9 border border-rose-500/20 bg-rose-500/10 uppercase text-rose-100 hover:bg-rose-500 hover:text-white"
                         onClick={(event) => {
                           event.stopPropagation();
                           onDeleteArticle(article);
                         }}
-                      >
+                        >
                         sil
                       </Button>
                     </div>
@@ -189,8 +190,8 @@ function HeroSettingsCard({
   return (
     <Card className="border-white/10 bg-white/[0.03] shadow-none">
       <CardHeader className="space-y-2 border-b border-white/10">
-        <CardTitle className="text-sm font-medium tracking-[0.08em] text-white">sayfa kahramanı</CardTitle>
-        <CardDescription className="text-zinc-400">
+        <CardTitle className="text-sm font-medium tracking-[0.08em] text-white uppercase">sayfa kahramanı</CardTitle>
+        <CardDescription className="uppercase text-zinc-400">
           ana journal sayfasının vitrin başlığı, alt metni ve öne çıkan içeriği.
         </CardDescription>
       </CardHeader>
@@ -199,14 +200,14 @@ function HeroSettingsCard({
           <div className="space-y-4 rounded-[1.5rem] border border-white/10 bg-white/[0.03] p-4">
             <div className="grid gap-4 md:grid-cols-2">
               <div className="space-y-2">
-                <p className="text-[0.6rem] tracking-[0.08em] text-zinc-500">sayfa başlığı</p>
+                <p className="text-[0.6rem] tracking-[0.08em] text-zinc-500 uppercase">sayfa başlığı</p>
                 <Input
                   value={draft.pageTitle}
                   onChange={(event) => onChange((current) => ({ ...current, pageTitle: event.target.value }))}
                 />
               </div>
               <div className="space-y-2">
-                <p className="text-[0.6rem] tracking-[0.08em] text-zinc-500">öne çıkan makale</p>
+                <p className="text-[0.6rem] tracking-[0.08em] text-zinc-500 uppercase">öne çıkan makale</p>
                 <Select
                   value={draft.hero.featuredArticleSlug}
                   onChange={(event) =>
@@ -218,7 +219,7 @@ function HeroSettingsCard({
                 >
                   {draft.articles.map((article) => (
                     <option key={article.slug} value={article.slug}>
-                      {toTurkishLowerCase(article.title)}
+                      {toTurkishUpperCase(article.title)}
                     </option>
                   ))}
                 </Select>
@@ -226,7 +227,7 @@ function HeroSettingsCard({
             </div>
 
             <div className="space-y-2">
-              <p className="text-[0.6rem] tracking-[0.08em] text-zinc-500">başlık</p>
+              <p className="text-[0.6rem] tracking-[0.08em] text-zinc-500 uppercase">başlık</p>
               <Input
                 value={draft.hero.title}
                 onChange={(event) => onChange((current) => ({ ...current, hero: { ...current.hero, title: event.target.value } }))}
@@ -234,7 +235,7 @@ function HeroSettingsCard({
             </div>
 
             <div className="space-y-2">
-              <p className="text-[0.6rem] tracking-[0.08em] text-zinc-500">alt başlık</p>
+              <p className="text-[0.6rem] tracking-[0.08em] text-zinc-500 uppercase">alt başlık</p>
               <Input
                 value={draft.hero.subtitle}
                 onChange={(event) => onChange((current) => ({ ...current, hero: { ...current.hero, subtitle: event.target.value } }))}
@@ -242,7 +243,7 @@ function HeroSettingsCard({
             </div>
 
             <div className="space-y-2">
-              <p className="text-[0.6rem] tracking-[0.08em] text-zinc-500">açıklama</p>
+              <p className="text-[0.6rem] tracking-[0.08em] text-zinc-500 uppercase">açıklama</p>
               <Textarea
                 value={draft.hero.description}
                 onChange={(event) => onChange((current) => ({ ...current, hero: { ...current.hero, description: event.target.value } }))}
@@ -257,20 +258,20 @@ function HeroSettingsCard({
                 {featuredArticle?.coverImage ? (
                   <Image src={featuredArticle.coverImage} alt={featuredArticle.title} fill className="object-cover" />
                 ) : (
-                  <div className="flex h-full items-center justify-center text-zinc-500">önizleme yok</div>
-                )}
-              </div>
-              <CardContent className="space-y-3 p-4">
-                <p className="text-[0.6rem] tracking-[0.08em] text-zinc-500">vitrin önizlemesi</p>
-                <p className="text-sm text-zinc-300">
-                  {featuredArticle ? toTurkishLowerCase(featuredArticle.title) : "özel içerik seçilmedi"}
+                <div className="flex h-full items-center justify-center uppercase text-zinc-500">önizleme yok</div>
+              )}
+            </div>
+            <CardContent className="space-y-3 p-4">
+              <p className="text-[0.6rem] tracking-[0.08em] text-zinc-500 uppercase">vitrin önizlemesi</p>
+                <p className="text-sm uppercase text-zinc-300">
+                  {featuredArticle ? toTurkishUpperCase(featuredArticle.title) : "özel içerik seçilmedi"}
                 </p>
-                <p className="text-sm leading-7 text-zinc-400">{draft.hero.description}</p>
+                <p className="text-sm uppercase leading-7 text-zinc-400">{draft.hero.description}</p>
               </CardContent>
             </Card>
 
             <Card className="border-white/10 bg-white/[0.03] shadow-none">
-              <CardContent className="space-y-3 p-4 text-sm leading-7 text-zinc-400">
+              <CardContent className="space-y-3 p-4 text-sm uppercase leading-7 text-zinc-400">
                 <p>sayfa kahramanı paneli artık sidebar üstünde sabit bir link ile açılır.</p>
                 <p>aktif kategori görünümünden bağımsızdır ve ayrı bir vitrin yüzeyi olarak çalışır.</p>
               </CardContent>
@@ -563,8 +564,8 @@ export default function JournalAdminPage() {
                   )}
                 </div>
                 <div className="space-y-2">
-                  <p className="text-[0.6rem] tracking-[0.08em] text-zinc-500">editoryal yönetim paneli</p>
-                  <h2 className="text-3xl font-medium tracking-[0.02em] text-white md:text-5xl">journal içerikleri</h2>
+                  <p className="text-[0.6rem] tracking-[0.08em] text-zinc-500 uppercase">editoryal yönetim paneli</p>
+                  <h2 className="text-3xl font-medium tracking-[0.02em] text-white uppercase md:text-5xl">journal içerikleri</h2>
                   <p className="max-w-3xl text-sm leading-7 text-zinc-400">
                     içerik tiplerine göre hiyerarşik sidebar, kategori bazlı tablo ve tab ile ayrılmış düzenleme akışı.
                   </p>
@@ -572,10 +573,10 @@ export default function JournalAdminPage() {
               </div>
 
               <div className="flex flex-wrap items-center gap-2">
-                <Button
+                  <Button
                   type="button"
                   variant="ghost"
-                  className="border border-white/10 bg-white/[0.03] text-zinc-200 hover:bg-white hover:text-zinc-950"
+                  className="border border-white/10 bg-white/[0.03] text-zinc-200 uppercase hover:bg-white hover:text-zinc-950"
                   onClick={() => setNotesOpen(true)}
                 >
                   <NotebookText className="mr-2 h-4 w-4" />
@@ -584,7 +585,7 @@ export default function JournalAdminPage() {
                 <Button
                   type="button"
                   variant="ghost"
-                  className="border border-white/10 bg-white/[0.03] text-zinc-200 hover:bg-white hover:text-zinc-950"
+                  className="border border-white/10 bg-white/[0.03] text-zinc-200 uppercase hover:bg-white hover:text-zinc-950"
                   onClick={() => setPreviewOpen(true)}
                 >
                   <Eye className="mr-2 h-4 w-4" />
@@ -592,7 +593,7 @@ export default function JournalAdminPage() {
                 </Button>
                 <Button
                   type="button"
-                  className="bg-white text-zinc-950 hover:bg-zinc-200"
+                  className="bg-white uppercase text-zinc-950 hover:bg-zinc-200"
                   onClick={saveJournal}
                   disabled={isSaving}
                 >
@@ -615,10 +616,10 @@ export default function JournalAdminPage() {
                 <CardHeader className="space-y-4">
                   <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
                     <div className="space-y-2">
-                      <CardTitle className="text-sm font-medium tracking-[0.08em] text-white">
-                        {activeCategory ? toTurkishLowerCase(activeCategory.label) : toTurkishLowerCase(activeView)}
+                      <CardTitle className="text-sm font-medium tracking-[0.08em] text-white uppercase">
+                        {activeCategory ? toTurkishUpperCase(activeCategory.label) : toTurkishUpperCase(activeView)}
                       </CardTitle>
-                      <CardDescription className="text-zinc-400">
+                      <CardDescription className="uppercase text-zinc-400">
                         seçili kategoriye ait makaleler tablo görünümünde listelenir. satıra tıklayın, düzenleyici alanda açılır.
                       </CardDescription>
                     </div>
@@ -636,7 +637,7 @@ export default function JournalAdminPage() {
                       <Button
                         type="button"
                         variant="ghost"
-                        className="border border-white/10 bg-white/[0.03] text-zinc-200 hover:bg-white hover:text-zinc-950"
+                        className="border border-white/10 bg-white/[0.03] uppercase text-zinc-200 hover:bg-white hover:text-zinc-950"
                         onClick={addArticle}
                       >
                         <Plus className="mr-2 h-4 w-4" />
@@ -647,19 +648,19 @@ export default function JournalAdminPage() {
 
                   <div className="grid gap-3 md:grid-cols-4">
                     <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
-                      <p className="text-[0.55rem] tracking-[0.08em] text-zinc-500">makale</p>
+                      <p className="text-[0.55rem] tracking-[0.08em] text-zinc-500 uppercase">makale</p>
                       <p className="mt-2 text-xl text-white">{formatCountLabel(visibleArticles.length)}</p>
                     </div>
                     <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
-                      <p className="text-[0.55rem] tracking-[0.08em] text-zinc-500">sayfa</p>
+                      <p className="text-[0.55rem] tracking-[0.08em] text-zinc-500 uppercase">sayfa</p>
                       <p className="mt-2 text-xl text-white">{tablePageLabel}</p>
                     </div>
                     <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
-                      <p className="text-[0.55rem] tracking-[0.08em] text-zinc-500">kategori</p>
-                      <p className="mt-2 text-xl text-white">{activeCategory ? toTurkishLowerCase(activeCategory.label) : toTurkishLowerCase(activeView)}</p>
+                      <p className="text-[0.55rem] tracking-[0.08em] text-zinc-500 uppercase">kategori</p>
+                      <p className="mt-2 text-xl text-white">{activeCategory ? toTurkishUpperCase(activeCategory.label) : toTurkishUpperCase(activeView)}</p>
                     </div>
                     <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
-                      <p className="text-[0.55rem] tracking-[0.08em] text-zinc-500">durum</p>
+                      <p className="text-[0.55rem] tracking-[0.08em] text-zinc-500 uppercase">durum</p>
                       <p className="mt-2 text-xl text-white">{hasDirtyState ? "düzenlendi" : "hazır"}</p>
                     </div>
                   </div>
@@ -676,14 +677,14 @@ export default function JournalAdminPage() {
 
                   {tableTotalPages > 1 && (
                     <div className="flex flex-wrap items-center justify-between gap-3">
-                      <p className="text-sm text-zinc-400">
+                      <p className="text-sm uppercase text-zinc-400">
                         {visibleArticles.length} içerikten {currentPageSafe * PAGE_SIZE + 1}-{Math.min((currentPageSafe + 1) * PAGE_SIZE, visibleArticles.length)} arası gösteriliyor.
                       </p>
                       <div className="flex items-center gap-2">
                         <Button
                           type="button"
                           variant="ghost"
-                          className="border border-white/10 bg-white/[0.03] text-zinc-200 hover:bg-white hover:text-zinc-950"
+                          className="border border-white/10 bg-white/[0.03] uppercase text-zinc-200 hover:bg-white hover:text-zinc-950"
                           onClick={() => setCurrentPage((current) => Math.max(0, current - 1))}
                           disabled={currentPageSafe === 0}
                         >
@@ -692,7 +693,7 @@ export default function JournalAdminPage() {
                         <Button
                           type="button"
                           variant="ghost"
-                          className="border border-white/10 bg-white/[0.03] text-zinc-200 hover:bg-white hover:text-zinc-950"
+                          className="border border-white/10 bg-white/[0.03] uppercase text-zinc-200 hover:bg-white hover:text-zinc-950"
                           onClick={() => setCurrentPage((current) => Math.min(tableTotalPages - 1, current + 1))}
                           disabled={currentPageSafe >= tableTotalPages - 1}
                         >
@@ -720,7 +721,7 @@ export default function JournalAdminPage() {
           )}
 
           <Card className="border-white/10 bg-white/[0.03] shadow-none">
-            <CardContent className="flex flex-col gap-3 p-5 text-sm text-zinc-400 lg:flex-row lg:items-start">
+            <CardContent className="flex flex-col gap-3 p-5 text-sm uppercase text-zinc-400 lg:flex-row lg:items-start">
               <div className="rounded-full border border-white/10 bg-white/[0.04] p-2 text-[color:var(--admin-accent)]">
                 <RefreshCw className="h-4 w-4" />
               </div>

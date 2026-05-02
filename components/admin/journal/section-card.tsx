@@ -9,6 +9,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
+import { toTurkishUpperCase } from "@/lib/journal-content";
 
 import { FieldGroup } from "./field-group";
 import type { JournalSectionDraft } from "./journal-utils";
@@ -46,7 +47,7 @@ export function SectionCard({
   onDragEnd,
   isDragging = false,
 }: SectionCardProps) {
-  const sectionLabel = useMemo(() => SECTION_LABELS[section.type], [section.type]);
+  const sectionLabel = useMemo(() => toTurkishUpperCase(SECTION_LABELS[section.type]), [section.type]);
 
   return (
     <Card
@@ -69,25 +70,25 @@ export function SectionCard({
               <GripVertical className="h-4 w-4" />
             </div>
             <div>
-              <p className="text-[0.6rem] tracking-[0.08em] text-zinc-500">blok {String(index + 1).padStart(2, "0")}</p>
-              <p className="text-sm text-white">{sectionLabel}</p>
+              <p className="text-[0.6rem] tracking-[0.08em] uppercase text-zinc-500">blok {String(index + 1).padStart(2, "0")}</p>
+              <p className="text-sm uppercase text-white">{sectionLabel}</p>
             </div>
           </div>
 
           <div className="flex flex-wrap items-center gap-2">
-            <Button type="button" variant="ghost" size="sm" className="border border-white/10 bg-white/[0.03] text-zinc-200 hover:bg-white hover:text-zinc-950" onClick={onDuplicate}>
+            <Button type="button" variant="ghost" size="sm" className="border border-white/10 bg-white/[0.03] uppercase text-zinc-200 hover:bg-white hover:text-zinc-950" onClick={onDuplicate}>
               <Copy className="mr-2 h-4 w-4" />
               kopyala
             </Button>
-            <Button type="button" variant="ghost" size="sm" className="border border-white/10 bg-white/[0.03] text-zinc-200 hover:bg-white hover:text-zinc-950" onClick={() => onMove("up")}>
+            <Button type="button" variant="ghost" size="sm" className="border border-white/10 bg-white/[0.03] uppercase text-zinc-200 hover:bg-white hover:text-zinc-950" onClick={() => onMove("up")}>
               <ArrowUp className="mr-2 h-4 w-4" />
               yukarı
             </Button>
-            <Button type="button" variant="ghost" size="sm" className="border border-white/10 bg-white/[0.03] text-zinc-200 hover:bg-white hover:text-zinc-950" onClick={() => onMove("down")}>
+            <Button type="button" variant="ghost" size="sm" className="border border-white/10 bg-white/[0.03] uppercase text-zinc-200 hover:bg-white hover:text-zinc-950" onClick={() => onMove("down")}>
               <ArrowDown className="mr-2 h-4 w-4" />
               aşağı
             </Button>
-            <Button type="button" variant="ghost" size="sm" className="border border-rose-500/20 bg-rose-500/10 text-rose-100 hover:bg-rose-500 hover:text-white" onClick={onRemove}>
+            <Button type="button" variant="ghost" size="sm" className="border border-rose-500/20 bg-rose-500/10 uppercase text-rose-100 hover:bg-rose-500 hover:text-white" onClick={onRemove}>
               <Trash2 className="mr-2 h-4 w-4" />
               sil
             </Button>
@@ -95,8 +96,8 @@ export function SectionCard({
         </div>
 
         <div className="flex items-center justify-between rounded-2xl border border-white/10 bg-black/10 px-3 py-2">
-          <span className="text-[0.58rem] tracking-[0.08em] text-zinc-500">sürüklemek için sol ikon alanını kullan</span>
-          <span className="text-[0.58rem] tracking-[0.08em] text-zinc-500">drag handle</span>
+          <span className="text-[0.58rem] tracking-[0.08em] uppercase text-zinc-500">sürüklemek için sol ikon alanını kullan</span>
+          <span className="text-[0.58rem] tracking-[0.08em] uppercase text-zinc-500">drag handle</span>
         </div>
 
         {section.type === "paragraph" && (
@@ -113,18 +114,18 @@ export function SectionCard({
             <AdminImageDropzone
               accept="image/*"
               aspectClassName="aspect-[16/10]"
-              buttonLabel="görsel ekle"
+              buttonLabel="GÖRSEL EKLE"
               className="min-h-[320px] border-white/10 bg-white/[0.03]"
-              description="görseli yükleyin ya da url ile değiştirin."
-              emptySubtitle="journal görsel bloğu."
-              emptyTitle="görsel"
+              description="GÖRSELİ YÜKLEYİN YA DA URL İLE DEĞİŞTİRİN."
+              emptySubtitle="JOURNAL GÖRSEL BLOĞU."
+              emptyTitle="GÖRSEL"
               onFileSelect={async (file) => {
                 const url = await onUploadImage(file);
                 onChange({ ...section, src: url });
               }}
-              previewAlt={section.alt || "journal görseli"}
+              previewAlt={section.alt || "JOURNAL GÖRSELİ"}
               previewUrl={section.src}
-              title="görsel bloğu"
+              title="GÖRSEL BLOĞU"
             />
 
             <div className="space-y-4 rounded-[1.5rem] border border-white/10 bg-white/[0.03] p-4">
@@ -156,12 +157,12 @@ export function SectionCard({
         {section.type === "technical" && (
           <div className="space-y-3">
             <div className="flex items-center justify-between">
-              <p className="text-[0.6rem] tracking-[0.08em] text-zinc-500">teknik maddeler</p>
+              <p className="text-[0.6rem] tracking-[0.08em] uppercase text-zinc-500">teknik maddeler</p>
               <Button
                 type="button"
                 variant="ghost"
                 size="sm"
-                className="border border-white/10 bg-white/[0.03] text-zinc-200 hover:bg-white hover:text-zinc-950"
+                className="border border-white/10 bg-white/[0.03] uppercase text-zinc-200 hover:bg-white hover:text-zinc-950"
                 onClick={() =>
                   onChange({
                     ...section,
@@ -224,12 +225,12 @@ export function SectionCard({
             </FieldGroup>
 
             <div className="flex items-center justify-between">
-              <p className="text-[0.6rem] tracking-[0.08em] text-zinc-500">proje satırları</p>
+              <p className="text-[0.6rem] tracking-[0.08em] uppercase text-zinc-500">proje satırları</p>
               <Button
                 type="button"
                 variant="ghost"
                 size="sm"
-                className="border border-white/10 bg-white/[0.03] text-zinc-200 hover:bg-white hover:text-zinc-950"
+                className="border border-white/10 bg-white/[0.03] uppercase text-zinc-200 hover:bg-white hover:text-zinc-950"
                 onClick={() =>
                   onChange({
                     ...section,

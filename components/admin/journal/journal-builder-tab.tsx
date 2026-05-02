@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Select } from "@/components/ui/select";
 import { type JournalSection } from "@/data/journal";
+import { toTurkishUpperCase } from "@/lib/journal-content";
 
 import { FieldGroup } from "./field-group";
 import { SectionCard } from "./section-card";
@@ -101,13 +102,13 @@ export function JournalBuilderTab({
           <Select value={newBlockType} onChange={(event) => setNewBlockType(event.target.value as JournalSection["type"])}>
             {SECTION_OPTIONS.map((item) => (
               <option key={item.value} value={item.value}>
-                {item.label}
+                {toTurkishUpperCase(item.label)}
               </option>
             ))}
           </Select>
         </FieldGroup>
 
-        <Button type="button" className="w-full bg-white text-zinc-950 hover:bg-zinc-200" onClick={addBlock}>
+        <Button type="button" className="w-full bg-white uppercase text-zinc-950 hover:bg-zinc-200" onClick={addBlock}>
           <Plus className="mr-2 h-4 w-4" />
           blok ekle
         </Button>
@@ -115,8 +116,8 @@ export function JournalBuilderTab({
         <div className="space-y-2">
           {SECTION_OPTIONS.map((option) => (
             <div key={option.value} className="rounded-xl border border-white/10 bg-black/10 px-3 py-2">
-              <p className="text-sm text-white">{option.label}</p>
-              <p className="text-xs text-zinc-500">{option.description}</p>
+              <p className="text-sm uppercase text-white">{toTurkishUpperCase(option.label)}</p>
+              <p className="text-xs uppercase text-zinc-500">{option.description}</p>
             </div>
           ))}
         </div>
@@ -125,7 +126,7 @@ export function JournalBuilderTab({
       <div className="space-y-4">
         {article.sections.length === 0 ? (
           <Card className="border-white/10 bg-white/[0.03] shadow-none">
-            <CardContent className="px-6 py-16 text-center text-zinc-400">henüz blok yok. soldan yeni blok ekleyin.</CardContent>
+            <CardContent className="px-6 py-16 text-center uppercase text-zinc-400">henüz blok yok. soldan yeni blok ekleyin.</CardContent>
           </Card>
         ) : (
           <>

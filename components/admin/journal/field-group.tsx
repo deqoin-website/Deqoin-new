@@ -14,9 +14,9 @@ type FieldGroupProps = {
 export function FieldGroup({ label, helper, children, className }: FieldGroupProps) {
   return (
     <div className={cn("space-y-2", className)}>
-      <p className="text-[0.6rem] tracking-[0.08em] text-zinc-500">{label}</p>
+      <p className="text-[0.6rem] tracking-[0.08em] uppercase text-zinc-500">{label}</p>
       {children}
-      {helper ? <p className="text-xs leading-6 text-zinc-500">{helper}</p> : null}
+      {helper ? <p className="text-xs leading-6 uppercase text-zinc-500">{helper}</p> : null}
     </div>
   );
 }
