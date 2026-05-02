@@ -6,10 +6,8 @@ import Link from "next/link";
 import MaterialProductGallery from "@/components/material-studio/MaterialProductGallery";
 import ProductCard from "@/components/material-studio/ProductCard";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { cn } from "@/lib/utils";
 import type { MaterialProduct } from "@/data/materyal-urunleri";
 
 type MaterialProductDetailProps = {
@@ -26,12 +24,6 @@ export default function MaterialProductDetail({
   relatedProducts,
 }: MaterialProductDetailProps) {
   const [tabValue, setTabValue] = useState("technical");
-  const stockTone =
-    product.stockStatus === "limited"
-      ? "border-amber-400/20 bg-amber-400/10 text-amber-200"
-      : product.stockStatus === "made-to-order"
-        ? "border-sky-400/20 bg-sky-400/10 text-sky-200"
-        : "border-emerald-400/20 bg-emerald-400/10 text-emerald-200";
 
   return (
     <main className="mx-auto w-full max-w-[1600px] px-4 py-8 md:px-6 md:py-10">
@@ -62,7 +54,7 @@ export default function MaterialProductDetail({
                     {product.brandName}
                   </Badge>
                 ) : null}
-                <span className={cn("rounded-full border px-3 py-1 text-[0.62rem] uppercase tracking-[0.26em]", stockTone)}>
+                <span className="rounded-full border border-emerald-400/20 bg-emerald-400/10 px-3 py-1 text-[0.62rem] uppercase tracking-[0.26em] text-emerald-200">
                   {product.stockLabel || "Stokta"}
                 </span>
               </div>
@@ -85,22 +77,6 @@ export default function MaterialProductDetail({
                   ))}
                 </div>
               ) : null}
-
-              <div className="grid gap-3 sm:grid-cols-2">
-                <Button className="h-12 rounded-full px-6 text-sm tracking-[0.18em] uppercase">
-                  {product.ctaLabel || "Numune İste"}
-                </Button>
-                <Button
-                  variant="outline"
-                  className="h-12 rounded-full border-white/15 bg-white/5 px-6 text-sm tracking-[0.18em] uppercase text-white hover:bg-white/10 hover:text-white"
-                >
-                  Mimari Bilgi Al
-                </Button>
-              </div>
-
-              <div className="rounded-[1.35rem] border border-white/10 bg-black/15 p-4 text-sm text-zinc-400">
-                Proje ekibine teknik not, uygulama detayı veya numune talebi göndermek için bu alan kullanılabilir.
-              </div>
             </CardContent>
           </Card>
 

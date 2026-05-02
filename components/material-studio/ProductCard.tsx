@@ -21,12 +21,13 @@ export default function ProductCard({ href, product, className, compact = false 
       : product.stockStatus === "made-to-order"
         ? "border-sky-400/20 bg-sky-400/10 text-sky-200"
         : "border-emerald-400/20 bg-emerald-400/10 text-emerald-200";
+
   const ctaTone =
-    product.ctaVariant === "request-sample"
+    product.ctaVariant === "request-quote"
       ? "border-violet-400/20 bg-violet-400/10 text-violet-100"
-      : product.ctaVariant === "request-quote"
-        ? "border-cyan-400/20 bg-cyan-400/10 text-cyan-100"
-        : "border-white/10 bg-white/[0.04] text-white";
+      : product.ctaVariant === "get-info"
+        ? "border-sky-400/20 bg-sky-400/10 text-sky-100"
+        : "border-amber-400/20 bg-amber-400/10 text-amber-100";
 
   return (
     <Card
@@ -82,10 +83,10 @@ export default function ProductCard({ href, product, className, compact = false 
 
           <div className="flex items-center justify-between gap-3">
             <span className="text-[0.64rem] uppercase tracking-[0.28em] text-zinc-500">
-              Hızlı işlem
+              Detay sayfası
             </span>
             <span className={cn("inline-flex h-9 items-center rounded-full border px-4 text-[0.68rem] uppercase tracking-[0.2em]", ctaTone)}>
-              {product.ctaLabel || "Bilgi Al"}
+              {product.ctaLabel || "İncele"}
             </span>
           </div>
         </div>

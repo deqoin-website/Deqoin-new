@@ -140,8 +140,8 @@ const createEmptyProduct = (categorySlug: string): ProductState => ({
   techTags: [],
   stockStatus: 'available',
   stockLabel: 'Stokta',
-  ctaVariant: 'get-info',
-  ctaLabel: 'Bilgi Al',
+  ctaVariant: 'request-sample',
+  ctaLabel: 'Numune İste',
   filterValues: {
     'renk-tonu': [],
     'yuzey-tipi': [],
@@ -237,8 +237,8 @@ const normalizeProduct = (value: any, categorySlug: string): ProductState => {
     techTags: Array.isArray(value?.techTags) && value.techTags.length > 0 ? value.techTags : seed.techTags,
     stockStatus: value?.stockStatus || seed.stockStatus || 'available',
     stockLabel: value?.stockLabel || seed.stockLabel || 'Stokta',
-    ctaVariant: value?.ctaVariant || seed.ctaVariant || 'get-info',
-    ctaLabel: value?.ctaLabel || seed.ctaLabel || 'Bilgi Al',
+    ctaVariant: value?.ctaVariant || seed.ctaVariant || 'request-sample',
+    ctaLabel: value?.ctaLabel || seed.ctaLabel || 'Numune İste',
     filterValues: {
       'renk-tonu': Array.isArray(value?.filterValues?.['renk-tonu']) ? value.filterValues['renk-tonu'] : seed.filterValues['renk-tonu'],
       'yuzey-tipi': Array.isArray(value?.filterValues?.['yuzey-tipi']) ? value.filterValues['yuzey-tipi'] : seed.filterValues['yuzey-tipi'],
@@ -1298,12 +1298,9 @@ export default function MaterialDetailEditor() {
                               </Badge>
                             ))}
                           </div>
-                          <div className="grid gap-2 sm:grid-cols-2">
+                          <div className="grid gap-2 sm:grid-cols-1">
                             <Badge className="justify-center border border-[color:var(--line)] bg-[color:var(--surface-muted)] px-3 py-2 text-[color:var(--text-muted)]">
                               {activeProduct.stockLabel}
-                            </Badge>
-                            <Badge className="justify-center border border-[color:var(--line)] bg-[color:var(--surface-muted)] px-3 py-2 text-[color:var(--text-muted)]">
-                              {CTA_VARIANT_OPTIONS.find((item) => item.value === activeProduct.ctaVariant)?.label || activeProduct.ctaLabel}
                             </Badge>
                           </div>
                           <div className="grid gap-3 sm:grid-cols-2">
@@ -1470,9 +1467,6 @@ export default function MaterialDetailEditor() {
               </DialogTitle>
               <Badge variant="outline" className="border-[color:var(--line)] bg-[color:var(--surface-muted)] text-[color:var(--text-muted)]">
                 {productDraft.brandName || 'deqoin'} / {productDraft.sku || 'SKU yok'}
-              </Badge>
-              <Badge variant="outline" className="border-[color:var(--line)] bg-[color:var(--surface-muted)] text-[color:var(--text-muted)]">
-                {CTA_VARIANT_OPTIONS.find((item) => item.value === productDraft.ctaVariant)?.label || productDraft.ctaLabel}
               </Badge>
             </div>
             <DialogDescription>
@@ -1894,7 +1888,7 @@ export default function MaterialDetailEditor() {
                           value={productDraft.ctaLabel}
                           onChange={(event) => setProductDraft((draft) => ({ ...draft, ctaLabel: event.target.value }))}
                           className="h-11 rounded-2xl border-[color:var(--line)] bg-[color:var(--surface)] text-[color:var(--text)]"
-                          placeholder="Bilgi Al"
+                          placeholder="Numune İste"
                         />
                       </div>
                     </div>

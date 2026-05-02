@@ -127,8 +127,8 @@ export default function MaterialCategoryPage({
               <p className="mt-2 text-sm text-white">Renk tonu, yüzey tipi, kullanım alanı</p>
             </div>
             <div className="rounded-[1.3rem] border border-white/10 bg-black/10 px-4 py-3">
-              <p className="text-[0.62rem] uppercase tracking-[0.32em] text-zinc-500">CTA</p>
-              <p className="mt-2 text-sm text-white">Numune iste, bilgi al, teklif al</p>
+              <p className="text-[0.62rem] uppercase tracking-[0.32em] text-zinc-500">Kart dili</p>
+              <p className="mt-2 text-sm text-white">Fiyat yerine teknik etiketler, stok durumu ve CTA etiketleri</p>
             </div>
           </div>
         </CardContent>
@@ -150,12 +150,9 @@ export default function MaterialCategoryPage({
               <Package className="h-4 w-4 text-zinc-500" />
               <span>{filteredProducts.length} ürün</span>
             </div>
-            <p className="text-[0.65rem] uppercase tracking-[0.3em] text-zinc-500">
-              sade e-commerce grid yapısı
-            </p>
           </div>
 
-          <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
             {filteredProducts.map((product) => (
               <ProductCard
                 key={product.slug}
