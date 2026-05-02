@@ -7,6 +7,7 @@ import { AdminImageDropzone } from "@/components/admin/AdminImageDropzone";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { Select } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 import { toTurkishUpperCase } from "@/lib/journal-content";
@@ -30,6 +31,8 @@ type SectionCardProps = {
 
 const SECTION_LABELS: Record<JournalSectionDraft["type"], string> = {
   paragraph: "paragraf",
+  heading: "başlık",
+  list: "liste",
   image: "görsel",
   technical: "teknik maddeler",
   related: "ilişkili proje",
@@ -107,6 +110,81 @@ export function SectionCard({
             className="min-h-[180px] bg-white/[0.03] text-[15px] leading-8 text-white placeholder:text-zinc-500"
             placeholder="paragraf metnini yazın..."
           />
+        )}
+
+        {section.type === "heading" && (
+          <div className="space-y-4">
+            <FieldGroup label="başlık seviyesi">
+              <Select
+                value={String(section.level)}
+                onChange={(event) => onChange({ ...section, level: Number(event.target.value) as 2 | 3 })}
+              >
+                <option value="2">H2</option>
+                <option value="3">H3</option>
+              </Select>
+            </FieldGroup>
+            <FieldGroup label="başlık metni">
+              <Input
+                value={section.text}
+                onChange={(event) => onChange({ ...section, text: event.target.value })}
+                placeholder="başlık metni"
+              />
+            </FieldGroup>
+          </div>
+        )}
+
+        {section.type === "list" && (
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <p className="text-[0.6rem] tracking-[0.08em] uppercase text-zinc-500">madde listesi</p>
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                className="border border-white/10 bg-white/[0.03] uppercase text-zinc-200 hover:bg-white hover:text-zinc-950"
+                onClick={() =>
+                  onChange({
+                    ...section,
+                    items: [...section.items, "yeni madde"],
+                  })
+                }
+              >
+                <Plus className="mr-2 h-4 w-4" />
+                madde ekle
+              </Button>
+            </div>
+
+            <div className="space-y-3">
+              {section.items.map((item, itemIndex) => (
+                <div key={`${section.id}-list-${itemIndex}`} className="flex gap-3">
+                  <Input
+                    value={item}
+                    onChange={(event) =>
+                      onChange({
+                        ...section,
+                        items: updateArrayItem(section.items, itemIndex, event.target.value),
+                      })
+                    }
+                    placeholder="madde"
+                  />
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    className="h-11 w-11 border border-white/10 bg-white/[0.03] text-zinc-200 hover:bg-rose-500 hover:text-white"
+                    onClick={() =>
+                      onChange({
+                        ...section,
+                        items: section.items.filter((_, currentIndex) => currentIndex !== itemIndex),
+                      })
+                    }
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
+                </div>
+              ))}
+            </div>
+          </div>
         )}
 
         {section.type === "image" && (

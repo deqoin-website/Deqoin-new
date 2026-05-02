@@ -55,6 +55,10 @@ export function attachSectionIds(sections: JournalSection[]): JournalSectionDraf
 
 export function createEmptySection(type: JournalSection["type"]): JournalSectionDraft {
   switch (type) {
+    case "heading":
+      return { id: createId("heading"), type, level: 2, text: "başlık" };
+    case "list":
+      return { id: createId("list"), type, items: ["madde 1"] };
     case "image":
       return { id: createId("image"), type, src: "", alt: "journal görseli", caption: "", gallery: [] };
     case "technical":

@@ -24,10 +24,10 @@ function TechnicalGrid({ items }: { items: { label: string; value: string }[] })
       {items.map((item) => (
         <Card key={item.label} className="rounded-none border-white/10 bg-white/[0.04] shadow-none">
           <div className="flex h-full flex-col gap-2 p-4 md:p-5">
-            <span className="text-[0.6rem] uppercase tracking-[0.5em] text-white/35">
+            <span className="text-[0.6rem] tracking-[0.35em] text-white/35">
               {item.label}
             </span>
-            <p className="text-[0.85rem] uppercase tracking-[0.28em] text-white/88 md:text-[0.92rem]">
+            <p className="text-[0.85rem] tracking-[0.08em] text-white/88 md:text-[0.92rem]">
               {item.value}
             </p>
           </div>
@@ -69,11 +69,41 @@ function renderSection(section: JournalSection, index: number) {
       return (
         <p
           key={`paragraph-${index}`}
-          className="max-w-4xl text-[20px] leading-[1.95] tracking-[0.08em] text-white/82 uppercase"
+          className="max-w-4xl text-[18px] leading-[1.9] tracking-[0.01em] text-white/82 md:text-[20px]"
           style={{ fontFamily: "Urbanist, sans-serif" }}
         >
           {section.body}
         </p>
+      );
+    case "heading":
+      return section.level === 3 ? (
+        <h3
+          key={`heading-${index}`}
+          className="max-w-4xl pt-2 text-[1.3rem] font-medium tracking-[0.02em] text-white md:text-[1.6rem]"
+          style={{ fontFamily: "Urbanist, sans-serif" }}
+        >
+          {section.text}
+        </h3>
+      ) : (
+        <h2
+          key={`heading-${index}`}
+          className="max-w-4xl pt-4 text-[1.6rem] font-medium tracking-[0.02em] text-white md:text-[2.1rem]"
+          style={{ fontFamily: "Urbanist, sans-serif" }}
+        >
+          {section.text}
+        </h2>
+      );
+    case "list":
+      return (
+        <ul
+          key={`list-${index}`}
+          className="max-w-4xl list-disc space-y-3 pl-5 text-[18px] leading-[1.9] tracking-[0.01em] text-white/82 md:text-[20px]"
+          style={{ fontFamily: "Urbanist, sans-serif" }}
+        >
+          {section.items.map((item, listIndex) => (
+            <li key={`${index}-${listIndex}`}>{item}</li>
+          ))}
+        </ul>
       );
     case "image":
       return (
@@ -178,13 +208,13 @@ export default function JournalArticleShell({
             </div>
 
             <h1
-              className="max-w-5xl font-[family-name:var(--font-smooch)] text-[clamp(3.25rem,7vw,7.8rem)] font-thin uppercase leading-[0.78] tracking-[0.08em]"
+              className="max-w-5xl font-[family-name:var(--font-smooch)] text-[clamp(3.25rem,7vw,7.8rem)] font-thin leading-[0.78] tracking-[0.02em]"
               style={{ fontWeight: 100 }}
             >
               {article.title}
             </h1>
 
-            <p className="max-w-4xl text-[0.78rem] uppercase tracking-[0.35em] text-white/55 md:text-[0.85rem]">
+            <p className="max-w-4xl text-[0.78rem] tracking-[0.12em] text-white/55 md:text-[0.85rem]">
               {article.deck}
             </p>
           </div>
@@ -234,9 +264,9 @@ export default function JournalArticleShell({
                 <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0.12)_0%,rgba(0,0,0,0.34)_42%,rgba(0,0,0,0.88)_100%)]" />
                 <div className="absolute inset-x-0 bottom-0 p-5 md:p-8">
                   <p className="mb-2 text-[0.58rem] uppercase tracking-[0.5em] text-white/45">
-                    QUIET LUXURY / EDITORIAL ARCHIVE
+                    deqoin journal
                   </p>
-                  <p className="max-w-3xl text-[0.84rem] uppercase tracking-[0.35em] text-white/70">
+                  <p className="max-w-3xl text-[0.84rem] tracking-[0.08em] text-white/70">
                     {article.intro}
                   </p>
                 </div>

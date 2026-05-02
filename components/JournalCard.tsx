@@ -49,13 +49,13 @@ function JournalCardContent({
         </div>
 
         <h3
-          className="text-3xl md:text-4xl lg:text-5xl font-thin text-white uppercase tracking-widest leading-tight group-hover:text-zinc-300 transition-colors"
+          className="text-3xl font-thin leading-tight tracking-[0.02em] text-white transition-colors group-hover:text-zinc-300 md:text-4xl lg:text-5xl"
           style={{ fontFamily: "Smooch Sans, sans-serif", fontWeight: 100 }}
         >
           {article.title}
         </h3>
 
-        <p className="text-sm md:text-base text-zinc-400 font-light line-clamp-2 md:line-clamp-3 leading-relaxed">
+        <p className="line-clamp-2 text-sm leading-relaxed font-light text-zinc-400 md:line-clamp-3 md:text-base">
           {article.deck}
         </p>
       </CardContent>

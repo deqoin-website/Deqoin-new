@@ -27,6 +27,8 @@ type JournalBuilderTabProps = {
 
 const SECTION_OPTIONS: Array<{ value: JournalSection["type"]; label: string; description: string }> = [
   { value: "paragraph", label: "paragraf", description: "uzun editoryal metin" },
+  { value: "heading", label: "başlık", description: "h2 veya h3 başlık bloğu" },
+  { value: "list", label: "liste", description: "madde madde içerik" },
   { value: "image", label: "görsel", description: "tam genişlik medya bloğu" },
   { value: "technical", label: "teknik maddeler", description: "özellik ve not listesi" },
   { value: "related", label: "ilişkili proje", description: "proje bağlantıları" },

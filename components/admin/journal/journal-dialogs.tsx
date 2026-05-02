@@ -82,6 +82,10 @@ export function JournalDialogs({
                         <pre className="whitespace-pre-wrap font-sans text-sm leading-7 text-zinc-300">
                           {section.type === "paragraph"
                             ? section.body
+                            : section.type === "heading"
+                              ? `${section.level === 3 ? "h3" : "h2"}: ${section.text}`
+                              : section.type === "list"
+                                ? section.items.join("\n")
                             : section.type === "image"
                               ? section.caption || section.alt
                               : section.type === "technical"

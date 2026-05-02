@@ -50,12 +50,20 @@ type JournalModelPayload = {
 };
 
 const DEFAULT_HERO: JournalHeroDraft = {
-  title: "JOURNAL",
-  subtitle: "QUIET LUXURY / EDITORIAL ARCHIVE",
+  title: "journal",
+  subtitle: "deqoin journal / editorial archive",
   description:
-    "SESSİZ LÜKSÜN MİMARİ OKUMASI, TEKNİK NOTLAR VE PROJE BAĞLANTILARIYLA BİR DERGİ ALGISINDA SUNULUR.",
+    "deqoin journal, iç mimarlık, mekan tasarımı ve uygulama notlarını sade bir blog diliyle bir araya getirir.",
   featuredArticleSlug: journalArticles[0]?.slug ?? "",
 };
+
+const LEGACY_JOURNAL_SLUGS = new Set([
+  "sukun-cizgi-skyline-residence",
+  "malzeme-sessizligi-lumina-gallery",
+  "kurumsal-akis-nexus",
+  "karma-kullanim-vertex",
+  "ticari-cephe-obsidian",
+]);
 
 const departmentValues = new Set(JOURNAL_DEPARTMENTS.map((item) => item.value));
 const projectTypeValues = new Set(JOURNAL_PROJECT_TYPES.map((item) => item.value));
@@ -116,6 +124,19 @@ function normalizeSection(section: any, index: number): JournalSection {
   }
 
   switch (section.type) {
+    case "heading":
+      return {
+        type: "heading",
+        level: section.level === 3 ? 3 : 2,
+        text: stringOr(section.text ?? section.body, `Journal heading ${index + 1}`),
+      };
+    case "list":
+      return {
+        type: "list",
+        items: Array.isArray(section.items)
+          ? section.items.map((item: unknown) => stringOr(item, "")).filter((item: string) => Boolean(item))
+          : [],
+      };
     case "image":
       return {
         type: "image",
@@ -181,6 +202,11 @@ function normalizeArticle(article: any, fallback: JournalArticle, index: number)
   };
 }
 
+function shouldUseCuratedDefaults(rawArticles: any[]) {
+  if (rawArticles.length === 0) return true;
+  return rawArticles.every((article) => typeof article?.slug === "string" && LEGACY_JOURNAL_SLUGS.has(article.slug));
+}
+
 export function cloneJournalArticles(articles: JournalArticle[]) {
   return articles.map((article) => clone(article));
 }
@@ -188,7 +214,7 @@ export function cloneJournalArticles(articles: JournalArticle[]) {
 export function createDefaultJournalDraft(): JournalPageDraft {
   const articles = cloneJournalArticles(journalArticles);
   return {
-    pageTitle: "JOURNAL",
+    pageTitle: "journal",
     hero: {
       ...DEFAULT_HERO,
       featuredArticleSlug: articles[0]?.slug ?? "",
@@ -212,13 +238,16 @@ export function normalizeJournalDraft(payload: any): JournalPageDraft {
       ? section.content.articles
       : [];
   const fallbackArticles = cloneJournalArticles(journalArticles);
+  if (shouldUseCuratedDefaults(rawArticles)) {
+    return createDefaultJournalDraft();
+  }
   const sourceArticles: any[] = rawArticles.length > 0 ? rawArticles : fallbackArticles;
   const articles = sourceArticles.map((article: any, index: number) =>
     normalizeArticle(article, fallbackArticles[index] ?? fallbackArticles[0], index),
   );
 
   return {
-    pageTitle: stringOr(payload?.title, "JOURNAL"),
+    pageTitle: stringOr(payload?.title, "journal"),
     hero: {
       title: stringOr(directHero?.title, stringOr(section?.title, DEFAULT_HERO.title)),
       subtitle: stringOr(directHero?.subtitle, stringOr(section?.subtitle, DEFAULT_HERO.subtitle)),

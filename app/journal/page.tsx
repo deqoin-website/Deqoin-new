@@ -166,15 +166,15 @@ export default function JournalPage() {
             {pageContent.hero.title}
           </h1>
           <p
-            className="max-w-4xl text-[0.82rem] uppercase tracking-[0.08em] text-white/58 md:text-[0.9rem]"
+            className="max-w-4xl text-[0.82rem] tracking-[0.08em] text-white/58 md:text-[0.9rem]"
             style={{ fontFamily: "Smooch Sans, sans-serif" }}
           >
             {pageContent.hero.description}
           </p>
-          <div className="flex flex-wrap items-center gap-3 text-[0.58rem] uppercase tracking-[0.08em] text-white/40">
+          <div className="flex flex-wrap items-center gap-3 text-[0.58rem] tracking-[0.08em] text-white/40">
             <span>{pageContent.hero.subtitle}</span>
             <span className="hidden md:inline">/</span>
-            <span>{contentStatus === "ok" ? "API SENKRON" : contentStatus === "error" ? "FALLBACK VERİ" : "YÜKLENİYOR"}</span>
+            <span>{contentStatus === "ok" ? "api senkron" : contentStatus === "error" ? "fallback veri" : "yükleniyor"}</span>
           </div>
         </header>
 

@@ -1,5 +1,3 @@
-import { projectsData } from "./projects";
-
 export type JournalDepartment = "MİMARİ" | "MATERYAL" | "UYGULAMA" | "MÜHENDİSLİK";
 export type JournalProjectType =
   | "KONUT"
@@ -50,6 +48,15 @@ export type JournalSection =
       body: string;
     }
   | {
+      type: "heading";
+      level: 2 | 3;
+      text: string;
+    }
+  | {
+      type: "list";
+      items: string[];
+    }
+  | {
       type: "image";
       src: string;
       alt: string;
@@ -82,230 +89,279 @@ export type JournalArticle = {
   sections: JournalSection[];
 };
 
-function getProjectReference(slug: string) {
-  const project = projectsData.find((entry) => entry.slug === slug);
-
-  return {
-    slug,
-    title: project?.title ?? slug.toUpperCase(),
-    label: project?.label ?? "PROJE",
-  };
-}
-
-const skyline = projectsData.find((project) => project.slug === "skyline-residence");
-const lumina = projectsData.find((project) => project.slug === "lumina-gallery");
-const nexus = projectsData.find((project) => project.slug === "nexus-corporate-center");
-const vertex = projectsData.find((project) => project.slug === "vertex-mixed-use");
-const obsidian = projectsData.find((project) => project.slug === "obsidian-tower");
-
 export const journalArticles: JournalArticle[] = [
   {
-    slug: "sukun-cizgi-skyline-residence",
-    title: "SUSKUN ÇİZGİ / SKYLINE RESIDENCE",
-    deck: "KONUT ÖLÇEĞİNDE, ŞEHİRLE ARASINA MESAFE KOYAN SESSİZ BİR KÜTLE OKUMASI.",
-    coverImage: skyline?.coverImage ?? "/images/projects/gallery_1.png",
-    publishedAt: "28 NİSAN 2026",
+    slug: "dogru-ic-mimarlik-onemi",
+    title: "evinizi baştan yaratın: doğru iç mimarlığın önemi",
+    deck: "iç mimarlık, mekan tasarımı ve ev dekorasyonu ile dar veya karanlık alanları daha ferah, daha düzenli ve daha kullanışlı hale getirebilirsiniz.",
+    coverImage: "/images/about_interior.png",
+    publishedAt: "02 MAYIS 2026",
     readTime: "06 DK",
     articleType: "PERSPEKTİFLER",
     departments: ["MİMARİ"],
-    projectTypes: ["KONUT"],
+    projectTypes: ["KONUT", "KURUMSAL"],
     contentTypes: ["PERSPEKTİFLER", "İÇGÖRÜLER"],
-    relatedProjectSlugs: ["skyline-residence"],
+    relatedProjectSlugs: [],
     intro:
-      "SKYLINE RESIDENCE, KALABALIĞA KARŞI YÜKSEK SESLE KONUŞMAK YERİNE, BOŞLUKLARI DÜZENLEYEREK KENDİNİ TANIMLAYAN BİR KONUT DİSİPLİNİ ÖNERİR. CEPHE, YALNIZCA BİR YÜZEY DEĞİL; MAHREMİYET, IŞIK VE AĞIRLIK DENGESİNİN KONTROLLÜ BİR RAPORUDUR.",
+      "iyi bir iç mimarlık, evin yalnızca güzel görünmesini sağlamaz. alanın nasıl kullanıldığını değiştirir, hareketi kolaylaştırır ve gün içinde fark etmeden yaşadığınız birçok küçük sorunu çözer.",
     sections: [
+      {
+        type: "heading",
+        level: 2,
+        text: "doğru iç mimarlık ne kazandırır?",
+      },
       {
         type: "paragraph",
         body:
-          "BU ÇALIŞMADA AMAÇ, KONUTUN TEMSİL GÜCÜNÜ ARTIRMAK DEĞİL; SÜREKLİLİĞİ OLAN BİR SAKİNLİK KURMAKTIR. KÜTLEDEKİ GERI ÇEKİLME, İÇ MEKANDAKİ AKIŞI GÜÇLENDİRİR VE KAMUSAL GÖRÜNÜRLÜĞÜ BİLİNÇLİ OLARAK AZALTIR.",
+          "iç mimarlık, mekan tasarımını sadece estetik bir karar olarak ele almaz. ölçü, ışık, mobilya yerleşimi ve malzeme seçimi birlikte düşünülür. bu sayede dar bir oda olduğundan daha geniş algılanabilir, dağınık görünen bir alan daha düzenli hale gelebilir ve kullanım konforu belirgin şekilde artar.",
       },
       {
-        type: "image",
-        src: skyline?.gallery?.[0] ?? skyline?.coverImage ?? "/images/projects/gallery_1.png",
-        alt: "SKYLINE RESIDENCE KÜTLE VE CEPHE GÖRSELİ",
-        caption: "KÜTLELEMEDE GERİ ÇEKİLEN BİR CEPHE DİSİPLİNİ",
-      },
-      {
-        type: "technical",
+        type: "list",
         items: [
-          { label: "CEPHE", value: "FOTOKATALİTİK BETON" },
-          { label: "IŞIK", value: "DİFFÜZE GÜN IŞIĞI SENARYOSU" },
-          { label: "MAHREMİYET", value: "KATMANLI PERDE KURGUSU" },
-          { label: "İKLİM", value: "KONTROLLÜ GÖLGELENME" },
+          "alanın gerçek ihtiyacına göre plan yapılır",
+          "gereksiz mobilya kalabalığı azaltılır",
+          "ışık daha doğru dağıtılır",
+          "günlük kullanım daha rahat hale gelir",
         ],
       },
       {
-        type: "related",
-        title: "İLGİLİ PROJE BAĞLANTILARI",
-        items: [getProjectReference("skyline-residence")],
+        type: "heading",
+        level: 2,
+        text: "ışık, mobilya ve malzeme neden önemlidir?",
+      },
+      {
+        type: "paragraph",
+        body:
+          "ışık, bir mekanın algısını en hızlı değiştiren unsurdur. doğal ışık azsa doğru aydınlatma planı gerekir. açık tonlar, aynalı yüzeyler ve katmanlı ışık kullanımı alanı daha ferah gösterir. mobilya ise yalnızca dekor değil, kullanım senaryosudur. büyük bir koltuk takımının küçük bir salonu sıkıştırması ya da yanlış yerleşen bir masa grubunun geçişleri kapatması çok sık görülen bir hatadır.",
+      },
+      {
+        type: "heading",
+        level: 3,
+        text: "mobilya seçimi",
+      },
+      {
+        type: "paragraph",
+        body:
+          "mobilya alırken ölçü kadar işlev de önemlidir. depolama sunan parçalar, çok amaçlı sehpalar ve alanı bölmeyen formlar küçük evlerde büyük rahatlık sağlar. ofislerde ise oturma düzeni ile çalışma akışı birlikte düşünülmelidir.",
+      },
+      {
+        type: "heading",
+        level: 3,
+        text: "malzeme seçimi",
+      },
+      {
+        type: "paragraph",
+        body:
+          "malzeme seçimi sadece görünümü değil, uzun vadeli kullanımı da etkiler. kolay temizlenen yüzeyler, dayanıklı kaplamalar ve mekana uygun dokular bakım yükünü azaltır. ev dekorasyonu yapılırken yalnızca ilk görünüm değil, günlük hayatın ritmi de hesaba katılmalıdır.",
+      },
+      {
+        type: "heading",
+        level: 2,
+        text: "deqoin bu süreci nasıl ele alır?",
+      },
+      {
+        type: "paragraph",
+        body:
+          "deqoin olarak önce mekanın ölçüsünü, ışık durumunu ve kullanım alışkanlıklarını inceliyoruz. sonra iç mimarlık kararlarını bu ihtiyaçlara göre kuruyoruz. böylece ortaya sadece güzel bir alan değil, gerçek hayatı kolaylaştıran bir düzen çıkıyor.",
+      },
+      {
+        type: "list",
+        items: [
+          "ihtiyaca göre planlama yapıyoruz",
+          "mekan tasarımı ile işlevi birlikte düşünüyoruz",
+          "ev dekorasyonu kararlarını sade ve uygulanabilir tutuyoruz",
+          "her projede ölçü ve kullanım kolaylığını önceliklendiriyoruz",
+        ],
       },
     ],
   },
   {
-    slug: "malzeme-sessizligi-lumina-gallery",
-    title: "MALZEME SESSİZLİĞİ / LUMINA GALLERY",
-    deck: "MATERYAL KATMANLARININ, SERGİ DENEYİMİNİ NASIL YÖNETTİĞİNE DAİR TEKNİK BİR OKUMA.",
-    coverImage: lumina?.coverImage ?? "/images/projects/gallery_2.png",
-    publishedAt: "24 NİSAN 2026",
-    readTime: "08 DK",
-    articleType: "TEKNİK VERİ",
-    departments: ["MATERYAL"],
-    projectTypes: ["KÜLTÜR"],
-    contentTypes: ["TEKNİK VERİ", "İÇGÖRÜLER"],
-    relatedProjectSlugs: ["lumina-gallery"],
-    intro:
-      "LUMINA GALLERY, IŞIĞI BİR SÜS OLARAK DEĞİL, SERGİ KURGUSUNUN BİR PARÇASI OLARAK ELE ALIR. BU YAKLAŞIMDA MATERYAL SEÇİMİ, GÖRSEL DİSİPLİN KADAR AKUSTİK VE DOKUNSAL ALGILAMAYI DA YÖNETİR.",
-    sections: [
-      {
-        type: "paragraph",
-        body:
-          "MATERYAL STÜDYOSUNUN KATMANLARI, SERGİLENEN İÇERİĞİN ÖNÜNE GEÇMEZ; AKSİNE HER ESERİN KENDİ ÇEVRESİNİ KURMASINA İZİN VERİR. YÜZEYLER ARASINDAKİ TON FARKLARI, ZİYARETÇİNİN ADIM HIZINI YAVAŞLATMAK İÇİN TASARLANMIŞTIR.",
-      },
-      {
-        type: "image",
-        src: lumina?.gallery?.[0] ?? lumina?.coverImage ?? "/images/projects/gallery_2.png",
-        alt: "LUMINA GALLERY MALZEME KURGUSU",
-        caption: "DÜŞÜK KONTRASTLI YÜZEYLER, YÜKSEK ALGIDAN ÇOK SAKİN BİR RİTİM ÜRETİR.",
-      },
-      {
-        type: "technical",
-        items: [
-          { label: "ZEMİN", value: "DİKİŞSİZ REÇİNE" },
-          { label: "DUVAR", value: "DİFÜZ BOYA KATMANI" },
-          { label: "IŞIK", value: "UV KORUMALI SENARYO" },
-          { label: "SERGİ MODÜLÜ", value: "ESNEK TEKRARLANABİLİR PANELLER" },
-        ],
-      },
-      {
-        type: "related",
-        title: "İLGİLİ PROJE BAĞLANTILARI",
-        items: [getProjectReference("lumina-gallery")],
-      },
-    ],
-  },
-  {
-    slug: "kurumsal-akis-nexus",
-    title: "KURUMSAL AKIŞ / NEXUS CORPORATE",
-    deck: "MÜHENDİSLİK KATMANININ, DEPARTMANLAR ARASI TEMAS NOKTALARINI NASIL SESSİZCE YÖNETTİĞİ.",
-    coverImage: nexus?.coverImage ?? "/images/projects/gallery_3.png",
-    publishedAt: "19 NİSAN 2026",
+    slug: "nevsehirde-ic-mimarlik-yasam-alanlarini-yenileme",
+    title: "nevşehir'de iç mimarlık: yaşam alanlarınızı nasıl yeniliyoruz?",
+    deck: "nevşehir ve kapadokya bölgesindeki ev, ofis ve butik otel projelerinde yapıya, kullanıma ve yerel dokuya uygun çözümler üretiyoruz.",
+    coverImage: "/images/projects/gallery_1.png",
+    publishedAt: "02 MAYIS 2026",
     readTime: "07 DK",
-    articleType: "GÜNCEL HABERLER",
-    departments: ["MÜHENDİSLİK"],
-    projectTypes: ["KURUMSAL"],
-    contentTypes: ["GÜNCEL HABERLER", "TEKNİK VERİ"],
-    relatedProjectSlugs: ["nexus-corporate-center"],
-    intro:
-      "NEXUS CORPORATE, OFİS KULESİNİ TEK BİR BLOK OLARAK DEĞİL, BİRBİRİNE BAĞLI ALT SİSTEMLER OLARAK OKUR. BU YAPI, KAMUSAL AKIŞLAR İLE İÇ OPERASYONLARI AYIRMADAN DÜZENLER.",
-    sections: [
-      {
-        type: "paragraph",
-        body:
-          "ÇALIŞMA ALANLARININ ÇEVRESİNDEKİ BOŞLUKLAR, YÖNLENDİRMEYİ YAZI OLMADAN İLETEN MİMARİ İŞARETLERE DÖNÜŞÜR. MÜHENDİSLİK KARARLARI GÖRÜNMEZ KALMAK İÇİN DEĞİL, KULLANICIYI YORMAK İÇİN VAR OLUR.",
-      },
-      {
-        type: "technical",
-        items: [
-          { label: "CEPHE", value: "AKILLI CAM BÖLÜCÜLER" },
-          { label: "İKLİM", value: "MERKEZİ STERİLİZASYON KURGUSU" },
-          { label: "PEYZAJ", value: "DİKEY BOTANİK ENTEGRASYON" },
-          { label: "AKIŞ", value: "DEPARTMANLAR ARASI KONTROLLÜ GEÇİŞ" },
-        ],
-      },
-      {
-        type: "image",
-        src: nexus?.gallery?.[0] ?? nexus?.coverImage ?? "/images/projects/gallery_3.png",
-        alt: "NEXUS CORPORATE KURUMSAL ALAN GÖRSELİ",
-        caption: "KURUMSAL KÜTLE, KULLANICI AKIŞININ ETKİSİYLE TANIMLANIR.",
-      },
-      {
-        type: "related",
-        title: "İLGİLİ PROJE BAĞLANTILARI",
-        items: [getProjectReference("nexus-corporate-center")],
-      },
-    ],
-  },
-  {
-    slug: "karma-kullanim-vertex",
-    title: "KARMA KULLANIM / VERTEX MIXED",
-    deck: "KENTSEL HAYATIN ÇATIŞAN KATMANLARINI, POYRAZ GİBİ DÜZENLEYEN BİR ORTAK ZEMİN.",
-    coverImage: vertex?.coverImage ?? "/images/projects/gallery_4.png",
-    publishedAt: "15 NİSAN 2026",
-    readTime: "05 DK",
     articleType: "İÇGÖRÜLER",
-    departments: ["MİMARİ", "MÜHENDİSLİK"],
-    projectTypes: ["KARMA KULLANIM"],
+    departments: ["MİMARİ"],
+    projectTypes: ["KONUT", "TİCARİ", "KURUMSAL"],
     contentTypes: ["İÇGÖRÜLER", "PERSPEKTİFLER"],
-    relatedProjectSlugs: ["vertex-mixed-use"],
+    relatedProjectSlugs: [],
     intro:
-      "VERTEX MIXED, KAMUSAL VE ÖZEL ALANI AYRI SESSİZLİKLERLE TANIMLAR. PODYUM VE KULE KURGUSU, YALNIZCA PROGRAM AYRIMI DEĞİL; KENTSEL RİTMİN KONTROLLÜ BİR ÇEVRİMİDİR.",
+      "nevşehir ve kapadokya bölgesinde tasarım yaparken sadece görünümü değil, mekanın bulunduğu çevreyi de düşünmek gerekir. evler, ofisler ve butik oteller farklı ihtiyaçlar taşır. doğru iç mimarlık, bu farklılıkları tek bir kalıba sokmadan çözer.",
     sections: [
+      {
+        type: "heading",
+        level: 2,
+        text: "nevşehir ve kapadokya için tasarım neden farklı düşünülmeli?",
+      },
       {
         type: "paragraph",
         body:
-          "KARMA KULLANIMIN DEĞERİ, BİRBİRİNE YAKIN FONKSİYONLARIN ÜRETİĞİ SÜRPRİZLİ TEMASLARDADIR. KAT BAHÇELERİ VE AKUSTİK GEÇİŞLER, BU TEMASI KONTROL ALTINDA TUTAR.",
+          "bölgedeki yapıların bir kısmı geleneksel karakter taşırken, bir kısmı modern kullanım beklentileriyle yenilenir. bu yüzden nevşehir iç mimar olarak çalışırken ilk sorumuz her zaman aynı olur: bu mekan nasıl kullanılacak? ardından ışık, dolaşım, malzeme ve depolama kararlarını buna göre kurarız.",
       },
       {
-        type: "image",
-        src: vertex?.gallery?.[0] ?? vertex?.coverImage ?? "/images/projects/gallery_4.png",
-        alt: "VERTEX MIXED KARMA KULLANIM GÖRSELİ",
-        caption: "KATMANLARIN ARASINDAKİ BOŞLUK, KENTSEL SİRKÜLASYONUN ANA ARACIDIR.",
-      },
-      {
-        type: "technical",
+        type: "list",
         items: [
-          { label: "YAPI", value: "ÇELİK KOMPOZİT SİSTEM" },
-          { label: "ENERJİ", value: "GREY WATER GERİ KAZANIMI" },
-          { label: "CEPHE", value: "RÜZGAR TÜRBİNİ DESTEKLİ KABUK" },
-          { label: "KAT GEÇİŞİ", value: "AKUSTİK BARIYERLİ ORTAK ALAN" },
+          "ışık alma durumunu analiz ediyoruz",
+          "mekanın doğal formunu dikkate alıyoruz",
+          "bölgenin iklimine uygun malzeme seçiyoruz",
+          "temizliği ve bakımı kolay çözümler öneriyoruz",
         ],
       },
       {
-        type: "related",
-        title: "İLGİLİ PROJE BAĞLANTILARI",
-        items: [getProjectReference("vertex-mixed-use")],
+        type: "heading",
+        level: 2,
+        text: "ev, ofis ve butik otel projelerinde ne yapıyoruz?",
+      },
+      {
+        type: "paragraph",
+        body:
+          "nevşehir ev dekorasyonu projelerinde amaç daha sıcak, daha düzenli ve daha rahat alanlar kurmaktır. ofislerde iş akışını bozmayan sade bir kurgu önemlidir. butik otellerde ise misafirin ilk anda hissettiği düzen, rahatlık ve açıklık öne çıkar. kapadokya iç mimarlık ofisi arayan markalar için tasarımın kalıcı olması kadar hızlı anlaşılır olması da önemlidir.",
+      },
+      {
+        type: "heading",
+        level: 3,
+        text: "evlerde",
+      },
+      {
+        type: "paragraph",
+        body:
+          "ev projelerinde depolama, oturma düzeni ve ışık dengesi bir arada çözülür. dar alanlar doğru mobilya ölçüsüyle açılır, fazla eşya yerine işlevli parçalar kullanılır. böylece aile yaşamı daha rahat hale gelir.",
+      },
+      {
+        type: "heading",
+        level: 3,
+        text: "ofislerde",
+      },
+      {
+        type: "paragraph",
+        body:
+          "ofis tasarımında amaç sadece şık görünmek değildir. çalışanların rahat hareket etmesi, toplantı alanlarının net ayrılması ve gün ışığının verimli kullanılması gerekir. deqoin iç mimarlık yaklaşımı burada verimlilik ile düzeni aynı planda buluşturur.",
+      },
+      {
+        type: "heading",
+        level: 3,
+        text: "butik otellerde",
+      },
+      {
+        type: "paragraph",
+        body:
+          "butik otellerde güçlü bir ilk izlenim yaratmak gerekir, ancak bunu gösterişli detaylarla değil, doğru oranlarla yapmak daha etkilidir. oda konforu, ortak alan akışı ve malzeme dayanıklılığı bu tür projelerde temel kriterlerdir.",
+      },
+      {
+        type: "heading",
+        level: 2,
+        text: "deqoin yaklaşımı",
+      },
+      {
+        type: "paragraph",
+        body:
+          "deqoin olarak her projeyi yerinde değerlendiriyor, mekanın yapısına ve kullanıcı alışkanlıklarına göre planlıyoruz. böylece nevşehir iç mimarlık hizmeti, hazır kalıplar yerine gerçek ihtiyaçlara cevap veren bir sürece dönüşüyor.",
+      },
+      {
+        type: "list",
+        items: [
+          "yerinde ihtiyaç analizi yapıyoruz",
+          "bölgeye uygun malzeme öneriyoruz",
+          "ev, ofis ve otel için ayrı kurgu geliştiriyoruz",
+          "uygulama aşamasında net ve düzenli ilerliyoruz",
+        ],
       },
     ],
   },
   {
-    slug: "ticari-cephe-obsidian",
-    title: "TİCARİ CEPHE / OBSIDIAN TOWER",
-    deck: "BİR TİCARİ KABUĞUN, ŞEHİR ÖLÇEĞİNDEKİ ETKİSİNİ SAKİN VE NET BİR DİLLE OKUMAK.",
-    coverImage: obsidian?.coverImage ?? "/images/projects/gallery_5.png",
-    publishedAt: "10 NİSAN 2026",
-    readTime: "04 DK",
-    articleType: "GÜNCEL HABERLER",
-    departments: ["UYGULAMA"],
-    projectTypes: ["TİCARİ"],
-    contentTypes: ["GÜNCEL HABERLER", "İÇGÖRÜLER"],
-    relatedProjectSlugs: ["obsidian-tower"],
+    slug: "italyan-boya-nedir-neden-tercih-edilmelidir",
+    title: "italyan boya nedir? evinizde neden tercih etmelisiniz?",
+    deck: "italyan boya uygulaması, duvar dekorasyonu için daha şık, daha dayanıklı ve daha doğal bir yüzey sunar.",
+    coverImage: "/images/projects/gallery_2.png",
+    publishedAt: "02 MAYIS 2026",
+    readTime: "05 DK",
+    articleType: "TEKNİK VERİ",
+    departments: ["MATERYAL", "UYGULAMA"],
+    projectTypes: ["KONUT", "TİCARİ"],
+    contentTypes: ["TEKNİK VERİ", "İÇGÖRÜLER"],
+    relatedProjectSlugs: [],
     intro:
-      "OBSIDIAN TOWER, TICARİ YAPIYI SADECE CEPHE GÜCÜYLE DEĞİL, BAKIŞ VE HAREKET DİSİPLİNİYLE DE TAŞIR. CEPHENİN GÖLGELENME KARAKTERİ, KENTSEL BAĞLAMDA TEK BİR SERT HAT GİBİ DAVRANIR.",
+      "duvar boyası seçerken yalnızca renk değil, yüzeyin nasıl görüneceği ve nasıl kullanılacağı da önemlidir. italyan boya, standart boyadan farklı olarak daha karakterli, daha dayanıklı ve daha doğal bir sonuç verir.",
     sections: [
+      {
+        type: "heading",
+        level: 2,
+        text: "italyan boya nedir?",
+      },
       {
         type: "paragraph",
         body:
-          "UYGULAMA SÜRECİNDE ÖNEMLİ OLAN, ESTETİK KARARI ORTADA BIRAKMAMAKTIR. SİSTEM, YERLEŞİM VE MONTAJ SIRASI BİRBİRİYLE TUTARLI OLMALIDIR. SESSİZ LÜKS ETKİ, FAZLALIKLARIN AZLIĞINDAN GELİR.",
+          "italyan boya uygulaması, düz bir renk vermenin ötesine geçer. yüzeyde hafif doku, yumuşak ışık geçişi ve daha doğal bir görünüm oluşturur. bu nedenle duvar dekorasyonu içinde daha özel bir sonuç arayanlar için güçlü bir alternatiftir.",
       },
       {
-        type: "technical",
+        type: "list",
         items: [
-          { label: "PANEL", value: "PARAMETRİK GÜNEŞ KIRICI" },
-          { label: "CEPHE DAVRANIŞI", value: "MONOLİTİK RİTİM" },
-          { label: "TAŞIMA", value: "HIZLANDIRILMIŞ MONTAJ AKIŞI" },
-          { label: "KURULUM", value: "KATMANLI UYGULAMA LİSTESİ" },
+          "standart boyaya göre daha karakterlidir",
+          "yüzeyde daha doğal bir görünüm oluşturur",
+          "ışığı daha yumuşak yansıtır",
+          "uzun süre estetik etkisini koruyabilir",
         ],
       },
       {
-        type: "image",
-        src: obsidian?.gallery?.[0] ?? obsidian?.coverImage ?? "/images/projects/gallery_5.png",
-        alt: "OBSIDIAN TOWER TİCARİ CEPHE GÖRSELİ",
-        caption: "TİCARİ KABUK, GÖRSEL GÜRÜLTÜ YERİNE KESKİN BİR RİTİM ÜRETİR.",
+        type: "heading",
+        level: 2,
+        text: "hangi avantajları sağlar?",
       },
       {
-        type: "related",
-        title: "İLGİLİ PROJE BAĞLANTILARI",
-        items: [getProjectReference("obsidian-tower")],
+        type: "paragraph",
+        body:
+          "bu boya türünün en büyük avantajı, yalnızca güzel görünmesi değildir. temizlenebilir yüzey seçenekleri, dayanıklılık ve zamana karşı daha sağlam duruş sunması da önemli artılardır. bu yüzden hem evlerde hem de yoğun kullanılan mekanlarda tercih edilebilir.",
+      },
+      {
+        type: "heading",
+        level: 3,
+        text: "silinebilir yüzey",
+      },
+      {
+        type: "paragraph",
+        body:
+          "günlük kullanımda duvarların kirlenmesi normaldir. silinebilir yüzeyler bakım işini kolaylaştırır ve duvarın ilk günkü görünümünü daha uzun süre korumasına yardım eder.",
+      },
+      {
+        type: "heading",
+        level: 3,
+        text: "uzun ömür",
+      },
+      {
+        type: "paragraph",
+        body:
+          "kaliteli uygulandığında italyan boya, sık yenileme gerektirmeden uzun süre kullanılabilir. doğru astar, doğru yüzey hazırlığı ve doğru işçilik burada belirleyici olur.",
+      },
+      {
+        type: "heading",
+        level: 3,
+        text: "doğal görünüm",
+      },
+      {
+        type: "paragraph",
+        body:
+          "bazı duvarlar fazla parlak ya da yapay görünebilir. italyan boya ise daha sakin, daha dengeli ve daha doğal bir etki verir. bu da mekanı daha özenli ve toplu gösterir.",
+      },
+      {
+        type: "heading",
+        level: 2,
+        text: "deqoin ile uygulama",
+      },
+      {
+        type: "paragraph",
+        body:
+          "deqoin, italyan boya nevşehir uygulamalarında önce yüzeyin durumunu kontrol eder, sonra mekanın ışığına ve kullanımına uygun tonu belirler. amaç, sadece güzel bir duvar değil, uzun ömürlü ve sorunsuz bir sonuç elde etmektir.",
+      },
+      {
+        type: "list",
+        items: [
+          "yüzey hazırlığını dikkatle yapıyoruz",
+          "mekana uygun renk ve doku öneriyoruz",
+          "uygulamayı profesyonel şekilde tamamlıyoruz",
+          "bakımı kolay, dayanıklı bir sonuç hedefliyoruz",
+        ],
       },
     ],
   },
