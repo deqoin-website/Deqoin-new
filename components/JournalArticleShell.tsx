@@ -10,12 +10,14 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import type { JournalArticle, JournalSection } from "@/data/journal";
 import { cn } from "@/lib/utils";
+import JournalShareActions from "./JournalShareActions";
 
 type JournalArticleShellProps = {
   article: JournalArticle;
   className?: string;
   variant?: "page" | "drawer";
   onClose?: () => void;
+  shareUrl?: string;
 };
 
 function formatMetaValue(value: string) {
@@ -130,6 +132,7 @@ export default function JournalArticleShell({
   className,
   variant = "page",
   onClose,
+  shareUrl,
 }: JournalArticleShellProps) {
   const isDrawer = variant === "drawer";
 
@@ -204,6 +207,8 @@ export default function JournalArticleShell({
               <p className="max-w-3xl text-[1.05rem] leading-8 text-zinc-300 md:text-[1.15rem]">
                 {article.deck}
               </p>
+
+              <JournalShareActions title={article.title} url={shareUrl} />
             </div>
 
             <div className="space-y-8">

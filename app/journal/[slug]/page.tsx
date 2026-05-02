@@ -46,10 +46,16 @@ export default async function JournalArticlePage({ params }: JournalArticlePageP
     notFound();
   }
 
+  const headerList = headers();
+  const host = headerList.get("x-forwarded-host") || headerList.get("host");
+  const protocol = headerList.get("x-forwarded-proto") || "http";
+  const baseUrl = host ? `${protocol}://${host}` : "https://www.deqoin.com";
+  const shareUrl = `${baseUrl.replace(/\/$/, "")}/journal/${slug}`;
+
   return (
     <main className="min-h-screen bg-[#080808] px-4 py-4 pt-24 text-white md:px-6 md:py-6 md:pt-28">
       <div className="mx-auto w-full max-w-[1700px]">
-        <JournalArticleShell article={article} />
+        <JournalArticleShell article={article} shareUrl={shareUrl} />
       </div>
     </main>
   );
