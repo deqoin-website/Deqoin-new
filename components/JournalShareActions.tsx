@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Instagram, Link2, MessageCircle, Share2 } from "lucide-react";
+import { Link2, MessageCircle, Share2 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -117,7 +117,7 @@ export default function JournalShareActions({ title, url, className }: JournalSh
             className="h-11 justify-start rounded-[0.9rem] border border-white/10 bg-white/[0.04] px-4 text-xs uppercase tracking-[0.16em] text-white/80 hover:bg-white hover:text-zinc-950"
             onClick={shareViaNativeSheet}
           >
-            <Instagram className="mr-2 h-4 w-4" />
+            <Share2 className="mr-2 h-4 w-4" />
             instagram
           </Button>
 
