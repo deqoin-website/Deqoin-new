@@ -10,6 +10,7 @@ import {
   type JournalProjectType,
   type JournalSection,
 } from "@/data/journal";
+import { journalSeoPackArticles } from "@/data/journal-seo-pack";
 
 export type JournalHeroDraft = {
   title: string;
@@ -54,7 +55,7 @@ const DEFAULT_HERO: JournalHeroDraft = {
   subtitle: "deqoin journal / editorial archive",
   description:
     "deqoin journal, iç mimarlık, mekan tasarımı ve uygulama notlarını sade bir blog diliyle bir araya getirir.",
-  featuredArticleSlug: journalArticles[0]?.slug ?? "",
+  featuredArticleSlug: journalSeoPackArticles[0]?.slug ?? journalArticles[0]?.slug ?? "",
 };
 
 const LEGACY_JOURNAL_SLUGS = new Set([
@@ -212,7 +213,7 @@ export function cloneJournalArticles(articles: JournalArticle[]) {
 }
 
 export function createDefaultJournalDraft(): JournalPageDraft {
-  const articles = cloneJournalArticles(journalArticles);
+  const articles = cloneJournalArticles(journalSeoPackArticles.length > 0 ? journalSeoPackArticles : journalArticles);
   return {
     pageTitle: "journal",
     hero: {
@@ -237,7 +238,7 @@ export function normalizeJournalDraft(payload: any): JournalPageDraft {
     : Array.isArray(section?.content?.articles)
       ? section.content.articles
       : [];
-  const fallbackArticles = cloneJournalArticles(journalArticles);
+  const fallbackArticles = cloneJournalArticles(journalSeoPackArticles.length > 0 ? journalSeoPackArticles : journalArticles);
   if (shouldUseCuratedDefaults(rawArticles)) {
     return createDefaultJournalDraft();
   }

@@ -1,0 +1,568 @@
+{
+  "pageTitle": "journal",
+  "hero": {
+    "title": "journal",
+    "subtitle": "deqoin journal / editorial archive",
+    "description": "deqoin journal, iç mimarlık, mekan tasarımı ve uygulama notlarını sade bir blog diliyle bir araya getirir.",
+    "featuredArticleSlug": "ic-mimarlikta-dogru-planlama-neden-onemlidir"
+  },
+  "articles": [
+    {
+      "slug": "ic-mimarlikta-dogru-planlama-neden-onemlidir",
+      "title": "iç mimarlıkta doğru planlama neden önemlidir?",
+      "deck": "İç mimarlıkta ilk karar planlamadır. Alanın ölçüsü, ışığı, mobilya yerleşimi ve kullanım alışkanlıkları birlikte düşünülürse mekan daha rahat ve daha düzenli olur.",
+      "coverImage": "/images/journal-covers/ic-mimarlikta-dogru-planlama-neden-onemlidir.svg",
+      "publishedAt": "02 MAYIS 2026",
+      "readTime": "05 DK",
+      "articleType": "PERSPEKTİFLER",
+      "departments": [
+        "MİMARİ"
+      ],
+      "projectTypes": [
+        "KONUT",
+        "KURUMSAL"
+      ],
+      "contentTypes": [
+        "PERSPEKTİFLER",
+        "İÇGÖRÜLER"
+      ],
+      "relatedProjectSlugs": [],
+      "intro": "Bir mekanın iyi görünmesi tek başına yeterli değildir. Asıl farkı yaratan şey, o alanın nasıl planlandığıdır. Doğru planlanan bir ev ya da ofis daha sakin, daha kullanışlı ve daha kolay yaşanır hale gelir.",
+      "sections": [
+        {
+          "type": "heading",
+          "level": 2,
+          "text": "planlama neden ilk adımdır?"
+        },
+        {
+          "type": "paragraph",
+          "body": "İç mimarlık, sadece renk ve mobilya seçmek değildir. Alanın nerede daraldığı, hangi noktada ışık kaybettiği ve hareket akışının nasıl çalıştığı önce görülmelidir. Bu analiz yapılınca mekan tasarımı daha doğru kararlarla ilerler."
+        },
+        {
+          "type": "list",
+          "items": [
+            "Geçiş alanları rahatlar",
+            "Gereksiz kalabalık azalır",
+            "Işık daha iyi kullanılır",
+            "Günlük yaşam kolaylaşır"
+          ]
+        },
+        {
+          "type": "heading",
+          "level": 2,
+          "text": "deqoin bu süreci nasıl ele alır?"
+        },
+        {
+          "type": "paragraph",
+          "body": "deqoin olarak önce mekanın kullanımını, sonra ölçüsünü ve ışık durumunu değerlendiriyoruz. Ardından iç mimarlık kararlarını bu ihtiyaca göre kuruyoruz. Böylece ortaya yalnızca şık görünen değil, gerçekten işe yarayan bir düzen çıkıyor."
+        }
+      ],
+      "seo": {
+        "metaTitle": "iç mimarlıkta doğru planlama neden önemlidir? | deqoin",
+        "metaDescription": "İç mimarlıkta ilk karar planlamadır. Alanın ölçüsü, ışığı, mobilya yerleşimi ve kullanım alışkanlıkları birlikte düşünülürse mekan daha rahat ve daha düzenli olur.",
+        "coverPrompt": "planlama temalı editorial cover, minimalist geometrik kompozisyon, deqoin journal için 16:9 kapak görseli."
+      }
+    },
+    {
+      "slug": "ev-yenilerken-nelere-dikkat-etmelisiniz",
+      "title": "ev yenilerken nelere dikkat etmelisiniz?",
+      "deck": "Ev yenileme sürecinde estetik kadar işlev de önemlidir. Planlı bir yaklaşım, bütçeyi korur ve sonuçtan daha uzun süre memnun kalmanızı sağlar.",
+      "coverImage": "/images/journal-covers/ev-yenilerken-nelere-dikkat-etmelisiniz.svg",
+      "publishedAt": "02 MAYIS 2026",
+      "readTime": "05 DK",
+      "articleType": "İÇGÖRÜLER",
+      "departments": [
+        "MİMARİ"
+      ],
+      "projectTypes": [
+        "KONUT"
+      ],
+      "contentTypes": [
+        "İÇGÖRÜLER",
+        "PERSPEKTİFLER"
+      ],
+      "relatedProjectSlugs": [],
+      "intro": "Ev dekorasyonu ve yenileme süreci heyecanlıdır ama plansız ilerlerse yorucu hale gelir. Ne kadar değişeceğini, hangi alanların öncelikli olduğunu ve hangi malzemelerin kullanılacağını baştan netleştirmek gerekir.",
+      "sections": [
+        {
+          "type": "heading",
+          "level": 2,
+          "text": "önce plan, sonra alışveriş"
+        },
+        {
+          "type": "paragraph",
+          "body": "En sık yapılan hata, önce ürün seçip sonra mekanın ihtiyaçlarını düşünmektir. Oysa doğru sıra tam tersidir. Önce alanın hangi sorunu çözülecek, sonra mobilya, renk ve malzeme belirlenmelidir."
+        },
+        {
+          "type": "list",
+          "items": [
+            "Işık ihtiyacını değerlendirin",
+            "Mobilyayı ölçüye göre seçin",
+            "Depolamayı göz ardı etmeyin",
+            "Uzun ömürlü yüzeyleri tercih edin"
+          ]
+        },
+        {
+          "type": "heading",
+          "level": 2,
+          "text": "deqoin yaklaşımı"
+        },
+        {
+          "type": "paragraph",
+          "body": "deqoin, ev yenileme projelerinde sadece güzel görünen değil, günlük hayata uyum sağlayan çözümler kurar. Böylece yeni görünüm kadar kullanım rahatlığı da kazanılır."
+        }
+      ],
+      "seo": {
+        "metaTitle": "ev yenilerken nelere dikkat etmelisiniz? | deqoin",
+        "metaDescription": "Ev yenileme sürecinde estetik kadar işlev de önemlidir. Planlı bir yaklaşım, bütçeyi korur ve sonuçtan daha uzun süre memnun kalmanızı sağlar.",
+        "coverPrompt": "yenileme temalı editorial cover, minimalist geometrik kompozisyon, deqoin journal için 16:9 kapak görseli."
+      }
+    },
+    {
+      "slug": "kucuk-alanlar-nasil-daha-ferah-gosterilir",
+      "title": "küçük alanlar nasıl daha ferah gösterilir?",
+      "deck": "Dar alanlarda ferahlık; ışık, renk, mobilya ölçüsü ve sade planlamanın birleşimiyle oluşur. Doğru kurgu küçük mekanları daha rahat hissettirir.",
+      "coverImage": "/images/journal-covers/kucuk-alanlar-nasil-daha-ferah-gosterilir.svg",
+      "publishedAt": "02 MAYIS 2026",
+      "readTime": "05 DK",
+      "articleType": "PERSPEKTİFLER",
+      "departments": [
+        "MİMARİ"
+      ],
+      "projectTypes": [
+        "KONUT",
+        "KURUMSAL"
+      ],
+      "contentTypes": [
+        "İÇGÖRÜLER"
+      ],
+      "relatedProjectSlugs": [],
+      "intro": "Küçük bir alanın sıkışık görünmesi zorunlu değildir. Doğru mekan tasarımıyla dar bir oda da rahat, düzenli ve nefes alan bir hale gelebilir.",
+      "sections": [
+        {
+          "type": "heading",
+          "level": 2,
+          "text": "ışık ve renk nasıl çalışır?"
+        },
+        {
+          "type": "paragraph",
+          "body": "Açık renkler alanı daha büyük gösterir ama tek başına yeterli değildir. Doğal ışığın önünü kapatmamak, aynayı doğru noktada kullanmak ve katmanlı aydınlatma oluşturmak da gerekir. Böylece oda daha açık algılanır."
+        },
+        {
+          "type": "heading",
+          "level": 3,
+          "text": "mobilya seçimi"
+        },
+        {
+          "type": "paragraph",
+          "body": "Küçük alanlarda hantal mobilyalar yerine ölçüye uygun, sade ve işlevli parçalar seçmek gerekir. Fazla parça kullanmak yerine birkaç güçlü öğe ile düzen kurmak daha iyi sonuç verir."
+        },
+        {
+          "type": "list",
+          "items": [
+            "Gereksiz eşyayı azaltın",
+            "Açık tonları dengeli kullanın",
+            "Depolamayı gizli çözümlerle planlayın",
+            "Geçiş alanını açık bırakın"
+          ]
+        }
+      ],
+      "seo": {
+        "metaTitle": "küçük alanlar nasıl daha ferah gösterilir? | deqoin",
+        "metaDescription": "Dar alanlarda ferahlık; ışık, renk, mobilya ölçüsü ve sade planlamanın birleşimiyle oluşur. Doğru kurgu küçük mekanları daha rahat hissettirir.",
+        "coverPrompt": "ferahlık temalı editorial cover, minimalist geometrik kompozisyon, deqoin journal için 16:9 kapak görseli."
+      }
+    },
+    {
+      "slug": "ofis-tasariminda-konfor-ve-verimlilik",
+      "title": "ofis tasarımında konfor ve verimlilik nasıl birlikte sağlanır?",
+      "deck": "İyi bir ofis tasarımı, çalışanların rahat ettiği ve iş akışının bozulmadığı bir düzen kurar. Konfor ile verimlilik aynı planda düşünüldüğünde sonuç güçlenir.",
+      "coverImage": "/images/journal-covers/ofis-tasariminda-konfor-ve-verimlilik.svg",
+      "publishedAt": "02 MAYIS 2026",
+      "readTime": "05 DK",
+      "articleType": "İÇGÖRÜLER",
+      "departments": [
+        "MİMARİ"
+      ],
+      "projectTypes": [
+        "KURUMSAL"
+      ],
+      "contentTypes": [
+        "İÇGÖRÜLER",
+        "TEKNİK VERİ"
+      ],
+      "relatedProjectSlugs": [],
+      "intro": "Ofis tasarımı sadece şık bir masa ve birkaç sandalye seçmek değildir. Doğru yerleşim, doğru ışık ve doğru dolaşım kurgusu iş performansını doğrudan etkiler.",
+      "sections": [
+        {
+          "type": "heading",
+          "level": 2,
+          "text": "çalışma akışı önce gelir"
+        },
+        {
+          "type": "paragraph",
+          "body": "Bir ofiste masaların birbirini kesmeyen bir düzende kurulması gerekir. Toplantı alanı, bireysel çalışma noktaları ve ortak kullanım bölümleri birbiriyle uyumlu olmalıdır. Bu yapı hem konforu hem de düzeni artırır."
+        },
+        {
+          "type": "heading",
+          "level": 2,
+          "text": "konfor sadece koltuk değildir"
+        },
+        {
+          "type": "paragraph",
+          "body": "Aydınlatma, ses dengesi, renk seçimi ve havalandırma da ofis konforunun parçasıdır. Çalışanların uzun süre vakit geçirdiği bir alanda bunlar doğru kurulmadığında verim düşer."
+        },
+        {
+          "type": "list",
+          "items": [
+            "Dolaşım alanlarını açık tutun",
+            "Masaları ışığa göre yerleştirin",
+            "Ortak alanları net ayırın",
+            "Dayanıklı malzeme kullanın"
+          ]
+        }
+      ],
+      "seo": {
+        "metaTitle": "ofis tasarımında konfor ve verimlilik nasıl birlikte sağlanır? | deqoin",
+        "metaDescription": "İyi bir ofis tasarımı, çalışanların rahat ettiği ve iş akışının bozulmadığı bir düzen kurar. Konfor ile verimlilik aynı planda düşünüldüğünde sonuç güçlenir.",
+        "coverPrompt": "ofis temalı editorial cover, minimalist geometrik kompozisyon, deqoin journal için 16:9 kapak görseli."
+      }
+    },
+    {
+      "slug": "butik-otellerde-ilk-izlenim-neden-onemlidir",
+      "title": "butik otellerde ilk izlenim neden önemlidir?",
+      "deck": "Butik otellerde ilk izlenim, misafirin deneyimini doğrudan etkiler. Giriş alanı, oda düzeni ve malzeme seçimi birlikte düşünülmelidir.",
+      "coverImage": "/images/journal-covers/butik-otellerde-ilk-izlenim-neden-onemlidir.svg",
+      "publishedAt": "02 MAYIS 2026",
+      "readTime": "06 DK",
+      "articleType": "PERSPEKTİFLER",
+      "departments": [
+        "MİMARİ"
+      ],
+      "projectTypes": [
+        "TİCARİ"
+      ],
+      "contentTypes": [
+        "PERSPEKTİFLER",
+        "İÇGÖRÜLER"
+      ],
+      "relatedProjectSlugs": [],
+      "intro": "Misafir otele girdiği anda mekan hakkında fikir edinir. Bu nedenle butik otel tasarımında amaç yalnızca şık bir görünüm değil, rahat bir deneyim kurmaktır.",
+      "sections": [
+        {
+          "type": "heading",
+          "level": 2,
+          "text": "giriş alanı mesaj verir"
+        },
+        {
+          "type": "paragraph",
+          "body": "Temiz, düzenli ve dengeli bir giriş alanı güven hissi oluşturur. Işık, yönlendirme ve mobilya seçimi ilk dakikadaki algıyı belirler. Bu yüzden otel girişinde detaylar önemlidir."
+        },
+        {
+          "type": "heading",
+          "level": 3,
+          "text": "odada ne beklenir?"
+        },
+        {
+          "type": "paragraph",
+          "body": "Butik otel odalarında rahatlık, iyi ışık ve yeterli depolama öne çıkar. Oda kalabalık görünmemeli, ama eksik de hissettirmemelidir. Sade ama karakterli bir düzen en doğru çözümdür."
+        },
+        {
+          "type": "list",
+          "items": [
+            "Misafir akışını düşünün",
+            "Yumuşak ışık geçişleri kurun",
+            "Dayanıklı yüzeyler seçin",
+            "Mekanın bölgeyle ilişkisini koruyun"
+          ]
+        }
+      ],
+      "seo": {
+        "metaTitle": "butik otellerde ilk izlenim neden önemlidir? | deqoin",
+        "metaDescription": "Butik otellerde ilk izlenim, misafirin deneyimini doğrudan etkiler. Giriş alanı, oda düzeni ve malzeme seçimi birlikte düşünülmelidir.",
+        "coverPrompt": "otel temalı editorial cover, minimalist geometrik kompozisyon, deqoin journal için 16:9 kapak görseli."
+      }
+    },
+    {
+      "slug": "tadilatta-malzeme-secimi-neden-kritiktir",
+      "title": "tadilatta malzeme seçimi neden kritik bir adımdır?",
+      "deck": "Tadilatın sonucunu belirleyen en önemli şeylerden biri malzemedir. Doğru malzeme, hem dayanıklılığı hem de günlük kullanım kolaylığını artırır.",
+      "coverImage": "/images/journal-covers/tadilatta-malzeme-secimi-neden-kritiktir.svg",
+      "publishedAt": "02 MAYIS 2026",
+      "readTime": "05 DK",
+      "articleType": "TEKNİK VERİ",
+      "departments": [
+        "MATERYAL"
+      ],
+      "projectTypes": [
+        "KONUT",
+        "TİCARİ"
+      ],
+      "contentTypes": [
+        "TEKNİK VERİ",
+        "İÇGÖRÜLER"
+      ],
+      "relatedProjectSlugs": [],
+      "intro": "İyi görünen bir yüzey, uzun ömürlü değilse doğru seçim değildir. Tadilatta malzeme; dayanıklılık, bakım ve kullanım şekliyle birlikte düşünülmelidir.",
+      "sections": [
+        {
+          "type": "heading",
+          "level": 2,
+          "text": "görünüm tek başına yetmez"
+        },
+        {
+          "type": "paragraph",
+          "body": "Bir malzeme ilk bakışta iyi görünebilir ama çizilmeye, neme veya yoğun kullanıma dayanmayabilir. Bu nedenle seçim yaparken alanın gerçek ihtiyacı önce gelmelidir."
+        },
+        {
+          "type": "list",
+          "items": [
+            "Kolay temizlenebilir olmalı",
+            "Kullanım alanına uygun olmalı",
+            "Bakım ihtiyacı net olmalı",
+            "Uzun ömürlü sonuç vermeli"
+          ]
+        },
+        {
+          "type": "heading",
+          "level": 2,
+          "text": "deqoin neye bakar?"
+        },
+        {
+          "type": "paragraph",
+          "body": "deqoin, malzeme seçimini sadece görsel karar olarak görmez. Alanın işlevini, kullanıcı yoğunluğunu ve bakım alışkanlığını birlikte değerlendirir. Bu yaklaşım, daha sağlıklı ve daha kalıcı sonuç verir."
+        }
+      ],
+      "seo": {
+        "metaTitle": "tadilatta malzeme seçimi neden kritik bir adımdır? | deqoin",
+        "metaDescription": "Tadilatın sonucunu belirleyen en önemli şeylerden biri malzemedir. Doğru malzeme, hem dayanıklılığı hem de günlük kullanım kolaylığını artırır.",
+        "coverPrompt": "malzeme temalı editorial cover, minimalist geometrik kompozisyon, deqoin journal için 16:9 kapak görseli."
+      }
+    },
+    {
+      "slug": "aydinlatma-bir-mekanin-havasini-nasil-degistirir",
+      "title": "aydınlatma bir mekanın havasını nasıl değiştirir?",
+      "deck": "Işık, mekanın algısını doğrudan değiştirir. Doğru aydınlatma ile aynı alan daha sıcak, daha açık ya da daha dengeli hissedilebilir.",
+      "coverImage": "/images/journal-covers/aydinlatma-bir-mekanin-havasini-nasil-degistirir.svg",
+      "publishedAt": "02 MAYIS 2026",
+      "readTime": "05 DK",
+      "articleType": "İÇGÖRÜLER",
+      "departments": [
+        "MİMARİ"
+      ],
+      "projectTypes": [
+        "KONUT",
+        "KURUMSAL"
+      ],
+      "contentTypes": [
+        "İÇGÖRÜLER"
+      ],
+      "relatedProjectSlugs": [],
+      "intro": "Aydınlatma, sadece görünürlük sağlamaz. Mekanın karakterini, rengini ve kullanım konforunu da belirler. Bu yüzden iç mimarlıkta ışık, en temel kararlardan biridir.",
+      "sections": [
+        {
+          "type": "heading",
+          "level": 2,
+          "text": "doğal ışık"
+        },
+        {
+          "type": "paragraph",
+          "body": "Doğal ışık mekanı daha canlı ve daha ferah gösterir. Pencere önü düzeni, perde seçimi ve yüzey rengi bu ışığın nasıl dağıldığını etkiler. İyi bir kurgu, alanı anında değiştirir."
+        },
+        {
+          "type": "heading",
+          "level": 2,
+          "text": "yapay ışıkta denge"
+        },
+        {
+          "type": "paragraph",
+          "body": "Tek bir güçlü ışık yerine farklı noktalarda dengeli ışık kullanmak daha iyi sonuç verir. Böylece köşeler karanlık kalmaz, alan bölgelere ayrılır ve mekan daha rahat kullanılır."
+        },
+        {
+          "type": "list",
+          "items": [
+            "Katmanlı aydınlatma kurun",
+            "Sıcak ve soğuk ışığı dengede tutun",
+            "Yansıtan yüzeyleri bilinçli kullanın",
+            "Işığı işlevle birlikte düşünün"
+          ]
+        }
+      ],
+      "seo": {
+        "metaTitle": "aydınlatma bir mekanın havasını nasıl değiştirir? | deqoin",
+        "metaDescription": "Işık, mekanın algısını doğrudan değiştirir. Doğru aydınlatma ile aynı alan daha sıcak, daha açık ya da daha dengeli hissedilebilir.",
+        "coverPrompt": "aydınlatma temalı editorial cover, minimalist geometrik kompozisyon, deqoin journal için 16:9 kapak görseli."
+      }
+    },
+    {
+      "slug": "ev-dekorasyonunda-en-sik-yapilan-hatalar",
+      "title": "ev dekorasyonunda en sık yapılan hatalar",
+      "deck": "Ev dekorasyonunda en sık görülen sorun, alanı olduğundan fazla doldurmaktır. Daha sade kararlar çoğu zaman daha iyi sonuç verir.",
+      "coverImage": "/images/journal-covers/ev-dekorasyonunda-en-sik-yapilan-hatalar.svg",
+      "publishedAt": "02 MAYIS 2026",
+      "readTime": "05 DK",
+      "articleType": "PERSPEKTİFLER",
+      "departments": [
+        "MİMARİ"
+      ],
+      "projectTypes": [
+        "KONUT"
+      ],
+      "contentTypes": [
+        "İÇGÖRÜLER",
+        "PERSPEKTİFLER"
+      ],
+      "relatedProjectSlugs": [],
+      "intro": "Dekorasyon yaparken amaç çok eşya kullanmak değil, doğru parçaları doğru yerde kullanmaktır. Hataları erken fark etmek, evi daha dengeli hale getirir.",
+      "sections": [
+        {
+          "type": "heading",
+          "level": 2,
+          "text": "en sık görülen sorunlar"
+        },
+        {
+          "type": "paragraph",
+          "body": "Ölçüye uygun olmayan mobilyalar, fazla aksesuar, plansız renk geçişleri ve yetersiz depolama en sık yapılan hatalardır. Bunlar mekanı kalabalık ve yorucu gösterir."
+        },
+        {
+          "type": "list",
+          "items": [
+            "Alan ölçüsünü dikkate alın",
+            "Renkleri sınırlı kullanın",
+            "Aksesuarı kontrollü seçin",
+            "İşlevi dekorasyon kadar önemseyin"
+          ]
+        },
+        {
+          "type": "heading",
+          "level": 2,
+          "text": "deqoin yaklaşımı"
+        },
+        {
+          "type": "paragraph",
+          "body": "deqoin, dekorasyonu sade ama güçlü bir çizgide kurar. Böylece ev, sadece güzel görünmez; daha rahat yaşanır bir hale gelir."
+        }
+      ],
+      "seo": {
+        "metaTitle": "ev dekorasyonunda en sık yapılan hatalar | deqoin",
+        "metaDescription": "Ev dekorasyonunda en sık görülen sorun, alanı olduğundan fazla doldurmaktır. Daha sade kararlar çoğu zaman daha iyi sonuç verir.",
+        "coverPrompt": "hatalar temalı editorial cover, minimalist geometrik kompozisyon, deqoin journal için 16:9 kapak görseli."
+      }
+    },
+    {
+      "slug": "nevsehirde-modern-yasam-alanlari-nasil-tasarlanir",
+      "title": "nevşehir'de modern yaşam alanları nasıl tasarlanır?",
+      "deck": "Nevşehir'de modern yaşam alanı tasarlarken yerel yapı, ışık koşulları ve kullanım alışkanlıkları birlikte düşünülmelidir.",
+      "coverImage": "/images/journal-covers/nevsehirde-modern-yasam-alanlari-nasil-tasarlanir.svg",
+      "publishedAt": "02 MAYIS 2026",
+      "readTime": "05 DK",
+      "articleType": "İÇGÖRÜLER",
+      "departments": [
+        "MİMARİ"
+      ],
+      "projectTypes": [
+        "KONUT",
+        "TİCARİ",
+        "KURUMSAL"
+      ],
+      "contentTypes": [
+        "İÇGÖRÜLER",
+        "PERSPEKTİFLER"
+      ],
+      "relatedProjectSlugs": [],
+      "intro": "Nevşehir’de iç mimarlık yaparken sadece modern görünüm yeterli değildir. Mekanın bulunduğu yapı, çevresi ve kullanıcının ihtiyaçları da tasarımın parçasıdır.",
+      "sections": [
+        {
+          "type": "heading",
+          "level": 2,
+          "text": "yerel yapıyı anlamak gerekir"
+        },
+        {
+          "type": "paragraph",
+          "body": "Nevşehir'deki her mekan aynı karakterde değildir. Bazıları geleneksel doku taşır, bazıları ise modern kullanım beklentilerine göre şekillenir. Tasarım kararı bu farkı dikkate almalıdır."
+        },
+        {
+          "type": "list",
+          "items": [
+            "Işık alma durumunu analiz edin",
+            "Mekanın formunu dikkate alın",
+            "Dayanıklı malzeme seçin",
+            "Temizliği kolaylaştırın"
+          ]
+        },
+        {
+          "type": "heading",
+          "level": 2,
+          "text": "deqoin nasıl çalışır?"
+        },
+        {
+          "type": "paragraph",
+          "body": "deqoin, Nevşehir iç mimar yaklaşımında hazır kalıplar kullanmaz. Mekanın ölçüsünü, ışığını ve kullanımını yerinde değerlendirir. Böylece ortaya daha gerçekçi ve uzun ömürlü çözümler çıkar."
+        }
+      ],
+      "seo": {
+        "metaTitle": "nevşehir'de modern yaşam alanları nasıl tasarlanır? | deqoin",
+        "metaDescription": "Nevşehir'de modern yaşam alanı tasarlarken yerel yapı, ışık koşulları ve kullanım alışkanlıkları birlikte düşünülmelidir.",
+        "coverPrompt": "nevşehir temalı editorial cover, minimalist geometrik kompozisyon, deqoin journal için 16:9 kapak görseli."
+      }
+    },
+    {
+      "slug": "deqoin-yaklasimiyla-mekanlar-nasil-yenilenir",
+      "title": "deqoin yaklaşımıyla mekanlar nasıl yenilenir?",
+      "deck": "deqoin yaklaşımında yenileme, önce ihtiyacı anlamakla başlar. Sonra tasarım ve uygulama aynı çizgide ilerler.",
+      "coverImage": "/images/journal-covers/deqoin-yaklasimiyla-mekanlar-nasil-yenilenir.svg",
+      "publishedAt": "02 MAYIS 2026",
+      "readTime": "05 DK",
+      "articleType": "İÇGÖRÜLER",
+      "departments": [
+        "UYGULAMA",
+        "MİMARİ"
+      ],
+      "projectTypes": [
+        "KONUT",
+        "TİCARİ",
+        "KURUMSAL"
+      ],
+      "contentTypes": [
+        "İÇGÖRÜLER",
+        "TEKNİK VERİ"
+      ],
+      "relatedProjectSlugs": [],
+      "intro": "Bir mekanı yenilemek, sadece eskiyi değiştirmek değildir. O alanı neden kullandığınızı anlamak, sonra buna uygun bir düzen kurmak gerekir.",
+      "sections": [
+        {
+          "type": "heading",
+          "level": 2,
+          "text": "süreç nasıl başlar?"
+        },
+        {
+          "type": "paragraph",
+          "body": "İlk aşama ihtiyaç analizidir. Mekanın güçlü ve zayıf yönleri, kullanım yoğunluğu ve teknik sınırları belirlenir. Bu adım netleşmeden yapılan her seçim eksik kalır."
+        },
+        {
+          "type": "heading",
+          "level": 2,
+          "text": "tasarım ve uygulama birlikte düşünülür"
+        },
+        {
+          "type": "paragraph",
+          "body": "deqoin yaklaşımında tasarım sahadan ayrı ilerlemez. Kağıt üzerinde iyi görünen bir fikir, uygulamada çalışmıyorsa gerçek çözüm değildir. Bu yüzden süreç baştan sona kontrol edilir."
+        },
+        {
+          "type": "list",
+          "items": [
+            "İhtiyaç analizi yapılır",
+            "Malzeme ve renk dengelenir",
+            "Uygulama detayları netleştirilir",
+            "Sonuç günlük hayata uyarlanır"
+          ]
+        }
+      ],
+      "seo": {
+        "metaTitle": "deqoin yaklaşımıyla mekanlar nasıl yenilenir? | deqoin",
+        "metaDescription": "deqoin yaklaşımında yenileme, önce ihtiyacı anlamakla başlar. Sonra tasarım ve uygulama aynı çizgide ilerler.",
+        "coverPrompt": "deqoin temalı editorial cover, minimalist geometrik kompozisyon, deqoin journal için 16:9 kapak görseli."
+      }
+    }
+  ]
+}

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import { Loader2, Plus, RefreshCw, Save, Search, Eye, NotebookText } from "lucide-react";
 
@@ -293,6 +293,7 @@ export default function JournalAdminPage() {
   const [editorTab, setEditorTab] = useState("meta");
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
+  const [isImportingSeoPack, setIsImportingSeoPack] = useState(false);
   const [apiStatus, setApiStatus] = useState<ContentStatus>("idle");
   const [hasDirtyState, setHasDirtyState] = useState(false);
   const [notesOpen, setNotesOpen] = useState(false);
@@ -332,7 +333,7 @@ export default function JournalAdminPage() {
     }
   };
 
-  const fetchContent = async () => {
+  const fetchContent = useCallback(async () => {
     setIsLoading(true);
     setApiStatus("loading");
 
@@ -367,11 +368,11 @@ export default function JournalAdminPage() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [showToast]);
 
   useEffect(() => {
     void fetchContent();
-  }, []);
+  }, [fetchContent]);
 
   useEffect(() => {
     setCurrentPage(0);
@@ -511,6 +512,39 @@ export default function JournalAdminPage() {
     }
   };
 
+  const loadSeoPack = async () => {
+    setIsImportingSeoPack(true);
+    setApiStatus("loading");
+
+    try {
+      const response = await fetch("/api/admin/journal/seo-pack", { cache: "no-store" });
+      const payload = await response.json().catch(() => null);
+      const normalized = normalizeJournalDraft(response.ok ? payload : null);
+      const nextDraft = ensureJournalDraft(normalized);
+
+      setDraft(nextDraft);
+      setActiveView(nextDraft.articles[0]?.articleType ?? "hero");
+      setSelectedArticleSlug(nextDraft.articles[0]?.slug ?? "");
+      setCurrentPage(0);
+      setEditorTab("meta");
+      setHasDirtyState(true);
+      setApiStatus(response.ok ? "ok" : "error");
+
+      if (!response.ok) {
+        showToast("SEO paketi yüklenemedi.", "error");
+        return;
+      }
+
+      showToast("SEO paketi editöre yüklendi. İstersen şimdi kaydedebilirsin.", "success");
+    } catch (error) {
+      console.error("Journal SEO pack load error:", error);
+      setApiStatus("error");
+      showToast("SEO paketi yüklenemedi.", "error");
+    } finally {
+      setIsImportingSeoPack(false);
+    }
+  };
+
   const refreshDraft = async () => {
     await fetchContent();
     showToast("journal taslağı yenilendi.", "info");
@@ -590,6 +624,16 @@ export default function JournalAdminPage() {
                 >
                   <Eye className="mr-2 h-4 w-4" />
                   önizleme
+                </Button>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  className="border border-white/10 bg-white/[0.03] text-zinc-200 uppercase hover:bg-white hover:text-zinc-950"
+                  onClick={loadSeoPack}
+                  disabled={isImportingSeoPack}
+                >
+                  {isImportingSeoPack ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <RefreshCw className="mr-2 h-4 w-4" />}
+                  seo paketi yükle
                 </Button>
                 <Button
                   type="button"
