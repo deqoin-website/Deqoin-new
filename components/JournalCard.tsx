@@ -58,6 +58,10 @@ function JournalCardContent({
         <p className="line-clamp-2 text-sm leading-relaxed font-light text-zinc-400 md:line-clamp-3 md:text-base">
           {article.deck}
         </p>
+
+        <p className="text-[10px] tracking-[0.22em] text-zinc-500">
+          /journal/{article.slug}
+        </p>
       </CardContent>
     </Card>
   );
@@ -74,7 +78,7 @@ export default function JournalCard({
 
   if (href) {
     return (
-      <Link href={href} className={cardClassName}>
+      <Link href={href} className={cardClassName} aria-label={`${article.title} makalesini aç`}>
         <JournalCardContent article={article} loading={loading} />
       </Link>
     );

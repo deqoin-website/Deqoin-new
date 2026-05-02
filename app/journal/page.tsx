@@ -4,7 +4,6 @@ import { useEffect, useMemo, useState } from "react";
 
 import Footer from "@/components/Footer";
 import JournalCard from "@/components/JournalCard";
-import JournalDrawer from "@/components/JournalDrawer";
 import { Button } from "@/components/ui/button";
 import {
   Sidebar,
@@ -48,7 +47,6 @@ export default function JournalPage() {
   const [selectedDepartments, setSelectedDepartments] = useState<string[]>([]);
   const [selectedProjectTypes, setSelectedProjectTypes] = useState<string[]>([]);
   const [selectedContentTypes, setSelectedContentTypes] = useState<string[]>([]);
-  const [selectedArticleSlug, setSelectedArticleSlug] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [isMobileFiltersOpen, setIsMobileFiltersOpen] = useState(false);
 
@@ -88,11 +86,6 @@ export default function JournalPage() {
     return visibleArticles.slice(start, start + ARTICLES_PER_PAGE);
   }, [currentPage, visibleArticles]);
 
-  const selectedArticle = useMemo(
-    () => (selectedArticleSlug ? pageContent.articles.find((article) => article.slug === selectedArticleSlug) ?? null : null),
-    [pageContent.articles, selectedArticleSlug],
-  );
-
   useEffect(() => {
     setCurrentPage(1);
   }, [searchTerm, selectedContentTypes, selectedDepartments, selectedProjectTypes]);
@@ -129,17 +122,6 @@ export default function JournalPage() {
       active = false;
     };
   }, []);
-
-  useEffect(() => {
-    if (pageContent.articles.length === 0) {
-      setSelectedArticleSlug(null);
-      return;
-    }
-
-    if (selectedArticleSlug && !pageContent.articles.some((article) => article.slug === selectedArticleSlug)) {
-      setSelectedArticleSlug(null);
-    }
-  }, [pageContent.articles, selectedArticleSlug]);
 
   useEffect(() => {
     if (!isMobileFiltersOpen) return;
@@ -440,8 +422,8 @@ export default function JournalPage() {
                       <JournalCard
                         key={article.slug}
                         article={article}
+                        href={`/journal/${article.slug}`}
                         loading={index < 2 ? "eager" : "lazy"}
-                        onClick={() => setSelectedArticleSlug(article.slug)}
                       />
                     ))}
                   </div>
@@ -505,7 +487,6 @@ export default function JournalPage() {
         </SidebarProvider>
       </section>
 
-      <JournalDrawer article={selectedArticle} onClose={() => setSelectedArticleSlug(null)} />
       <Footer />
     </main>
   );

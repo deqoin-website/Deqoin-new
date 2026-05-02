@@ -19,7 +19,7 @@ type JournalArticleShellProps = {
 };
 
 function formatMetaValue(value: string) {
-  return value.toLocaleLowerCase("tr-TR");
+  return value.toLocaleUpperCase("tr-TR");
 }
 
 function ArticleImage({
