@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import Footer from "@/components/Footer";
 import JournalCard from "@/components/JournalCard";
@@ -51,7 +51,6 @@ export default function JournalPage() {
   const [selectedArticleSlug, setSelectedArticleSlug] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [isMobileFiltersOpen, setIsMobileFiltersOpen] = useState(false);
-  const hasInitializedArticleSelection = useRef(false);
 
   const visibleArticles = useMemo(() => {
     const query = toTurkishLowerCase(searchTerm.trim());
@@ -133,19 +132,12 @@ export default function JournalPage() {
 
   useEffect(() => {
     if (pageContent.articles.length === 0) {
-      hasInitializedArticleSelection.current = false;
       setSelectedArticleSlug(null);
       return;
     }
 
-    if (!hasInitializedArticleSelection.current) {
-      hasInitializedArticleSelection.current = true;
-      setSelectedArticleSlug(pageContent.articles[0].slug);
-      return;
-    }
-
     if (selectedArticleSlug && !pageContent.articles.some((article) => article.slug === selectedArticleSlug)) {
-      setSelectedArticleSlug(pageContent.articles[0].slug);
+      setSelectedArticleSlug(null);
     }
   }, [pageContent.articles, selectedArticleSlug]);
 
