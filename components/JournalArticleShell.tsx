@@ -1,15 +1,15 @@
 "use client";
 
-import Link from "next/link";
 import Image from "next/image";
+import Link from "next/link";
 import { ArrowUpRight, ChevronLeft } from "lucide-react";
 
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
 import type { JournalArticle, JournalSection } from "@/data/journal";
-import { projectsData } from "@/data/projects";
 import { cn } from "@/lib/utils";
-import PageNumberNavigator, { type PageNavItem } from "./PageNumberNavigator";
 
 type JournalArticleShellProps = {
   article: JournalArticle;
@@ -18,152 +18,108 @@ type JournalArticleShellProps = {
   onClose?: () => void;
 };
 
-function TechnicalGrid({ items }: { items: { label: string; value: string }[] }) {
+function formatMetaValue(value: string) {
+  return value.toLocaleLowerCase("tr-TR");
+}
+
+function ArticleImage({
+  src,
+  alt,
+  caption,
+}: {
+  src: string;
+  alt: string;
+  caption?: string;
+}) {
   return (
-    <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
-      {items.map((item) => (
-        <Card key={item.label} className="rounded-none border-white/10 bg-white/[0.04] shadow-none">
-          <div className="flex h-full flex-col gap-2 p-4 md:p-5">
-            <span className="text-[0.6rem] tracking-[0.35em] text-white/35">
-              {item.label}
-            </span>
-            <p className="text-[0.85rem] tracking-[0.08em] text-white/88 md:text-[0.92rem]">
-              {item.value}
-            </p>
-          </div>
-        </Card>
-      ))}
-    </div>
+    <figure className="space-y-3">
+      <div className="relative aspect-[16/9] overflow-hidden rounded-[1.5rem] border border-white/10 bg-black shadow-[0_30px_80px_rgba(0,0,0,0.25)]">
+        <Image src={src} alt={alt} fill className="object-cover" sizes="(max-width: 768px) 100vw, 960px" />
+      </div>
+      {caption ? <figcaption className="text-sm leading-6 text-zinc-500">{caption}</figcaption> : null}
+    </figure>
+  );
+}
+
+function TechnicalBlock({ items }: { items: { label: string; value: string }[] }) {
+  return (
+    <Card className="rounded-[1.5rem] border-white/10 bg-white/[0.03] shadow-none">
+      <CardContent className="space-y-4 p-5 md:p-6">
+        <p className="text-[0.7rem] uppercase tracking-[0.3em] text-zinc-500">kısa notlar</p>
+        <div className="space-y-4">
+          {items.map((item) => (
+            <div key={item.label} className="flex flex-col gap-1 border-b border-white/10 pb-3 last:border-b-0 last:pb-0 md:flex-row md:items-start md:justify-between md:gap-8">
+              <span className="text-[0.72rem] uppercase tracking-[0.18em] text-zinc-500">{item.label}</span>
+              <span className="max-w-2xl text-sm leading-7 text-zinc-200 md:text-right">{item.value}</span>
+            </div>
+          ))}
+        </div>
+      </CardContent>
+    </Card>
   );
 }
 
 function RelatedProjects({ items }: { items: { slug: string; title: string; label: string }[] }) {
   return (
-    <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
-      {items.map((project) => {
-        return (
-          <Link
-            key={project.slug}
-            href={`/galeri/${project.slug}`}
-            className="group flex items-center justify-between border-b border-white/10 py-4 transition-colors hover:border-white/25"
-          >
-            <div className="space-y-1">
-              <p className="text-[0.6rem] uppercase tracking-[0.45em] text-white/34">
-                {project.label}
-              </p>
-              <h4 className="max-w-[22rem] font-[family-name:var(--font-smooch)] text-[1.15rem] uppercase tracking-[0.18em] text-white">
-                {project.title}
-              </h4>
-            </div>
-            <ArrowUpRight className="h-4 w-4 text-white/35 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-          </Link>
-        );
-      })}
-    </div>
+    <Card className="rounded-[1.5rem] border-white/10 bg-white/[0.03] shadow-none">
+      <CardContent className="space-y-4 p-5 md:p-6">
+        <p className="text-[0.7rem] uppercase tracking-[0.3em] text-zinc-500">ilgili bağlantılar</p>
+        <div className="grid gap-3 sm:grid-cols-2">
+          {items.map((project) => (
+            <Link
+              key={project.slug}
+              href={`/galeri/${project.slug}`}
+              className="group flex items-center justify-between rounded-[1rem] border border-white/10 bg-black/15 px-4 py-4 transition-colors hover:border-white/20 hover:bg-white/[0.05]"
+            >
+              <div className="space-y-1">
+                <p className="text-[0.62rem] uppercase tracking-[0.28em] text-zinc-500">
+                  {formatMetaValue(project.label)}
+                </p>
+                <h4 className="text-sm font-medium leading-6 text-white">{project.title}</h4>
+              </div>
+              <ArrowUpRight className="h-4 w-4 text-white/35 transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+            </Link>
+          ))}
+        </div>
+      </CardContent>
+    </Card>
   );
 }
 
 function renderSection(section: JournalSection, index: number) {
   switch (section.type) {
-    case "paragraph":
-      return (
-        <p
-          key={`paragraph-${index}`}
-          className="max-w-4xl text-[18px] leading-[1.9] tracking-[0.01em] text-white/82 md:text-[20px]"
-          style={{ fontFamily: "Urbanist, sans-serif" }}
-        >
-          {section.body}
-        </p>
-      );
     case "heading":
       return section.level === 3 ? (
-        <h3
-          key={`heading-${index}`}
-          className="max-w-4xl pt-2 text-[1.3rem] font-medium tracking-[0.02em] text-white md:text-[1.6rem]"
-          style={{ fontFamily: "Urbanist, sans-serif" }}
-        >
+        <h3 key={`heading-${index}`} className="pt-2 text-2xl font-medium tracking-[0.01em] text-white md:text-[1.75rem]">
           {section.text}
         </h3>
       ) : (
-        <h2
-          key={`heading-${index}`}
-          className="max-w-4xl pt-4 text-[1.6rem] font-medium tracking-[0.02em] text-white md:text-[2.1rem]"
-          style={{ fontFamily: "Urbanist, sans-serif" }}
-        >
+        <h2 key={`heading-${index}`} className="pt-4 text-3xl font-medium tracking-[0.01em] text-white md:text-[2.25rem]">
           {section.text}
         </h2>
       );
+    case "paragraph":
+      return (
+        <p key={`paragraph-${index}`} className="max-w-none text-[1.05rem] leading-8 text-zinc-300 md:text-[1.1rem]">
+          {section.body}
+        </p>
+      );
     case "list":
       return (
-        <ul
-          key={`list-${index}`}
-          className="max-w-4xl list-disc space-y-3 pl-5 text-[18px] leading-[1.9] tracking-[0.01em] text-white/82 md:text-[20px]"
-          style={{ fontFamily: "Urbanist, sans-serif" }}
-        >
-          {section.items.map((item, listIndex) => (
-            <li key={`${index}-${listIndex}`}>{item}</li>
+        <ul key={`list-${index}`} className="space-y-3 pl-5 text-[1.05rem] leading-8 text-zinc-300 md:text-[1.1rem]">
+          {section.items.map((item, itemIndex) => (
+            <li key={`${index}-${itemIndex}`} className="marker:text-zinc-500">
+              {item}
+            </li>
           ))}
         </ul>
       );
     case "image":
-      return (
-        <figure key={`image-${index}`} className="space-y-4">
-          <div className="relative overflow-hidden rounded-none border border-white/10 bg-black">
-            <Image
-              src={section.src}
-              alt={section.alt}
-              fill
-              className="h-full w-full object-cover"
-              sizes="100vw"
-            />
-          </div>
-          {section.gallery && section.gallery.length > 0 ? (
-            <div className="grid grid-cols-2 gap-3 md:grid-cols-3">
-              {section.gallery.map((image, galleryIndex) => (
-                <div key={`${section.src}-gallery-${galleryIndex}`} className="space-y-2">
-                  <div className="relative aspect-[4/3] overflow-hidden border border-white/10 bg-black">
-                    <Image
-                      src={image.src}
-                      alt={image.alt}
-                      fill
-                      className="h-full w-full object-cover transition-transform duration-500 hover:scale-[1.03]"
-                      sizes="(max-width: 768px) 50vw, 33vw"
-                    />
-                  </div>
-                  {image.caption ? (
-                    <p className="text-[0.58rem] uppercase tracking-[0.4em] text-white/32">
-                      {image.caption}
-                    </p>
-                  ) : null}
-                </div>
-              ))}
-            </div>
-          ) : null}
-          {section.caption ? (
-            <figcaption className="text-[0.6rem] uppercase tracking-[0.45em] text-white/35">
-              {section.caption}
-            </figcaption>
-          ) : null}
-        </figure>
-      );
+      return <ArticleImage key={`image-${index}`} src={section.src} alt={section.alt} caption={section.caption} />;
     case "technical":
-      return (
-        <div key={`technical-${index}`} className="space-y-5">
-          <p className="text-[0.62rem] uppercase tracking-[0.5em] text-white/35">
-            TEKNİK VERİLER
-          </p>
-          <TechnicalGrid items={section.items} />
-        </div>
-      );
+      return <TechnicalBlock key={`technical-${index}`} items={section.items} />;
     case "related":
-      return (
-        <div key={`related-${index}`} className="space-y-5">
-          <p className="text-[0.62rem] uppercase tracking-[0.5em] text-white/35">
-            {section.title}
-          </p>
-          <RelatedProjects items={section.items} />
-        </div>
-      );
+      return <RelatedProjects key={`related-${index}`} items={section.items} />;
     default:
       return null;
   }
@@ -176,207 +132,97 @@ export default function JournalArticleShell({
   onClose,
 }: JournalArticleShellProps) {
   const isDrawer = variant === "drawer";
-  const pageNavItems: PageNavItem[] = [
-    { id: "journal-cover", label: "01", title: "COVER" },
-    ...article.sections.map((_, index) => ({
-      id: `journal-section-${index + 1}`,
-      label: String(index + 2).padStart(2, "0"),
-      title: `SECTION ${index + 1}`,
-    })),
-    { id: "journal-meta", label: String(article.sections.length + 2).padStart(2, "0"), title: "META" },
-  ];
 
   return (
     <article
       className={cn(
         "relative flex min-h-0 flex-col overflow-hidden bg-[#080808] text-white",
-        isDrawer ? "h-[100svh] w-full md:h-[min(92svh,1080px)] md:w-[min(96vw,1640px)]" : "w-full",
+        isDrawer ? "h-[100svh] w-full md:h-[min(92svh,1080px)] md:w-[min(96vw,1040px)]" : "min-h-screen w-full",
         className,
       )}
     >
-      <div className="pointer-events-none absolute inset-0 opacity-[0.035] [background-image:radial-gradient(circle_at_1px_1px,rgba(255,255,255,0.8)_1px,transparent_0)] [background-size:22px_22px]" />
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.06),transparent_45%),linear-gradient(180deg,rgba(255,255,255,0.03),transparent_35%)]" />
 
       <div className="relative z-10 flex min-h-0 flex-1 flex-col">
-        <header className="flex flex-col gap-8 border-b border-white/10 px-5 py-5 md:px-8 md:py-8 lg:flex-row lg:items-end lg:justify-between">
-          <div className="max-w-5xl space-y-4">
-            <div className="flex flex-wrap items-center gap-3 text-[0.55rem] uppercase tracking-[0.5em] text-white/40">
-              <span>{article.departments.join(" / ")}</span>
-              <span>·</span>
-              <span>{article.projectTypes.join(" / ")}</span>
-              <span>·</span>
-              <span>{article.articleType}</span>
-            </div>
-
-            <h1
-              className="max-w-5xl font-[family-name:var(--font-smooch)] text-[clamp(3.25rem,7vw,7.8rem)] font-thin leading-[0.78] tracking-[0.02em]"
-              style={{ fontWeight: 100 }}
+        <div className="mx-auto flex w-full max-w-4xl items-center justify-between px-5 pb-4 pt-5 md:px-6 md:pt-6">
+          {isDrawer && onClose ? (
+            <button
+              type="button"
+              onClick={onClose}
+              className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 text-[0.65rem] uppercase tracking-[0.22em] text-white/75 transition-colors hover:bg-white hover:text-zinc-950"
             >
-              {article.title}
-            </h1>
-
-            <p className="max-w-4xl text-[0.78rem] tracking-[0.12em] text-white/55 md:text-[0.85rem]">
-              {article.deck}
-            </p>
-          </div>
-
-          <div className="flex flex-col gap-3 lg:items-end">
-            <p className="text-[0.55rem] uppercase tracking-[0.5em] text-white/35">
-              {article.publishedAt}
-            </p>
-            <p className="text-[0.55rem] uppercase tracking-[0.5em] text-white/35">
-              {article.readTime}
-            </p>
-            {isDrawer && onClose ? (
-              <button
-                type="button"
-                onClick={onClose}
-                className="inline-flex h-11 items-center gap-2 border border-white/10 bg-white/[0.04] px-4 text-[0.58rem] uppercase tracking-[0.45em] text-white/70 transition-colors hover:bg-white hover:text-zinc-950"
-              >
+              <ChevronLeft className="h-4 w-4" />
+              kapat
+            </button>
+          ) : (
+            <Button asChild variant="ghost" className="h-10 rounded-full border border-white/10 bg-white/[0.04] px-4 text-[0.65rem] uppercase tracking-[0.22em] text-white/75 hover:bg-white hover:text-zinc-950">
+              <Link href="/journal">
                 <ChevronLeft className="h-4 w-4" />
-                KAPAT
-              </button>
-            ) : (
-              <Button
-                asChild
-                className="h-11 rounded-none border border-white/10 bg-white/[0.04] px-4 text-[0.58rem] uppercase tracking-[0.45em] text-white transition-colors hover:bg-white hover:text-zinc-950"
-              >
-                <Link href="/journal">
-                  <ChevronLeft className="h-4 w-4" />
-                  JOURNAL
-                </Link>
-              </Button>
-            )}
-          </div>
-        </header>
+                journal&apos;a dön
+              </Link>
+            </Button>
+          )}
+
+          <p className="text-[0.62rem] uppercase tracking-[0.3em] text-zinc-500">{article.publishedAt}</p>
+        </div>
 
         <div className="min-h-0 flex-1 overflow-y-auto">
-          <div className="grid min-h-0 grid-cols-1 lg:grid-cols-[1.1fr_0.9fr]">
-            <section className="border-b border-white/10 lg:border-b-0 lg:border-r lg:border-white/10">
-              <div id="journal-cover" className="group relative aspect-[4/3] overflow-hidden bg-black lg:h-[52svh] lg:aspect-auto">
-                <Image
-                  src={article.coverImage}
-                  alt={article.title}
-                  fill
-                  className="h-full w-full object-cover transition-transform duration-[1400ms] group-hover:scale-[1.04]"
-                  sizes="100vw"
-                  priority
-                />
-                <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0.12)_0%,rgba(0,0,0,0.34)_42%,rgba(0,0,0,0.88)_100%)]" />
-                <div className="absolute inset-x-0 bottom-0 p-5 md:p-8">
-                  <p className="mb-2 text-[0.58rem] uppercase tracking-[0.5em] text-white/45">
-                    deqoin journal
-                  </p>
-                  <p className="max-w-3xl text-[0.84rem] tracking-[0.08em] text-white/70">
-                    {article.intro}
-                  </p>
+          <div className="mx-auto flex w-full max-w-4xl flex-col gap-8 px-5 pb-10 md:px-6 md:pb-14">
+            <ArticleImage src={article.coverImage} alt={article.title} />
+
+            <div className="space-y-5">
+              <div className="flex flex-wrap gap-2">
+                {article.departments.map((item) => (
+                  <Badge key={item} variant="secondary" className="rounded-full border-white/10 bg-white/[0.04] text-[0.62rem] font-medium tracking-[0.18em] text-zinc-200">
+                    {formatMetaValue(item)}
+                  </Badge>
+                ))}
+                {article.projectTypes.map((item) => (
+                  <Badge key={item} variant="secondary" className="rounded-full border-white/10 bg-white/[0.04] text-[0.62rem] font-medium tracking-[0.18em] text-zinc-200">
+                    {formatMetaValue(item)}
+                  </Badge>
+                ))}
+                <Badge variant="outline" className="rounded-full border-white/10 bg-transparent text-[0.62rem] font-medium tracking-[0.18em] text-zinc-300">
+                  {formatMetaValue(article.articleType)}
+                </Badge>
+              </div>
+
+              <div className="space-y-3">
+                <h1 className="max-w-4xl text-[clamp(2.5rem,6vw,4.8rem)] font-light leading-[0.95] tracking-[0.01em] text-white">
+                  {article.title}
+                </h1>
+
+                <div className="flex flex-wrap items-center gap-3 text-[0.72rem] uppercase tracking-[0.2em] text-zinc-500">
+                  <span>{article.publishedAt}</span>
+                  <span className="hidden sm:inline">/</span>
+                  <span>{article.readTime}</span>
                 </div>
               </div>
 
-              <div className="border-t border-white/10 px-5 py-6 md:px-8 md:py-8">
-                <div className="grid grid-cols-1 gap-6">
-                  {article.sections.map((section, index) => (
-                    <div key={`journal-section-${index + 1}`} id={`journal-section-${index + 1}`}>
-                      {renderSection(section, index)}
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </section>
+              <Separator />
 
-            <aside id="journal-meta" className="flex min-h-0 flex-col">
-              <div className="border-b border-white/10 px-5 py-5 md:px-8 md:py-7">
-                <p className="text-[0.62rem] uppercase tracking-[0.5em] text-white/35">
-                  DEQOIN JOURNAL
-                </p>
-                <p className="mt-3 max-w-md text-[20px] leading-[1.9] tracking-[0.08em] text-white/78 uppercase"
-                  style={{ fontFamily: "Urbanist, sans-serif" }}
-                >
-                  MAKALELER, PROJE DETAYLARINI VE STÜDYO NOTLARINI SÜZÜLÜ BİR MİMARLIK DİLİYLE KAYDA GEÇİRİR.
-                </p>
-              </div>
+              <p className="max-w-3xl text-[1.05rem] leading-8 text-zinc-300 md:text-[1.15rem]">
+                {article.deck}
+              </p>
+            </div>
 
-              <div className="min-h-0 flex-1 overflow-y-auto px-5 py-5 md:px-8 md:py-8">
-                <div className="space-y-6">
-                  <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                    <Card className="rounded-none border-white/10 bg-white/[0.04] shadow-none">
-                      <div className="p-4 md:p-5">
-                        <span className="text-[0.6rem] uppercase tracking-[0.5em] text-white/35">
-                          YAYIN TARİHİ
-                        </span>
-                        <p className="mt-2 text-[0.82rem] uppercase tracking-[0.3em] text-white/82">
-                          {article.publishedAt}
-                        </p>
-                      </div>
-                    </Card>
-                    <Card className="rounded-none border-white/10 bg-white/[0.04] shadow-none">
-                      <div className="p-4 md:p-5">
-                        <span className="text-[0.6rem] uppercase tracking-[0.5em] text-white/35">
-                          OKUMA SÜRESİ
-                        </span>
-                        <p className="mt-2 text-[0.82rem] uppercase tracking-[0.3em] text-white/82">
-                          {article.readTime}
-                        </p>
-                      </div>
-                    </Card>
-                  </div>
+            <div className="space-y-8">
+              {article.sections.map((section, index) => (
+                <section key={`journal-section-${index + 1}`} className="space-y-4">
+                  {renderSection(section, index)}
+                </section>
+              ))}
+            </div>
 
-                  <div className="space-y-3">
-                    <p className="text-[0.62rem] uppercase tracking-[0.5em] text-white/35">
-                      İLGİLİ PROJE
-                    </p>
-                    {article.relatedProjectSlugs.map((slug) => {
-                      const project = projectsData.find((entry) => entry.slug === slug);
+            <Separator />
 
-                      return project ? (
-                        <Link
-                          key={slug}
-                          href={`/galeri/${slug}`}
-                          className="group flex items-center justify-between border-b border-white/10 py-4 transition-colors hover:border-white/25"
-                        >
-                          <div className="space-y-1">
-                            <p className="text-[0.54rem] uppercase tracking-[0.45em] text-white/32">
-                              {project.label}
-                            </p>
-                            <h3 className="font-[family-name:var(--font-smooch)] text-[1.2rem] uppercase tracking-[0.2em] text-white">
-                              {project.title}
-                            </h3>
-                          </div>
-                          <ArrowUpRight className="h-4 w-4 text-white/35 transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
-                        </Link>
-                      ) : null;
-                    })}
-                  </div>
-
-                  <div className="space-y-3">
-                    <p className="text-[0.62rem] uppercase tracking-[0.5em] text-white/35">
-                      ETİKETLER
-                    </p>
-                    <div className="flex flex-wrap gap-2">
-                      {[...article.departments, ...article.projectTypes, ...article.contentTypes].map((tag) => (
-                        <span
-                          key={tag}
-                          className="border border-white/10 px-3 py-2 text-[0.55rem] uppercase tracking-[0.4em] text-white/55"
-                        >
-                          {tag}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div className="border-t border-white/10 pt-6">
-                    <Button
-                      asChild
-                      className="h-12 rounded-none border border-white/10 bg-white/[0.04] px-5 text-[0.6rem] uppercase tracking-[0.45em] text-white transition-colors hover:bg-white hover:text-zinc-950"
-                    >
-                      <Link href={`/journal/${article.slug}`}>TAM MAKALE SAYFASI</Link>
-                    </Button>
-                  </div>
-                </div>
-              </div>
-            </aside>
+            <div className="space-y-4 pb-2">
+              <p className="text-[0.7rem] uppercase tracking-[0.28em] text-zinc-500">deqoin journal</p>
+              <p className="max-w-3xl text-[1.02rem] leading-8 text-zinc-400">
+                Bu yazı hoşunuza gittiyse benzer proje ve uygulama notları için journal bölümünü takip edebilirsiniz.
+              </p>
+            </div>
           </div>
-
-          <PageNumberNavigator items={pageNavItems} className="px-5 pb-8 md:px-8" label="SAYFA" />
         </div>
       </div>
     </article>
