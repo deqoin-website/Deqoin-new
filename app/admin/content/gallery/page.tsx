@@ -454,7 +454,7 @@ export default function GalleryContentAdminPage() {
     <div className="space-y-6 pb-8">
       <div className="overflow-hidden rounded-[2rem] border border-[color:var(--line)] bg-[color:var(--surface)] shadow-[var(--shadow)]">
         <div className="flex flex-col gap-6 p-5 sm:p-6 xl:flex-row xl:items-end xl:justify-between">
-          <div className="max-w-3xl space-y-4">
+          <div className="min-w-0 max-w-3xl space-y-4">
             <Badge className="border border-[color:var(--line)] bg-[color:var(--surface-muted)] text-[color:var(--text-muted)]">
               <Sparkles className="mr-2 h-3 w-3" />
               GALERİ KONTROL MERKEZİ
@@ -482,23 +482,23 @@ export default function GalleryContentAdminPage() {
             </div>
           </div>
 
-          <div className="grid gap-3 sm:grid-cols-2 xl:min-w-[520px]">
-            <div className="rounded-2xl border border-[color:var(--line)] bg-[color:var(--surface-muted)] p-4">
+          <div className="grid w-full gap-3 sm:grid-cols-2 xl:max-w-[520px] xl:flex-none">
+            <div className="min-w-0 rounded-2xl border border-[color:var(--line)] bg-[color:var(--surface-muted)] p-4">
               <p className="text-[0.65rem] uppercase tracking-[0.28em] text-[color:var(--text-muted)]">Page API</p>
               <p className="mt-1 text-2xl font-semibold text-[color:var(--text)]">/api/content?page=galeri</p>
               <p className="mt-2 text-xs text-[color:var(--text-muted)]">Galeri üst metni ve CTA bu uçta saklanır.</p>
             </div>
-            <div className="rounded-2xl border border-[color:var(--line)] bg-[color:var(--surface-muted)] p-4">
+            <div className="min-w-0 rounded-2xl border border-[color:var(--line)] bg-[color:var(--surface-muted)] p-4">
               <p className="text-[0.65rem] uppercase tracking-[0.28em] text-[color:var(--text-muted)]">Project API</p>
               <p className="mt-1 text-2xl font-semibold text-[color:var(--text)]">/api/projects</p>
               <p className="mt-2 text-xs text-[color:var(--text-muted)]">Kart ve modal içeriği doğrudan proje kaydından gelir.</p>
             </div>
-            <div className="rounded-2xl border border-[color:var(--line)] bg-[color:var(--surface-muted)] p-4">
+            <div className="min-w-0 rounded-2xl border border-[color:var(--line)] bg-[color:var(--surface-muted)] p-4">
               <p className="text-[0.65rem] uppercase tracking-[0.28em] text-[color:var(--text-muted)]">Page status</p>
               <p className="mt-1 text-2xl font-semibold text-[color:var(--text)]">{pageMeta.label}</p>
               <p className="mt-2 text-xs text-[color:var(--text-muted)]">Açılışta ve kayıtta kontrol edilir.</p>
             </div>
-            <div className="rounded-2xl border border-[color:var(--line)] bg-[color:var(--surface-muted)] p-4">
+            <div className="min-w-0 rounded-2xl border border-[color:var(--line)] bg-[color:var(--surface-muted)] p-4">
               <p className="text-[0.65rem] uppercase tracking-[0.28em] text-[color:var(--text-muted)]">Project status</p>
               <p className="mt-1 text-2xl font-semibold text-[color:var(--text)]">{projectMeta.label}</p>
               <p className="mt-2 text-xs text-[color:var(--text-muted)]">Liste ve tekil kayıt bağlantısı burada.</p>
@@ -630,8 +630,8 @@ export default function GalleryContentAdminPage() {
         </Card>
       </section>
 
-      <section className="grid gap-6 xl:grid-cols-[360px_minmax(0,1fr)]">
-        <Card className="border border-[color:var(--line)] bg-[color:var(--surface)] shadow-[var(--shadow)]">
+      <section className="grid gap-6 xl:grid-cols-[minmax(0,360px)_minmax(0,1fr)]">
+        <Card className="min-w-0 border border-[color:var(--line)] bg-[color:var(--surface)] shadow-[var(--shadow)]">
           <CardHeader className="space-y-4 border-b border-[color:var(--line)]">
             <div>
               <CardTitle className="text-lg text-[color:var(--text)]">Galeri Proje Listesi</CardTitle>
@@ -696,7 +696,7 @@ export default function GalleryContentAdminPage() {
           </CardContent>
         </Card>
 
-        <Card className="border border-[color:var(--line)] bg-[color:var(--surface)] shadow-[var(--shadow)]">
+        <Card className="min-w-0 border border-[color:var(--line)] bg-[color:var(--surface)] shadow-[var(--shadow)]">
           <CardHeader className="space-y-4 border-b border-[color:var(--line)]">
             <div className="flex flex-col gap-3 xl:flex-row xl:items-end xl:justify-between">
               <div>
@@ -757,8 +757,8 @@ export default function GalleryContentAdminPage() {
                   </div>
                 </div>
 
-                <div className="grid gap-4 xl:grid-cols-[360px_minmax(0,1fr)]">
-                  <div className="space-y-4">
+                <div className="grid gap-4 xl:grid-cols-[minmax(0,360px)_minmax(0,1fr)]">
+                  <div className="min-w-0 space-y-4">
                     <div className="space-y-2">
                       <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[color:var(--text-muted)]">Kapak Görseli</p>
                       <div className="overflow-hidden rounded-[1.5rem] border border-[color:var(--line)] bg-[color:var(--surface-muted)]">
@@ -815,7 +815,7 @@ export default function GalleryContentAdminPage() {
                     </div>
                   </div>
 
-                  <div className="space-y-4">
+                  <div className="min-w-0 space-y-4">
                     <div className="grid gap-4 lg:grid-cols-2">
                       <div className="space-y-2">
                         <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[color:var(--text-muted)]">Açıklama</p>
