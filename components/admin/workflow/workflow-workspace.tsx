@@ -15,6 +15,7 @@ import {
   DEFAULT_WORKFLOW_TITLE,
   WORKFLOW_ICON_OPTIONS,
   cloneWorkflowDraft,
+  getWorkflowFallbackDraftForScope,
   normalizeWorkflowSteps,
   resolveWorkflowIconComponent,
   type WorkflowContentDraft,
@@ -39,11 +40,9 @@ const defaultWorkflowTitleForScope = (scope: string, label: string) =>
 export function WorkflowWorkspace({ scope, onSave, onLoad, onDirtyChange, refreshToken = 0 }: WorkflowWorkspaceProps) {
   const selectedPage = useMemo(() => getWorkflowPageNode(scope), [scope]);
   const ancestors = useMemo(() => getWorkflowPageAncestors(scope), [scope]);
+  const scopeFallbackDraft = useMemo(() => getWorkflowFallbackDraftForScope(scope), [scope]);
   const [workflow, setWorkflow] = useState<WorkflowContentDraft>(() =>
-    cloneWorkflowDraft({
-      title: defaultWorkflowTitleForScope(scope, selectedPage.label),
-      steps: DEFAULT_WORKFLOW_STEPS,
-    }),
+    cloneWorkflowDraft(scopeFallbackDraft),
   );
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
@@ -64,19 +63,15 @@ export function WorkflowWorkspace({ scope, onSave, onLoad, onDirtyChange, refres
 
         const draft = workflowDraftFromRecord(
           data,
-          defaultWorkflowTitleForScope(scope, selectedPage.label),
-          DEFAULT_WORKFLOW_STEPS,
+          scopeFallbackDraft.title || defaultWorkflowTitleForScope(scope, selectedPage.label),
+          scopeFallbackDraft.steps || DEFAULT_WORKFLOW_STEPS,
         );
         setWorkflow(cloneWorkflowDraft(draft));
         setExpandedStepIndex(0);
         setIsDirty(false);
       } catch (exception) {
         if (!active) return;
-        const fallback = {
-          title: defaultWorkflowTitleForScope(scope, selectedPage.label),
-          steps: DEFAULT_WORKFLOW_STEPS,
-        };
-        setWorkflow(cloneWorkflowDraft(fallback));
+        setWorkflow(cloneWorkflowDraft(scopeFallbackDraft));
         setExpandedStepIndex(0);
         setError(exception instanceof Error ? exception.message : "Workflow yüklenemedi.");
         setIsDirty(false);
@@ -152,12 +147,7 @@ export function WorkflowWorkspace({ scope, onSave, onLoad, onDirtyChange, refres
   };
 
   const resetToDefault = () => {
-    setWorkflow(
-      cloneWorkflowDraft({
-        title: defaultWorkflowTitleForScope(scope, selectedPage.label),
-        steps: DEFAULT_WORKFLOW_STEPS,
-      }),
-    );
+    setWorkflow(cloneWorkflowDraft(scopeFallbackDraft));
     setExpandedStepIndex(0);
     setIsDirty(true);
   };

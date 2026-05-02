@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 
 import Footer from "@/components/Footer";
+import PageWorkflowSection from "@/components/PageWorkflowSection";
 import ProjectCard from "@/components/ProjectCard";
 import ProjectInsightPanel from "@/components/ProjectInsightPanel";
 import ProjectFilterSidebar, { type FilterGroup } from "@/components/ProjectFilterSidebar";
@@ -234,6 +235,7 @@ export default function GaleriPage() {
       </section>
 
       <ProjectInsightPanel project={selectedProject} onClose={() => setSelectedProjectSlug(null)} />
+      <PageWorkflowSection scope="/galeri" className="mx-auto w-full max-w-[1600px] px-6 py-8 md:px-16" />
       <Separator className="my-12 bg-white/10" />
       <Footer />
     </main>

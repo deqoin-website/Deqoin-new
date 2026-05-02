@@ -1,5 +1,6 @@
 import AboutShowcaseSection from "@/components/AboutShowcaseSection";
 import Footer from "@/components/Footer";
+import PageWorkflowSection from "@/components/PageWorkflowSection";
 
 export default function AboutUs() {
   return (
@@ -18,6 +19,7 @@ export default function AboutUs() {
       <section className="snap-section hakkimizda-showcase-snap">
         <AboutShowcaseSection />
       </section>
+      <PageWorkflowSection scope="/hakkimizda" className="snap-section" />
       <div className="homepage-footer-snap hakkimizda-footer-snap">
         <Footer />
       </div>

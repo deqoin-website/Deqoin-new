@@ -7,6 +7,8 @@ import WorkflowContent from "@/models/WorkflowContent";
 import {
   DEFAULT_WORKFLOW_STEPS,
   DEFAULT_WORKFLOW_TITLE,
+  getWorkflowPresetForScope,
+  isLegacyWorkflowDraft,
   normalizeWorkflowSteps,
   workflowDraftFromPageContent,
   workflowDraftFromProcess,
@@ -64,6 +66,20 @@ const responseFromDraft = (
 
 const defaultResponse = (scope = "/"): WorkflowResponse => {
   const page = getWorkflowPageNode(scope);
+  const preset = getWorkflowPresetForScope(scope);
+  if (preset) {
+    return responseFromDraft(
+      page.route,
+      preset.title,
+      preset.steps.map((step) => ({
+        title: step.title,
+        description: step.description,
+        icon: step.icon,
+      })),
+      "default",
+    );
+  }
+
   return responseFromDraft(
     page.route,
     page.route === "/" ? DEFAULT_WORKFLOW_TITLE : `${page.label.toUpperCase()} AKIŞI`,
@@ -101,6 +117,9 @@ async function loadLegacyWorkflow(scope: string): Promise<WorkflowResponse | nul
 
     if (content) {
       const draft = workflowDraftFromPageContent(content, DEFAULT_WORKFLOW_TITLE, DEFAULT_WORKFLOW_STEPS);
+      if (getWorkflowPresetForScope(normalizedScope) && isLegacyWorkflowDraft(draft.steps)) {
+        return null;
+      }
       return responseFromDraft(normalizedScope, draft.title, draft.steps, "legacy");
     }
   }
@@ -115,6 +134,9 @@ async function loadLegacyWorkflow(scope: string): Promise<WorkflowResponse | nul
       `${(department.title || slug).toString().toUpperCase()} AKIŞI`,
       DEFAULT_WORKFLOW_STEPS,
     );
+    if (getWorkflowPresetForScope(normalizedScope) && isLegacyWorkflowDraft(draft.steps)) {
+      return null;
+    }
     return responseFromDraft(normalizedScope, draft.title, draft.steps, "legacy");
   }
 
@@ -147,6 +169,10 @@ async function loadStoredWorkflow(scope: string) {
   for (const candidate of candidates) {
     const stored = await WorkflowContent.findOne({ scope: candidate });
     if (stored) {
+      if (getWorkflowPresetForScope(normalizedScope) && isLegacyWorkflowDraft(stored.steps || [])) {
+        return null;
+      }
+
       return responseFromDraft(normalizedScope, stored.title, stored.steps || [], "workflow");
     }
   }

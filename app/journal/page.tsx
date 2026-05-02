@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 
 import Footer from "@/components/Footer";
+import PageWorkflowSection from "@/components/PageWorkflowSection";
 import JournalCard from "@/components/JournalCard";
 import { Button } from "@/components/ui/button";
 import {
@@ -469,6 +470,7 @@ export default function JournalPage() {
         </SidebarProvider>
       </section>
 
+      <PageWorkflowSection scope="/journal" className="mx-auto w-full max-w-[1700px] px-6 pt-10 md:px-10 lg:px-16" />
       <Footer />
     </main>
   );

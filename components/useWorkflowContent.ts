@@ -6,6 +6,7 @@ import {
   DEFAULT_WORKFLOW_STEPS,
   DEFAULT_WORKFLOW_TITLE,
   cloneWorkflowDraft,
+  getWorkflowFallbackDraftForScope,
   workflowDraftFromRecord,
   workflowStepsForSection,
   type WorkflowContentDraft,
@@ -17,19 +18,14 @@ export type WorkflowContent = {
   steps: WorkflowStep[];
 };
 
-const FALLBACK_WORKFLOW: WorkflowContent = {
-  title: DEFAULT_WORKFLOW_TITLE,
-  steps: workflowStepsForSection(DEFAULT_WORKFLOW_STEPS),
-};
-
 export function useWorkflowContent(scope = "home") {
-  const [workflow, setWorkflow] = useState<WorkflowContent>(FALLBACK_WORKFLOW);
-  const [draft, setDraft] = useState<WorkflowContentDraft>(
-    cloneWorkflowDraft({
-      title: DEFAULT_WORKFLOW_TITLE,
-      steps: DEFAULT_WORKFLOW_STEPS,
-    }),
-  );
+  const scopeFallbackDraft = getWorkflowFallbackDraftForScope(scope);
+  const scopeFallbackWorkflow = {
+    title: scopeFallbackDraft.title,
+    steps: workflowStepsForSection(scopeFallbackDraft.steps, DEFAULT_WORKFLOW_STEPS),
+  };
+  const [workflow, setWorkflow] = useState<WorkflowContent>(scopeFallbackWorkflow);
+  const [draft, setDraft] = useState<WorkflowContentDraft>(cloneWorkflowDraft(scopeFallbackDraft));
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -50,6 +46,14 @@ export function useWorkflowContent(scope = "home") {
         });
       } catch (error) {
         console.error("Workflow content load error:", error);
+        if (!active) return;
+
+        const fallbackDraft = getWorkflowFallbackDraftForScope(scope);
+        setDraft(cloneWorkflowDraft(fallbackDraft));
+        setWorkflow({
+          title: fallbackDraft.title,
+          steps: workflowStepsForSection(fallbackDraft.steps, DEFAULT_WORKFLOW_STEPS),
+        });
       } finally {
         if (active) setLoading(false);
       }
@@ -69,4 +73,3 @@ export function useWorkflowContent(scope = "home") {
     setWorkflow,
   };
 }
-

@@ -2,6 +2,7 @@ import { headers } from "next/headers";
 import { notFound } from "next/navigation";
 
 import JournalArticleShell from "@/components/JournalArticleShell";
+import PageWorkflowSection from "@/components/PageWorkflowSection";
 import { createDefaultJournalDraft, normalizeJournalDraft } from "@/lib/journal-content";
 
 export const dynamic = "force-dynamic";
@@ -56,6 +57,7 @@ export default async function JournalArticlePage({ params }: JournalArticlePageP
     <main className="min-h-screen bg-[#080808] px-4 py-4 pt-24 text-white md:px-6 md:py-6 md:pt-28">
       <div className="mx-auto w-full max-w-[1700px]">
         <JournalArticleShell article={article} shareUrl={shareUrl} />
+        <PageWorkflowSection scope="/journal/[slug]" className="px-1 pt-12 md:px-0" />
       </div>
     </main>
   );

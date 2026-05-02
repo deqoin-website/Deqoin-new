@@ -5,6 +5,7 @@ import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { ArrowLeft, Package } from "lucide-react";
 
+import PageWorkflowSection from "@/components/PageWorkflowSection";
 import MaterialFilterSidebar from "@/components/material-studio/MaterialFilterSidebar";
 import ProductCard from "@/components/material-studio/ProductCard";
 import { Badge } from "@/components/ui/badge";
@@ -165,6 +166,8 @@ export default function MaterialCategoryPage({
           ) : null}
         </div>
       </section>
+
+      <PageWorkflowSection scope="/materyal-studyo/[slug]" className="mt-12" />
     </main>
   );
 }

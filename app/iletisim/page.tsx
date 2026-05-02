@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { Loader2 } from 'lucide-react';
 import Footer from '@/components/Footer';
+import PageWorkflowSection from '@/components/PageWorkflowSection';
 
 export default function IletisimPage() {
   const [isCardOpen, setIsCardOpen] = useState(false);
@@ -98,6 +99,8 @@ export default function IletisimPage() {
             <div className="map-overlay-vignette" />
           </div>
         </section>
+
+        <PageWorkflowSection scope="/iletisim" className="mx-auto w-full max-w-[1600px] px-6 py-10 md:px-10 lg:px-16" />
       </main>
       <Footer />
     </div>

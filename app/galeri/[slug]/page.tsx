@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import Image from "next/image";
 
+import PageWorkflowSection from "@/components/PageWorkflowSection";
 import PageNumberNavigator from "@/components/PageNumberNavigator";
 import { getGalleryCategoryLabel, getGalleryProjectBySlug } from "@/lib/gallery-projects";
 
@@ -197,6 +198,8 @@ export default async function ProjectDetail({ params }: { params: Promise<Projec
             {project.label}
           </p>
         </div>
+
+        <PageWorkflowSection scope="/galeri/[slug]" className="pt-12" />
 
         <PageNumberNavigator
           label="SAYFA"

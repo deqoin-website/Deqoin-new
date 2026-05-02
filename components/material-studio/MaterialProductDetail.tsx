@@ -3,6 +3,7 @@
 import { useState } from "react";
 
 import Link from "next/link";
+import PageWorkflowSection from "@/components/PageWorkflowSection";
 import MaterialProductGallery from "@/components/material-studio/MaterialProductGallery";
 import ProductCard from "@/components/material-studio/ProductCard";
 import { Badge } from "@/components/ui/badge";
@@ -156,6 +157,8 @@ export default function MaterialProductDetail({
           </CardContent>
         </Card>
       </section>
+
+      <PageWorkflowSection scope="/materyal-studyo/[slug]/[urun-slug]" className="mt-12" />
     </main>
   );
 }

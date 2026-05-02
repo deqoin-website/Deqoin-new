@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
+import PageWorkflowSection from "@/components/PageWorkflowSection";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { teamFilters, teamMembers } from "@/data/team";
@@ -136,6 +137,7 @@ export default function OurTeam() {
           </div>
         </div>
       </section>
+      <PageWorkflowSection scope="/departman-ekipleri" className="snap-section" />
     </main>
   );
 }

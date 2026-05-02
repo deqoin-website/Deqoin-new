@@ -4,6 +4,7 @@ import { CalendarDays, Compass, Hammer, Layers, PenTool } from "lucide-react";
 
 import type { WorkflowStep as MarqueeWorkflowStep } from "@/components/WorkflowMarquee";
 import type { WorkflowStep as SectionWorkflowStep } from "@/components/WorkflowSection";
+import { getWorkflowPageAncestors, getWorkflowPageNode, normalizeWorkflowScope } from "@/lib/workflow-pages";
 
 export type WorkflowProcessItem = {
   title: string;
@@ -61,6 +62,205 @@ export const DEFAULT_WORKFLOW_STEPS: WorkflowProcessItem[] = [
   },
 ];
 
+const makePresetSteps = (steps: WorkflowProcessItem[]) => steps.map((step) => ({ ...step }));
+
+const PAGE_WORKFLOW_PRESETS: Record<string, WorkflowContentDraft> = {
+  "/hakkimizda": {
+    title: DEFAULT_WORKFLOW_TITLE,
+    steps: makePresetSteps([
+      { title: "Tanışma", description: "Kısa bir görüşme ile neye ihtiyacınız olduğunu öğreniriz.", icon: "CalendarDays" },
+      { title: "Bilgi Toplama", description: "Ölçü, alan ve beklentileri netleştiririz.", icon: "Compass" },
+      { title: "Plan", description: "İlk yol haritasını ve sıra düzenini çıkarırız.", icon: "PenTool" },
+      { title: "Uygulama", description: "İşi sahada adım adım ilerletiriz.", icon: "Hammer" },
+      { title: "Teslim", description: "Son kontrolü yapar ve işi kapatırız.", icon: "ShieldCheck" },
+    ]),
+  },
+  "/kesif": {
+    title: DEFAULT_WORKFLOW_TITLE,
+    steps: makePresetSteps([
+      { title: "Talep", description: "Kısa bilgi alır ve ihtiyacı anlarız.", icon: "ClipboardList" },
+      { title: "Randevu", description: "Uygun zamanı belirleriz.", icon: "CalendarDays" },
+      { title: "Yerinde Bakış", description: "Alanı sahada görür ve not alırız.", icon: "MapPinned" },
+      { title: "Plan", description: "İlk adımları sade bir şekilde çıkarırız.", icon: "Compass" },
+      { title: "Başla", description: "Tasarım sürecine geçeriz.", icon: "Route" },
+    ]),
+  },
+  "/mimari": {
+    title: DEFAULT_WORKFLOW_TITLE,
+    steps: makePresetSteps([
+      { title: "İhtiyaç", description: "Ne istediğinizi netleştiririz.", icon: "ClipboardList" },
+      { title: "Alan", description: "Mekanı ve sınırları inceleriz.", icon: "MapPinned" },
+      { title: "Plan", description: "İlk çözüm yolunu çıkarırız.", icon: "Compass" },
+      { title: "Çizim", description: "Detayları sade bir taslakta toplarız.", icon: "PenTool" },
+      { title: "Uygulama", description: "İşi sahaya taşırız.", icon: "Hammer" },
+    ]),
+  },
+  "/uygulama": {
+    title: DEFAULT_WORKFLOW_TITLE,
+    steps: makePresetSteps([
+      { title: "Ekip", description: "Doğru ekibi seçeriz.", icon: "Layers" },
+      { title: "Kapsam", description: "Yapılacak işi netleştiririz.", icon: "ClipboardList" },
+      { title: "Plan", description: "Sıra ve zamanı belirleriz.", icon: "Compass" },
+      { title: "Uygulama", description: "İşi sahada yürütürüz.", icon: "Hammer" },
+      { title: "Takip", description: "Son durumu kontrol ederiz.", icon: "ShieldCheck" },
+    ]),
+  },
+  "/galeri": {
+    title: DEFAULT_WORKFLOW_TITLE,
+    steps: makePresetSteps([
+      { title: "Filtrele", description: "Kategori ve departmanı seç.", icon: "ClipboardList" },
+      { title: "İncele", description: "Projeyi görsellerle aç.", icon: "Compass" },
+      { title: "Karşılaştır", description: "Benzer işleri yan yana düşün.", icon: "Layers" },
+      { title: "Detay", description: "Proje bilgisini oku.", icon: "PenTool" },
+      { title: "İletişim", description: "Beğendiğin iş için bize ulaş.", icon: "CalendarDays" },
+    ]),
+  },
+  "/galeri/[slug]": {
+    title: DEFAULT_WORKFLOW_TITLE,
+    steps: makePresetSteps([
+      { title: "Gör", description: "Ana görseli aç.", icon: "Compass" },
+      { title: "Bilgi Oku", description: "Proje detaylarını incele.", icon: "PenTool" },
+      { title: "Görseller", description: "Diğer görselleri sırayla bak.", icon: "Layers" },
+      { title: "Benzer İşler", description: "Yakın projeleri karşılaştır.", icon: "Route" },
+      { title: "Dön", description: "Galeri sayfasına geri git.", icon: "ArrowLeft" },
+    ]),
+  },
+  "/journal": {
+    title: DEFAULT_WORKFLOW_TITLE,
+    steps: makePresetSteps([
+      { title: "Ara", description: "Konuyu ya da etiketi bul.", icon: "ClipboardList" },
+      { title: "Seç", description: "İlgini çeken yazıyı aç.", icon: "Compass" },
+      { title: "Oku", description: "Kısa ve net notları incele.", icon: "PenTool" },
+      { title: "Kaydet", description: "Sonra bakmak için ayır.", icon: "Layers" },
+      { title: "Paylaş", description: "İstersen başkalarıyla paylaş.", icon: "Workflow" },
+    ]),
+  },
+  "/journal/[slug]": {
+    title: DEFAULT_WORKFLOW_TITLE,
+    steps: makePresetSteps([
+      { title: "Başlık", description: "Yazının konusunu hızlı gör.", icon: "Compass" },
+      { title: "Oku", description: "Metni baştan sona takip et.", icon: "PenTool" },
+      { title: "Not Al", description: "İşine yarayan kısmı ayır.", icon: "ClipboardList" },
+      { title: "İlgili Yazılar", description: "Benzer içeriklere geç.", icon: "Route" },
+      { title: "Dön", description: "Journal ana sayfasına geri dön.", icon: "ArrowLeft" },
+    ]),
+  },
+  "/iletisim": {
+    title: DEFAULT_WORKFLOW_TITLE,
+    steps: makePresetSteps([
+      { title: "Konu Seç", description: "Ne için yazdığını belirle.", icon: "ClipboardList" },
+      { title: "Bilgi Gir", description: "Kısa mesajını yaz.", icon: "PenTool" },
+      { title: "Konum Bak", description: "Adres ve haritayı kontrol et.", icon: "MapPinned" },
+      { title: "Gönder", description: "Formu ilet.", icon: "Send" },
+      { title: "Dönüş Bekle", description: "Sana geri dönüş yapalım.", icon: "ShieldCheck" },
+    ]),
+  },
+  "/departman-ekipleri": {
+    title: DEFAULT_WORKFLOW_TITLE,
+    steps: makePresetSteps([
+      { title: "Filtrele", description: "İlgili ekibi seç.", icon: "ClipboardList" },
+      { title: "İncele", description: "Uzmanlığı ve rolü gör.", icon: "Compass" },
+      { title: "Karşılaştır", description: "Ekipleri yan yana değerlendir.", icon: "Layers" },
+      { title: "Detay", description: "Çalışma alanını oku.", icon: "PenTool" },
+      { title: "İletişim", description: "Uygun ekiple bağlantı kur.", icon: "CalendarDays" },
+    ]),
+  },
+  "/tasarim": {
+    title: DEFAULT_WORKFLOW_TITLE,
+    steps: makePresetSteps([
+      { title: "İhtiyaç", description: "Kısa bilgi al.", icon: "ClipboardList" },
+      { title: "Plan", description: "İşin yolunu çıkar.", icon: "Compass" },
+      { title: "Ekip", description: "Uygun uzmanlığı seç.", icon: "Layers" },
+      { title: "Uygulama", description: "Süreci başlat.", icon: "Hammer" },
+      { title: "Takip", description: "İlerlemesini kontrol et.", icon: "ShieldCheck" },
+    ]),
+  },
+  "/materyal-studyo/[slug]": {
+    title: DEFAULT_WORKFLOW_TITLE,
+    steps: makePresetSteps([
+      { title: "Filtrele", description: "İstediğin yüzeyi daralt.", icon: "ClipboardList" },
+      { title: "İncele", description: "Ürünleri tek tek aç.", icon: "Compass" },
+      { title: "Karşılaştır", description: "Farkları gör.", icon: "Layers" },
+      { title: "Detay", description: "Teknik bilgiyi oku.", icon: "PenTool" },
+      { title: "Seç", description: "İşine uygun olanı belirle.", icon: "Hammer" },
+    ]),
+  },
+  "/materyal-studyo/[slug]/[urun-slug]": {
+    title: DEFAULT_WORKFLOW_TITLE,
+    steps: makePresetSteps([
+      { title: "Gör", description: "Ürünün görsellerine bak.", icon: "Compass" },
+      { title: "Oku", description: "Teknik bilgileri incele.", icon: "PenTool" },
+      { title: "Karşılaştır", description: "İhtiyacınla eşleştir.", icon: "Layers" },
+      { title: "Benzerler", description: "Yakın ürünleri aç.", icon: "Route" },
+      { title: "İletişim", description: "Son sorular için ulaş.", icon: "CalendarDays" },
+    ]),
+  },
+};
+
+const LEGACY_WORKFLOW_SCORES = new Set(["/", "/materyal-studyo", "/faaliyet-alanlarimiz"]);
+
+const cloneWorkflowPreset = (preset: WorkflowContentDraft) => cloneWorkflowDraft(preset);
+
+export const getWorkflowPresetForScope = (scope?: string | null): WorkflowContentDraft | null => {
+  const normalized = normalizeWorkflowScope(scope || "/");
+
+  if (LEGACY_WORKFLOW_SCORES.has(normalized)) {
+    return null;
+  }
+
+  const candidates = [
+    getWorkflowPageNode(normalized).route,
+    ...getWorkflowPageAncestors(normalized).map((item) => item.route),
+    normalized,
+  ];
+
+  for (const candidate of candidates) {
+    const preset = PAGE_WORKFLOW_PRESETS[candidate];
+    if (preset) {
+      return cloneWorkflowPreset(preset);
+    }
+  }
+
+  return null;
+};
+
+export const isLegacyWorkflowDraft = (steps: unknown) => {
+  const normalized = normalizeWorkflowSteps(steps, DEFAULT_WORKFLOW_STEPS);
+  if (normalized.length !== DEFAULT_WORKFLOW_STEPS.length) {
+    return false;
+  }
+
+  return normalized.every((step, index) => {
+    const fallback = DEFAULT_WORKFLOW_STEPS[index];
+    return (
+      step.title === fallback.title &&
+      step.description === fallback.description &&
+      step.icon === fallback.icon
+    );
+  });
+};
+
+export const getWorkflowFallbackDraftForScope = (scope?: string | null): WorkflowContentDraft => {
+  const normalized = normalizeWorkflowScope(scope || "/");
+
+  if (LEGACY_WORKFLOW_SCORES.has(normalized)) {
+    return cloneWorkflowPreset({
+      title: DEFAULT_WORKFLOW_TITLE,
+      steps: DEFAULT_WORKFLOW_STEPS,
+    });
+  }
+
+  const preset = getWorkflowPresetForScope(normalized);
+  if (preset) {
+    return preset;
+  }
+
+  return cloneWorkflowPreset({
+    title: DEFAULT_WORKFLOW_TITLE,
+    steps: DEFAULT_WORKFLOW_STEPS,
+  });
+};
+
 type WorkflowIconOption = {
   key: string;
   label: string;
@@ -82,6 +282,9 @@ export const WORKFLOW_ICON_OPTIONS: WorkflowIconOption[] = [
   { key: "ShieldCheck", label: "Onay", description: "Kalite ve doğrulama", icon: LucideIcons.ShieldCheck },
   { key: "Wrench", label: "Teknik", description: "Mekanik çözüm", icon: LucideIcons.Wrench },
   { key: "Box", label: "Üretim", description: "Malzeme ve teslim", icon: LucideIcons.Box },
+  { key: "Send", label: "Gönder", description: "Form ve iletişim", icon: LucideIcons.Send },
+  { key: "ArrowLeft", label: "Geri", description: "Önceki sayfaya dönüş", icon: LucideIcons.ArrowLeft },
+  { key: "Workflow", label: "Akış", description: "İş akışı göstergesi", icon: LucideIcons.Workflow },
 ];
 
 const WORKFLOW_ICONS: LucideIcon[] = DEFAULT_WORKFLOW_STEPS.map((step) => {

@@ -74,6 +74,7 @@ export const WORKFLOW_PAGE_GROUPS: WorkflowPageGroup[] = [
       node("galeri", "Galeri", "/galeri", "Proje galeri akışı."),
       node("journal", "Journal", "/journal", "Editoryal içerik ve yayın akışı."),
       node("iletisim", "İletişim", "/iletisim", "İletişim ve talep sayfası."),
+      node("tasarim", "Tasarım", "/tasarim", "İç mimari ve tasarım sayfası."),
     ],
   },
   {
@@ -156,6 +157,16 @@ export const WORKFLOW_PAGE_GROUPS: WorkflowPageGroup[] = [
           }))),
         },
       ),
+    ],
+  },
+  {
+    title: "Detay Sayfaları",
+    description: "Tekil içerik ve ürün sayfaları",
+    items: [
+      node("galeri-detay", "Galeri Detay", "/galeri/[slug]", "Tek proje detay sayfası."),
+      node("journal-detay", "Journal Detay", "/journal/[slug]", "Tek yazı detay sayfası."),
+      node("materyal-kategori", "Materyal Kategori", "/materyal-studyo/[slug]", "Kategori listeleme sayfası."),
+      node("materyal-urun", "Materyal Ürün", "/materyal-studyo/[slug]/[urun-slug]", "Ürün detay sayfası."),
     ],
   },
   {
