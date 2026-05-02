@@ -117,20 +117,6 @@ export default function MaterialCategoryPage({
             </Button>
           </div>
 
-          <div className="grid gap-3 md:grid-cols-3">
-            <div className="rounded-[1.3rem] border border-white/10 bg-black/10 px-4 py-3">
-              <p className="text-[0.62rem] uppercase tracking-[0.32em] text-zinc-500">Görünüm</p>
-              <p className="mt-2 text-sm text-white">3'lü / 4'lü grid, geniş ekran uyumlu</p>
-            </div>
-            <div className="rounded-[1.3rem] border border-white/10 bg-black/10 px-4 py-3">
-              <p className="text-[0.62rem] uppercase tracking-[0.32em] text-zinc-500">Filtreler</p>
-              <p className="mt-2 text-sm text-white">Renk tonu, yüzey tipi, kullanım alanı</p>
-            </div>
-            <div className="rounded-[1.3rem] border border-white/10 bg-black/10 px-4 py-3">
-              <p className="text-[0.62rem] uppercase tracking-[0.32em] text-zinc-500">Kart dili</p>
-              <p className="mt-2 text-sm text-white">Fiyat yerine teknik etiketler, stok durumu ve CTA etiketleri</p>
-            </div>
-          </div>
         </CardContent>
       </Card>
 
