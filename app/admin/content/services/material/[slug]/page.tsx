@@ -1,13 +1,15 @@
-'use client';
+"use client";
 
 /* eslint-disable @next/next/no-img-element */
 
-import { useCallback, useEffect, useState } from 'react';
-import Link from 'next/link';
-import { useParams } from 'next/navigation';
-import { AnimatePresence, motion } from 'framer-motion';
+import { useCallback, useEffect, useState } from "react";
+import Link from "next/link";
+import { useParams } from "next/navigation";
+import { motion } from 'framer-motion';
 import {
   ArrowLeft,
+  ArrowDown,
+  ArrowUp,
   BadgeCheck,
   CheckCircle2,
   CloudUpload,
@@ -15,6 +17,7 @@ import {
   FolderKanban,
   Image as ImageIcon,
   Loader2,
+  PanelRightOpen,
   Plus,
   RefreshCw,
   Save,
@@ -22,7 +25,6 @@ import {
   Target,
   Trash2,
   Wrench,
-  X,
 } from 'lucide-react';
 
 import { useNotification } from '@/components/admin/AdminNotificationProvider';
@@ -30,13 +32,48 @@ import { AdminImageDropzone } from '@/components/admin/AdminImageDropzone';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Dialog, DialogBody, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
+import { Select } from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
 import { Textarea } from '@/components/ui/textarea';
 import { SLIDER_IMAGE_URLS } from '@/lib/slider-images';
-import { materyalKategorileri } from '../../../../../../data/materyal-studyo';
+import { materialProducts, materyalKategorileri, resolveMaterialCategorySlug } from '@/data/materyal-urunleri';
 
-type TabKey = 'genel' | 'hero' | 'surec' | 'odak' | 'kategoriler';
+type TabKey = 'genel' | 'hero' | 'surec' | 'odak' | 'kategoriler' | 'urunler';
+
+type ProductStockStatus = 'available' | 'limited' | 'made-to-order';
+type ProductCtaVariant = 'request-sample' | 'get-info' | 'request-quote';
+
+type ProductField = { label: string; value: string };
+type CropState = { x: number; y: number; zoom: number };
+
+type ProductState = {
+  slug: string;
+  categorySlug: string;
+  brandName: string;
+  title: string;
+  shortInfo: string;
+  sku: string;
+  description: string;
+  heroImage: string;
+  heroCrop: CropState;
+  gallery: string[];
+  galleryCrops: CropState[];
+  details: ProductField[];
+  technicalDetails: ProductField[];
+  applicationAreas: string[];
+  techTags: string[];
+  stockStatus: ProductStockStatus;
+  stockLabel: string;
+  ctaVariant: ProductCtaVariant;
+  ctaLabel: string;
+  filterValues: {
+    'renk-tonu': string[];
+    'yuzey-tipi': string[];
+    'kullanim-alani': string[];
+  };
+};
 
 type DepartmentState = {
   slug: string;
@@ -51,19 +88,169 @@ type DepartmentState = {
   process: { title: string; desc: string }[];
   focusAreas: { title: string; icon: string; desc: string }[];
   categories: { label: string; value: string }[];
+  products: ProductState[];
 };
 
 type ProbeStatus = 'idle' | 'loading' | 'ok' | 'error';
 
-const TAB_ITEMS: Array<{ key: TabKey; label: string; description: string; icon: typeof Wrench }> = [
+const STOCK_STATUS_OPTIONS: Array<{ value: ProductStockStatus; label: string }> = [
+  { value: 'available', label: 'Stokta' },
+  { value: 'limited', label: 'Sınırlı stok' },
+  { value: 'made-to-order', label: 'Siparişe özel' },
+];
+
+const CTA_VARIANT_OPTIONS: Array<{ value: ProductCtaVariant; label: string }> = [
+  { value: 'request-sample', label: 'Numune İste' },
+  { value: 'get-info', label: 'Bilgi Al' },
+  { value: 'request-quote', label: 'Teklif Al' },
+];
+
+const TAB_ITEMS: Array<{ key: TabKey; label: string; description: string; icon: any }> = [
   { key: 'genel', label: 'Genel', description: 'Künye ve kapak görseli', icon: Wrench },
   { key: 'hero', label: 'Hero', description: 'Slider ve katman ayarları', icon: ImageIcon },
   { key: 'surec', label: 'Süreç', description: 'Malzeme hikayesi ve adımlar', icon: Wrench },
   { key: 'odak', label: 'Odak', description: 'Öne çıkan materyal özellikleri', icon: Target },
   { key: 'kategoriler', label: 'Kategoriler', description: 'Etiket ve filtre setleri', icon: FolderKanban },
+  { key: 'urunler', label: 'Ürünler', description: 'Katalog ürünlerini yönet', icon: ImageIcon },
 ];
 
 const cloneDepartment = (value: DepartmentState) => JSON.parse(JSON.stringify(value)) as DepartmentState;
+
+const createEmptyProduct = (categorySlug: string): ProductState => ({
+  slug: '',
+  categorySlug,
+  brandName: 'deqoin',
+  title: '',
+  shortInfo: '',
+  sku: '',
+  description: '',
+  heroImage: SLIDER_IMAGE_URLS.material,
+  heroCrop: { x: 50, y: 50, zoom: 1 },
+  gallery: [SLIDER_IMAGE_URLS.material],
+  galleryCrops: [{ x: 50, y: 50, zoom: 1 }],
+  details: [
+    { label: 'Ebat', value: '' },
+    { label: 'Kalınlık', value: '' },
+  ],
+  technicalDetails: [
+    { label: 'Menşei', value: '' },
+    { label: 'Yüzey', value: '' },
+  ],
+  applicationAreas: [],
+  techTags: [],
+  stockStatus: 'available',
+  stockLabel: 'Stokta',
+  ctaVariant: 'get-info',
+  ctaLabel: 'Bilgi Al',
+  filterValues: {
+    'renk-tonu': [],
+    'yuzey-tipi': [],
+    'kullanim-alani': [],
+  },
+});
+
+const joinLines = (items: string[]) => items.filter(Boolean).join('\n');
+
+const normalizeTextLines = (value: string) =>
+  value
+    .split(/\r?\n|,/)
+    .map((item) => item.trim())
+    .filter(Boolean);
+
+const ensureUniqueGallery = (items: string[]) =>
+  Array.from(new Set(items.map((item) => item.trim()).filter(Boolean)));
+
+const normalizeCrop = (value?: Partial<CropState>): CropState => ({
+  x: Math.min(100, Math.max(0, Number(value?.x ?? 50))),
+  y: Math.min(100, Math.max(0, Number(value?.y ?? 50))),
+  zoom: Math.min(2, Math.max(1, Number(value?.zoom ?? 1))),
+});
+
+const alignGalleryCrops = (gallery: string[], crops?: CropState[]) => {
+  const next = gallery.map((_, index) => normalizeCrop(crops?.[index]));
+  return next.length > 0 ? next : [normalizeCrop()];
+};
+
+const cropStyle = (crop: CropState) => ({
+  objectPosition: `${crop.x}% ${crop.y}%`,
+  transform: `scale(${crop.zoom})`,
+  transformOrigin: 'center',
+});
+
+const parseLines = (value: string) =>
+  normalizeTextLines(value);
+
+const parsePairs = (value: string): ProductField[] =>
+  value
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .filter(Boolean)
+    .map((line) => {
+      const [label, ...rest] = line.split(":");
+      return {
+        label: (label || "").trim(),
+        value: rest.join(":").trim(),
+      };
+    })
+    .filter((item) => item.label);
+
+const serializePairs = (items: ProductField[]) =>
+  items.map((item) => `${item.label}: ${item.value}`).join("\n");
+
+const slugify = (value: string) =>
+  value
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+
+const normalizeProduct = (value: any, categorySlug: string): ProductState => {
+  const seed = materialProducts.find((item) => item.slug === value?.slug && item.categorySlug === resolveMaterialCategorySlug(categorySlug))
+    || materialProducts.find((item) => item.categorySlug === resolveMaterialCategorySlug(categorySlug))
+    || createEmptyProduct(resolveMaterialCategorySlug(categorySlug));
+
+  return {
+    slug: value?.slug || seed.slug || slugify(value?.title || "urun"),
+    categorySlug: value?.categorySlug || resolveMaterialCategorySlug(categorySlug),
+    brandName: value?.brandName || seed.brandName || "",
+    title: value?.title || seed.title || "",
+    shortInfo: value?.shortInfo || seed.shortInfo || "",
+    sku: value?.sku || seed.sku || "",
+    description: value?.description || seed.description || "",
+    heroImage: value?.heroImage || value?.image || seed.heroImage || SLIDER_IMAGE_URLS.material,
+    heroCrop: normalizeCrop(value?.heroCrop || seed.heroCrop),
+    gallery: Array.isArray(value?.gallery) && value.gallery.length > 0 ? value.gallery.filter(Boolean) : seed.gallery || [seed.heroImage],
+    galleryCrops: alignGalleryCrops(
+      Array.isArray(value?.gallery) && value.gallery.length > 0 ? value.gallery.filter(Boolean) : seed.gallery || [seed.heroImage],
+      Array.isArray(value?.galleryCrops) ? value.galleryCrops : undefined,
+    ),
+    details: Array.isArray(value?.details) && value.details.length > 0 ? value.details : seed.details,
+    technicalDetails:
+      Array.isArray(value?.technicalDetails) && value.technicalDetails.length > 0
+        ? value.technicalDetails
+        : seed.technicalDetails,
+    applicationAreas:
+      Array.isArray(value?.applicationAreas) && value.applicationAreas.length > 0
+        ? value.applicationAreas
+        : seed.applicationAreas,
+    techTags: Array.isArray(value?.techTags) && value.techTags.length > 0 ? value.techTags : seed.techTags,
+    stockStatus: value?.stockStatus || seed.stockStatus || 'available',
+    stockLabel: value?.stockLabel || seed.stockLabel || 'Stokta',
+    ctaVariant: value?.ctaVariant || seed.ctaVariant || 'get-info',
+    ctaLabel: value?.ctaLabel || seed.ctaLabel || 'Bilgi Al',
+    filterValues: {
+      'renk-tonu': Array.isArray(value?.filterValues?.['renk-tonu']) ? value.filterValues['renk-tonu'] : seed.filterValues['renk-tonu'],
+      'yuzey-tipi': Array.isArray(value?.filterValues?.['yuzey-tipi']) ? value.filterValues['yuzey-tipi'] : seed.filterValues['yuzey-tipi'],
+      'kullanim-alani': Array.isArray(value?.filterValues?.['kullanim-alani']) ? value.filterValues['kullanim-alani'] : seed.filterValues['kullanim-alani'],
+    },
+  };
+};
+
+const createEmptyDepartmentProducts = (categorySlug: string) => {
+  const resolved = resolveMaterialCategorySlug(categorySlug);
+  return materialProducts.filter((item) => item.categorySlug === resolved).map((item) => normalizeProduct(item, resolved));
+};
 
 const makeSeed = (slug: string): DepartmentState => {
   const matched = materyalKategorileri.find((item) => item.slug === slug);
@@ -86,6 +273,7 @@ const makeSeed = (slug: string): DepartmentState => {
     categories: matched?.categories?.length
       ? matched.categories.map((item) => ({ label: item.label, value: item.value }))
       : [{ label: 'TÜM PROJELER', value: 'ALL' }],
+    products: createEmptyDepartmentProducts(slug),
   };
 };
 
@@ -110,6 +298,9 @@ const normalizeDepartment = (value: any, slug: string): DepartmentState => {
     categories: Array.isArray(value?.categories) && value.categories.length > 0
       ? value.categories.map((item: any) => ({ label: item?.label || '', value: item?.value || '' }))
       : seed.categories,
+    products: Array.isArray(value?.products) && value.products.length > 0
+      ? value.products.map((item: any) => normalizeProduct(item, slug))
+      : seed.products,
   };
 };
 
@@ -172,6 +363,11 @@ export default function MaterialDetailEditor() {
     upload: 'loading' as ProbeStatus,
     updatedAt: '',
   });
+  const [selectedProductIndex, setSelectedProductIndex] = useState(0);
+  const [selectedGalleryIndex, setSelectedGalleryIndex] = useState(0);
+  const [draggedGalleryIndex, setDraggedGalleryIndex] = useState<number | null>(null);
+  const [productDraft, setProductDraft] = useState<ProductState>(() => createEmptyProduct(slug));
+  const [isProductDrawerOpen, setIsProductDrawerOpen] = useState(false);
 
   const loadDepartment = useCallback(async () => {
     setIsLoading(true);
@@ -211,6 +407,15 @@ export default function MaterialDetailEditor() {
   useEffect(() => {
     loadDepartment();
   }, [loadDepartment]);
+
+  useEffect(() => {
+    const nextProduct = department.products[selectedProductIndex] || department.products[0] || createEmptyProduct(slug);
+    setProductDraft(JSON.parse(JSON.stringify(nextProduct)) as ProductState);
+  }, [department.products, selectedProductIndex, slug]);
+
+  useEffect(() => {
+    setSelectedGalleryIndex((prev) => Math.min(prev, Math.max(0, productDraft.gallery.length - 1)));
+  }, [productDraft.gallery.length]);
 
   useEffect(() => {
     const syncTheme = () => {
@@ -307,6 +512,173 @@ export default function MaterialDetailEditor() {
     }
   };
 
+  const persistProducts = async (nextProducts: ProductState[]) => {
+    const nextDepartment = cloneDepartment(department);
+    nextDepartment.products = nextProducts;
+    setDepartment(nextDepartment);
+    setIsDirty(true);
+    await saveDepartment(nextDepartment);
+  };
+
+  const addProduct = async () => {
+    const nextIndex = department.products.length;
+    setSelectedProductIndex(nextIndex);
+    setProductDraft(createEmptyProduct(slug));
+    setIsProductDrawerOpen(true);
+  };
+
+  const deleteProduct = async (index: number) => {
+    const nextProducts = department.products.filter((_, current) => current !== index);
+    const nextIndex = Math.max(0, index - 1);
+    setSelectedProductIndex(nextIndex);
+    setIsProductDrawerOpen(false);
+    await persistProducts(nextProducts);
+  };
+
+  const openProductDrawer = (index: number) => {
+    setSelectedProductIndex(index);
+    setProductDraft(JSON.parse(JSON.stringify(department.products[index])) as ProductState);
+    setSelectedGalleryIndex(0);
+    setIsProductDrawerOpen(true);
+  };
+
+  const moveGalleryImage = (direction: 'up' | 'down', index: number) => {
+    setProductDraft((draft) => {
+      const next = [...draft.gallery];
+      const nextCrops = [...draft.galleryCrops];
+      const target = direction === 'up' ? index - 1 : index + 1;
+      if (target < 0 || target >= next.length) return draft;
+      [next[index], next[target]] = [next[target], next[index]];
+      [nextCrops[index], nextCrops[target]] = [nextCrops[target], nextCrops[index]];
+      return {
+        ...draft,
+        gallery: next,
+        galleryCrops: nextCrops,
+        heroImage: next[0] || draft.heroImage,
+        heroCrop: nextCrops[0] || draft.heroCrop,
+      };
+    });
+  };
+
+  const removeGalleryImage = (index: number) => {
+    setProductDraft((draft) => {
+      const next = draft.gallery.filter((_, current) => current !== index);
+      const nextCrops = draft.galleryCrops.filter((_, current) => current !== index);
+      const nextGallery = next.length > 0 ? next : [draft.heroImage];
+      const nextGalleryCrops = next.length > 0 ? nextCrops.length > 0 ? nextCrops : [normalizeCrop()] : [normalizeCrop()];
+      return {
+        ...draft,
+        gallery: nextGallery,
+        galleryCrops: alignGalleryCrops(nextGallery, nextGalleryCrops),
+        heroImage: nextGallery[0],
+        heroCrop: nextGalleryCrops[0] || draft.heroCrop,
+      };
+    });
+  };
+
+  const appendGalleryImage = async (file: File) => {
+    const url = await uploadFile(file);
+    setProductDraft((draft) => {
+      const nextGallery = ensureUniqueGallery([...draft.gallery, url]);
+      const nextCrops = alignGalleryCrops(nextGallery, draft.galleryCrops);
+      return {
+        ...draft,
+        heroImage: draft.heroImage || url,
+        gallery: nextGallery,
+        galleryCrops: nextCrops,
+        heroCrop: nextCrops[0] || draft.heroCrop,
+      };
+    });
+    setSelectedGalleryIndex((prev) => Math.min(prev + 1, Math.max(0, productDraft.gallery.length)));
+  };
+
+  const reorderGallery = (fromIndex: number, toIndex: number) => {
+    setProductDraft((draft) => {
+      if (fromIndex === toIndex) return draft;
+      if (fromIndex < 0 || fromIndex >= draft.gallery.length) return draft;
+      if (toIndex < 0 || toIndex >= draft.gallery.length) return draft;
+
+      const nextGallery = [...draft.gallery];
+      const nextCrops = [...draft.galleryCrops];
+      const [movedImage] = nextGallery.splice(fromIndex, 1);
+      const [movedCrop] = nextCrops.splice(fromIndex, 1);
+      nextGallery.splice(toIndex, 0, movedImage);
+      nextCrops.splice(toIndex, 0, movedCrop || normalizeCrop());
+
+      const nextSelected = selectedGalleryIndex === fromIndex
+        ? toIndex
+        : selectedGalleryIndex === toIndex
+          ? fromIndex
+          : selectedGalleryIndex;
+
+      setSelectedGalleryIndex(nextSelected);
+
+      return {
+        ...draft,
+        gallery: nextGallery,
+        galleryCrops: nextCrops,
+        heroImage: nextGallery[0] || draft.heroImage,
+        heroCrop: nextCrops[0] || draft.heroCrop,
+      };
+    });
+  };
+
+  const updateCrop = (target: 'hero' | 'gallery', updater: (crop: CropState) => CropState) => {
+    setProductDraft((draft) => {
+      if (target === 'hero') {
+        return { ...draft, heroCrop: updater(draft.heroCrop) };
+      }
+
+      const nextCrops = draft.galleryCrops.map((crop, index) =>
+        index === selectedGalleryIndex ? updater(crop) : crop,
+      );
+
+      return {
+        ...draft,
+        galleryCrops: nextCrops,
+        heroCrop: selectedGalleryIndex === 0 ? nextCrops[0] || draft.heroCrop : draft.heroCrop,
+      };
+    });
+  };
+
+  const saveProductDraft = async () => {
+    const nextHeroImage = productDraft.gallery[0] || productDraft.heroImage || SLIDER_IMAGE_URLS.material;
+    const nextGallery = ensureUniqueGallery([nextHeroImage, ...productDraft.gallery]);
+    const nextGalleryCrops = alignGalleryCrops(nextGallery, productDraft.galleryCrops);
+    const nextProduct: ProductState = {
+      ...productDraft,
+      slug: slugify(productDraft.slug || productDraft.title || `urun-${department.products.length + 1}`),
+      categorySlug: slug,
+      brandName: productDraft.brandName || 'deqoin',
+      heroImage: nextGallery[0] || nextHeroImage,
+      heroCrop: nextGalleryCrops[0] || normalizeCrop(productDraft.heroCrop),
+      gallery: nextGallery,
+      galleryCrops: nextGalleryCrops,
+      details: productDraft.details.filter((item) => item.label || item.value),
+      technicalDetails: productDraft.technicalDetails.filter((item) => item.label || item.value),
+      applicationAreas: productDraft.applicationAreas,
+      techTags: productDraft.techTags,
+      filterValues: productDraft.filterValues,
+      stockStatus: productDraft.stockStatus,
+      stockLabel: productDraft.stockLabel,
+      ctaVariant: productDraft.ctaVariant,
+      ctaLabel: productDraft.ctaLabel,
+    };
+
+    const nextProducts = [...department.products];
+    if (department.products[selectedProductIndex]) {
+      nextProducts[selectedProductIndex] = nextProduct;
+    } else {
+      nextProducts.push(nextProduct);
+      setSelectedProductIndex(nextProducts.length - 1);
+    }
+
+    setProductDraft(JSON.parse(JSON.stringify(nextProduct)) as ProductState);
+    await persistProducts(nextProducts);
+    showToast('Ürün kaydedildi.', 'success');
+    setIsProductDrawerOpen(false);
+  };
+
   const handleCancel = () => {
     setDepartment(cloneDepartment(initialDepartment));
     setIsDirty(false);
@@ -315,6 +687,7 @@ export default function MaterialDetailEditor() {
 
   const currentHero = department.image;
   const updatedLabel = apiStatus.updatedAt ? formatDate(apiStatus.updatedAt) : 'Henüz yok';
+  const activeProduct = department.products[selectedProductIndex] || null;
 
   const apiCards = [
     {
@@ -830,6 +1203,166 @@ export default function MaterialDetailEditor() {
                 </div>
               </div>
             )}
+
+            {activeTab === 'urunler' && (
+              <div className="grid gap-6 xl:grid-cols-[320px_minmax(0,1fr)]">
+                <Card className="border border-[color:var(--line)] bg-[color:var(--surface-muted)] shadow-none">
+                  <CardHeader className="border-b border-[color:var(--line)]">
+                    <div className="flex items-center justify-between gap-4">
+                      <div>
+                        <CardTitle className="text-base text-[color:var(--text)]">Ürün Listesi</CardTitle>
+                        <CardDescription className="text-[color:var(--text-muted)]">
+                          Kategoriye bağlı katalog ürünleri
+                        </CardDescription>
+                      </div>
+                      <Button
+                        type="button"
+                        className="bg-[color:var(--accent)] text-[color:var(--text-inverse)] hover:bg-[color:var(--accent-soft)]"
+                        onClick={addProduct}
+                      >
+                        <Plus className="mr-2 h-4 w-4" />
+                        Yeni
+                      </Button>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="space-y-3 p-4">
+                    {department.products.length > 0 ? (
+                      department.products.map((item, index) => {
+                        const active = index === selectedProductIndex;
+                        return (
+                          <button
+                            key={`${item.slug || item.title}-${index}`}
+                            type="button"
+                            onClick={() => openProductDrawer(index)}
+                            className={`w-full rounded-[1.25rem] border p-4 text-left transition-colors ${
+                              active
+                                ? 'border-[color:var(--accent)] bg-[color:var(--surface)]'
+                                : 'border-[color:var(--line)] bg-[color:var(--surface)] hover:bg-[color:var(--surface-muted)]'
+                            }`}
+                          >
+                            <div className="flex items-start justify-between gap-3">
+                              <div className="space-y-1">
+                                <p className="text-sm font-semibold text-[color:var(--text)]">{item.title || 'İsimsiz ürün'}</p>
+                                <p className="text-xs uppercase tracking-[0.24em] text-[color:var(--text-muted)]">
+                                  {item.brandName || 'Markasız'} / {item.sku || 'SKU yok'}
+                                </p>
+                              </div>
+                              <Badge variant="outline" className="border-[color:var(--line)] bg-[color:var(--surface-muted)] text-[color:var(--text-muted)]">
+                                {item.stockLabel}
+                              </Badge>
+                            </div>
+                          </button>
+                        );
+                      })
+                    ) : (
+                      <div className="rounded-[1.5rem] border border-dashed border-[color:var(--line)] bg-[color:var(--surface)] p-6 text-center text-sm text-[color:var(--text-muted)]">
+                        Henüz ürün yok.
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+
+                <div className="space-y-4">
+                  <Card className="overflow-hidden border border-[color:var(--line)] bg-[color:var(--surface)] shadow-[var(--shadow)]">
+                    <CardHeader className="border-b border-[color:var(--line)]">
+                      <CardTitle className="text-base text-[color:var(--text)]">Seçili Ürün</CardTitle>
+                      <CardDescription className="text-[color:var(--text-muted)]">
+                        Detaylar ayrı drawer içinde açılır. Buradan hızlı özet ve aksiyon görün.
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-4 p-5 sm:p-6">
+                      {activeProduct ? (
+                        <>
+                          <div className="overflow-hidden rounded-[1.5rem] border border-[color:var(--line)] bg-[color:var(--surface-muted)]">
+                            <img
+                              src={activeProduct.heroImage}
+                              alt={activeProduct.title}
+                              className="h-56 w-full object-cover"
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <p className="text-xs uppercase tracking-[0.24em] text-[color:var(--text-muted)]">
+                              {activeProduct.brandName || 'deqoin'} / {activeProduct.sku || 'SKU yok'}
+                            </p>
+                            <h3 className="text-2xl font-semibold tracking-tight text-[color:var(--text)]">
+                              {activeProduct.title || 'İsimsiz ürün'}
+                            </h3>
+                            <p className="text-sm leading-7 text-[color:var(--text-muted)]">
+                              {activeProduct.shortInfo || 'Kısa bilgi tanımlanmamış.'}
+                            </p>
+                          </div>
+                          <div className="flex flex-wrap gap-2">
+                            {activeProduct.techTags.slice(0, 4).map((tag) => (
+                              <Badge key={tag} variant="outline" className="border-[color:var(--line)] bg-[color:var(--surface-muted)] text-[color:var(--text-muted)]">
+                                {tag}
+                              </Badge>
+                            ))}
+                          </div>
+                          <div className="grid gap-2 sm:grid-cols-2">
+                            <Badge className="justify-center border border-[color:var(--line)] bg-[color:var(--surface-muted)] px-3 py-2 text-[color:var(--text-muted)]">
+                              {activeProduct.stockLabel}
+                            </Badge>
+                            <Badge className="justify-center border border-[color:var(--line)] bg-[color:var(--surface-muted)] px-3 py-2 text-[color:var(--text-muted)]">
+                              {CTA_VARIANT_OPTIONS.find((item) => item.value === activeProduct.ctaVariant)?.label || activeProduct.ctaLabel}
+                            </Badge>
+                          </div>
+                          <div className="grid gap-3 sm:grid-cols-2">
+                            <Button
+                              type="button"
+                              className="bg-[color:var(--accent)] text-[color:var(--text-inverse)] hover:bg-[color:var(--accent-soft)]"
+                              onClick={() => openProductDrawer(selectedProductIndex)}
+                            >
+                              <PanelRightOpen className="mr-2 h-4 w-4" />
+                              Ürünü Düzenle
+                            </Button>
+                            <Button
+                              type="button"
+                              variant="outline"
+                              className="border-[color:var(--line)] bg-[color:var(--surface-muted)] text-[color:var(--text)]"
+                              onClick={addProduct}
+                            >
+                              <Plus className="mr-2 h-4 w-4" />
+                              Yeni Ürün
+                            </Button>
+                          </div>
+                        </>
+                      ) : (
+                        <div className="space-y-4">
+                          <div className="rounded-[1.5rem] border border-dashed border-[color:var(--line)] bg-[color:var(--surface-muted)] p-8 text-center">
+                            <p className="text-sm text-[color:var(--text-muted)]">Henüz seçili ürün yok.</p>
+                            <p className="mt-2 text-xs leading-5 text-[color:var(--text-muted)]">
+                              Bir ürün seçin veya yeni bir ürün oluşturun. Form drawer içinde açılacak.
+                            </p>
+                          </div>
+                          <Button
+                            type="button"
+                            className="w-full bg-[color:var(--accent)] text-[color:var(--text-inverse)] hover:bg-[color:var(--accent-soft)]"
+                            onClick={addProduct}
+                          >
+                            <Plus className="mr-2 h-4 w-4" />
+                            Ürün Oluştur
+                          </Button>
+                        </div>
+                      )}
+                    </CardContent>
+                  </Card>
+
+                  <Card className="border border-[color:var(--line)] bg-[color:var(--surface-muted)] shadow-none">
+                    <CardHeader className="border-b border-[color:var(--line)]">
+                      <CardTitle className="text-base text-[color:var(--text)]">Hızlı Not</CardTitle>
+                      <CardDescription className="text-[color:var(--text-muted)]">
+                        Ürün düzenleme formu drawer içinde açılır. Görsel yükleme, galeri sıralama ve teknik alanlar tek yerde yönetilir.
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent className="p-5 text-sm leading-7 text-[color:var(--text-muted)] sm:p-6">
+                      {department.products.length > 0
+                        ? 'Liste solda kalır, detay formu sağdan kayan drawer ile açılır. Bu yapı katalog yönetimini hızlı ve daha az dağınık hale getirir.'
+                        : 'İlk ürünü oluşturduktan sonra detay formu drawer üzerinden düzenleyebilirsiniz.'}
+                    </CardContent>
+                  </Card>
+                </div>
+              </div>
+            )}
           </CardContent>
         </Card>
 
@@ -927,6 +1460,596 @@ export default function MaterialDetailEditor() {
           </Card>
         </aside>
       </section>
+
+      <Dialog open={isProductDrawerOpen} onOpenChange={setIsProductDrawerOpen} placement="right">
+        <DialogContent className="h-full max-h-none w-full max-w-[1180px] rounded-none rounded-l-[1.75rem] border-l border-white/10 bg-[color:var(--surface)]">
+          <DialogHeader className="px-6 py-5">
+            <div className="flex flex-wrap items-center gap-3">
+              <DialogTitle className="text-xl tracking-[0.14em]">
+                {selectedProductIndex < department.products.length ? 'Ürün Düzenleyici' : 'Yeni Ürün'}
+              </DialogTitle>
+              <Badge variant="outline" className="border-[color:var(--line)] bg-[color:var(--surface-muted)] text-[color:var(--text-muted)]">
+                {productDraft.brandName || 'deqoin'} / {productDraft.sku || 'SKU yok'}
+              </Badge>
+              <Badge variant="outline" className="border-[color:var(--line)] bg-[color:var(--surface-muted)] text-[color:var(--text-muted)]">
+                {CTA_VARIANT_OPTIONS.find((item) => item.value === productDraft.ctaVariant)?.label || productDraft.ctaLabel}
+              </Badge>
+            </div>
+            <DialogDescription>
+              Ürün görselini, galeri sırasını ve teknik bilgileri drawer içinde tek akışta düzenleyin. Stok sayısı kullanılmaz; sadece durum ve açıklama alanları vardır.
+            </DialogDescription>
+          </DialogHeader>
+
+          <DialogBody className="max-h-none px-6 py-6">
+            <div className="grid gap-6 xl:grid-cols-[360px_minmax(0,1fr)]">
+              <div className="space-y-6">
+                <Card className="border border-[color:var(--line)] bg-[color:var(--surface-muted)] shadow-none">
+                  <CardHeader className="border-b border-[color:var(--line)]">
+                    <CardTitle className="text-base text-[color:var(--text)]">Ana Görsel</CardTitle>
+                    <CardDescription className="text-[color:var(--text-muted)]">
+                      Ürün kartında öne çıkacak hero görsel ve kırpma ayarı.
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-4 p-4">
+                    <AdminImageDropzone
+                      aspectClassName="aspect-[4/3]"
+                      accept="image/*"
+                      buttonLabel="Görsel yükle"
+                      description="Hero görseli ekleyin veya değiştirin."
+                      emptySubtitle="Ana görseli sürükleyin ya da seçin."
+                      emptyTitle="Ana görsel yok"
+                      previewAlt={productDraft.title || 'Ürün görseli'}
+                      previewUrl={productDraft.heroImage}
+                      previewStyle={cropStyle(productDraft.heroCrop)}
+                      title="Hero Görsel"
+                      onFileSelect={async (file) => {
+                        const url = await uploadFile(file);
+                        setProductDraft((draft) => ({
+                          ...draft,
+                          heroImage: url,
+                          gallery: ensureUniqueGallery([url, ...draft.gallery.filter(Boolean)]),
+                          galleryCrops: alignGalleryCrops([url, ...draft.gallery.filter(Boolean)], draft.galleryCrops),
+                          heroCrop: normalizeCrop(),
+                        }));
+                      }}
+                    />
+                    <div className="grid gap-3 sm:grid-cols-3">
+                      <div className="space-y-2">
+                        <label className="text-[0.65rem] font-medium uppercase tracking-[0.24em] text-[color:var(--text-muted)]">
+                          Kırpma X
+                        </label>
+                        <Input
+                          type="range"
+                          min={0}
+                          max={100}
+                          value={productDraft.heroCrop.x}
+                          onChange={(event) =>
+                            updateCrop('hero', (crop) => ({
+                              ...crop,
+                              x: Number(event.target.value),
+                            }))
+                          }
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <label className="text-[0.65rem] font-medium uppercase tracking-[0.24em] text-[color:var(--text-muted)]">
+                          Kırpma Y
+                        </label>
+                        <Input
+                          type="range"
+                          min={0}
+                          max={100}
+                          value={productDraft.heroCrop.y}
+                          onChange={(event) =>
+                            updateCrop('hero', (crop) => ({
+                              ...crop,
+                              y: Number(event.target.value),
+                            }))
+                          }
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <label className="text-[0.65rem] font-medium uppercase tracking-[0.24em] text-[color:var(--text-muted)]">
+                          Zoom
+                        </label>
+                        <Input
+                          type="range"
+                          min={1}
+                          max={2}
+                          step={0.01}
+                          value={productDraft.heroCrop.zoom}
+                          onChange={(event) =>
+                            updateCrop('hero', (crop) => ({
+                              ...crop,
+                              zoom: Number(event.target.value),
+                            }))
+                          }
+                        />
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card className="border border-[color:var(--line)] bg-[color:var(--surface-muted)] shadow-none">
+                  <CardHeader className="border-b border-[color:var(--line)]">
+                    <CardTitle className="text-base text-[color:var(--text)]">Galeri</CardTitle>
+                    <CardDescription className="text-[color:var(--text-muted)]">
+                      Sürükle-bırak ile sıralayın, kapak seçin ve seçili görseli kırpın.
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-3 p-4">
+                    {productDraft.gallery.length > 0 ? (
+                      productDraft.gallery.map((image, index) => (
+                        <div
+                          key={`${image}-${index}`}
+                          draggable
+                          onDragStart={() => setDraggedGalleryIndex(index)}
+                          onDragOver={(event) => event.preventDefault()}
+                          onDrop={(event) => {
+                            event.preventDefault();
+                            if (draggedGalleryIndex === null) return;
+                            reorderGallery(draggedGalleryIndex, index);
+                            setDraggedGalleryIndex(null);
+                          }}
+                          onDragEnd={() => setDraggedGalleryIndex(null)}
+                          className={`overflow-hidden rounded-[1.25rem] border bg-[color:var(--surface)] transition-colors ${
+                            selectedGalleryIndex === index
+                              ? 'border-[color:var(--accent)]'
+                              : 'border-[color:var(--line)]'
+                          }`}
+                        >
+                          <div className="relative aspect-[4/3] overflow-hidden">
+                            <img
+                              src={image}
+                              alt={`${productDraft.title || 'Ürün'} görsel ${index + 1}`}
+                              className="h-full w-full object-cover"
+                              style={cropStyle(productDraft.galleryCrops[index] || normalizeCrop())}
+                            />
+                            {index === 0 && (
+                              <div className="absolute left-3 top-3 rounded-full border border-[color:var(--accent)]/20 bg-[color:var(--surface)]/90 px-3 py-1 text-[0.65rem] font-semibold uppercase tracking-[0.24em] text-[color:var(--accent)]">
+                                Ana görsel
+                              </div>
+                            )}
+                            <button
+                              type="button"
+                              className="absolute inset-0"
+                              onClick={() => setSelectedGalleryIndex(index)}
+                              aria-label={`Görsel ${index + 1} seç`}
+                            />
+                          </div>
+                          <div className="flex flex-wrap items-center justify-between gap-2 p-3">
+                            <div className="space-y-1">
+                              <p className="text-xs uppercase tracking-[0.22em] text-[color:var(--text-muted)]">Görsel {index + 1}</p>
+                              {selectedGalleryIndex === index && (
+                                <p className="text-[0.65rem] font-medium uppercase tracking-[0.24em] text-[color:var(--accent)]">
+                                  Seçili
+                                </p>
+                              )}
+                            </div>
+                            <div className="flex flex-wrap gap-2">
+                              <Button
+                                type="button"
+                                variant="outline"
+                                size="sm"
+                                className="h-9 border-[color:var(--line)] bg-[color:var(--surface-muted)] text-[color:var(--text)]"
+                                onClick={() =>
+                                  setProductDraft((draft) => {
+                                    const nextGallery = ensureUniqueGallery([image, ...draft.gallery.filter((_, current) => current !== index)]);
+                                    const nextCrops = alignGalleryCrops(nextGallery, draft.galleryCrops);
+                                    const selectedCrop = draft.galleryCrops[index] || normalizeCrop();
+                                    return {
+                                      ...draft,
+                                      heroImage: image,
+                                      heroCrop: selectedCrop,
+                                      gallery: nextGallery,
+                                      galleryCrops: nextCrops,
+                                    };
+                                  })
+                                }
+                              >
+                                Kapak Yap
+                              </Button>
+                              <Button
+                                type="button"
+                                variant="outline"
+                                size="icon"
+                                className="h-9 w-9 border-[color:var(--line)] bg-[color:var(--surface-muted)] text-[color:var(--text)]"
+                                onClick={() => moveGalleryImage('up', index)}
+                                disabled={index === 0}
+                              >
+                                <ArrowUp className="h-4 w-4" />
+                              </Button>
+                              <Button
+                                type="button"
+                                variant="outline"
+                                size="icon"
+                                className="h-9 w-9 border-[color:var(--line)] bg-[color:var(--surface-muted)] text-[color:var(--text)]"
+                                onClick={() => moveGalleryImage('down', index)}
+                                disabled={index === productDraft.gallery.length - 1}
+                              >
+                                <ArrowDown className="h-4 w-4" />
+                              </Button>
+                              <Button
+                                type="button"
+                                variant="outline"
+                                size="icon"
+                                className="h-9 w-9 border-rose-500/20 bg-rose-500/10 text-rose-700 hover:bg-rose-500 hover:text-white dark:text-rose-300"
+                                onClick={() => removeGalleryImage(index)}
+                              >
+                                <Trash2 className="h-4 w-4" />
+                              </Button>
+                            </div>
+                          </div>
+                        </div>
+                      ))
+                    ) : (
+                      <div className="rounded-[1.25rem] border border-dashed border-[color:var(--line)] bg-[color:var(--surface)] p-6 text-center text-sm text-[color:var(--text-muted)]">
+                        Henüz galeri görseli yok.
+                      </div>
+                    )}
+
+                    <AdminImageDropzone
+                      aspectClassName="aspect-[16/10]"
+                      accept="image/*"
+                      buttonLabel="Galeri görseli ekle"
+                      description="Yeni görsel yükleyin. Sıra aşağıda listede tutulur."
+                      emptySubtitle="Galeriye yeni görsel yükleyin."
+                      emptyTitle="Yeni galeri görseli"
+                      title="Galeri Görseli Ekle"
+                      onFileSelect={appendGalleryImage}
+                    />
+
+                    {productDraft.gallery.length > 0 && (
+                      <div className="rounded-[1.25rem] border border-[color:var(--line)] bg-[color:var(--surface)] p-4">
+                        <div className="mb-4 flex items-center justify-between gap-3">
+                          <div>
+                            <p className="text-sm font-semibold text-[color:var(--text)]">Seçili Görsel Kırpma</p>
+                            <p className="text-xs text-[color:var(--text-muted)]">
+                              Görsel {selectedGalleryIndex + 1} için odak ve zoom ayarı.
+                            </p>
+                          </div>
+                          <Badge variant="outline" className="border-[color:var(--line)] bg-[color:var(--surface-muted)] text-[color:var(--text-muted)]">
+                            {selectedGalleryIndex === 0 ? 'Kapak' : 'Galeri'}
+                          </Badge>
+                        </div>
+
+                        <div className="space-y-3">
+                          <div className="space-y-2">
+                            <label className="text-[0.65rem] font-medium uppercase tracking-[0.24em] text-[color:var(--text-muted)]">X</label>
+                            <Input
+                              type="range"
+                              min={0}
+                              max={100}
+                              value={productDraft.galleryCrops[selectedGalleryIndex]?.x ?? 50}
+                              onChange={(event) =>
+                                updateCrop('gallery', (crop) => ({
+                                  ...crop,
+                                  x: Number(event.target.value),
+                                }))
+                              }
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <label className="text-[0.65rem] font-medium uppercase tracking-[0.24em] text-[color:var(--text-muted)]">Y</label>
+                            <Input
+                              type="range"
+                              min={0}
+                              max={100}
+                              value={productDraft.galleryCrops[selectedGalleryIndex]?.y ?? 50}
+                              onChange={(event) =>
+                                updateCrop('gallery', (crop) => ({
+                                  ...crop,
+                                  y: Number(event.target.value),
+                                }))
+                              }
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <label className="text-[0.65rem] font-medium uppercase tracking-[0.24em] text-[color:var(--text-muted)]">Zoom</label>
+                            <Input
+                              type="range"
+                              min={1}
+                              max={2}
+                              step={0.01}
+                              value={productDraft.galleryCrops[selectedGalleryIndex]?.zoom ?? 1}
+                              onChange={(event) =>
+                                updateCrop('gallery', (crop) => ({
+                                  ...crop,
+                                  zoom: Number(event.target.value),
+                                }))
+                              }
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+              </div>
+
+              <div className="space-y-6">
+                <Card className="border border-[color:var(--line)] bg-[color:var(--surface-muted)] shadow-none">
+                  <CardHeader className="border-b border-[color:var(--line)]">
+                    <CardTitle className="text-base text-[color:var(--text)]">Temel Bilgiler</CardTitle>
+                    <CardDescription className="text-[color:var(--text-muted)]">
+                      Katalog kartında ve PDP’de görünen çekirdek alanlar.
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-4 p-4">
+                    <div className="grid gap-4 md:grid-cols-2">
+                      <div className="space-y-2">
+                        <label className="text-xs font-medium uppercase tracking-[0.24em] text-[color:var(--text-muted)]">Marka</label>
+                        <Input
+                          value={productDraft.brandName}
+                          onChange={(event) => setProductDraft((draft) => ({ ...draft, brandName: event.target.value }))}
+                          className="h-11 rounded-2xl border-[color:var(--line)] bg-[color:var(--surface)] text-[color:var(--text)]"
+                          placeholder="deqoin"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <label className="text-xs font-medium uppercase tracking-[0.24em] text-[color:var(--text-muted)]">SKU</label>
+                        <Input
+                          value={productDraft.sku}
+                          onChange={(event) => setProductDraft((draft) => ({ ...draft, sku: event.target.value }))}
+                          className="h-11 rounded-2xl border-[color:var(--line)] bg-[color:var(--surface)] text-[color:var(--text)]"
+                          placeholder="AYD-117"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="grid gap-4 md:grid-cols-2">
+                      <div className="space-y-2">
+                        <label className="text-xs font-medium uppercase tracking-[0.24em] text-[color:var(--text-muted)]">Başlık</label>
+                        <Input
+                          value={productDraft.title}
+                          onChange={(event) => setProductDraft((draft) => ({ ...draft, title: event.target.value }))}
+                          className="h-11 rounded-2xl border-[color:var(--line)] bg-[color:var(--surface)] text-[color:var(--text)]"
+                          placeholder="Hokasu Lineer"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <label className="text-xs font-medium uppercase tracking-[0.24em] text-[color:var(--text-muted)]">Slug</label>
+                        <Input
+                          value={productDraft.slug}
+                          onChange={(event) => setProductDraft((draft) => ({ ...draft, slug: event.target.value }))}
+                          className="h-11 rounded-2xl border-[color:var(--line)] bg-[color:var(--surface)] text-[color:var(--text)]"
+                          placeholder="hokasu-lineer"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="grid gap-4 md:grid-cols-2">
+                      <div className="space-y-2">
+                        <label className="text-xs font-medium uppercase tracking-[0.24em] text-[color:var(--text-muted)]">Kısa Bilgi</label>
+                        <Input
+                          value={productDraft.shortInfo}
+                          onChange={(event) => setProductDraft((draft) => ({ ...draft, shortInfo: event.target.value }))}
+                          className="h-11 rounded-2xl border-[color:var(--line)] bg-[color:var(--surface)] text-[color:var(--text)]"
+                          placeholder="Lineer çözüm"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <label className="text-xs font-medium uppercase tracking-[0.24em] text-[color:var(--text-muted)]">Kategori</label>
+                        <Input
+                          value={productDraft.categorySlug}
+                          onChange={(event) => setProductDraft((draft) => ({ ...draft, categorySlug: event.target.value }))}
+                          className="h-11 rounded-2xl border-[color:var(--line)] bg-[color:var(--surface)] text-[color:var(--text)]"
+                          placeholder={slug}
+                        />
+                      </div>
+                    </div>
+
+                    <div className="grid gap-4 md:grid-cols-2">
+                      <div className="space-y-2">
+                        <label className="text-xs font-medium uppercase tracking-[0.24em] text-[color:var(--text-muted)]">Stok Durumu</label>
+                        <Select
+                          value={productDraft.stockStatus}
+                          onChange={(event) =>
+                            setProductDraft((draft) => ({
+                              ...draft,
+                              stockStatus: event.target.value as ProductStockStatus,
+                            }))
+                          }
+                        >
+                          {STOCK_STATUS_OPTIONS.map((option) => (
+                            <option key={option.value} value={option.value}>
+                              {option.label}
+                            </option>
+                          ))}
+                        </Select>
+                      </div>
+                      <div className="space-y-2">
+                        <label className="text-xs font-medium uppercase tracking-[0.24em] text-[color:var(--text-muted)]">Stok Etiketi</label>
+                        <Input
+                          value={productDraft.stockLabel}
+                          onChange={(event) => setProductDraft((draft) => ({ ...draft, stockLabel: event.target.value }))}
+                          className="h-11 rounded-2xl border-[color:var(--line)] bg-[color:var(--surface)] text-[color:var(--text)]"
+                          placeholder="Stokta"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="grid gap-4 md:grid-cols-2">
+                      <div className="space-y-2">
+                        <label className="text-xs font-medium uppercase tracking-[0.24em] text-[color:var(--text-muted)]">CTA Tipi</label>
+                        <Select
+                          value={productDraft.ctaVariant}
+                          onChange={(event) =>
+                            setProductDraft((draft) => ({
+                              ...draft,
+                              ctaVariant: event.target.value as ProductCtaVariant,
+                            }))
+                          }
+                        >
+                          {CTA_VARIANT_OPTIONS.map((option) => (
+                            <option key={option.value} value={option.value}>
+                              {option.label}
+                            </option>
+                          ))}
+                        </Select>
+                      </div>
+                      <div className="space-y-2">
+                        <label className="text-xs font-medium uppercase tracking-[0.24em] text-[color:var(--text-muted)]">CTA Etiketi</label>
+                        <Input
+                          value={productDraft.ctaLabel}
+                          onChange={(event) => setProductDraft((draft) => ({ ...draft, ctaLabel: event.target.value }))}
+                          className="h-11 rounded-2xl border-[color:var(--line)] bg-[color:var(--surface)] text-[color:var(--text)]"
+                          placeholder="Bilgi Al"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      <label className="text-xs font-medium uppercase tracking-[0.24em] text-[color:var(--text-muted)]">Açıklama</label>
+                      <Textarea
+                        value={productDraft.description}
+                        onChange={(event) => setProductDraft((draft) => ({ ...draft, description: event.target.value }))}
+                        rows={6}
+                        className="min-h-40 rounded-[1.5rem] border-[color:var(--line)] bg-[color:var(--surface)] text-[color:var(--text)]"
+                        placeholder="Ürünün ne olduğunu ve nerede kullanıldığını doğrudan yazın."
+                      />
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <div className="grid gap-6 xl:grid-cols-2">
+                  <Card className="border border-[color:var(--line)] bg-[color:var(--surface-muted)] shadow-none">
+                    <CardHeader className="border-b border-[color:var(--line)]">
+                      <CardTitle className="text-base text-[color:var(--text)]">Özellikler</CardTitle>
+                      <CardDescription className="text-[color:var(--text-muted)]">
+                        Her satır `Etiket: Değer` formatında olmalı.
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-4 p-4">
+                      <div className="space-y-2">
+                        <label className="text-xs font-medium uppercase tracking-[0.24em] text-[color:var(--text-muted)]">Temel Özellikler</label>
+                        <Textarea
+                          value={serializePairs(productDraft.details)}
+                          onChange={(event) => setProductDraft((draft) => ({ ...draft, details: parsePairs(event.target.value) }))}
+                          rows={8}
+                          className="min-h-36 rounded-[1.5rem] border-[color:var(--line)] bg-[color:var(--surface)] text-[color:var(--text)]"
+                          placeholder={'Ebat: 120 x 60 cm\nKalınlık: 18 mm\nMenşei: İtalya'}
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <label className="text-xs font-medium uppercase tracking-[0.24em] text-[color:var(--text-muted)]">Teknik Detaylar</label>
+                        <Textarea
+                          value={serializePairs(productDraft.technicalDetails)}
+                          onChange={(event) => setProductDraft((draft) => ({ ...draft, technicalDetails: parsePairs(event.target.value) }))}
+                          rows={8}
+                          className="min-h-36 rounded-[1.5rem] border-[color:var(--line)] bg-[color:var(--surface)] text-[color:var(--text)]"
+                          placeholder={'CRI: 90+\nKurulum: Gömme / yüzeye\nBakım: Nemli bez ile'}
+                        />
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  <Card className="border border-[color:var(--line)] bg-[color:var(--surface-muted)] shadow-none">
+                    <CardHeader className="border-b border-[color:var(--line)]">
+                      <CardTitle className="text-base text-[color:var(--text)]">Etiketler ve Filtreler</CardTitle>
+                      <CardDescription className="text-[color:var(--text-muted)]">
+                        Liste görünümü ve filtre sistemi için kısa değerler.
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-4 p-4">
+                      <div className="space-y-2">
+                        <label className="text-xs font-medium uppercase tracking-[0.24em] text-[color:var(--text-muted)]">Teknik Etiketler</label>
+                        <Textarea
+                          value={joinLines(productDraft.techTags)}
+                          onChange={(event) => setProductDraft((draft) => ({ ...draft, techTags: parseLines(event.target.value) }))}
+                          rows={4}
+                          className="min-h-28 rounded-[1.5rem] border-[color:var(--line)] bg-[color:var(--surface)] text-[color:var(--text)]"
+                          placeholder={'Lineer\n3000K\nDim'}
+                        />
+                      </div>
+
+                      <div className="space-y-2">
+                        <label className="text-xs font-medium uppercase tracking-[0.24em] text-[color:var(--text-muted)]">Kullanım Alanları</label>
+                        <Textarea
+                          value={joinLines(productDraft.applicationAreas)}
+                          onChange={(event) => setProductDraft((draft) => ({ ...draft, applicationAreas: parseLines(event.target.value) }))}
+                          rows={4}
+                          className="min-h-28 rounded-[1.5rem] border-[color:var(--line)] bg-[color:var(--surface)] text-[color:var(--text)]"
+                          placeholder={'Koridor\nMutfak\nGaleri duvarı'}
+                        />
+                      </div>
+
+                      <div className="grid gap-4">
+                        {([
+                          ['renk-tonu', 'Renk Tonu'],
+                          ['yuzey-tipi', 'Yüzey Tipi'],
+                          ['kullanim-alani', 'Kullanım Alanı'],
+                        ] as const).map(([key, label]) => (
+                          <div key={key} className="space-y-2">
+                            <label className="text-xs font-medium uppercase tracking-[0.24em] text-[color:var(--text-muted)]">{label}</label>
+                            <Textarea
+                              value={joinLines(productDraft.filterValues[key])}
+                              onChange={(event) =>
+                                setProductDraft((draft) => ({
+                                  ...draft,
+                                  filterValues: {
+                                    ...draft.filterValues,
+                                    [key]: parseLines(event.target.value),
+                                  },
+                                }))
+                              }
+                              rows={3}
+                              className="min-h-24 rounded-[1.5rem] border-[color:var(--line)] bg-[color:var(--surface)] text-[color:var(--text)]"
+                              placeholder="Açık ton, nötr"
+                            />
+                          </div>
+                        ))}
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+
+                <div className="flex flex-col gap-3 border-t border-[color:var(--line)] pt-5 sm:flex-row sm:items-center sm:justify-between">
+                  <div className="text-sm text-[color:var(--text-muted)]">
+                    {selectedProductIndex < department.products.length
+                      ? 'Mevcut ürün güncellenecek.'
+                      : 'Yeni ürün kaydedildiğinde katalog listesine eklenecek.'}
+                  </div>
+                  <div className="flex flex-wrap gap-3">
+                    {selectedProductIndex < department.products.length && (
+                      <Button
+                        type="button"
+                        variant="outline"
+                        className="border-rose-500/20 bg-rose-500/10 text-rose-700 hover:bg-rose-500 hover:text-white dark:text-rose-300"
+                        onClick={async () => {
+                          if (window.confirm('Bu ürünü silmek istiyor musunuz?')) {
+                            await deleteProduct(selectedProductIndex);
+                          }
+                        }}
+                      >
+                        <Trash2 className="mr-2 h-4 w-4" />
+                        Sil
+                      </Button>
+                    )}
+                    <Button
+                      type="button"
+                      variant="outline"
+                      className="border-[color:var(--line)] bg-[color:var(--surface-muted)] text-[color:var(--text)]"
+                      onClick={() => setIsProductDrawerOpen(false)}
+                    >
+                      Vazgeç
+                    </Button>
+                    <Button
+                      type="button"
+                      className="bg-[color:var(--accent)] text-[color:var(--text-inverse)] hover:bg-[color:var(--accent-soft)]"
+                      onClick={saveProductDraft}
+                      disabled={isSaving}
+                    >
+                      {isSaving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Save className="mr-2 h-4 w-4" />}
+                      Kaydet
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </DialogBody>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

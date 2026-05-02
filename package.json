@@ -10,6 +10,8 @@
     "test": "jest",
     "test:team": "node scripts/team-flow-smoke.mjs",
     "test:gallery": "node scripts/gallery-flow-smoke.mjs",
+    "seed:material-catalog": "node scripts/material-catalog-seed.mjs",
+    "migrate:material-catalog": "node scripts/material-catalog-migrate.mjs",
     "migrate:cloudinary": "node scripts/migrate-legacy-images-to-cloudinary.cjs"
   },
   "dependencies": {

@@ -9,6 +9,7 @@ import { cn } from "@/lib/utils";
 type DialogContextValue = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  placement: "center" | "right";
 };
 
 const DialogContext = React.createContext<DialogContextValue | null>(null);
@@ -16,10 +17,11 @@ const DialogContext = React.createContext<DialogContextValue | null>(null);
 type DialogProps = React.PropsWithChildren<{
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  placement?: "center" | "right";
 }>;
 
-function Dialog({ open, onOpenChange, children }: DialogProps) {
-  return <DialogContext.Provider value={{ open, onOpenChange }}>{children}</DialogContext.Provider>;
+function Dialog({ open, onOpenChange, placement = "center", children }: DialogProps) {
+  return <DialogContext.Provider value={{ open, onOpenChange, placement }}>{children}</DialogContext.Provider>;
 }
 
 const DialogTrigger = React.forwardRef<HTMLButtonElement, React.ButtonHTMLAttributes<HTMLButtonElement>>(
@@ -39,7 +41,12 @@ const DialogContent = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTML
     }
 
     return createPortal(
-      <div className="fixed inset-0 z-50 flex items-center justify-center px-4 py-6">
+      <div
+        className={cn(
+          "fixed inset-0 z-50 flex px-4 py-6",
+          context.placement === "right" ? "items-stretch justify-end" : "items-center justify-center",
+        )}
+      >
         <button
           type="button"
           aria-label="close dialog"
@@ -49,7 +56,8 @@ const DialogContent = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTML
         <div
           ref={ref}
           className={cn(
-            "relative z-10 max-h-[90dvh] w-full max-w-4xl overflow-hidden rounded-[1.75rem] border border-white/10 bg-[color:var(--admin-surface)] shadow-[0_30px_100px_rgba(0,0,0,0.5)]",
+            "relative z-10 max-h-[90dvh] w-full overflow-hidden rounded-[1.75rem] border border-white/10 bg-[color:var(--admin-surface)] shadow-[0_30px_100px_rgba(0,0,0,0.5)]",
+            context.placement === "right" ? "h-full max-w-[960px] rounded-none rounded-l-[1.75rem]" : "max-w-4xl",
             className,
           )}
           {...props}

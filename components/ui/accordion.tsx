@@ -11,6 +11,7 @@ type AccordionContextValue = {
 };
 
 const AccordionContext = React.createContext<AccordionContextValue | null>(null);
+const AccordionItemContext = React.createContext<string | null>(null);
 
 type AccordionProps = React.PropsWithChildren<{
   value: string | null;
@@ -21,8 +22,20 @@ function Accordion({ value, onValueChange, children }: AccordionProps) {
   return <AccordionContext.Provider value={{ value, onValueChange }}>{children}</AccordionContext.Provider>;
 }
 
-const AccordionItem = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
-  ({ className, ...props }, ref) => <div ref={ref} className={cn("rounded-2xl border border-white/10 bg-white/[0.03]", className)} {...props} />,
+type AccordionItemProps = React.HTMLAttributes<HTMLDivElement> & {
+  value: string;
+};
+
+const AccordionItem = React.forwardRef<HTMLDivElement, AccordionItemProps>(
+  ({ className, value, ...props }, ref) => (
+    <AccordionItemContext.Provider value={value}>
+      <div
+        ref={ref}
+        className={cn("rounded-2xl border border-white/10 bg-white/[0.03]", className)}
+        {...props}
+      />
+    </AccordionItemContext.Provider>
+  ),
 );
 AccordionItem.displayName = "AccordionItem";
 
@@ -61,6 +74,13 @@ AccordionTrigger.displayName = "AccordionTrigger";
 
 const AccordionContent = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
   ({ className, ...props }, ref) => {
+    const context = React.useContext(AccordionContext);
+    const itemValue = React.useContext(AccordionItemContext);
+
+    if (!context || !itemValue || context.value !== itemValue) {
+      return null;
+    }
+
     return <div ref={ref} className={cn("border-t border-white/10 px-4 py-3", className)} {...props} />;
   },
 );

@@ -22,6 +22,7 @@ type AdminImageDropzoneProps = {
   onFileSelect: (file: File) => void | Promise<void>;
   previewAlt?: string;
   previewClassName?: string;
+  previewStyle?: React.CSSProperties;
   previewType?: PreviewType;
   previewUrl?: string;
   title?: string;
@@ -46,6 +47,7 @@ export function AdminImageDropzone({
   onFileSelect,
   previewAlt = 'Görsel',
   previewClassName,
+  previewStyle,
   previewType = 'auto',
   previewUrl,
   title,
@@ -163,6 +165,7 @@ export function AdminImageDropzone({
             <video
               key={previewUrl}
               className={cn('h-full w-full object-cover', previewClassName)}
+              style={previewStyle}
               controls={false}
               autoPlay
               loop
@@ -173,7 +176,14 @@ export function AdminImageDropzone({
               <source src={previewUrl} />
             </video>
           ) : (
-            <Image src={previewUrl} alt={previewAlt} fill className={cn('h-full w-full object-cover', previewClassName)} sizes="100vw" />
+            <Image
+              src={previewUrl}
+              alt={previewAlt}
+              fill
+              className={cn('h-full w-full object-cover', previewClassName)}
+              sizes="100vw"
+              style={previewStyle}
+            />
           )
         ) : (
           <div className="flex h-full w-full flex-col items-center justify-center gap-3 px-6 text-center text-[color:var(--text-muted)]">

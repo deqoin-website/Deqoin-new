@@ -34,12 +34,51 @@ const DepartmentSchema = new mongoose.Schema(
     ],
     products: [
       {
+        slug: { type: String },
+        categorySlug: { type: String },
         title: { type: String },
+        brandName: { type: String },
         image: { type: String },
+        heroImage: { type: String },
+        heroCrop: {
+          x: { type: Number, default: 50 },
+          y: { type: Number, default: 50 },
+          zoom: { type: Number, default: 1 },
+        },
+        gallery: [{ type: String }],
+        galleryCrops: [
+          {
+            x: { type: Number, default: 50 },
+            y: { type: Number, default: 50 },
+            zoom: { type: Number, default: 1 },
+          }
+        ],
+        shortInfo: { type: String },
+        sku: { type: String },
+        description: { type: String },
         category: { type: String },
         desc: { type: String },
         price: { type: String },
-        link: { type: String }
+        link: { type: String },
+        stockStatus: { type: String, enum: ["available", "limited", "made-to-order"] },
+        stockLabel: { type: String },
+        techTags: [{ type: String }],
+        ctaVariant: { type: String, enum: ["request-sample", "get-info", "request-quote"] },
+        ctaLabel: { type: String },
+        details: [
+          {
+            label: { type: String },
+            value: { type: String },
+          }
+        ],
+        filterValues: { type: mongoose.Schema.Types.Mixed },
+        technicalDetails: [
+          {
+            label: { type: String },
+            value: { type: String },
+          }
+        ],
+        applicationAreas: [{ type: String }],
       }
     ]
   },
