@@ -7,6 +7,7 @@ import RouteThemeSync from "@/components/RouteThemeSync";
 import MaintenancePage from "./maintenance/page";
 import connectToDatabase from "@/lib/mongodb";
 import Settings from "@/models/Settings";
+import { getSiteSeoConfig } from "@/lib/site-seo";
 import Script from "next/script";
 import { headers } from "next/headers";
 import "./globals.css";
@@ -23,8 +24,14 @@ async function getSettings() {
 
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await getSettings();
-  const defaultTitle = settings?.metaTitle || "Deqoin I Architectural Design Studio";
-  const defaultDesc = settings?.metaDescription || "DEQOIN mimari, tasarım ve uygulama odaklı kurumsal vitrin sitesi.";
+  const headersList = await headers();
+  const pathname = headersList.get("x-pathname") || "/";
+  const seo = getSiteSeoConfig(pathname);
+  const defaultTitle = settings?.metaTitle || seo.title;
+  const defaultDesc = settings?.metaDescription || seo.description;
+  const defaultKeywords = settings?.keywords
+    ? settings.keywords.split(",").map((item) => item.trim()).filter(Boolean)
+    : seo.keywords;
   const resolveSiteUrl = () => {
     const explicitUrl = process.env.NEXT_PUBLIC_SITE_URL?.trim();
     if (explicitUrl) return explicitUrl;
@@ -43,7 +50,14 @@ export async function generateMetadata(): Promise<Metadata> {
     metadataBase,
     title: defaultTitle,
     description: defaultDesc,
-    keywords: settings?.keywords || "",
+    keywords: defaultKeywords,
+    alternates: {
+      canonical: new URL(pathname || "/", metadataBase).toString(),
+    },
+    robots: {
+      index: true,
+      follow: true,
+    },
     icons: {
       icon: iconUrl,
     },
