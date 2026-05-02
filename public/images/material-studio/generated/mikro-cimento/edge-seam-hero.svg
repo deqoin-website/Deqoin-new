@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1200" height="1600" viewBox="0 0 1200 1600" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg-0" x1="0" y1="0" x2="1200" y2="1600" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#d9d5cf" />
+      <stop offset="0.54" stop-color="#8f887f" />
+      <stop offset="1" stop-color="#1e1d1c" />
+    </linearGradient>
+    <linearGradient id="bg-soft-0" x1="1200" y1="0" x2="0" y2="1600" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#8f887f" />
+      <stop offset="0.52" stop-color="#5b5751" />
+      <stop offset="1" stop-color="#1e1d1c" />
+    </linearGradient>
+    <filter id="blur-0">
+      <feGaussianBlur stdDeviation="24" />
+    </filter>
+  </defs>
+  <rect width="1200" height="1600" fill="url(#bg-0)" />
+  <rect x="0" y="0" width="1200" height="1600" fill="rgba(255,255,255,0.06)" />
+  <circle cx="141" cy="265" r="199" fill="#5b5751" opacity="0.15" filter="url(#blur-0)" />
+  <circle cx="722" cy="452" r="342" fill="#8f887f" opacity="0.28" filter="url(#blur-0)" />
+  <circle cx="507" cy="1030" r="348" fill="#5b5751" opacity="0.26" filter="url(#blur-0)" />
+  <circle cx="483" cy="681" r="167" fill="#8f887f" opacity="0.28" filter="url(#blur-0)" />
+  <circle cx="898" cy="273" r="330" fill="#5b5751" opacity="0.20" filter="url(#blur-0)" />
+  <rect x="343" y="369" width="289" height="32" rx="16" fill="#d9d5cf" opacity="0.22" transform="rotate(9 487.5 385)" />
+  <rect x="487" y="1095" width="109" height="38" rx="19" fill="#8f887f" opacity="0.37" transform="rotate(14 541.5 1114)" />
+  <rect x="586" y="876" width="192" height="22" rx="11" fill="#1e1d1c" opacity="0.31" transform="rotate(-6 682 887)" />
+  <rect x="939" y="1316" width="92" height="32" rx="16" fill="#d9d5cf" opacity="0.31" transform="rotate(31 985 1332)" />
+  <rect x="1072" y="148" width="111" height="26" rx="13" fill="#8f887f" opacity="0.29" transform="rotate(-12 1127.5 161)" />
+  <rect x="337" y="471" width="310" height="52" rx="26" fill="#1e1d1c" opacity="0.38" transform="rotate(-10 492 497)" />
+  <rect x="642" y="1064" width="244" height="29" rx="14.5" fill="#d9d5cf" opacity="0.30" transform="rotate(31 764 1078.5)" />
+  <rect x="741" y="1258" width="155" height="33" rx="16.5" fill="#8f887f" opacity="0.18" transform="rotate(21 818.5 1274.5)" />
+  <path d="M 1015 879 Q 1044 663 202 561" stroke="#1e1d1c" stroke-width="18" stroke-linecap="round" opacity="0.57" fill="none" />
+  <path d="M 833 1188 Q 854 558 409 634" stroke="#d9d5cf" stroke-width="24" stroke-linecap="round" opacity="0.55" fill="none" />
+  <path d="M 175 1202 Q 358 1237 647 337" stroke="#1e1d1c" stroke-width="30" stroke-linecap="round" opacity="0.54" fill="none" />
+  <path d="M 218 459 Q 904 330 108 187" stroke="#d9d5cf" stroke-width="36" stroke-linecap="round" opacity="0.58" fill="none" />
+  <rect x="76" y="78" width="1048" height="1444" rx="72" stroke="rgba(255,255,255,0.12)" stroke-width="2" />
+</svg>

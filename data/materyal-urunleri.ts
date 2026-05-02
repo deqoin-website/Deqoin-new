@@ -1,5 +1,6 @@
 import { SLIDER_IMAGE_URLS } from "@/lib/slider-images";
 import { materyalKategorileri } from "./materyal-studyo";
+import { materialProducts as generatedMaterialProducts } from "./materyal-urunleri.generated";
 
 export { materyalKategorileri };
 
@@ -52,7 +53,7 @@ const defaultGallery = [
   "https://images.unsplash.com/photo-1494526585095-c41746248156?q=80&w=2000&auto=format&fit=crop",
 ];
 
-export const materialProducts: MaterialProduct[] = [
+const legacyMaterialProducts: MaterialProduct[] = [
   {
     slug: "siena-dokulu-panel",
     categorySlug: "mobilya",
@@ -511,6 +512,11 @@ export const materialProducts: MaterialProduct[] = [
     ctaVariant: "request-quote",
     ctaLabel: "Teklif Al",
   },
+];
+
+export const materialProducts: MaterialProduct[] = [
+  ...legacyMaterialProducts,
+  ...generatedMaterialProducts,
 ];
 
 export const materialFilterGroups: MaterialProductFilterGroup[] = [
