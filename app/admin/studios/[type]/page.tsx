@@ -31,6 +31,7 @@ import {
 } from 'lucide-react';
 
 import { useNotification } from '@/components/admin/AdminNotificationProvider';
+import { AdminImageDropzone } from '@/components/admin/AdminImageDropzone';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -701,62 +702,30 @@ export default function DepartmentManagerPage() {
                     <CardHeader className="pb-4">
                       <CardTitle className="text-base text-[color:var(--text)]">Hero Görseli</CardTitle>
                       <CardDescription className="text-[color:var(--text-muted)]">
-                        Ana kapak görselini sürükle-bırak ile değiştirin.
+                        Ana kapak görselini sürükle-bırak ile değiştirin ya da tıklayıp seçin.
                       </CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-4">
-                      <label
-                        className="group relative flex aspect-[4/3] cursor-pointer items-center justify-center overflow-hidden rounded-[1.5rem] border-2 border-dashed border-[color:var(--line)] bg-[color:var(--surface)]"
-                        onDragOver={(event) => event.preventDefault()}
-                        onDrop={async (event) => {
-                          event.preventDefault();
-                          const file = event.dataTransfer.files[0];
-                          if (!file) return;
-                          try {
-                            const url = await uploadFile(file);
-                            mutateDepartment((draft) => {
-                              draft.image = url;
-                              draft.mediaType = file.type.startsWith('video/') ? 'video' : 'image';
-                            });
-                            showToast('Ana görsel güncellendi.', 'success');
-                          } catch (error) {
-                            showToast(error instanceof Error ? error.message : 'Yükleme başarısız.', 'error');
-                          }
+                      <AdminImageDropzone
+                        aspectClassName="aspect-[4/3]"
+                        accept="image/*,video/*"
+                        buttonLabel="Görsel yükle"
+                        description="Ana kapak görselini sürükleyip bırakın ya da tıklayın."
+                        emptySubtitle="Önerilen oran 4:3 veya yatay 16:9"
+                        emptyTitle="Görsel ekleyin"
+                        previewAlt={department.title}
+                        previewType={department.mediaType === 'video' ? 'video' : 'image'}
+                        previewUrl={department.image}
+                        title="Hero Görseli"
+                        onFileSelect={async (file) => {
+                          const url = await uploadFile(file);
+                          mutateDepartment((draft) => {
+                            draft.image = url;
+                            draft.mediaType = file.type.startsWith('video/') ? 'video' : 'image';
+                          });
+                          showToast('Ana görsel güncellendi.', 'success');
                         }}
-                      >
-                        {department.image ? (
-                          <img src={department.image} alt={department.title} className="h-full w-full object-cover" />
-                        ) : (
-                          <div className="flex flex-col items-center gap-3 p-6 text-center text-[color:var(--text-muted)]">
-                            <div className="rounded-2xl bg-[color:var(--accent)]/10 p-4 text-[color:var(--accent)]">
-                              <Upload className="h-7 w-7" />
-                            </div>
-                            <p className="text-sm font-medium text-[color:var(--text)]">Görsel yüklemek için tıklayın</p>
-                            <p className="text-xs">Önerilen oran 4:3 veya yatay 16:9</p>
-                          </div>
-                        )}
-                        <input
-                          type="file"
-                          accept="image/*,video/*"
-                          className="hidden"
-                          onChange={async (event) => {
-                            const file = event.target.files?.[0];
-                            if (!file) return;
-                            try {
-                              const url = await uploadFile(file);
-                              mutateDepartment((draft) => {
-                                draft.image = url;
-                                draft.mediaType = file.type.startsWith('video/') ? 'video' : 'image';
-                              });
-                              showToast('Ana görsel yüklendi.', 'success');
-                            } catch (error) {
-                              showToast(error instanceof Error ? error.message : 'Yükleme başarısız.', 'error');
-                            } finally {
-                              event.target.value = '';
-                            }
-                          }}
-                        />
-                      </label>
+                      />
 
                       <div className="grid grid-cols-2 gap-3">
                         <Badge variant="outline" className="border-[color:var(--line)] bg-[color:var(--surface)] text-[color:var(--text-muted)]">
@@ -878,41 +847,27 @@ export default function DepartmentManagerPage() {
                       <CardHeader className="pb-4">
                         <CardTitle className="text-base text-[color:var(--text)]">Slider Özeti</CardTitle>
                         <CardDescription className="text-[color:var(--text-muted)]">
-                          Mevcut hero görsel havuzu.
+                          Mevcut hero görsel havuzu. Sürükleyip bırakabilir veya seçerek değiştirebilirsiniz.
                         </CardDescription>
                       </CardHeader>
                       <CardContent className="space-y-3">
                         <div className="rounded-[1.25rem] border border-[color:var(--line)] bg-[color:var(--surface)] p-4 text-sm text-[color:var(--text-muted)]">
                           {department.sliderImages.length} slider görseli yüklü.
                         </div>
-                        <Button
-                          type="button"
-                          variant="outline"
-                          className="w-full border-[color:var(--line)] bg-[color:var(--surface)] text-[color:var(--text)]"
-                          onClick={() => document.getElementById('dept-slider-upload')?.click()}
-                        >
-                          <Plus className="mr-2 h-4 w-4" />
-                          Slider Görseli Ekle
-                        </Button>
-                        <input
-                          id="dept-slider-upload"
-                          type="file"
+                        <AdminImageDropzone
+                          aspectClassName="aspect-[16/10]"
                           accept="image/*"
-                          className="hidden"
-                          onChange={async (event) => {
-                            const file = event.target.files?.[0];
-                            if (!file) return;
-                            try {
-                              const url = await uploadFile(file);
-                              mutateDepartment((draft) => {
-                                draft.sliderImages.push(url);
-                              });
-                              showToast('Slider görseli eklendi.', 'success');
-                            } catch (error) {
-                              showToast(error instanceof Error ? error.message : 'Yükleme başarısız.', 'error');
-                            } finally {
-                              event.target.value = '';
-                            }
+                          buttonLabel="Slider Görseli Ekle"
+                          description="Yeni slider görseli yükleyin."
+                          emptySubtitle="Sürükleyip bırakın ya da tıklayın."
+                          emptyTitle="Slider görseli ekleyin"
+                          title="Slider Görseli Ekle"
+                          onFileSelect={async (file) => {
+                            const url = await uploadFile(file);
+                            mutateDepartment((draft) => {
+                              draft.sliderImages.push(url);
+                            });
+                            showToast('Slider görseli eklendi.', 'success');
                           }}
                         />
                       </CardContent>
@@ -923,59 +878,38 @@ export default function DepartmentManagerPage() {
                     {department.sliderImages.length > 0 ? (
                       department.sliderImages.map((image, index) => (
                         <div key={`${image}-${index}`} className="overflow-hidden rounded-[1.5rem] border border-[color:var(--line)] bg-[color:var(--surface-muted)]">
-                          <div className="aspect-[16/10] bg-black/10">
-                            <img src={image} alt={`Slider ${index + 1}`} className="h-full w-full object-cover" />
-                          </div>
-                          <div className="flex items-center justify-between gap-3 p-4">
-                            <div>
-                              <p className="text-sm font-medium text-[color:var(--text)]">Slide {index + 1}</p>
-                              <p className="text-xs text-[color:var(--text-muted)]">Hero rotasyon görseli</p>
-                            </div>
-                            <div className="flex gap-2">
-                              <Button
-                                type="button"
-                                variant="outline"
-                                size="icon"
-                                className="h-10 w-10 border-[color:var(--line)] bg-[color:var(--surface)] text-[color:var(--text)]"
-                                onClick={() => document.getElementById(`dept-slider-replace-${index}`)?.click()}
-                              >
-                                <ImageIcon className="h-4 w-4" />
-                              </Button>
-                              <Button
-                                type="button"
-                                variant="outline"
-                                size="icon"
-                                className="h-10 w-10 border-rose-500/20 bg-rose-500/10 text-rose-700 hover:bg-rose-500 hover:text-white dark:text-rose-300"
-                                onClick={() =>
-                                  mutateDepartment((draft) => {
-                                    draft.sliderImages.splice(index, 1);
-                                  })
-                                }
-                              >
-                                <Trash2 className="h-4 w-4" />
-                              </Button>
-                              <input
-                                id={`dept-slider-replace-${index}`}
-                                type="file"
-                                accept="image/*"
-                                className="hidden"
-                                onChange={async (event) => {
-                                  const file = event.target.files?.[0];
-                                  if (!file) return;
-                                  try {
-                                    const url = await uploadFile(file);
-                                    mutateDepartment((draft) => {
-                                      draft.sliderImages[index] = url;
-                                    });
-                                    showToast('Slider görseli güncellendi.', 'success');
-                                  } catch (error) {
-                                    showToast(error instanceof Error ? error.message : 'Yükleme başarısız.', 'error');
-                                  } finally {
-                                    event.target.value = '';
-                                  }
-                                }}
-                              />
-                            </div>
+                          <AdminImageDropzone
+                            aspectClassName="aspect-[16/10]"
+                            accept="image/*"
+                            buttonLabel="Değiştir"
+                            description={`Slide ${index + 1} görselini sürükleyip bırakın veya tıklayın.`}
+                            emptySubtitle={`Slide ${index + 1} görselini seçin.`}
+                            emptyTitle={`Slide ${index + 1}`}
+                            previewAlt={`Slide ${index + 1}`}
+                            previewUrl={image}
+                            title={`Slide ${index + 1}`}
+                            onFileSelect={async (file) => {
+                              const url = await uploadFile(file);
+                              mutateDepartment((draft) => {
+                                draft.sliderImages[index] = url;
+                              });
+                              showToast('Slider görseli güncellendi.', 'success');
+                            }}
+                          />
+                          <div className="flex items-center justify-end gap-2 p-4">
+                            <Button
+                              type="button"
+                              variant="outline"
+                              size="icon"
+                              className="h-10 w-10 border-rose-500/20 bg-rose-500/10 text-rose-700 hover:bg-rose-500 hover:text-white dark:text-rose-300"
+                              onClick={() =>
+                                mutateDepartment((draft) => {
+                                  draft.sliderImages.splice(index, 1);
+                                })
+                              }
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
                           </div>
                         </div>
                       ))
@@ -1206,26 +1140,24 @@ export default function DepartmentManagerPage() {
                     {department.products.map((item, index) => (
                       <Card key={`${item.title}-${index}`} className="border border-[color:var(--line)] bg-[color:var(--surface-muted)] shadow-none">
                         <CardContent className="grid gap-4 p-4 xl:grid-cols-[220px_minmax(0,1fr)]">
-                          <label
-                            className="group flex aspect-[4/3] cursor-pointer items-center justify-center overflow-hidden rounded-[1.5rem] border-2 border-dashed border-[color:var(--line)] bg-[color:var(--surface)]"
-                            onClick={() => document.getElementById(`dept-product-upload-${index}`)?.click()}
-                          >
-                            {item.image ? (
-                              <img src={item.image} alt={item.title || 'Product'} className="h-full w-full object-cover" />
-                            ) : (
-                              <div className="flex flex-col items-center gap-2 p-6 text-center text-[color:var(--text-muted)]">
-                                <Upload className="h-6 w-6 text-[color:var(--accent)]" />
-                                <p className="text-sm font-medium text-[color:var(--text)]">Ürün görseli</p>
-                              </div>
-                            )}
-                            <input
-                              id={`dept-product-upload-${index}`}
-                              type="file"
-                              accept="image/*"
-                              className="hidden"
-                              onChange={(event) => handleImageUpload(event, 'product', index)}
-                            />
-                          </label>
+                          <AdminImageDropzone
+                            aspectClassName="aspect-[4/3]"
+                            accept="image/*"
+                            buttonLabel="Görsel yükle"
+                            description="Ürün görselini sürükle-bırak ile değiştirin."
+                            emptySubtitle="Ürün görselini seçin."
+                            emptyTitle="Ürün görseli"
+                            previewAlt={item.title || 'Product'}
+                            previewUrl={item.image}
+                            title="Ürün görseli"
+                            onFileSelect={async (file) => {
+                              const url = await uploadFile(file);
+                              mutateDepartment((draft) => {
+                                draft.products[index].image = url;
+                              });
+                              showToast('Ürün görseli güncellendi.', 'success');
+                            }}
+                          />
                           <div className="space-y-4">
                             <div className="grid gap-4 lg:grid-cols-2">
                               <Input
