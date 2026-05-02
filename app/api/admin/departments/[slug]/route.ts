@@ -4,6 +4,7 @@ import Department from "@/models/Department";
 import { mimariServices } from "@/data/mimari-hizmetler";
 import { uygulamaBirimleri } from "@/data/uygulama-birimleri";
 import { materyalKategorileri } from "@/data/materyal-studyo";
+import { getMaterialProductsByCategory, resolveMaterialCategorySlug } from "@/data/materyal-urunleri";
 
 export async function GET(
   request: Request,
@@ -14,6 +15,8 @@ export async function GET(
     const { slug } = await params;
     
     const doc = await Department.findOne({ slug });
+    const resolvedMaterialSlug = resolveMaterialCategorySlug(slug);
+    const materialProducts = getMaterialProductsByCategory(resolvedMaterialSlug);
     
     // Eğer veritabanında henüz bir kayıt yoksa (CMS'e henüz kaydedilmemişse),
     // Statik dosyalardan (mimari-hizmetler, uygulama-birimleri vb.) veriyi çekip önizleme olarak doldur.
@@ -31,6 +34,7 @@ export async function GET(
           image: match.image,
           sliderImages: match.sliderImages || [],
           categories: match.categories || [],
+          products: materialProducts.length > 0 ? materialProducts : undefined,
           // Eski yapıdaki longDescription satırlarını yeni process mantığına çeviriyoruz:
           process: match.process || (match.longDescription ? match.longDescription.content.map((c: string) => ({ title: "Açıklama Satırı", desc: c })) : []),
           focusAreas: match.focusAreas || []
@@ -41,8 +45,13 @@ export async function GET(
     if (!doc && !fallbackData) {
       return NextResponse.json({ error: "Departman bulunamadı." }, { status: 404 });
     }
-    
-    return NextResponse.json(doc || fallbackData);
+
+    const payload = doc ? doc.toObject?.() || doc : fallbackData;
+    if (materialProducts.length > 0 && (!Array.isArray(payload.products) || payload.products.length === 0)) {
+      payload.products = materialProducts;
+    }
+
+    return NextResponse.json(payload);
   } catch (error) {
     console.error("Department fetch GET error:", error);
     return NextResponse.json({ error: "Veri alınamadı." }, { status: 500 });

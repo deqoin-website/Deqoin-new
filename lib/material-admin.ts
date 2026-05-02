@@ -1,5 +1,10 @@
 import { SLIDER_IMAGE_URLS } from "@/lib/slider-images";
-import { materialProducts, resolveMaterialCategorySlug, type MaterialProduct } from "@/data/materyal-urunleri";
+import {
+  getMaterialProductsByCategory,
+  materialProducts,
+  resolveMaterialCategorySlug,
+  type MaterialProduct,
+} from "@/data/materyal-urunleri";
 
 export type MaterialCropState = { x: number; y: number; zoom: number };
 
@@ -28,6 +33,15 @@ export type MaterialProductDraft = {
     "yuzey-tipi": string[];
     "kullanim-alani": string[];
   };
+};
+
+export type LegacyStudioProduct = {
+  title: string;
+  image: string;
+  category: string;
+  desc: string;
+  price: string;
+  link: string;
 };
 
 export function slugifyMaterial(value: string) {
@@ -182,6 +196,56 @@ export function reorderMaterialGallery(
   return {
     gallery: nextGallery,
     crops: nextCrops,
+  };
+}
+
+export function mapMaterialProductToLegacyStudioProduct(product: MaterialProduct): LegacyStudioProduct {
+  return {
+    title: product.title,
+    image: product.heroImage,
+    category: product.shortInfo || product.techTags?.[0] || product.stockLabel || "",
+    desc: product.description || product.technicalDetails?.[0]?.value || "",
+    price: product.stockLabel || product.ctaLabel || "",
+    link: `/materyal-studyo/${product.categorySlug}/${product.slug}`,
+  };
+}
+
+export function getLegacyStudioProductsFromMaterialCatalog(categorySlug: string) {
+  return getMaterialProductsByCategory(categorySlug).map(mapMaterialProductToLegacyStudioProduct);
+}
+
+export function mapLegacyStudioProductToMaterialProduct(
+  product: LegacyStudioProduct,
+  categorySlug: string,
+  fallback?: MaterialProduct,
+  index = 0,
+): MaterialProduct {
+  const resolvedSlug = resolveMaterialCategorySlug(categorySlug);
+  const fallbackSlug = fallback?.slug || slugifyMaterial(product.title || `urun-${index + 1}`);
+
+  return {
+    slug: fallbackSlug,
+    categorySlug: resolvedSlug,
+    title: product.title || fallback?.title || "Materyal",
+    brandName: fallback?.brandName || "deqoin",
+    heroImage: product.image || fallback?.heroImage || SLIDER_IMAGE_URLS.material,
+    gallery: fallback?.gallery?.length ? fallback.gallery : [product.image || fallback?.heroImage || SLIDER_IMAGE_URLS.material],
+    shortInfo: product.category || fallback?.shortInfo || "",
+    sku: fallback?.sku || slugifyMaterial(product.title || `urun-${index + 1}`).toUpperCase(),
+    description: product.desc || fallback?.description || "",
+    details: fallback?.details || [],
+    filterValues: fallback?.filterValues || {
+      "renk-tonu": [],
+      "yuzey-tipi": [],
+      "kullanim-alani": [],
+    },
+    technicalDetails: fallback?.technicalDetails || [],
+    applicationAreas: fallback?.applicationAreas || [],
+    stockStatus: fallback?.stockStatus || "available",
+    stockLabel: product.price || fallback?.stockLabel || "Stokta",
+    techTags: fallback?.techTags || [],
+    ctaVariant: fallback?.ctaVariant || "get-info",
+    ctaLabel: fallback?.ctaLabel || "Bilgi Al",
   };
 }
 

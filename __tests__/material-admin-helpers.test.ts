@@ -3,6 +3,9 @@ import {
   buildSavedMaterialProductDraft,
   createEmptyMaterialProduct,
   dedupeMaterialGallery,
+  getLegacyStudioProductsFromMaterialCatalog,
+  mapLegacyStudioProductToMaterialProduct,
+  mapMaterialProductToLegacyStudioProduct,
   normalizeMaterialProduct,
   normalizeMaterialCrop,
   removeMaterialGalleryImage,
@@ -121,5 +124,55 @@ describe("material admin helpers", () => {
     expect(crops[0]).toEqual({ x: 10, y: 10, zoom: 1 });
     expect(crops[1]).toEqual({ x: 50, y: 50, zoom: 1 });
     expect(slugifyMaterial("Hokasu Arc Deluxe")).toBe("hokasu-arc-deluxe");
+  });
+
+  it("bridges material catalog items to the legacy studio card shape and back", () => {
+    const catalogProducts = getLegacyStudioProductsFromMaterialCatalog("aydinlatma");
+    expect(catalogProducts).toHaveLength(10);
+    expect(catalogProducts[0]).toHaveProperty("title");
+    expect(catalogProducts[0]).toHaveProperty("link");
+
+    const legacyCard = mapMaterialProductToLegacyStudioProduct(
+      {
+        slug: "hokasu-arc",
+        categorySlug: "aydinlatma",
+        title: "Hokasu Arc",
+        brandName: "hokasu",
+        heroImage: "/images/material-studio/generated/aydinlatma/hokasu-arc-hero.svg",
+        gallery: ["/images/material-studio/generated/aydinlatma/hokasu-arc-hero.svg"],
+        shortInfo: "Lineer",
+        sku: "HOK-ARC",
+        description: "Aydınlatma ürünü",
+        details: [],
+        filterValues: {
+          "renk-tonu": [],
+          "yuzey-tipi": [],
+          "kullanim-alani": [],
+        },
+        technicalDetails: [],
+        applicationAreas: [],
+        stockStatus: "available",
+        stockLabel: "Stokta",
+        techTags: ["Lineer"],
+        ctaVariant: "get-info",
+        ctaLabel: "Bilgi Al",
+      },
+    );
+
+    expect(legacyCard.category).toBe("Lineer");
+    expect(legacyCard.price).toBe("Stokta");
+    expect(legacyCard.link).toBe("/materyal-studyo/aydinlatma/hokasu-arc");
+
+    const roundTrip = mapLegacyStudioProductToMaterialProduct(
+      legacyCard,
+      "aydinlatma",
+      undefined,
+      0,
+    );
+
+    expect(roundTrip.title).toBe("Hokasu Arc");
+    expect(roundTrip.categorySlug).toBe("aydinlatma");
+    expect(roundTrip.stockLabel).toBe("Stokta");
+    expect(roundTrip.description).toBe("Aydınlatma ürünü");
   });
 });

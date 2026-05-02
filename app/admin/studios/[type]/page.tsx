@@ -37,6 +37,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
 import { Textarea } from '@/components/ui/textarea';
+import { getLegacyStudioProductsFromMaterialCatalog, mapLegacyStudioProductToMaterialProduct } from '@/lib/material-admin';
+import { materyalKategorileri } from '@/data/materyal-studyo';
+import { resolveMaterialCategorySlug } from '@/data/materyal-urunleri';
 
 type TabKey = 'genel' | 'hero' | 'surec' | 'odak' | 'kategoriler' | 'urunler' | 'projeler';
 
@@ -97,8 +100,8 @@ const DESIGN_SLUGS = [
   'elektrik-elektronik-muhendisligi',
 ];
 
-const MATERIAL_SLUGS = ['mobilya', 'aydinlatma', 'italyan-sivalar', 'sanatsal-calismalar', 'tugla-ve-tas'];
 const EXECUTION_SLUGS = ['insaat-ekipleri', 'siva-ve-alci-ekipleri', 'boya-ekipleri', 'duvar-sanatcilari', 'ressamlar', 'heykeltiraslar'];
+const MATERIAL_CATEGORY_SLUGS = new Set(materyalKategorileri.map((item) => item.slug));
 
 const TAB_ITEMS: Array<{ key: TabKey; label: string; icon: typeof LayoutGrid; description: string }> = [
   { key: 'genel', label: 'Genel', icon: LayoutGrid, description: 'Künyeyi ve ana görseli düzenle' },
@@ -130,7 +133,7 @@ const cloneDepartment = (value: DepartmentForm) => JSON.parse(JSON.stringify(val
 
 const getProjectTarget = (slug: string) => {
   if (DESIGN_SLUGS.includes(slug)) return 'designStudio';
-  if (MATERIAL_SLUGS.includes(slug)) return 'materialStudio';
+  if (MATERIAL_CATEGORY_SLUGS.has(resolveMaterialCategorySlug(slug))) return 'materialStudio';
   if (EXECUTION_SLUGS.includes(slug)) return 'executionStudio';
   return 'designStudio';
 };
@@ -182,6 +185,15 @@ export default function DepartmentManagerPage() {
   const rawType = params?.type;
   const slug = Array.isArray(rawType) ? rawType[0] : rawType || 'mimarlik';
   const projectTarget = useMemo(() => getProjectTarget(slug), [slug]);
+  const resolvedMaterialSlug = useMemo(() => resolveMaterialCategorySlug(slug), [slug]);
+  const materialStudioProducts = useMemo(
+    () => getLegacyStudioProductsFromMaterialCatalog(resolvedMaterialSlug),
+    [resolvedMaterialSlug],
+  );
+  const isMaterialStudio = useMemo(
+    () => projectTarget === 'materialStudio' && MATERIAL_CATEGORY_SLUGS.has(resolvedMaterialSlug),
+    [projectTarget, resolvedMaterialSlug],
+  );
 
   const [activeTab, setActiveTab] = useState<TabKey>('genel');
   const [loading, setLoading] = useState(true);
@@ -215,6 +227,12 @@ export default function DepartmentManagerPage() {
         throw new Error(data?.error || 'Department fetch failed');
       }
 
+      const sourceProducts = Array.isArray(data.products) && data.products.length > 0
+        ? data.products
+        : isMaterialStudio
+          ? materialStudioProducts
+          : [];
+
       const nextDepartment: DepartmentForm = {
         slug: data.slug || slug,
         title: data.title || makeDepartmentSeed(slug).title,
@@ -238,16 +256,14 @@ export default function DepartmentManagerPage() {
         categories: Array.isArray(data.categories) && data.categories.length > 0
           ? data.categories.map((item: any) => ({ label: item?.label || '', value: item?.value || '' }))
           : [{ label: 'TÜM PROJELER', value: 'ALL' }],
-        products: Array.isArray(data.products)
-          ? data.products.map((item: any) => ({
-              title: item?.title || '',
-              image: item?.image || '',
-              category: item?.category || '',
-              desc: item?.desc || '',
-              price: item?.price || '',
-              link: item?.link || '',
-            }))
-          : [],
+        products: sourceProducts.map((item: any) => ({
+          title: item?.title || '',
+          image: item?.image || item?.heroImage || '',
+          category: item?.category || item?.shortInfo || item?.stockLabel || '',
+          desc: item?.desc || item?.description || item?.shortInfo || '',
+          price: item?.price || item?.stockLabel || item?.ctaLabel || '',
+          link: item?.link || (item?.slug ? `/materyal-studyo/${resolvedMaterialSlug}/${item.slug}` : ''),
+        })),
       };
 
       setDepartment(nextDepartment);
@@ -267,7 +283,7 @@ export default function DepartmentManagerPage() {
     } finally {
       setLoading(false);
     }
-  }, [showToast, slug]);
+  }, [isMaterialStudio, materialStudioProducts, resolvedMaterialSlug, showToast, slug]);
 
   const loadProjects = useCallback(async () => {
     setIsProjectsLoading(true);
@@ -375,7 +391,13 @@ export default function DepartmentManagerPage() {
   const handleDepartmentSave = async () => {
     setIsSaving(true);
     try {
-      const payload = { ...department, slug };
+      const productsPayload = isMaterialStudio
+        ? department.products.map((item: any, index: number) =>
+            mapLegacyStudioProductToMaterialProduct(item, resolvedMaterialSlug, undefined, index),
+          )
+        : department.products;
+
+      const payload = { ...department, slug, products: productsPayload };
       const res = await fetch(`/api/admin/departments/${slug}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
@@ -1173,7 +1195,7 @@ export default function DepartmentManagerPage() {
                   <div className="flex items-center justify-between gap-4">
                     <div>
                       <h3 className="text-base font-semibold text-[color:var(--text)]">Ürün Kataloğu</h3>
-                      <p className="text-sm text-[color:var(--text-muted)]">Görsel, fiyat ve bağlantı yönetimi.</p>
+                      <p className="text-sm text-[color:var(--text-muted)]">Görsel, kısa bilgi ve bağlantı yönetimi.</p>
                     </div>
                     <Button type="button" className="bg-[color:var(--accent)] text-[color:var(--text-inverse)] hover:bg-[color:var(--accent-soft)]" onClick={addProduct}>
                       <Plus className="mr-2 h-4 w-4" />

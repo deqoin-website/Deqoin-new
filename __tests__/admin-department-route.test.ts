@@ -77,4 +77,19 @@ describe("admin department route", () => {
     );
     expect(body.description).toBe("Güncellenmiş açıklama");
   });
+
+  it("hydrates material departments with catalog products when DB is empty", async () => {
+    departmentMock.findOne.mockResolvedValue(null);
+
+    const response = await GET(new Request("http://localhost/api/admin/departments/aydinlatma"), {
+      params: Promise.resolve({ slug: "aydinlatma" }),
+    });
+    const body = await response.json();
+
+    expect(response.status).toBe(200);
+    expect(Array.isArray(body.products)).toBe(true);
+    expect(body.products).toHaveLength(10);
+    expect(body.products[0]).toHaveProperty("title");
+    expect(body.products[0]).toHaveProperty("heroImage");
+  });
 });
