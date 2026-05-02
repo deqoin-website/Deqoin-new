@@ -4,6 +4,7 @@ import Department from "@/models/Department";
 import { mimariServices } from "@/data/mimari-hizmetler";
 import { uygulamaBirimleri } from "@/data/uygulama-birimleri";
 import { materyalKategorileri } from "@/data/materyal-studyo";
+import { normalizeSeoMeta } from "@/lib/seo-meta";
 
 /**
  * Public API for fetching Department data.
@@ -21,7 +22,10 @@ export async function GET(
     const doc = await Department.findOne({ slug });
     
     if (doc) {
-      return NextResponse.json(doc);
+      return NextResponse.json({
+        ...doc,
+        seoMeta: normalizeSeoMeta((doc as any).seoMeta),
+      });
     }
 
     // 2. Fallback to static if no DB entry exists
@@ -39,6 +43,11 @@ export async function GET(
         heroOverlay: 30,
         sliderImages: match.sliderImages || [],
         categories: match.categories || [],
+        seoMeta: normalizeSeoMeta((match as any).seoMeta, {
+          title: match.title || "",
+          description: match.description || "",
+          canonicalPath: `/departman/${match.slug}`,
+        }),
         process: match.process || (match.longDescription ? match.longDescription.content.map((c: string) => ({ title: "Açıklama Satırı", desc: c })) : []),
         focusAreas: match.focusAreas || [],
         products: match.products || []

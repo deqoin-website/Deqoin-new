@@ -1,16 +1,33 @@
+import SeoJsonLd from "@/components/SeoJsonLd";
+import type { JsonLdSchema } from "@/lib/seo-structured-data";
+
 type SeoHeadProps = {
   title: string;
   description: string;
   canonicalPath: string;
   keywords?: string[];
   image?: string;
+  jsonLd?: JsonLdSchema | JsonLdSchema[];
 };
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL?.trim() || "https://www.deqoin.com";
 
-const absoluteUrl = (path: string) => new URL(path.startsWith("/") ? path : `/${path}`, SITE_URL).toString();
+const absoluteUrl = (path: string) => {
+  if (path.startsWith("http://") || path.startsWith("https://")) {
+    return path;
+  }
 
-export default function SeoHead({ title, description, canonicalPath, keywords = [], image = "/images/logo-new.jpeg" }: SeoHeadProps) {
+  return new URL(path.startsWith("/") ? path : `/${path}`, SITE_URL).toString();
+};
+
+export default function SeoHead({
+  title,
+  description,
+  canonicalPath,
+  keywords = [],
+  image = "/images/logo-new.jpeg",
+  jsonLd,
+}: SeoHeadProps) {
   const canonical = absoluteUrl(canonicalPath);
   const imageUrl = absoluteUrl(image);
 
@@ -29,6 +46,7 @@ export default function SeoHead({ title, description, canonicalPath, keywords = 
       <meta name="twitter:title" content={title} />
       <meta name="twitter:description" content={description} />
       <meta name="twitter:image" content={imageUrl} />
+      {jsonLd ? <SeoJsonLd data={jsonLd} /> : null}
     </>
   );
 }

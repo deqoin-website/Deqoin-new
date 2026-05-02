@@ -32,6 +32,7 @@ import {
 
 import { useNotification } from '@/components/admin/AdminNotificationProvider';
 import { AdminImageDropzone } from '@/components/admin/AdminImageDropzone';
+import SeoMetaCard from '@/components/admin/SeoMetaCard';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -66,6 +67,15 @@ type DepartmentForm = {
   heroBlur: number;
   heroOverlay: number;
   sliderImages: string[];
+  seoMeta: {
+    title: string;
+    description: string;
+    keywords: string;
+    ogImage: string;
+    canonicalPath: string;
+    noIndex: boolean;
+    schemaType: string;
+  };
   process: DepartmentProcess[];
   focusAreas: DepartmentFocus[];
   categories: DepartmentCategory[];
@@ -124,6 +134,15 @@ const makeDepartmentSeed = (slug: string): DepartmentForm => ({
   heroBlur: 0,
   heroOverlay: 30,
   sliderImages: [],
+  seoMeta: {
+    title: '',
+    description: '',
+    keywords: '',
+    ogImage: '',
+    canonicalPath: `/admin/studios/${slug}`,
+    noIndex: false,
+    schemaType: 'Service',
+  },
   process: [],
   focusAreas: [],
   categories: [{ label: 'TÜM PROJELER', value: 'ALL' }],
@@ -244,6 +263,7 @@ export default function DepartmentManagerPage() {
         heroBlur: Number(data.heroBlur || 0),
         heroOverlay: Number(data.heroOverlay || 30),
         sliderImages: Array.isArray(data.sliderImages) ? data.sliderImages.filter(Boolean) : [],
+        seoMeta: data.seoMeta || makeDepartmentSeed(slug).seoMeta,
         process: Array.isArray(data.process)
           ? data.process.map((item: any) => ({ title: item?.title || '', desc: item?.desc || '' }))
           : [],
@@ -766,6 +786,13 @@ export default function DepartmentManagerPage() {
                         className="min-h-40 rounded-[1.5rem] border-[color:var(--line)] bg-[color:var(--surface-muted)] text-[color:var(--text)]"
                       />
                     </div>
+                    <SeoMetaCard
+                      title="SEO"
+                      description="Stüdyo başlığı, açıklaması ve paylaşım bilgileri burada tutulur."
+                      canonicalHint={`/admin/studios/${slug}`}
+                      meta={department.seoMeta}
+                      onChange={(next) => mutateDepartment((draft) => { draft.seoMeta = next; })}
+                    />
                     <div className="grid gap-4 sm:grid-cols-2">
                       <div className="space-y-2">
                         <label className="text-xs font-medium uppercase tracking-[0.24em] text-[color:var(--text-muted)]">Hero Blur</label>

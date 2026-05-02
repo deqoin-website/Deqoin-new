@@ -38,9 +38,13 @@ const ProjectSchema = new mongoose.Schema(
     
     // SEO Meta
     seoMeta: {
-      title: { type: String },
-      description: { type: String },
-      keywords: { type: String }
+      title: { type: String, default: "" },
+      description: { type: String, default: "" },
+      keywords: { type: String, default: "" },
+      ogImage: { type: String, default: "" },
+      canonicalPath: { type: String, default: "" },
+      noIndex: { type: Boolean, default: false },
+      schemaType: { type: String, default: "" },
     },
 
     // Yeni Gelişmiş Galeri Yapısı

@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import connectToDatabase from "@/lib/mongodb";
 import Project from "@/models/Project";
+import { revalidatePath } from "next/cache";
 
 export async function GET(request: Request) {
   try {
@@ -38,6 +39,8 @@ export async function POST(request: Request) {
     }
     
     const project = await Project.create(body);
+    revalidatePath("/galeri");
+    revalidatePath(`/galeri/${project.slug}`);
     return NextResponse.json(project, { status: 201 });
   } catch (error) {
     console.error("Project creation error:", error);

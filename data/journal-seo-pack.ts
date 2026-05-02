@@ -17,5 +17,14 @@ export const journalSeoPackArticles: JournalArticle[] = seoPackArticles;
 export const journalSeoPackDraft: JournalPageDraft = {
   pageTitle: journalSeoPack.pageTitle,
   hero: journalSeoPack.hero,
+  seoMeta: {
+    title: "deqoin journal | nevşehir mimarlık ve uygulama notları",
+    description: "deqoin journal içinde iç mimarlık, uygulama ve materyal notlarını inceleyin.",
+    keywords: "deqoin, journal, nevşehir iç mimarlık, kapadokya mimarlık, uygulama notları",
+    ogImage: "/images/logo-new.jpeg",
+    canonicalPath: "/journal",
+    noIndex: false,
+    schemaType: "Article",
+  },
   articles: seoPackArticles,
 };

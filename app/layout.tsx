@@ -8,6 +8,7 @@ import MaintenancePage from "./maintenance/page";
 import connectToDatabase from "@/lib/mongodb";
 import Settings from "@/models/Settings";
 import { getSiteSeoConfig } from "@/lib/site-seo";
+import { buildLocalBusinessJsonLd, buildOrganizationJsonLd, buildWebSiteJsonLd } from "@/lib/seo-structured-data";
 import Script from "next/script";
 import { headers } from "next/headers";
 import "./globals.css";
@@ -22,6 +23,14 @@ async function getSettings() {
   }
 }
 
+function isNoIndexPath(pathname: string) {
+  return (
+    pathname.startsWith("/admin") ||
+    pathname.startsWith("/maintenance") ||
+    pathname.startsWith("/test-upload")
+  );
+}
+
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await getSettings();
   const headersList = await headers();
@@ -30,7 +39,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const defaultTitle = settings?.metaTitle || seo.title;
   const defaultDesc = settings?.metaDescription || seo.description;
   const defaultKeywords = settings?.keywords
-    ? settings.keywords.split(",").map((item) => item.trim()).filter(Boolean)
+    ? settings.keywords.split(",").map((item: string) => item.trim()).filter(Boolean)
     : seo.keywords;
   const resolveSiteUrl = () => {
     const explicitUrl = process.env.NEXT_PUBLIC_SITE_URL?.trim();
@@ -55,8 +64,8 @@ export async function generateMetadata(): Promise<Metadata> {
       canonical: new URL(pathname || "/", metadataBase).toString(),
     },
     robots: {
-      index: true,
-      follow: true,
+      index: !isNoIndexPath(pathname),
+      follow: !isNoIndexPath(pathname),
     },
     icons: {
       icon: iconUrl,
@@ -86,6 +95,7 @@ export default async function RootLayout({
   // Get pathname from headers (passed via middleware)
   const headersList = await headers();
   const pathname = headersList.get('x-pathname') || '';
+  const noIndexPath = isNoIndexPath(pathname);
   const isAdminPath = pathname.startsWith('/admin');
 
   // Script and analytics integration
@@ -97,6 +107,28 @@ export default async function RootLayout({
       <head>
         <link rel="preconnect" href="https://res.cloudinary.com" />
         <link rel="dns-prefetch" href="https://res.cloudinary.com" />
+        {!noIndexPath && (
+          <>
+            <script
+              type="application/ld+json"
+              dangerouslySetInnerHTML={{
+                __html: JSON.stringify(buildOrganizationJsonLd(settings?.logoUrl || "/images/logo-new.jpeg")),
+              }}
+            />
+            <script
+              type="application/ld+json"
+              dangerouslySetInnerHTML={{
+                __html: JSON.stringify(buildLocalBusinessJsonLd(settings?.logoUrl || "/images/logo-new.jpeg")),
+              }}
+            />
+            <script
+              type="application/ld+json"
+              dangerouslySetInnerHTML={{
+                __html: JSON.stringify(buildWebSiteJsonLd()),
+              }}
+            />
+          </>
+        )}
         <script dangerouslySetInnerHTML={{
           __html: `
             (function() {

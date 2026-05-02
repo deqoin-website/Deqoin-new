@@ -1,13 +1,18 @@
+import connectToDatabase from "@/lib/mongodb";
 import { mimariServices } from "@/data/mimari-hizmetler";
 import { projectsData } from "@/data/projects";
 import { uygulamaBirimleri } from "@/data/uygulama-birimleri";
 import { createDefaultJournalDraft } from "@/lib/journal-content";
 import { getSiteSeoConfig } from "@/lib/site-seo";
+import Department from "@/models/Department";
+import Project from "@/models/Project";
+import JournalContent from "@/models/JournalContent";
 import {
   getMaterialCategory,
   getMaterialProduct,
   resolveMaterialCategorySlug,
 } from "@/data/materyal-urunleri";
+import { normalizeSeoMeta, seoKeywordsToArray } from "@/lib/seo-meta";
 
 type SeoConfig = {
   title: string;
@@ -29,6 +34,30 @@ const baseKeywords = [
   "villa tasarımı",
 ];
 
+function seoFromMeta(meta?: any, fallback?: Partial<SeoConfig>) {
+  const normalized = normalizeSeoMeta(meta, {
+    title: fallback?.title || "",
+    description: fallback?.description || "",
+    keywords: fallback?.keywords?.join(", ") || "",
+    ogImage: "",
+    canonicalPath: "",
+    noIndex: false,
+    schemaType: "",
+  });
+
+  return {
+    title: normalized.title || fallback?.title || "",
+    description: normalized.description || fallback?.description || "",
+    keywords: seoKeywordsToArray(normalized.keywords).length > 0
+      ? [...new Set([...baseKeywords, ...seoKeywordsToArray(normalized.keywords)])]
+      : fallback?.keywords || [...baseKeywords],
+    ogImage: normalized.ogImage,
+    canonicalPath: normalized.canonicalPath,
+    noIndex: normalized.noIndex,
+    schemaType: normalized.schemaType,
+  };
+}
+
 export function getStaticSeo(pathname: string): SeoConfig {
   const base = getSiteSeoConfig(pathname);
   return {
@@ -38,7 +67,26 @@ export function getStaticSeo(pathname: string): SeoConfig {
   };
 }
 
-export function getMimariDetailSeo(slug: string): SeoConfig {
+export async function getMimariDetailSeo(slug: string): Promise<SeoConfig> {
+  try {
+    await connectToDatabase();
+    const doc = await Department.findOne({ slug }).lean();
+    if (doc?.seoMeta) {
+      const seo = seoFromMeta(doc.seoMeta, {
+        title: `${doc.title || "Mimari"} | deqoin`,
+        description: doc.description || "Mimari hizmet detaylarını inceleyin.",
+        keywords: [...baseKeywords, "mimari tasarım", "villa mimarlık", "projelendirme"],
+      });
+      return {
+        title: seo.title,
+        description: seo.description,
+        keywords: seo.keywords,
+      };
+    }
+  } catch {
+    // Static fallback below.
+  }
+
   const service = mimariServices.find((item) => item.slug === slug);
   const titleBase = service?.title || "Mimari";
   const titleMap: Record<string, string> = {
@@ -66,7 +114,26 @@ export function getMimariDetailSeo(slug: string): SeoConfig {
   };
 }
 
-export function getUygulamaDetailSeo(slug: string): SeoConfig {
+export async function getUygulamaDetailSeo(slug: string): Promise<SeoConfig> {
+  try {
+    await connectToDatabase();
+    const doc = await Department.findOne({ slug }).lean();
+    if (doc?.seoMeta) {
+      const seo = seoFromMeta(doc.seoMeta, {
+        title: `${doc.title || "Uygulama"} | deqoin`,
+        description: doc.description || "Uygulama hizmet detaylarını inceleyin.",
+        keywords: [...baseKeywords, "uygulama ekibi", "şantiye yönetimi", "villa uygulaması"],
+      });
+      return {
+        title: seo.title,
+        description: seo.description,
+        keywords: seo.keywords,
+      };
+    }
+  } catch {
+    // Static fallback below.
+  }
+
   const service = uygulamaBirimleri.find((item) => item.slug === slug);
   const titleMap: Record<string, string> = {
     "insaat-ekipleri": "İnşaat Ekipleri | Villa ve Şantiye Uygulaması | deqoin",
@@ -94,6 +161,25 @@ export function getUygulamaDetailSeo(slug: string): SeoConfig {
 }
 
 export async function getGalleryDetailSeo(slug: string): Promise<SeoConfig> {
+  try {
+    await connectToDatabase();
+    const doc = await Project.findOne({ slug }).lean();
+    if (doc?.seoMeta) {
+      const seo = seoFromMeta(doc.seoMeta, {
+        title: `${doc.title || "Proje"} | Proje Galerisi | deqoin`,
+        description: doc.description || "Proje galerisi.",
+        keywords: [...baseKeywords, "proje galerisi", "mimari referans", "villa referansları"],
+      });
+      return {
+        title: seo.title,
+        description: seo.description,
+        keywords: seo.keywords,
+      };
+    }
+  } catch {
+    // Static fallback below.
+  }
+
   const project = projectsData.find((item) => item.slug === slug);
 
   if (!project) {
@@ -111,6 +197,30 @@ export async function getGalleryDetailSeo(slug: string): Promise<SeoConfig> {
 }
 
 export async function getJournalDetailSeo(slug: string): Promise<SeoConfig> {
+  try {
+    await connectToDatabase();
+    const doc = await JournalContent.findOne({ page: "journal" }).lean();
+    const seoMeta = doc?.seoMeta;
+    const draft = createDefaultJournalDraft();
+    const article = draft.articles.find((item) => item.slug === slug);
+    const dbArticle = Array.isArray(doc?.articles) ? doc.articles.find((item: any) => item?.slug === slug) : null;
+
+    if (dbArticle?.seoMeta || seoMeta) {
+      const seo = seoFromMeta(dbArticle?.seoMeta || seoMeta, {
+        title: `${dbArticle?.title || article?.title || "deqoin journal"} | deqoin`,
+        description: dbArticle?.deck || article?.deck || "Mimari ve uygulama notlarını inceleyin.",
+        keywords: [...baseKeywords, "mimari içerik", "journal", "uygulama notları"],
+      });
+      return {
+        title: seo.title,
+        description: seo.description,
+        keywords: seo.keywords,
+      };
+    }
+  } catch {
+    // Static fallback below.
+  }
+
   const draft = createDefaultJournalDraft();
   const article = draft.articles.find((item) => item.slug === slug);
 
@@ -128,6 +238,24 @@ export async function getJournalDetailSeo(slug: string): Promise<SeoConfig> {
 export async function getMaterialCategorySeo(categorySlug: string): Promise<SeoConfig> {
   const resolvedSlug = resolveMaterialCategorySlug(categorySlug);
   const category = getMaterialCategory(resolvedSlug);
+  try {
+    await connectToDatabase();
+    const doc = await Department.findOne({ slug: resolvedSlug }).lean();
+    if (doc?.seoMeta) {
+      const seo = seoFromMeta(doc.seoMeta, {
+        title: `${doc.title || category?.title || resolvedSlug} | Materyal Stüdyo | deqoin`,
+        description: doc.description || category?.description || "Materyal stüdyo içeriğini inceleyin.",
+        keywords: [...baseKeywords, "materyal stüdyosu", "mimari malzeme"],
+      });
+      return {
+        title: seo.title,
+        description: seo.description,
+        keywords: seo.keywords,
+      };
+    }
+  } catch {
+    // Static fallback below.
+  }
 
   if (!category) {
     return getStaticSeo("/materyal-studyo");
@@ -147,6 +275,25 @@ export async function getMaterialProductSeo(categorySlug: string, productSlug: s
   const resolvedSlug = resolveMaterialCategorySlug(categorySlug);
   const product = getMaterialProduct(resolvedSlug, productSlug);
   const category = getMaterialCategory(resolvedSlug);
+  try {
+    await connectToDatabase();
+    const doc = await Department.findOne({ slug: resolvedSlug }).lean();
+    const dbProduct = Array.isArray(doc?.products) ? doc.products.find((item: any) => item?.slug === productSlug) : null;
+    if (dbProduct?.seoMeta || doc?.seoMeta) {
+      const seo = seoFromMeta(dbProduct?.seoMeta || doc.seoMeta, {
+        title: `${dbProduct?.title || product?.title || category?.title || "Materyal"} | deqoin`,
+        description: dbProduct?.shortInfo || product?.shortInfo || product?.description || "Ürün detaylarını inceleyin.",
+        keywords: [...baseKeywords, "materyal stüdyosu", "mimari malzeme"],
+      });
+      return {
+        title: seo.title,
+        description: seo.description,
+        keywords: seo.keywords,
+      };
+    }
+  } catch {
+    // Static fallback below.
+  }
 
   if (!product || !category) {
     return getStaticSeo("/materyal-studyo");

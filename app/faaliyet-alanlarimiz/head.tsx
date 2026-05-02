@@ -1,7 +1,26 @@
 import SeoHead from "@/components/SeoHead";
 import { getStaticSeo } from "@/lib/seo-routes";
+import { buildBreadcrumbJsonLd, buildWebPageJsonLd } from "@/lib/seo-structured-data";
 
 export default function Head() {
   const seo = getStaticSeo("/faaliyet-alanlarimiz");
-  return <SeoHead title={seo.title} description={seo.description} canonicalPath="/faaliyet-alanlarimiz" keywords={seo.keywords} />;
+  return (
+    <SeoHead
+      title={seo.title}
+      description={seo.description}
+      canonicalPath="/faaliyet-alanlarimiz"
+      keywords={seo.keywords}
+      jsonLd={[
+        buildWebPageJsonLd({
+          name: seo.title,
+          description: seo.description,
+          url: "/faaliyet-alanlarimiz",
+        }),
+        buildBreadcrumbJsonLd([
+          { name: "Ana Sayfa", url: "/" },
+          { name: "Faaliyet Alanlarımız", url: "/faaliyet-alanlarimiz" },
+        ]),
+      ]}
+    />
+  );
 }

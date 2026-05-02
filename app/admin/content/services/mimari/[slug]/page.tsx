@@ -27,6 +27,7 @@ import {
 
 import { useNotification } from '@/components/admin/AdminNotificationProvider';
 import { AdminImageDropzone } from '@/components/admin/AdminImageDropzone';
+import SeoMetaCard from '@/components/admin/SeoMetaCard';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -47,6 +48,15 @@ type DepartmentState = {
   heroBlur: number;
   heroOverlay: number;
   sliderImages: string[];
+  seoMeta: {
+    title: string;
+    description: string;
+    keywords: string;
+    ogImage: string;
+    canonicalPath: string;
+    noIndex: boolean;
+    schemaType: string;
+  };
   process: { title: string; desc: string }[];
   focusAreas: { title: string; icon: string; desc: string }[];
   categories: { label: string; value: string }[];
@@ -74,6 +84,15 @@ const makeSeed = (slug: string): DepartmentState => ({
   heroBlur: 0,
   heroOverlay: 30,
   sliderImages: [],
+  seoMeta: {
+    title: '',
+    description: '',
+    keywords: '',
+    ogImage: '',
+    canonicalPath: `/mimari/${slug}`,
+    noIndex: false,
+    schemaType: 'Service',
+  },
   process: [],
   focusAreas: [],
   categories: [{ label: 'TÜM PROJELER', value: 'ALL' }],
@@ -91,6 +110,7 @@ const normalizeDepartment = (value: any, slug: string): DepartmentState => {
     heroBlur: Number(value?.heroBlur || 0),
     heroOverlay: Number(value?.heroOverlay || 30),
     sliderImages: Array.isArray(value?.sliderImages) ? value.sliderImages.filter(Boolean) : [],
+    seoMeta: value?.seoMeta || seed.seoMeta,
     process: Array.isArray(value?.process)
       ? value.process.map((item: any) => ({ title: item?.title || '', desc: item?.desc || '' }))
       : [],
@@ -508,16 +528,23 @@ export default function ServiceDetailEditor() {
                       />
                     </div>
                   </div>
-                  <div className="space-y-2">
-                    <label className="text-xs font-medium uppercase tracking-[0.24em] text-[color:var(--text-muted)]">Açıklama</label>
-                    <Textarea
-                      value={department.description}
-                      onChange={(event) => mutateDepartment((draft) => { draft.description = event.target.value; })}
-                      rows={9}
-                      className="min-h-40 rounded-[1.5rem] border-[color:var(--line)] bg-[color:var(--surface-muted)] text-[color:var(--text)]"
+                    <div className="space-y-2">
+                      <label className="text-xs font-medium uppercase tracking-[0.24em] text-[color:var(--text-muted)]">Açıklama</label>
+                      <Textarea
+                        value={department.description}
+                        onChange={(event) => mutateDepartment((draft) => { draft.description = event.target.value; })}
+                        rows={9}
+                        className="min-h-40 rounded-[1.5rem] border-[color:var(--line)] bg-[color:var(--surface-muted)] text-[color:var(--text)]"
+                      />
+                    </div>
+                    <SeoMetaCard
+                      title="SEO"
+                      description="Bu departmanın başlık ve açıklaması arama sonuçlarında burada yönetilir."
+                      canonicalHint={`/mimari/${slug}`}
+                      meta={department.seoMeta}
+                      onChange={(next) => mutateDepartment((draft) => { draft.seoMeta = next; })}
                     />
-                  </div>
-                  <div className="grid gap-4 sm:grid-cols-2">
+                    <div className="grid gap-4 sm:grid-cols-2">
                     <div className="space-y-2">
                       <label className="text-xs font-medium uppercase tracking-[0.24em] text-[color:var(--text-muted)]">Hero Blur</label>
                       <Input

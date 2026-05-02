@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import connectToDatabase from "@/lib/mongodb";
 import JournalContent from "@/models/JournalContent";
 import { createDefaultJournalDraft, normalizeJournalDraft, serializeJournalDraft } from "@/lib/journal-content";
+import { revalidatePath } from "next/cache";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -73,6 +74,11 @@ export async function POST(request: Request) {
       },
       { upsert: true, new: true, setDefaultsOnInsert: true },
     ).lean();
+
+    revalidatePath("/journal");
+    for (const article of normalized.articles) {
+      revalidatePath(`/journal/${article.slug}`);
+    }
 
     return NextResponse.json(stripMongoFields(updated || payload), {
       headers: {

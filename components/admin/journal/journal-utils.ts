@@ -21,6 +21,15 @@ export type JournalDraftState = {
     description: string;
     featuredArticleSlug: string;
   };
+  seoMeta: {
+    title: string;
+    description: string;
+    keywords: string;
+    ogImage: string;
+    canonicalPath: string;
+    noIndex: boolean;
+    schemaType: string;
+  };
   articles: JournalArticleDraft[];
 };
 
@@ -90,6 +99,15 @@ export function createEmptyArticle(index: number): JournalArticleDraft {
     contentTypes: ["İÇGÖRÜLER"],
     relatedProjectSlugs: [],
     intro: "bu makale için giriş metnini buraya yazın.",
+    seoMeta: {
+      title: "",
+      description: "",
+      keywords: "",
+      ogImage: "",
+      canonicalPath: "",
+      noIndex: false,
+      schemaType: "",
+    },
     sections: attachSectionIds([
       {
         type: "paragraph",
@@ -99,9 +117,18 @@ export function createEmptyArticle(index: number): JournalArticleDraft {
   };
 }
 
-export function ensureJournalDraft(value: { pageTitle: string; hero: JournalDraftState["hero"]; articles: JournalArticle[] }): JournalDraftState {
+export function ensureJournalDraft(value: { pageTitle: string; hero: JournalDraftState["hero"]; seoMeta?: JournalDraftState["seoMeta"]; articles: JournalArticle[] }): JournalDraftState {
   return {
     ...clone(value),
+    seoMeta: (value as any).seoMeta || {
+      title: "",
+      description: "",
+      keywords: "",
+      ogImage: "",
+      canonicalPath: "/journal",
+      noIndex: false,
+      schemaType: "Article",
+    },
     articles: value.articles.map((article, index) => ({
       ...clone(article),
       slug: article.slug || `journal-entry-${index + 1}`,

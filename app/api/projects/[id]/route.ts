@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import connectToDatabase from "@/lib/mongodb";
 import Project from "@/models/Project";
+import { revalidatePath } from "next/cache";
 
 type RouteParams = {
   params: Promise<{ id: string }>;
@@ -31,6 +32,8 @@ export async function PATCH(
     await connectToDatabase();
     const project = await Project.findByIdAndUpdate(id, body, { new: true });
     if (!project) return NextResponse.json({ error: "Project not found" }, { status: 404 });
+    revalidatePath("/galeri");
+    revalidatePath(`/galeri/${project.slug}`);
     return NextResponse.json(project);
   } catch (error) {
     return NextResponse.json({ error: "Failed to update project" }, { status: 500 });
@@ -46,6 +49,8 @@ export async function DELETE(
     await connectToDatabase();
     const project = await Project.findByIdAndDelete(id);
     if (!project) return NextResponse.json({ error: "Project not found" }, { status: 404 });
+    revalidatePath("/galeri");
+    revalidatePath(`/galeri/${project.slug}`);
     return NextResponse.json({ message: "Project deleted successfully" });
   } catch (error) {
     return NextResponse.json({ error: "Failed to delete project" }, { status: 500 });

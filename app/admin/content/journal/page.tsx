@@ -479,6 +479,7 @@ export default function JournalAdminPage() {
       const payload = serializeJournalDraft({
         pageTitle: draft.pageTitle,
         hero: clone(draft.hero),
+        seoMeta: clone(draft.seoMeta),
         articles: draft.articles.map(stripArticle),
       });
 
@@ -755,6 +756,7 @@ export default function JournalAdminPage() {
                 activeTab={editorTab}
                 onTabChange={setEditorTab}
                 onUpdateArticle={patchSelectedArticle}
+                onUpdateDraft={(updater) => setNextDraft((current) => updater(current))}
                 onUploadImage={uploadJournalImage}
                 draggedBlockIndex={draggedBlockIndex}
                 blockDropTargetIndex={blockDropTargetIndex}

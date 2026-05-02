@@ -18,6 +18,7 @@ type JournalEditorProps = {
   activeTab: string;
   onTabChange: (value: string) => void;
   onUpdateArticle: (updater: (article: JournalArticleDraft) => JournalArticleDraft) => void;
+  onUpdateDraft: (updater: (draft: JournalDraftState) => JournalDraftState) => void;
   onUploadImage: (file: File) => Promise<string>;
   onStartBlockDrag: (index: number | null) => void;
   onSetBlockDropTarget: (index: number | null) => void;
@@ -31,6 +32,7 @@ export function JournalEditor({
   activeTab,
   onTabChange,
   onUpdateArticle,
+  onUpdateDraft,
   onUploadImage,
   onStartBlockDrag,
   onSetBlockDropTarget,
@@ -96,6 +98,7 @@ export function JournalEditor({
               draft={draft}
               featuredArticle={featuredArticle}
               onUpdateArticle={onUpdateArticle}
+              onUpdateDraft={onUpdateDraft}
               onUploadImage={onUploadImage}
             />
           </TabsContent>

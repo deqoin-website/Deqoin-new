@@ -11,6 +11,15 @@ const DepartmentSchema = new mongoose.Schema(
     heroBlur: { type: Number, default: 0 },
     heroOverlay: { type: Number, default: 30 },
     sliderImages: [{ type: String }],
+    seoMeta: {
+      title: { type: String, default: "" },
+      description: { type: String, default: "" },
+      keywords: { type: String, default: "" },
+      ogImage: { type: String, default: "" },
+      canonicalPath: { type: String, default: "" },
+      noIndex: { type: Boolean, default: false },
+      schemaType: { type: String, default: "" },
+    },
     
     // Arrays for dynamic tabs
     process: [

@@ -3,6 +3,7 @@
 import Image from "next/image";
 
 import { AdminImageDropzone } from "@/components/admin/AdminImageDropzone";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
@@ -16,6 +17,7 @@ type JournalMetaTabProps = {
   draft: JournalDraftState;
   featuredArticle: JournalArticleDraft | null;
   onUpdateArticle: (updater: (article: JournalArticleDraft) => JournalArticleDraft) => void;
+  onUpdateDraft: (updater: (draft: JournalDraftState) => JournalDraftState) => void;
   onUploadImage: (file: File) => Promise<string>;
 };
 
@@ -24,6 +26,7 @@ export function JournalMetaTab({
   draft,
   featuredArticle,
   onUpdateArticle,
+  onUpdateDraft,
   onUploadImage,
 }: JournalMetaTabProps) {
   return (
@@ -54,6 +57,62 @@ export function JournalMetaTab({
       </div>
 
       <div className="space-y-4">
+        <div className="rounded-[1.5rem] border border-white/10 bg-white/[0.03] p-4">
+          <p className="text-[0.6rem] tracking-[0.08em] text-zinc-500 uppercase">seo bilgileri</p>
+          <div className="mt-4 grid gap-4">
+            <FieldGroup label="seo başlığı">
+              <Input
+                value={draft.seoMeta.title}
+                onChange={(event) => onUpdateDraft((current) => ({ ...current, seoMeta: { ...current.seoMeta, title: event.target.value } }))}
+                placeholder="deqoin journal | ..."
+              />
+            </FieldGroup>
+            <FieldGroup label="seo açıklaması">
+              <Textarea
+                value={draft.seoMeta.description}
+                onChange={(event) => onUpdateDraft((current) => ({ ...current, seoMeta: { ...current.seoMeta, description: event.target.value } }))}
+                className="min-h-[110px] bg-white/[0.03] text-white placeholder:text-zinc-500"
+              />
+            </FieldGroup>
+            <FieldGroup label="anahtar kelimeler">
+              <Input
+                value={draft.seoMeta.keywords}
+                onChange={(event) => onUpdateDraft((current) => ({ ...current, seoMeta: { ...current.seoMeta, keywords: event.target.value } }))}
+                placeholder="journal, mimari, uygulama"
+              />
+            </FieldGroup>
+            <FieldGroup label="og görseli">
+              <Input
+                value={draft.seoMeta.ogImage}
+                onChange={(event) => onUpdateDraft((current) => ({ ...current, seoMeta: { ...current.seoMeta, ogImage: event.target.value } }))}
+                placeholder="/images/logo-new.jpeg"
+              />
+            </FieldGroup>
+            <FieldGroup label="canonical yol">
+              <Input
+                value={draft.seoMeta.canonicalPath}
+                onChange={(event) => onUpdateDraft((current) => ({ ...current, seoMeta: { ...current.seoMeta, canonicalPath: event.target.value } }))}
+                placeholder="/journal"
+              />
+            </FieldGroup>
+            <div className="flex items-center justify-between rounded-xl border border-white/10 bg-black/10 px-3 py-2">
+              <div>
+                <p className="text-xs uppercase text-zinc-300">noindex</p>
+                <p className="text-[0.65rem] uppercase text-zinc-500">arama motoruna kapat</p>
+              </div>
+              <Checkbox
+                checked={draft.seoMeta.noIndex}
+                onCheckedChange={(checked) =>
+                  onUpdateDraft((current) => ({
+                    ...current,
+                    seoMeta: { ...current.seoMeta, noIndex: checked === true },
+                  }))
+                }
+              />
+            </div>
+          </div>
+        </div>
+
         <AdminImageDropzone
           accept="image/*"
           aspectClassName="aspect-[16/10]"

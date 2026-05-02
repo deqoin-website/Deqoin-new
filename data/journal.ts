@@ -86,6 +86,15 @@ export type JournalArticle = {
   contentTypes: JournalContentType[];
   relatedProjectSlugs: string[];
   intro: string;
+  seoMeta?: {
+    title?: string;
+    description?: string;
+    keywords?: string;
+    ogImage?: string;
+    canonicalPath?: string;
+    noIndex?: boolean;
+    schemaType?: string;
+  };
   sections: JournalSection[];
 };
 

@@ -1,4 +1,5 @@
 import { SLIDER_IMAGE_URLS } from "@/lib/slider-images";
+import type { SeoMeta } from "@/lib/seo-meta";
 import { materyalKategorileri } from "./materyal-studyo";
 import { materialProducts as generatedMaterialProducts } from "./materyal-urunleri.generated";
 
@@ -45,6 +46,7 @@ export type MaterialProduct = {
   techTags?: string[];
   ctaVariant?: "request-sample" | "get-info" | "request-quote";
   ctaLabel?: string;
+  seoMeta?: SeoMeta;
 };
 
 const defaultGallery = [

@@ -29,6 +29,7 @@ import {
 
 import { useNotification } from '@/components/admin/AdminNotificationProvider';
 import { AdminImageDropzone } from '@/components/admin/AdminImageDropzone';
+import SeoMetaCard from '@/components/admin/SeoMetaCard';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -68,6 +69,15 @@ type ProductState = {
   stockLabel: string;
   ctaVariant: ProductCtaVariant;
   ctaLabel: string;
+  seoMeta: {
+    title: string;
+    description: string;
+    keywords: string;
+    ogImage: string;
+    canonicalPath: string;
+    noIndex: boolean;
+    schemaType: string;
+  };
   filterValues: {
     'renk-tonu': string[];
     'yuzey-tipi': string[];
@@ -85,6 +95,15 @@ type DepartmentState = {
   heroBlur: number;
   heroOverlay: number;
   sliderImages: string[];
+  seoMeta: {
+    title: string;
+    description: string;
+    keywords: string;
+    ogImage: string;
+    canonicalPath: string;
+    noIndex: boolean;
+    schemaType: string;
+  };
   process: { title: string; desc: string }[];
   focusAreas: { title: string; icon: string; desc: string }[];
   categories: { label: string; value: string }[];
@@ -142,6 +161,15 @@ const createEmptyProduct = (categorySlug: string): ProductState => ({
   stockLabel: 'Stokta',
   ctaVariant: 'request-sample',
   ctaLabel: 'Numune İste',
+  seoMeta: {
+    title: '',
+    description: '',
+    keywords: '',
+    ogImage: '',
+    canonicalPath: `/materyal-studyo/${categorySlug}`,
+    noIndex: false,
+    schemaType: 'Product',
+  },
   filterValues: {
     'renk-tonu': [],
     'yuzey-tipi': [],
@@ -239,6 +267,7 @@ const normalizeProduct = (value: any, categorySlug: string): ProductState => {
     stockLabel: value?.stockLabel || seed.stockLabel || 'Stokta',
     ctaVariant: value?.ctaVariant || seed.ctaVariant || 'request-sample',
     ctaLabel: value?.ctaLabel || seed.ctaLabel || 'Numune İste',
+    seoMeta: value?.seoMeta || seed.seoMeta,
     filterValues: {
       'renk-tonu': Array.isArray(value?.filterValues?.['renk-tonu']) ? value.filterValues['renk-tonu'] : seed.filterValues['renk-tonu'],
       'yuzey-tipi': Array.isArray(value?.filterValues?.['yuzey-tipi']) ? value.filterValues['yuzey-tipi'] : seed.filterValues['yuzey-tipi'],
@@ -265,6 +294,15 @@ const makeSeed = (slug: string): DepartmentState => {
     heroBlur: 0,
     heroOverlay: 30,
     sliderImages: matched?.sliderImages?.length ? matched.sliderImages : [SLIDER_IMAGE_URLS.material],
+    seoMeta: {
+      title: '',
+      description: '',
+      keywords: '',
+      ogImage: '',
+      canonicalPath: `/materyal-studyo/${slug}`,
+      noIndex: false,
+      schemaType: 'Product',
+    },
     process: matched?.longDescription?.content?.map((line, index) => ({
       title: `Not ${index + 1}`,
       desc: line,
@@ -289,6 +327,7 @@ const normalizeDepartment = (value: any, slug: string): DepartmentState => {
     heroBlur: Number(value?.heroBlur || 0),
     heroOverlay: Number(value?.heroOverlay || 30),
     sliderImages: Array.isArray(value?.sliderImages) ? value.sliderImages.filter(Boolean) : seed.sliderImages,
+    seoMeta: value?.seoMeta || seed.seoMeta,
     process: Array.isArray(value?.process)
       ? value.process.map((item: any) => ({ title: item?.title || '', desc: item?.desc || '' }))
       : seed.process,
@@ -663,6 +702,7 @@ export default function MaterialDetailEditor() {
       stockLabel: productDraft.stockLabel,
       ctaVariant: productDraft.ctaVariant,
       ctaLabel: productDraft.ctaLabel,
+      seoMeta: productDraft.seoMeta,
     };
 
     const nextProducts = [...department.products];
@@ -900,6 +940,13 @@ export default function MaterialDetailEditor() {
                       className="min-h-40 rounded-[1.5rem] border-[color:var(--line)] bg-[color:var(--surface-muted)] text-[color:var(--text)]"
                     />
                   </div>
+                  <SeoMetaCard
+                    title="SEO"
+                    description="Materyal stüdyo başlığı, açıklaması ve paylaşım bilgileri burada düzenlenir."
+                    canonicalHint={`/materyal-studyo/${slug}`}
+                    meta={department.seoMeta}
+                    onChange={(next) => mutateDepartment((draft) => { draft.seoMeta = next; })}
+                  />
                   <div className="grid gap-4 sm:grid-cols-2">
                     <div className="space-y-2">
                       <label className="text-xs font-medium uppercase tracking-[0.24em] text-[color:var(--text-muted)]">Hero Blur</label>
@@ -1903,6 +1950,13 @@ export default function MaterialDetailEditor() {
                         placeholder="Ürünün ne olduğunu ve nerede kullanıldığını doğrudan yazın."
                       />
                     </div>
+                    <SeoMetaCard
+                      title="SEO"
+                      description="Ürün detay sayfasının başlık ve paylaşım bilgileri burada yönetilir."
+                      canonicalHint={`/materyal-studyo/${productDraft.categorySlug || slug}/${productDraft.slug || productDraft.title || 'urun'}`}
+                      meta={productDraft.seoMeta}
+                      onChange={(next) => setProductDraft((draft) => ({ ...draft, seoMeta: next }))}
+                    />
                   </CardContent>
                 </Card>
 

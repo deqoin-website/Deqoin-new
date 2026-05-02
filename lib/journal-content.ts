@@ -11,6 +11,7 @@ import {
   type JournalSection,
 } from "@/data/journal";
 import { journalSeoPackArticles } from "@/data/journal-seo-pack";
+import { normalizeSeoMeta } from "@/lib/seo-meta";
 
 export type JournalHeroDraft = {
   title: string;
@@ -22,6 +23,15 @@ export type JournalHeroDraft = {
 export type JournalPageDraft = {
   pageTitle: string;
   hero: JournalHeroDraft;
+  seoMeta: {
+    title: string;
+    description: string;
+    keywords: string;
+    ogImage: string;
+    canonicalPath: string;
+    noIndex: boolean;
+    schemaType: string;
+  };
   articles: JournalArticle[];
 };
 
@@ -40,6 +50,7 @@ type JournalCmsSection = {
 type JournalModelPayload = {
   page?: string;
   title?: string;
+  seoMeta?: JournalPageDraft["seoMeta"];
   hero?: {
     title?: string;
     subtitle?: string;
@@ -56,6 +67,16 @@ const DEFAULT_HERO: JournalHeroDraft = {
   description:
     "deqoin journal, iç mimarlık, mekan tasarımı ve uygulama notlarını sade bir blog diliyle bir araya getirir.",
   featuredArticleSlug: journalSeoPackArticles[0]?.slug ?? journalArticles[0]?.slug ?? "",
+};
+
+const DEFAULT_SEO_META: JournalPageDraft["seoMeta"] = {
+  title: "deqoin journal | nevşehir mimarlık ve uygulama notları",
+  description: "deqoin journal içinde iç mimarlık, uygulama ve materyal notlarını inceleyin.",
+  keywords: "deqoin, journal, nevşehir iç mimarlık, kapadokya mimarlık, uygulama notları",
+  ogImage: "/images/logo-new.jpeg",
+  canonicalPath: "/journal",
+  noIndex: false,
+  schemaType: "Article",
 };
 
 const LEGACY_JOURNAL_SLUGS = new Set([
@@ -208,6 +229,7 @@ function normalizeArticle(article: any, fallback: JournalArticle, index: number)
           .map((value: string) => value.replace(/\s+/g, " ").trim())
       : [...base.relatedProjectSlugs],
     intro: stringOr(article?.intro, base.intro),
+    seoMeta: normalizeSeoMeta(article?.seoMeta, base.seoMeta || {}),
     sections: Array.isArray(article?.sections) && article.sections.length > 0
       ? article.sections.map((section: any, sectionIndex: number) => normalizeSection(section, sectionIndex))
       : base.sections.map((section, sectionIndex) => normalizeSection(section, sectionIndex)),
@@ -231,6 +253,7 @@ export function createDefaultJournalDraft(): JournalPageDraft {
       ...DEFAULT_HERO,
       featuredArticleSlug: articles[0]?.slug ?? "",
     },
+    seoMeta: { ...DEFAULT_SEO_META },
     articles,
   };
 }
@@ -260,6 +283,7 @@ export function normalizeJournalDraft(payload: any): JournalPageDraft {
 
   return {
     pageTitle: stringOr(payload?.title, "journal"),
+    seoMeta: normalizeSeoMeta(payload?.seoMeta, DEFAULT_SEO_META),
     hero: {
       title: stringOr(directHero?.title, stringOr(section?.title, DEFAULT_HERO.title)),
       subtitle: stringOr(directHero?.subtitle, stringOr(section?.subtitle, DEFAULT_HERO.subtitle)),
@@ -277,6 +301,7 @@ export function serializeJournalDraft(draft: JournalPageDraft) {
   return {
     page: "journal",
     title: draft.pageTitle,
+    seoMeta: draft.seoMeta,
     hero: {
       title: draft.hero.title,
       subtitle: draft.hero.subtitle,
