@@ -16,6 +16,11 @@ export type WorkflowContentDraft = {
   steps: WorkflowProcessItem[];
 };
 
+export const cloneWorkflowDraft = (value: WorkflowContentDraft): WorkflowContentDraft => ({
+  title: value.title,
+  steps: value.steps.map((step) => ({ ...step })),
+});
+
 export type WorkflowScopeKind = "home" | "page" | "department";
 
 export type WorkflowContentRecord = {

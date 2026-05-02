@@ -1,13 +1,16 @@
 import { useEffect, useState } from "react";
 
 import type { WorkflowStep } from "./WorkflowSection";
+import { fetchWorkflow } from "@/lib/workflow-api";
 import {
   DEFAULT_WORKFLOW_STEPS,
   DEFAULT_WORKFLOW_TITLE,
+  cloneWorkflowDraft,
   workflowDraftFromRecord,
   workflowStepsForSection,
   type WorkflowContentDraft,
 } from "@/lib/workflow-content";
+import { normalizeWorkflowScope } from "@/lib/workflow-pages";
 
 export type WorkflowContent = {
   title: string;
@@ -21,10 +24,12 @@ const FALLBACK_WORKFLOW: WorkflowContent = {
 
 export function useWorkflowContent(scope = "home") {
   const [workflow, setWorkflow] = useState<WorkflowContent>(FALLBACK_WORKFLOW);
-  const [draft, setDraft] = useState<WorkflowContentDraft>({
-    title: DEFAULT_WORKFLOW_TITLE,
-    steps: DEFAULT_WORKFLOW_STEPS,
-  });
+  const [draft, setDraft] = useState<WorkflowContentDraft>(
+    cloneWorkflowDraft({
+      title: DEFAULT_WORKFLOW_TITLE,
+      steps: DEFAULT_WORKFLOW_STEPS,
+    }),
+  );
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -34,10 +39,7 @@ export function useWorkflowContent(scope = "home") {
       setLoading(true);
 
       try {
-        const res = await fetch(`/api/workflow?scope=${encodeURIComponent(scope)}`, { cache: "no-store" });
-        if (!res.ok) return;
-
-        const data = await res.json();
+        const data = await fetchWorkflow(normalizeWorkflowScope(scope));
         const nextDraft = workflowDraftFromRecord(data, DEFAULT_WORKFLOW_TITLE, DEFAULT_WORKFLOW_STEPS);
         if (!active) return;
 
@@ -67,3 +69,4 @@ export function useWorkflowContent(scope = "home") {
     setWorkflow,
   };
 }
+
