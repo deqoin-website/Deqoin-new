@@ -144,7 +144,6 @@ export default function JournalShareActions({ title, url, className }: JournalSh
             <Share2 className="h-4 w-4 text-zinc-400" />
             <p className="text-[0.7rem] uppercase tracking-[0.3em] text-zinc-500">paylaş</p>
           </div>
-          <p className="text-[0.68rem] uppercase tracking-[0.2em] text-zinc-600">whatsapp · instagram · link</p>
         </div>
 
         <div className="grid gap-2 sm:grid-cols-3">
