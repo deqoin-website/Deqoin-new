@@ -331,7 +331,17 @@ export const normalizeWorkflowSteps = (
     return fallback.map((item) => ({ ...item }));
   }
 
-  return value.map((item, index) => normalizeWorkflowItem(item, fallback[index] || fallback[0], index));
+  const normalized = value
+    .slice(0, fallback.length)
+    .map((item, index) => normalizeWorkflowItem(item, fallback[index] || fallback[0], index));
+
+  if (normalized.length < fallback.length) {
+    for (let index = normalized.length; index < fallback.length; index += 1) {
+      normalized.push({ ...fallback[index] });
+    }
+  }
+
+  return normalized;
 };
 
 export const workflowDraftFromProcess = (

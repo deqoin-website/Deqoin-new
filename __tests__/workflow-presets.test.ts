@@ -7,12 +7,17 @@ describe("workflow presets", () => {
   });
 
   it("returns simple page-specific steps for public pages", () => {
+    expect(getWorkflowFallbackDraftForScope("/galeri").steps).toHaveLength(5);
+    expect(getWorkflowFallbackDraftForScope("/journal").steps).toHaveLength(5);
+    expect(getWorkflowFallbackDraftForScope("/hakkimizda").steps).toHaveLength(5);
     expect(getWorkflowFallbackDraftForScope("/galeri").steps[0]?.title).toBe("Filtrele");
     expect(getWorkflowFallbackDraftForScope("/journal").steps[0]?.title).toBe("Ara");
     expect(getWorkflowFallbackDraftForScope("/hakkimizda").steps[0]?.title).toBe("Tanışma");
   });
 
   it("uses parent presets for nested department pages", () => {
+    expect(getWorkflowFallbackDraftForScope("/mimari/mimarlik").steps).toHaveLength(5);
+    expect(getWorkflowFallbackDraftForScope("/uygulama/boya-ekipleri").steps).toHaveLength(5);
     expect(getWorkflowFallbackDraftForScope("/mimari/mimarlik").steps[0]?.title).toBe("İhtiyaç");
     expect(getWorkflowFallbackDraftForScope("/uygulama/boya-ekipleri").steps[0]?.title).toBe("Ekip");
   });
