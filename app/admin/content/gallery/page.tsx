@@ -793,7 +793,10 @@ export default function GalleryContentAdminPage() {
                       <div className="grid gap-3">
                         {draft.gallery.length > 0 ? (
                           draft.gallery.map((image, index) => (
-                            <div key={`${image}-${index}`} className="flex items-center gap-3 rounded-[1.25rem] border border-[color:var(--line)] bg-[color:var(--surface-muted)] p-3">
+                            <div
+                              key={`${image}-${index}`}
+                              className="flex flex-col gap-3 rounded-[1.25rem] border border-[color:var(--line)] bg-[color:var(--surface-muted)] p-3 sm:flex-row sm:items-center"
+                            >
                               <div className="relative h-16 w-20 shrink-0 overflow-hidden rounded-xl border border-[color:var(--line)] bg-[color:var(--surface)]">
                                 <Image src={image} alt={`${draft.title} ${index + 1}`} fill className="object-cover" sizes="80px" />
                               </div>
@@ -801,7 +804,13 @@ export default function GalleryContentAdminPage() {
                                 <p className="truncate text-sm font-medium text-[color:var(--text)]">{image}</p>
                                 <p className="text-xs text-[color:var(--text-muted)]">Detay modalında görünecek görsel</p>
                               </div>
-                              <Button type="button" size="sm" variant="outline" className="border-rose-500/20 bg-rose-500/10 text-rose-700 hover:bg-rose-500 hover:text-white dark:text-rose-300" onClick={() => removeGalleryImage(index)}>
+                              <Button
+                                type="button"
+                                size="sm"
+                                variant="outline"
+                                className="w-full shrink-0 border-rose-500/20 bg-rose-500/10 text-rose-700 hover:bg-rose-500 hover:text-white dark:text-rose-300 sm:w-auto"
+                                onClick={() => removeGalleryImage(index)}
+                              >
                                 Kaldır
                               </Button>
                             </div>
