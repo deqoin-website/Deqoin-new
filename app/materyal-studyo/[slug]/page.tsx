@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 
 import MaterialCategoryPage from "@/components/material-studio/MaterialCategoryPage";
-import { materialFilterGroups, materyalKategorileri } from "@/data/materyal-urunleri";
+import { getMaterialFilterGroups, materyalKategorileri } from "@/data/materyal-urunleri";
 import { loadMaterialCategoryView } from "@/lib/material-catalog";
 
 export const dynamic = "force-dynamic";
@@ -30,7 +30,7 @@ export default async function MateryalKategoriPage({ params }: PageProps) {
       categoryTitle={category.title}
       categoryDescription={category.description}
       products={products}
-      filterGroups={materialFilterGroups}
+      filterGroups={getMaterialFilterGroups(category.slug)}
     />
   );
 }

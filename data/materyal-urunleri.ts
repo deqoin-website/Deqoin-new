@@ -257,8 +257,8 @@ export const materialProducts: MaterialProduct[] = [
     ],
     filterValues: {
       "renk-tonu": ["sıcak beyaz", "soğuk beyaz"],
-      "yuzey-tipi": ["metal", "mat"],
-      "kullanim-alani": ["tavan", "duvar"],
+      "yuzey-tipi": ["lineer", "mimari"],
+      "kullanim-alani": ["koridor", "mutfak", "galeri"],
     },
     technicalDetails: [
       { label: "CRI", value: "90+" },
@@ -326,9 +326,9 @@ export const materialProducts: MaterialProduct[] = [
       { label: "Işık", value: "2700K" },
     ],
     filterValues: {
-      "renk-tonu": ["sıcak beyaz", "nötr"],
-      "yuzey-tipi": ["metal", "mat"],
-      "kullanim-alani": ["tavan", "dekoratif"],
+      "renk-tonu": ["sıcak beyaz", "nötr beyaz"],
+      "yuzey-tipi": ["halo"],
+      "kullanim-alani": ["lobi", "yemek alanı", "giriş holü"],
     },
     technicalDetails: [
       { label: "CRI", value: "95" },
@@ -551,6 +551,271 @@ export const materialFilterGroups: MaterialProductFilterGroup[] = [
     ],
   },
 ];
+
+const materialFilterGroupsByCategory: Record<string, MaterialProductFilterGroup[]> = {
+  aydinlatma: [
+    {
+      key: "renk-tonu",
+      title: "Işık Tonu",
+      description: "Aydınlatmanın renk sıcaklığına göre filtreleyin.",
+      options: [
+        { label: "Sıcak Beyaz", value: "sıcak beyaz" },
+        { label: "Nötr Beyaz", value: "nötr beyaz" },
+        { label: "Soğuk Beyaz", value: "soğuk beyaz" },
+      ],
+    },
+    {
+      key: "yuzey-tipi",
+      title: "Armatür Formu",
+      description: "Aydınlatma ürününün form diline göre filtreleyin.",
+      options: [
+        { label: "Lineer", value: "lineer" },
+        { label: "Halo", value: "halo" },
+        { label: "Sarkıt", value: "sarkıt" },
+        { label: "Panel", value: "panel" },
+        { label: "Spot", value: "spot" },
+      ],
+    },
+    {
+      key: "kullanim-alani",
+      title: "Kullanım Alanı",
+      description: "Aydınlatmanın yerleşeceği mimari alanı seçin.",
+      options: [
+        { label: "Koridor", value: "koridor" },
+        { label: "Mutfak", value: "mutfak" },
+        { label: "Lobi", value: "lobi" },
+        { label: "Giriş Holü", value: "giriş holü" },
+        { label: "Galeri", value: "galeri" },
+      ],
+    },
+  ],
+  mobilya: [
+    {
+      key: "renk-tonu",
+      title: "Renk Tonu",
+      description: "Mobilya yüzeyinin ana tonuna göre filtreleyin.",
+      options: [
+        { label: "Açık Ton", value: "açık ton" },
+        { label: "Sıcak Ton", value: "sıcak ton" },
+        { label: "Koyu Ton", value: "koyu ton" },
+        { label: "Gri", value: "gri" },
+        { label: "Nötr", value: "nötr" },
+      ],
+    },
+    {
+      key: "yuzey-tipi",
+      title: "Yüzey Tipi",
+      description: "Malzemenin bitiş ve doku diline göre filtreleyin.",
+      options: [
+        { label: "Mat", value: "mat" },
+        { label: "Dokulu", value: "dokulu" },
+        { label: "Doğal Dokulu", value: "doğal dokulu" },
+        { label: "Ahşap Dokulu", value: "ahşap dokulu" },
+        { label: "Metal", value: "metal" },
+      ],
+    },
+    {
+      key: "kullanim-alani",
+      title: "Kullanım Alanı",
+      description: "Mobilyanın yerleşeceği projeye göre filtreleyin.",
+      options: [
+        { label: "Mobilya", value: "mobilya" },
+        { label: "Duvar", value: "duvar" },
+        { label: "İç Mekan", value: "iç mekan" },
+        { label: "Dekoratif", value: "dekoratif" },
+        { label: "Panel", value: "panel" },
+      ],
+    },
+  ],
+  "italyan-sivalar": [
+    {
+      key: "renk-tonu",
+      title: "Renk Etkisi",
+      description: "Sıva tonunu ve renk karakterini filtreleyin.",
+      options: [
+        { label: "Açık Ton", value: "açık ton" },
+        { label: "Sıcak Ton", value: "sıcak ton" },
+        { label: "Koyu Ton", value: "koyu ton" },
+        { label: "Toprak Ton", value: "toprak ton" },
+        { label: "Nötr", value: "nötr" },
+      ],
+    },
+    {
+      key: "yuzey-tipi",
+      title: "Doku Tipi",
+      description: "Yüzeyin bitiş karakterine göre filtreleyin.",
+      options: [
+        { label: "Dokulu", value: "dokulu" },
+        { label: "Mineral", value: "mineral" },
+        { label: "Metalik", value: "metalik" },
+        { label: "Traverten", value: "traverten" },
+        { label: "Pas / Oksit", value: "pas-oksit" },
+      ],
+    },
+    {
+      key: "kullanim-alani",
+      title: "Uygulama Yüzeyi",
+      description: "Sıvanın uygulanacağı alanı seçin.",
+      options: [
+        { label: "Duvar", value: "duvar" },
+        { label: "Dekoratif", value: "dekoratif" },
+        { label: "İç Mekan", value: "iç mekan" },
+        { label: "Lobi", value: "lobi" },
+        { label: "Niş", value: "niş" },
+      ],
+    },
+  ],
+  "dekoratif-boyalar": [
+    {
+      key: "renk-tonu",
+      title: "Renk Paleti",
+      description: "Boya renginin duygu tonuna göre filtreleyin.",
+      options: [
+        { label: "Açık Ton", value: "açık ton" },
+        { label: "Sıcak Ton", value: "sıcak ton" },
+        { label: "Koyu Ton", value: "koyu ton" },
+        { label: "Nötr", value: "nötr" },
+        { label: "Gri", value: "gri" },
+      ],
+    },
+    {
+      key: "yuzey-tipi",
+      title: "Bitiş Tipi",
+      description: "Boya yüzeyinin bitiş hissine göre filtreleyin.",
+      options: [
+        { label: "Mat", value: "mat" },
+        { label: "Saten", value: "saten" },
+        { label: "Dokulu", value: "dokulu" },
+        { label: "Mineral", value: "mineral" },
+        { label: "Kireç Esaslı", value: "kilic" },
+      ],
+    },
+    {
+      key: "kullanim-alani",
+      title: "Uygulama Alanı",
+      description: "Boya sisteminin kullanılacağı yüzeyi seçin.",
+      options: [
+        { label: "Duvar", value: "duvar" },
+        { label: "Mekan", value: "mekan" },
+        { label: "Dekoratif", value: "dekoratif" },
+        { label: "Salon", value: "salon" },
+        { label: "Koridor", value: "koridor" },
+      ],
+    },
+  ],
+  "mikro-cimento": [
+    {
+      key: "renk-tonu",
+      title: "Renk Tonu",
+      description: "Mikro çimento rengini ve ton karakterini filtreleyin.",
+      options: [
+        { label: "Gri", value: "gri" },
+        { label: "Nötr", value: "nötr" },
+        { label: "Koyu Ton", value: "koyu ton" },
+        { label: "Açık Ton", value: "açık ton" },
+      ],
+    },
+    {
+      key: "yuzey-tipi",
+      title: "Yüzey Tipi",
+      description: "Derzsiz ve bitiş hissine göre filtreleyin.",
+      options: [
+        { label: "Derzsiz", value: "derzsiz" },
+        { label: "Mat", value: "mat" },
+        { label: "Pürüzsüz", value: "pürüzsüz" },
+        { label: "Koyu Mat", value: "koyu mat" },
+      ],
+    },
+    {
+      key: "kullanim-alani",
+      title: "Kullanım Alanı",
+      description: "Mikro çimento uygulamasının yerleşeceği yüzeyi seçin.",
+      options: [
+        { label: "Duvar", value: "duvar" },
+        { label: "Zemin", value: "zemin" },
+        { label: "Islak Hacim", value: "ıslak hacim" },
+        { label: "Banyo", value: "banyo" },
+        { label: "Mutfak", value: "mutfak" },
+      ],
+    },
+  ],
+  "tugla-ve-tas": [
+    {
+      key: "renk-tonu",
+      title: "Doğal Ton",
+      description: "Taş ve tuğla yüzeyin ton ailesine göre filtreleyin.",
+      options: [
+        { label: "Koyu Ton", value: "koyu ton" },
+        { label: "Sıcak Ton", value: "sıcak ton" },
+        { label: "Toprak Ton", value: "toprak ton" },
+        { label: "Bej", value: "bej" },
+      ],
+    },
+    {
+      key: "yuzey-tipi",
+      title: "Malzeme Tipi",
+      description: "Yüzeyin ham karakterine göre filtreleyin.",
+      options: [
+        { label: "Doğal Taş", value: "doğal taş" },
+        { label: "Dokulu", value: "dokulu" },
+        { label: "Honlu", value: "honlu" },
+        { label: "Ham Yüzey", value: "ham yüzey" },
+        { label: "Kaba Taş", value: "kaba taş" },
+      ],
+    },
+    {
+      key: "kullanim-alani",
+      title: "Kullanım Alanı",
+      description: "Taş ve tuğlanın kullanılacağı mimari alanı seçin.",
+      options: [
+        { label: "Duvar", value: "duvar" },
+        { label: "Zemin", value: "zemin" },
+        { label: "Dış Cephe", value: "dış cephe" },
+        { label: "Bahçe", value: "bahçe" },
+        { label: "Lobi", value: "lobi" },
+      ],
+    },
+  ],
+  "sanatsal-calismalar": [
+    {
+      key: "renk-tonu",
+      title: "Ton Karakteri",
+      description: "Sanatsal çalışmanın ton yoğunluğunu seçin.",
+      options: [
+        { label: "Nötr", value: "nötr" },
+        { label: "Koyu Ton", value: "koyu ton" },
+        { label: "Açık Ton", value: "açık ton" },
+      ],
+    },
+    {
+      key: "yuzey-tipi",
+      title: "Doku Tipi",
+      description: "Yüzeyin sanatsal ve dokusal karakterini filtreleyin.",
+      options: [
+        { label: "Dokulu", value: "dokulu" },
+        { label: "Sanatsal", value: "sanatsal" },
+        { label: "Rölyef", value: "rölyef" },
+        { label: "Katmanlı", value: "katmanlı" },
+      ],
+    },
+    {
+      key: "kullanim-alani",
+      title: "Kullanım Alanı",
+      description: "Sanatsal çalışmanın yerleşeceği alanı seçin.",
+      options: [
+        { label: "Duvar", value: "duvar" },
+        { label: "Dekoratif", value: "dekoratif" },
+        { label: "Lobi", value: "lobi" },
+        { label: "Koleksiyon", value: "koleksiyon" },
+      ],
+    },
+  ],
+};
+
+export function getMaterialFilterGroups(categorySlug: string) {
+  const resolvedSlug = resolveMaterialCategorySlug(categorySlug);
+  return materialFilterGroupsByCategory[resolvedSlug] ?? materialFilterGroups;
+}
 
 const categoryAliases: Record<string, string> = {
   "italyan-boya": "dekoratif-boyalar",

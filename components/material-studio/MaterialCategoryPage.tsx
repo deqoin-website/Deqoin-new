@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import Link from "next/link";
 import { ArrowLeft, Package } from "lucide-react";
@@ -28,11 +28,13 @@ export default function MaterialCategoryPage({
   filterGroups,
 }: MaterialCategoryPageProps) {
   const [searchValue, setSearchValue] = useState("");
-  const [selectedValues, setSelectedValues] = useState<Record<string, string[]>>({
-    "renk-tonu": [],
-    "yuzey-tipi": [],
-    "kullanim-alani": [],
-  });
+  const createEmptySelections = () =>
+    filterGroups.reduce<Record<string, string[]>>((acc, group) => {
+      acc[group.key] = [];
+      return acc;
+    }, {});
+
+  const [selectedValues, setSelectedValues] = useState<Record<string, string[]>>(() => createEmptySelections());
 
   const filteredProducts = useMemo(() => {
     const query = searchValue.trim().toLowerCase();
@@ -60,6 +62,10 @@ export default function MaterialCategoryPage({
     });
   }, [filterGroups, products, searchValue, selectedValues]);
 
+  useEffect(() => {
+    setSelectedValues(createEmptySelections());
+  }, [filterGroups]);
+
   const handleToggle = (groupKey: string, value: string) => {
     setSelectedValues((current) => {
       const groupValues = current[groupKey] ?? [];
@@ -76,11 +82,7 @@ export default function MaterialCategoryPage({
 
   const clearAll = () => {
     setSearchValue("");
-    setSelectedValues({
-      "renk-tonu": [],
-      "yuzey-tipi": [],
-      "kullanim-alani": [],
-    });
+    setSelectedValues(createEmptySelections());
   };
 
   return (

@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Search } from "lucide-react";
 
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
@@ -29,6 +29,10 @@ export default function MaterialFilterSidebar({
   className,
 }: MaterialFilterSidebarProps) {
   const [openGroup, setOpenGroup] = useState<string | null>(groups[0]?.key ?? null);
+
+  useEffect(() => {
+    setOpenGroup(groups[0]?.key ?? null);
+  }, [groups]);
 
   const activeCount = useMemo(
     () => Object.values(selectedValues).reduce((count, values) => count + values.length, 0),
