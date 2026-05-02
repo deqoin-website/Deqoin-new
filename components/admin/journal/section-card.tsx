@@ -69,7 +69,7 @@ export function SectionCard({
               <GripVertical className="h-4 w-4" />
             </div>
             <div>
-              <p className="text-[0.6rem] tracking-[0.32em] text-zinc-500">blok {String(index + 1).padStart(2, "0")}</p>
+              <p className="text-[0.6rem] tracking-[0.08em] text-zinc-500">blok {String(index + 1).padStart(2, "0")}</p>
               <p className="text-sm text-white">{sectionLabel}</p>
             </div>
           </div>
@@ -95,8 +95,8 @@ export function SectionCard({
         </div>
 
         <div className="flex items-center justify-between rounded-2xl border border-white/10 bg-black/10 px-3 py-2">
-          <span className="text-[0.58rem] tracking-[0.3em] text-zinc-500">sürüklemek için sol ikon alanını kullan</span>
-          <span className="text-[0.58rem] tracking-[0.28em] text-zinc-500">drag handle</span>
+          <span className="text-[0.58rem] tracking-[0.08em] text-zinc-500">sürüklemek için sol ikon alanını kullan</span>
+          <span className="text-[0.58rem] tracking-[0.08em] text-zinc-500">drag handle</span>
         </div>
 
         {section.type === "paragraph" && (
@@ -156,7 +156,7 @@ export function SectionCard({
         {section.type === "technical" && (
           <div className="space-y-3">
             <div className="flex items-center justify-between">
-              <p className="text-[0.6rem] tracking-[0.32em] text-zinc-500">teknik maddeler</p>
+              <p className="text-[0.6rem] tracking-[0.08em] text-zinc-500">teknik maddeler</p>
               <Button
                 type="button"
                 variant="ghost"
@@ -224,7 +224,7 @@ export function SectionCard({
             </FieldGroup>
 
             <div className="flex items-center justify-between">
-              <p className="text-[0.6rem] tracking-[0.32em] text-zinc-500">proje satırları</p>
+              <p className="text-[0.6rem] tracking-[0.08em] text-zinc-500">proje satırları</p>
               <Button
                 type="button"
                 variant="ghost"

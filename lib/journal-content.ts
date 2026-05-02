@@ -65,8 +65,17 @@ function clone<T>(value: T): T {
   return JSON.parse(JSON.stringify(value));
 }
 
+export function normalizeJournalText(value: unknown) {
+  return typeof value === "string" ? value.replace(/\s+/g, " ").trim() : "";
+}
+
+export function toTurkishLowerCase(value: string) {
+  return value.toLocaleLowerCase("tr-TR");
+}
+
 function stringOr(value: unknown, fallback: string) {
-  return typeof value === "string" && value.trim() ? value.trim() : fallback;
+  const normalized = normalizeJournalText(value);
+  return normalized || fallback;
 }
 
 function normalizeGalleryItem(item: any, index: number): JournalImageAsset {
@@ -157,7 +166,9 @@ function normalizeArticle(article: any, fallback: JournalArticle, index: number)
     projectTypes: pickAllowedList<JournalProjectType>(article?.projectTypes, projectTypeValues, base.projectTypes),
     contentTypes: pickAllowedList<JournalContentType>(article?.contentTypes, contentTypeValues, base.contentTypes),
     relatedProjectSlugs: Array.isArray(article?.relatedProjectSlugs)
-      ? article.relatedProjectSlugs.filter((value: unknown): value is string => typeof value === "string" && value.trim()).map((value: string) => value.trim())
+      ? article.relatedProjectSlugs
+          .filter((value: unknown): value is string => typeof value === "string" && value.trim().length > 0)
+          .map((value: string) => value.replace(/\s+/g, " ").trim())
       : [...base.relatedProjectSlugs],
     intro: stringOr(article?.intro, base.intro),
     sections: Array.isArray(article?.sections) && article.sections.length > 0
@@ -197,8 +208,10 @@ export function normalizeJournalDraft(payload: any): JournalPageDraft {
       ? section.content.articles
       : [];
   const fallbackArticles = cloneJournalArticles(journalArticles);
-  const sourceArticles = rawArticles.length > 0 ? rawArticles : fallbackArticles;
-  const articles = sourceArticles.map((article, index) => normalizeArticle(article, fallbackArticles[index] ?? fallbackArticles[0], index));
+  const sourceArticles: any[] = rawArticles.length > 0 ? rawArticles : fallbackArticles;
+  const articles = sourceArticles.map((article: any, index: number) =>
+    normalizeArticle(article, fallbackArticles[index] ?? fallbackArticles[0], index),
+  );
 
   return {
     pageTitle: stringOr(payload?.title, "JOURNAL"),

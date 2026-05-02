@@ -62,6 +62,14 @@ body {
   min-height: 100vh;
 }
 
+html {
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-kerning: normal;
+  font-feature-settings: "kern" 1, "liga" 1, "clig" 1, "calt" 1, "locl" 1;
+}
+
 /* FROSTED GRAIN TEXTURE */
 body::before {
   content: "";

@@ -6,6 +6,7 @@ import { AdminImageDropzone } from "@/components/admin/AdminImageDropzone";
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { toTurkishLowerCase } from "@/lib/journal-content";
 
 import { FieldGroup } from "./field-group";
 import type { JournalArticleDraft, JournalDraftState } from "./journal-utils";
@@ -71,11 +72,11 @@ export function JournalMetaTab({
         />
 
         <div className="rounded-[1.5rem] border border-white/10 bg-white/[0.03] p-4">
-          <p className="text-[0.6rem] tracking-[0.32em] text-zinc-500">bağlantılı makaleler</p>
+          <p className="text-[0.6rem] tracking-[0.08em] text-zinc-500">bağlantılı makaleler</p>
           <div className="mt-3 grid gap-2">
             {draft.articles.slice(0, 4).map((item) => (
               <div key={item.slug} className="flex items-center justify-between rounded-xl border border-white/10 bg-black/10 px-3 py-2 text-sm text-zinc-300">
-                <span className="truncate">{item.title.toLowerCase()}</span>
+                <span className="truncate">{toTurkishLowerCase(item.title)}</span>
                 <span className="text-xs text-zinc-500">{item.slug}</span>
               </div>
             ))}
@@ -91,8 +92,8 @@ export function JournalMetaTab({
             )}
           </div>
           <div className="space-y-3 p-4">
-            <p className="text-[0.6rem] tracking-[0.32em] text-zinc-500">vitrin önizlemesi</p>
-            <p className="text-sm text-zinc-300">{featuredArticle ? featuredArticle.title.toLowerCase() : "özel içerik seçilmedi"}</p>
+            <p className="text-[0.6rem] tracking-[0.08em] text-zinc-500">vitrin önizlemesi</p>
+            <p className="text-sm text-zinc-300">{featuredArticle ? toTurkishLowerCase(featuredArticle.title) : "özel içerik seçilmedi"}</p>
             <p className="text-sm leading-7 text-zinc-400">{draft.hero.description}</p>
           </div>
         </div>

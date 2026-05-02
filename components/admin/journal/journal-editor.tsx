@@ -5,6 +5,7 @@ import * as React from "react";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { toTurkishLowerCase } from "@/lib/journal-content";
 
 import { JournalBuilderTab } from "./journal-builder-tab";
 import { JournalMetaTab } from "./journal-meta-tab";
@@ -65,15 +66,15 @@ export function JournalEditor({
       <CardHeader className="space-y-4 border-b border-white/10">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="space-y-1">
-            <CardTitle className="text-sm font-medium tracking-[0.22em] text-white">makale düzenleme</CardTitle>
+            <CardTitle className="text-sm font-medium tracking-[0.08em] text-white">makale düzenleme</CardTitle>
             <CardDescription className="text-zinc-400">meta, taksonomi ve block builder sekmeleriyle düzenleyin.</CardDescription>
           </div>
           <div className="flex flex-wrap items-center gap-2">
             <Badge variant="outline" className="border-white/10 bg-white/[0.04] text-zinc-300">
-              {article.articleType.toLowerCase()}
+              {toTurkishLowerCase(article.articleType)}
             </Badge>
             <Badge variant="outline" className="border-white/10 bg-white/[0.04] text-zinc-300">
-              {article.readTime.toLowerCase()}
+              {toTurkishLowerCase(article.readTime)}
             </Badge>
           </div>
         </div>

@@ -5,6 +5,7 @@ import { ChevronDown, ChevronRight, FileText, Plus } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { toTurkishLowerCase } from "@/lib/journal-content";
 import type { JournalArticleDraft, JournalCategoryNode } from "./journal-utils";
 
 type JournalSidebarProps = {
@@ -40,8 +41,8 @@ export function JournalSidebar({
       <div className="rounded-[1.5rem] border border-white/10 bg-white/[0.03] p-4 shadow-[0_20px_70px_rgba(0,0,0,0.25)]">
         <div className="flex items-center justify-between gap-3">
           <div>
-            <p className="text-[0.62rem] tracking-[0.42em] text-zinc-500">journal admin</p>
-            <h1 className="mt-2 text-xl font-medium tracking-[0.08em] text-white">içerik havuzu</h1>
+            <p className="text-[0.62rem] tracking-[0.08em] text-zinc-500">journal admin</p>
+            <h1 className="mt-2 text-xl font-medium tracking-[0.02em] text-white">içerik havuzu</h1>
           </div>
           <Button
             type="button"
@@ -94,7 +95,7 @@ export function JournalSidebar({
                   }}
                 >
                   <div className="flex min-w-0 items-center gap-3">
-                    <span className="min-w-0 flex-1 truncate text-sm font-medium">{category.label.toLowerCase()}</span>
+                    <span className="min-w-0 flex-1 truncate text-sm font-medium">{toTurkishLowerCase(category.label)}</span>
                     <Badge variant="outline" className="border-white/10 bg-white/[0.04] text-[10px] text-zinc-300">
                       {category.count}
                     </Badge>
@@ -130,7 +131,7 @@ export function JournalSidebar({
                           >
                             <div className="mt-0.5 h-2 w-2 rounded-full bg-[color:var(--admin-accent)]" />
                             <div className="min-w-0 space-y-1">
-                              <p className="truncate text-sm font-medium">{article.title.toLowerCase()}</p>
+                              <p className="truncate text-sm font-medium">{toTurkishLowerCase(article.title)}</p>
                               <p className="truncate text-xs text-zinc-500">{article.slug}</p>
                             </div>
                           </button>

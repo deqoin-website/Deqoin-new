@@ -70,7 +70,7 @@ export function JournalDialogs({
             {article ? (
               <div className="space-y-4">
                 <div className="rounded-[1.5rem] border border-white/10 bg-white/[0.03] p-5">
-                  <p className="text-[0.6rem] tracking-[0.32em] text-zinc-500">kapak</p>
+                  <p className="text-[0.6rem] tracking-[0.08em] text-zinc-500">kapak</p>
                   <h3 className="mt-2 text-2xl text-white">{article.title}</h3>
                   <p className="mt-3 max-w-3xl text-sm leading-7 text-zinc-400">{article.intro}</p>
                 </div>
@@ -78,7 +78,7 @@ export function JournalDialogs({
                   {article.sections.slice(0, 2).map((section, index) => (
                     <Card key={`${article.slug}-${index}`} className="border-white/10 bg-white/[0.03] shadow-none">
                       <CardContent className="p-4 text-sm leading-7 text-zinc-300">
-                        <p className="mb-2 text-[0.6rem] tracking-[0.32em] text-zinc-500">{section.type}</p>
+                        <p className="mb-2 text-[0.6rem] tracking-[0.08em] text-zinc-500">{section.type}</p>
                         <pre className="whitespace-pre-wrap font-sans text-sm leading-7 text-zinc-300">
                           {section.type === "paragraph"
                             ? section.body

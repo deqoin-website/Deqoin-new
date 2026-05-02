@@ -16,6 +16,7 @@ import {
   createDefaultJournalDraft,
   normalizeJournalDraft,
   serializeJournalDraft,
+  toTurkishLowerCase,
 } from "@/lib/journal-content";
 
 import { JournalDialogs } from "@/components/admin/journal/journal-dialogs";
@@ -50,7 +51,7 @@ function matchesQuery(article: JournalArticleDraft, query: string) {
     article.relatedProjectSlugs.join(" "),
   ]
     .join(" ")
-    .toLowerCase()
+    .toLocaleLowerCase("tr-TR")
     .includes(query);
 }
 
@@ -86,7 +87,7 @@ function ArticleTable({
       <CardContent className="overflow-x-auto p-0">
         <table className="min-w-full border-separate border-spacing-0">
           <thead className="sticky top-0 z-10 bg-[color:var(--admin-bg)]/90 backdrop-blur">
-            <tr className="text-left text-[0.62rem] tracking-[0.28em] text-zinc-500">
+            <tr className="text-left text-[0.62rem] tracking-[0.08em] text-zinc-500">
               <th className="border-b border-white/10 px-5 py-4 font-medium">başlık</th>
               <th className="border-b border-white/10 px-5 py-4 font-medium">slug</th>
               <th className="border-b border-white/10 px-5 py-4 font-medium">kategori</th>
@@ -111,20 +112,20 @@ function ArticleTable({
                 >
                   <td className="border-b border-white/10 px-5 py-4">
                     <div className="space-y-1">
-                      <p className="text-sm font-medium text-white">{article.title.toLowerCase()}</p>
-                      <p className="text-xs text-zinc-500">{article.deck.toLowerCase()}</p>
+                      <p className="text-sm font-medium text-white">{toTurkishLowerCase(article.title)}</p>
+                      <p className="text-xs text-zinc-500">{toTurkishLowerCase(article.deck)}</p>
                     </div>
                   </td>
                   <td className="border-b border-white/10 px-5 py-4 text-sm text-zinc-300">{article.slug}</td>
                   <td className="border-b border-white/10 px-5 py-4">
                     <Badge variant="outline" className="border-white/10 bg-white/[0.04] text-zinc-300">
-                      {article.articleType.toLowerCase()}
+                      {toTurkishLowerCase(article.articleType)}
                     </Badge>
                   </td>
-                  <td className="border-b border-white/10 px-5 py-4 text-sm text-zinc-400">{article.publishedAt.toLowerCase()}</td>
-                  <td className="border-b border-white/10 px-5 py-4 text-sm text-zinc-400">{article.readTime.toLowerCase()}</td>
+                  <td className="border-b border-white/10 px-5 py-4 text-sm text-zinc-400">{toTurkishLowerCase(article.publishedAt)}</td>
+                  <td className="border-b border-white/10 px-5 py-4 text-sm text-zinc-400">{toTurkishLowerCase(article.readTime)}</td>
                   <td className="border-b border-white/10 px-5 py-4">
-                    <span className="text-xs tracking-[0.28em] text-[color:var(--admin-accent)]">aktif</span>
+                    <span className="text-xs tracking-[0.08em] text-[color:var(--admin-accent)]">aktif</span>
                   </td>
                   <td className="border-b border-white/10 px-5 py-4">
                     <div className="flex flex-wrap gap-2">
@@ -188,7 +189,7 @@ function HeroSettingsCard({
   return (
     <Card className="border-white/10 bg-white/[0.03] shadow-none">
       <CardHeader className="space-y-2 border-b border-white/10">
-        <CardTitle className="text-sm font-medium tracking-[0.22em] text-white">sayfa kahramanı</CardTitle>
+        <CardTitle className="text-sm font-medium tracking-[0.08em] text-white">sayfa kahramanı</CardTitle>
         <CardDescription className="text-zinc-400">
           ana journal sayfasının vitrin başlığı, alt metni ve öne çıkan içeriği.
         </CardDescription>
@@ -198,14 +199,14 @@ function HeroSettingsCard({
           <div className="space-y-4 rounded-[1.5rem] border border-white/10 bg-white/[0.03] p-4">
             <div className="grid gap-4 md:grid-cols-2">
               <div className="space-y-2">
-                <p className="text-[0.6rem] tracking-[0.32em] text-zinc-500">sayfa başlığı</p>
+                <p className="text-[0.6rem] tracking-[0.08em] text-zinc-500">sayfa başlığı</p>
                 <Input
                   value={draft.pageTitle}
                   onChange={(event) => onChange((current) => ({ ...current, pageTitle: event.target.value }))}
                 />
               </div>
               <div className="space-y-2">
-                <p className="text-[0.6rem] tracking-[0.32em] text-zinc-500">öne çıkan makale</p>
+                <p className="text-[0.6rem] tracking-[0.08em] text-zinc-500">öne çıkan makale</p>
                 <Select
                   value={draft.hero.featuredArticleSlug}
                   onChange={(event) =>
@@ -217,7 +218,7 @@ function HeroSettingsCard({
                 >
                   {draft.articles.map((article) => (
                     <option key={article.slug} value={article.slug}>
-                      {article.title.toLowerCase()}
+                      {toTurkishLowerCase(article.title)}
                     </option>
                   ))}
                 </Select>
@@ -225,7 +226,7 @@ function HeroSettingsCard({
             </div>
 
             <div className="space-y-2">
-              <p className="text-[0.6rem] tracking-[0.32em] text-zinc-500">başlık</p>
+              <p className="text-[0.6rem] tracking-[0.08em] text-zinc-500">başlık</p>
               <Input
                 value={draft.hero.title}
                 onChange={(event) => onChange((current) => ({ ...current, hero: { ...current.hero, title: event.target.value } }))}
@@ -233,7 +234,7 @@ function HeroSettingsCard({
             </div>
 
             <div className="space-y-2">
-              <p className="text-[0.6rem] tracking-[0.32em] text-zinc-500">alt başlık</p>
+              <p className="text-[0.6rem] tracking-[0.08em] text-zinc-500">alt başlık</p>
               <Input
                 value={draft.hero.subtitle}
                 onChange={(event) => onChange((current) => ({ ...current, hero: { ...current.hero, subtitle: event.target.value } }))}
@@ -241,7 +242,7 @@ function HeroSettingsCard({
             </div>
 
             <div className="space-y-2">
-              <p className="text-[0.6rem] tracking-[0.32em] text-zinc-500">açıklama</p>
+              <p className="text-[0.6rem] tracking-[0.08em] text-zinc-500">açıklama</p>
               <Textarea
                 value={draft.hero.description}
                 onChange={(event) => onChange((current) => ({ ...current, hero: { ...current.hero, description: event.target.value } }))}
@@ -260,9 +261,9 @@ function HeroSettingsCard({
                 )}
               </div>
               <CardContent className="space-y-3 p-4">
-                <p className="text-[0.6rem] tracking-[0.32em] text-zinc-500">vitrin önizlemesi</p>
+                <p className="text-[0.6rem] tracking-[0.08em] text-zinc-500">vitrin önizlemesi</p>
                 <p className="text-sm text-zinc-300">
-                  {featuredArticle ? featuredArticle.title.toLowerCase() : "özel içerik seçilmedi"}
+                  {featuredArticle ? toTurkishLowerCase(featuredArticle.title) : "özel içerik seçilmedi"}
                 </p>
                 <p className="text-sm leading-7 text-zinc-400">{draft.hero.description}</p>
               </CardContent>
@@ -377,7 +378,7 @@ export default function JournalAdminPage() {
 
   const visibleArticles = useMemo(() => {
     const scopeArticles = activeView === "hero" ? draft.articles : draft.articles.filter((article) => article.articleType === activeView);
-    const query = searchTerm.trim().toLowerCase();
+    const query = toTurkishLowerCase(searchTerm.trim());
     return scopeArticles.filter((article) => matchesQuery(article, query));
   }, [activeView, draft.articles, searchTerm]);
 
@@ -562,8 +563,8 @@ export default function JournalAdminPage() {
                   )}
                 </div>
                 <div className="space-y-2">
-                  <p className="text-[0.6rem] tracking-[0.36em] text-zinc-500">editoryal yönetim paneli</p>
-                  <h2 className="text-3xl font-medium tracking-[0.08em] text-white md:text-5xl">journal içerikleri</h2>
+                  <p className="text-[0.6rem] tracking-[0.08em] text-zinc-500">editoryal yönetim paneli</p>
+                  <h2 className="text-3xl font-medium tracking-[0.02em] text-white md:text-5xl">journal içerikleri</h2>
                   <p className="max-w-3xl text-sm leading-7 text-zinc-400">
                     içerik tiplerine göre hiyerarşik sidebar, kategori bazlı tablo ve tab ile ayrılmış düzenleme akışı.
                   </p>
@@ -614,8 +615,8 @@ export default function JournalAdminPage() {
                 <CardHeader className="space-y-4">
                   <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
                     <div className="space-y-2">
-                      <CardTitle className="text-sm font-medium tracking-[0.22em] text-white">
-                        {activeCategory?.label.toLowerCase() ?? activeView.toLowerCase()}
+                      <CardTitle className="text-sm font-medium tracking-[0.08em] text-white">
+                        {activeCategory ? toTurkishLowerCase(activeCategory.label) : toTurkishLowerCase(activeView)}
                       </CardTitle>
                       <CardDescription className="text-zinc-400">
                         seçili kategoriye ait makaleler tablo görünümünde listelenir. satıra tıklayın, düzenleyici alanda açılır.
@@ -646,19 +647,19 @@ export default function JournalAdminPage() {
 
                   <div className="grid gap-3 md:grid-cols-4">
                     <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
-                      <p className="text-[0.55rem] tracking-[0.32em] text-zinc-500">makale</p>
+                      <p className="text-[0.55rem] tracking-[0.08em] text-zinc-500">makale</p>
                       <p className="mt-2 text-xl text-white">{formatCountLabel(visibleArticles.length)}</p>
                     </div>
                     <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
-                      <p className="text-[0.55rem] tracking-[0.32em] text-zinc-500">sayfa</p>
+                      <p className="text-[0.55rem] tracking-[0.08em] text-zinc-500">sayfa</p>
                       <p className="mt-2 text-xl text-white">{tablePageLabel}</p>
                     </div>
                     <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
-                      <p className="text-[0.55rem] tracking-[0.32em] text-zinc-500">kategori</p>
-                      <p className="mt-2 text-xl text-white">{activeCategory?.label.toLowerCase() ?? activeView.toLowerCase()}</p>
+                      <p className="text-[0.55rem] tracking-[0.08em] text-zinc-500">kategori</p>
+                      <p className="mt-2 text-xl text-white">{activeCategory ? toTurkishLowerCase(activeCategory.label) : toTurkishLowerCase(activeView)}</p>
                     </div>
                     <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
-                      <p className="text-[0.55rem] tracking-[0.32em] text-zinc-500">durum</p>
+                      <p className="text-[0.55rem] tracking-[0.08em] text-zinc-500">durum</p>
                       <p className="mt-2 text-xl text-white">{hasDirtyState ? "düzenlendi" : "hazır"}</p>
                     </div>
                   </div>
