@@ -85,7 +85,7 @@ export default function MaterialCategoryPage({
 
   return (
     <main className="mx-auto w-full max-w-[1600px] px-4 py-8 md:px-6 md:py-10">
-      <Card className="mb-8 border-white/10 bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.08),transparent_42%),linear-gradient(180deg,rgba(255,255,255,0.05),rgba(255,255,255,0.02))] shadow-[0_24px_90px_rgba(0,0,0,0.28)]">
+      <Card className="mb-8 mt-8 border-white/10 bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.08),transparent_42%),linear-gradient(180deg,rgba(255,255,255,0.05),rgba(255,255,255,0.02))] shadow-[0_24px_90px_rgba(0,0,0,0.28)] md:mt-10">
         <CardContent className="space-y-6 p-5 md:p-7">
           <div className="flex flex-wrap items-start justify-between gap-4">
             <div className="space-y-3">
