@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Card, CardContent } from "@/components/ui/card";
 import type { JournalArticle } from "@/data/journal";
+import { toTurkishSentenceCase } from "@/lib/journal-content";
 import { cn } from "@/lib/utils";
 
 type JournalCardProps = {
@@ -52,11 +53,11 @@ function JournalCardContent({
           className="text-3xl font-thin leading-tight tracking-[0.02em] text-white transition-colors group-hover:text-zinc-300 md:text-4xl lg:text-5xl"
           style={{ fontFamily: "Smooch Sans, sans-serif", fontWeight: 100 }}
         >
-          {article.title}
+          {toTurkishSentenceCase(article.title)}
         </h3>
 
         <p className="line-clamp-2 text-sm leading-relaxed font-light text-zinc-400 md:line-clamp-3 md:text-base">
-          {article.deck}
+          {toTurkishSentenceCase(article.deck)}
         </p>
 
         <p className="text-[10px] tracking-[0.22em] text-zinc-500">

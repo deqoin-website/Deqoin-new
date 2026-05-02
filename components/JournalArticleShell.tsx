@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import type { JournalArticle, JournalSection } from "@/data/journal";
+import { toTurkishSentenceCase } from "@/lib/journal-content";
 import { cn } from "@/lib/utils";
 import JournalShareActions from "./JournalShareActions";
 
@@ -38,7 +39,7 @@ function ArticleImage({
       <div className="relative aspect-[16/9] overflow-hidden rounded-[1.5rem] border border-white/10 bg-black shadow-[0_30px_80px_rgba(0,0,0,0.25)]">
         <Image src={src} alt={alt} fill className="object-cover" sizes="(max-width: 768px) 100vw, 960px" />
       </div>
-      {caption ? <figcaption className="text-sm leading-6 text-zinc-500">{caption}</figcaption> : null}
+      {caption ? <figcaption className="text-sm leading-6 text-zinc-500">{toTurkishSentenceCase(caption)}</figcaption> : null}
     </figure>
   );
 }
@@ -93,17 +94,17 @@ function renderSection(section: JournalSection, index: number) {
     case "heading":
       return section.level === 3 ? (
         <h3 key={`heading-${index}`} className="pt-2 text-2xl font-medium tracking-[0.01em] text-white md:text-[1.75rem]">
-          {section.text}
+          {toTurkishSentenceCase(section.text)}
         </h3>
       ) : (
         <h2 key={`heading-${index}`} className="pt-4 text-3xl font-medium tracking-[0.01em] text-white md:text-[2.25rem]">
-          {section.text}
+          {toTurkishSentenceCase(section.text)}
         </h2>
       );
     case "paragraph":
       return (
         <p key={`paragraph-${index}`} className="max-w-none text-[1.05rem] leading-8 text-zinc-300 md:text-[1.1rem]">
-          {section.body}
+          {toTurkishSentenceCase(section.body)}
         </p>
       );
     case "list":
@@ -111,7 +112,7 @@ function renderSection(section: JournalSection, index: number) {
         <ul key={`list-${index}`} className="space-y-3 pl-5 text-[1.05rem] leading-8 text-zinc-300 md:text-[1.1rem]">
           {section.items.map((item, itemIndex) => (
             <li key={`${index}-${itemIndex}`} className="marker:text-zinc-500">
-              {item}
+              {toTurkishSentenceCase(item)}
             </li>
           ))}
         </ul>
@@ -192,7 +193,7 @@ export default function JournalArticleShell({
 
               <div className="space-y-3">
                 <h1 className="max-w-4xl text-[clamp(2.5rem,6vw,4.8rem)] font-light leading-[0.95] tracking-[0.01em] text-white">
-                  {article.title}
+                  {toTurkishSentenceCase(article.title)}
                 </h1>
 
                 <div className="flex flex-wrap items-center gap-3 text-[0.72rem] uppercase tracking-[0.2em] text-zinc-500">
@@ -205,7 +206,7 @@ export default function JournalArticleShell({
               <Separator />
 
               <p className="max-w-3xl text-[1.05rem] leading-8 text-zinc-300 md:text-[1.15rem]">
-                {article.deck}
+                {toTurkishSentenceCase(article.deck)}
               </p>
 
               <JournalShareActions title={article.title} url={shareUrl} />
@@ -224,7 +225,9 @@ export default function JournalArticleShell({
             <div className="space-y-4 pb-2">
               <p className="text-[0.7rem] uppercase tracking-[0.28em] text-zinc-500">deqoin journal</p>
               <p className="max-w-3xl text-[1.02rem] leading-8 text-zinc-400">
-                Bu yazı hoşunuza gittiyse benzer proje ve uygulama notları için journal bölümünü takip edebilirsiniz.
+                {toTurkishSentenceCase(
+                  "Bu yazı hoşunuza gittiyse benzer proje ve uygulama notları için journal bölümünü takip edebilirsiniz.",
+                )}
               </p>
             </div>
           </div>

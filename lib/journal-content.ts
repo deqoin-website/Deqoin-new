@@ -86,6 +86,17 @@ export function toTurkishUpperCase(value: string) {
   return value.toLocaleUpperCase("tr-TR");
 }
 
+export function toTurkishSentenceCase(value: string) {
+  const normalized = normalizeJournalText(value);
+  if (!normalized) return "";
+
+  const sentenceCased = normalized.replace(/(^|[.!?]\s+)([a-zçğıöşüi])/gu, (_match, boundary: string, letter: string) => {
+    return `${boundary}${letter.toLocaleUpperCase("tr-TR")}`;
+  });
+
+  return sentenceCased.replace(/\bDeqoin\b/g, "deqoin");
+}
+
 function stringOr(value: unknown, fallback: string) {
   const normalized = normalizeJournalText(value);
   return normalized || fallback;
